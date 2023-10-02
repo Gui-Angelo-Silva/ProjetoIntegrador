@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateDatabase : Migration
+    public partial class CriarBanco : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,6 +24,21 @@ namespace SGED.Migrations
                 {
                     table.PrimaryKey("PK_Estados", x => x.Id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "tipoUsuarios",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    NivelAcesso = table.Column<string>(type: "character varying(1)", maxLength: 1, nullable: false),
+                    NomeTipoUsuario = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    DescricaoTipoUsuario = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tipoUsuarios", x => x.Id);
+                });
         }
 
         /// <inheritdoc />
@@ -31,6 +46,9 @@ namespace SGED.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Estados");
+
+            migrationBuilder.DropTable(
+                name: "tipoUsuarios");
         }
     }
 }

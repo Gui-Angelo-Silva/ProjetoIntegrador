@@ -72,6 +72,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // criando a injeção de dependencia
 builder.Services.AddScoped<IEstadoRepository, EstadoRepository>();
 builder.Services.AddScoped<IEstadoService, EstadoService>();
+builder.Services.AddScoped<ITipoUsuarioRepository, TipoUsuarioRepository>();
+builder.Services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
 
 builder.Services.AddAuthorization(options =>
 {

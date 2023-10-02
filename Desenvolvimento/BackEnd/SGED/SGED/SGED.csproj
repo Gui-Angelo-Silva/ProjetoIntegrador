@@ -42,7 +42,6 @@
   <ItemGroup>
     <Folder Include="API\Context\" />
     <Folder Include="API\Migrations\" />
-    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

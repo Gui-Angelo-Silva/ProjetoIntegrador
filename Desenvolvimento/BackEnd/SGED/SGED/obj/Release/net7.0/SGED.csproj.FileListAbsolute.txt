@@ -1,0 +1,7 @@
+C:\Users\Gabriel Santos\Desktop\FATEC\Repositorie\ProjetoIntegrador\Desenvolvimento\BackEnd\SGED\SGED\obj\Release\net7.0\SGED.csproj.AssemblyReference.cache
+C:\Users\Gabriel Santos\Desktop\FATEC\Repositorie\ProjetoIntegrador\Desenvolvimento\BackEnd\SGED\SGED\obj\Release\net7.0\SGED.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Gabriel Santos\Desktop\FATEC\Repositorie\ProjetoIntegrador\Desenvolvimento\BackEnd\SGED\SGED\obj\Release\net7.0\SGED.AssemblyInfoInputs.cache
+C:\Users\Gabriel Santos\Desktop\FATEC\Repositorie\ProjetoIntegrador\Desenvolvimento\BackEnd\SGED\SGED\obj\Release\net7.0\SGED.AssemblyInfo.cs
+C:\Users\Gabriel Santos\Desktop\FATEC\Repositorie\ProjetoIntegrador\Desenvolvimento\BackEnd\SGED\SGED\obj\Release\net7.0\SGED.csproj.CoreCompileInputs.cache
+C:\Users\Gabriel Santos\Desktop\FATEC\Repositorie\ProjetoIntegrador\Desenvolvimento\BackEnd\SGED\SGED\obj\Release\net7.0\SGED.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Gabriel Santos\Desktop\FATEC\Repositorie\ProjetoIntegrador\Desenvolvimento\BackEnd\SGED\SGED\obj\Release\net7.0\SGED.MvcApplicationPartsAssemblyInfo.cache

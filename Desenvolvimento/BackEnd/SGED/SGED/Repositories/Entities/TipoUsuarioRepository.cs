@@ -16,17 +16,17 @@ namespace SGED.Repositories.Entities
 
 		public async Task<IEnumerable<TipoUsuario>> GetAll()
 		{
-			return await _dbContext.tipoUsuarios.ToListAsync();
+			return await _dbContext.TiposUsuario.ToListAsync();
 		}
 
 		public async Task<TipoUsuario> GetById(int id)
 		{
-			return await _dbContext.tipoUsuarios.Where(p => p.Id == id).FirstOrDefaultAsync();
+			return await _dbContext.TiposUsuario.Where(p => p.Id == id).FirstOrDefaultAsync();
 		}
 
 		public async Task<TipoUsuario> Create(TipoUsuario tipousuario)
 		{
-			_dbContext.tipoUsuarios.Add(tipousuario);
+			_dbContext.TiposUsuario.Add(tipousuario);
 			await _dbContext.SaveChangesAsync();
 			return tipousuario;
 		}
@@ -41,7 +41,7 @@ namespace SGED.Repositories.Entities
 		public async Task<TipoUsuario> Delete(int id)
 		{
 			var tipoUsuario = await GetById(id);
-			_dbContext.tipoUsuarios.Remove(tipoUsuario);
+			_dbContext.TiposUsuario.Remove(tipoUsuario);
 			await _dbContext.SaveChangesAsync();
 			return tipoUsuario;
 		}

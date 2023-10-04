@@ -70,10 +70,18 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
 // criando a injeção de dependencia
+
+// Depedência: Estado
 builder.Services.AddScoped<IEstadoRepository, EstadoRepository>();
 builder.Services.AddScoped<IEstadoService, EstadoService>();
+
+// Depedência: TipoUsuario
 builder.Services.AddScoped<ITipoUsuarioRepository, TipoUsuarioRepository>();
 builder.Services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
+
+// Depedência: Cidade
+builder.Services.AddScoped<ICidadeRepository, CidadeRepository>();
+builder.Services.AddScoped<ICidadeService, CidadeService>();
 
 builder.Services.AddAuthorization(options =>
 {

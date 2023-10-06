@@ -7,10 +7,9 @@ public class AppDBContext : DbContext
     public AppDBContext(DbContextOptions<AppDBContext> options) : base(options) { }
 
     // aqui definimos o mapeamento dos objetos relacionais BD
-    public DbSet<Estado> Estados { get; set; }
-    public DbSet<TipoUsuario> TiposUsuario { get; set; }
-
-    public DbSet<Cidade> Cidades { get; set; }
+    public DbSet<Estado> Estado { get; set; }
+    public DbSet<TipoUsuario> TipoUsuario { get; set; }
+    public DbSet<Cidade> Cidade { get; set; }
 
     // aqui usamos Fluent API e não Data Annotations
     protected override void OnModelCreating(ModelBuilder modelBuilder)

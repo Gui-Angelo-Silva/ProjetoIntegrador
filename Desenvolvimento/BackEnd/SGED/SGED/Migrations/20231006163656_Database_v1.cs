@@ -12,7 +12,7 @@ namespace SGED.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Estados",
+                name: "Estado",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -22,11 +22,11 @@ namespace SGED.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Estados", x => x.Id);
+                    table.PrimaryKey("PK_Estado", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "TiposUsuario",
+                name: "TipoUsuario",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -37,33 +37,32 @@ namespace SGED.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TiposUsuario", x => x.Id);
+                    table.PrimaryKey("PK_TipoUsuario", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cidades",
+                name: "Cidade",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     NomeCidade = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    EstadoId = table.Column<int>(type: "integer", nullable: false),
-                    UfEstado = table.Column<string>(type: "text", nullable: true)
+                    EstadoId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cidades", x => x.Id);
+                    table.PrimaryKey("PK_Cidade", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Cidades_Estados_EstadoId",
+                        name: "FK_Cidade_Estado_EstadoId",
                         column: x => x.EstadoId,
-                        principalTable: "Estados",
+                        principalTable: "Estado",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cidades_EstadoId",
-                table: "Cidades",
+                name: "IX_Cidade_EstadoId",
+                table: "Cidade",
                 column: "EstadoId");
         }
 
@@ -71,13 +70,13 @@ namespace SGED.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Cidades");
+                name: "Cidade");
 
             migrationBuilder.DropTable(
-                name: "TiposUsuario");
+                name: "TipoUsuario");
 
             migrationBuilder.DropTable(
-                name: "Estados");
+                name: "Estado");
         }
     }
 }

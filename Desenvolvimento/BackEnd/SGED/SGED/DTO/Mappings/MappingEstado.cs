@@ -9,6 +9,7 @@ namespace SGED.DTO.Mappings
         public MappingEstado()
         {
             CreateMap<EstadoDTO, Estado>();
+            CreateMap<Estado, EstadoDTO>().ReverseMap();
         }
     }
 }

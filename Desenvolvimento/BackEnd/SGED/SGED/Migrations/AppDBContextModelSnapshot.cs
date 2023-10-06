@@ -37,14 +37,11 @@ namespace SGED.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<string>("UfEstado")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.HasIndex("EstadoId");
 
-                    b.ToTable("Cidades");
+                    b.ToTable("Cidade");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.Estado", b =>
@@ -67,7 +64,7 @@ namespace SGED.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Estados");
+                    b.ToTable("Estado");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.TipoUsuario", b =>
@@ -95,7 +92,7 @@ namespace SGED.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TiposUsuario");
+                    b.ToTable("TipoUsuario");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.Cidade", b =>

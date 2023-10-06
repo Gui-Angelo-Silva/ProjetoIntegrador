@@ -8,8 +8,6 @@ namespace SGED.DTO.Mappings
     {
         public MappingCidade()
         {
-            CreateMap<Estado, EstadoDTO>().ReverseMap();
-
             CreateMap<CidadeDTO, Cidade>();
 
             CreateMap<Cidade, CidadeDTO>().ForMember(

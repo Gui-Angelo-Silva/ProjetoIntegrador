@@ -8,7 +8,8 @@ namespace SGED.DTO.Mappings
     {
         public MappingTipoUsuario()
         {
-            CreateMap<TipoUsuario, TipoUsuarioDTO>();
+            CreateMap<TipoUsuarioDTO, TipoUsuario>();
+            CreateMap<TipoUsuario, TipoUsuarioDTO>().ReverseMap();
         }
     }
 }

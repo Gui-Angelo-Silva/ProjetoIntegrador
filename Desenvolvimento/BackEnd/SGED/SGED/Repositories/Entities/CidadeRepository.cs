@@ -16,18 +16,18 @@ public class CidadeRepository : ICidadeRepository
 
     public async Task<IEnumerable<Cidade>> GetAll()
     {
-        return await _dbContext.Cidades.Include(p => p.Estado).ToListAsync();
+        return await _dbContext.Cidade.Include(p => p.Estado).ToListAsync();
     }
 
     public async Task<Cidade> GetById(int id)
     {
-        return await _dbContext.Cidades.Include(p => p.Estado).Where(b => b.Id == id).FirstOrDefaultAsync();
+        return await _dbContext.Cidade.Include(p => p.Estado).Where(b => b.Id == id).FirstOrDefaultAsync();
     }
 
 
     public async Task<Cidade> Create(Cidade cidade)
     {
-        _dbContext.Cidades.Add(cidade);
+        _dbContext.Cidade.Add(cidade);
         await _dbContext.SaveChangesAsync();
         return cidade;
     }
@@ -42,7 +42,7 @@ public class CidadeRepository : ICidadeRepository
     public async Task<Cidade> Delete(int id)
     {
         var cidade = await GetById(id);
-        _dbContext.Cidades.Remove(cidade);
+        _dbContext.Cidade.Remove(cidade);
         await _dbContext.SaveChangesAsync();
         return cidade;
     }

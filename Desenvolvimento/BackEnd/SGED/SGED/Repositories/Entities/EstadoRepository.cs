@@ -16,18 +16,18 @@ public class EstadoRepository : IEstadoRepository
 
     public async Task<IEnumerable<Estado>> GetAll()
     {
-        return await _dbContext.Estados.ToListAsync();
+        return await _dbContext.Estado.ToListAsync();
     }
 
     public async Task<Estado> GetById(int id)
     {
-        return await _dbContext.Estados.Where(p => p.Id == id).FirstOrDefaultAsync();
+        return await _dbContext.Estado.Where(p => p.Id == id).FirstOrDefaultAsync();
     }
 
 
     public async Task<Estado> Create(Estado estado)
     {
-        _dbContext.Estados.Add(estado);
+        _dbContext.Estado.Add(estado);
         await _dbContext.SaveChangesAsync();
         return estado;
     }
@@ -42,7 +42,7 @@ public class EstadoRepository : IEstadoRepository
     public async Task<Estado> Delete(int id)
     {
         var estado = await GetById(id);
-        _dbContext.Estados.Remove(estado);
+        _dbContext.Estado.Remove(estado);
         await _dbContext.SaveChangesAsync();
         return estado;
     }

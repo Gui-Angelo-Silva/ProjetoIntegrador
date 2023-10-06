@@ -7,8 +7,9 @@ public class AppDBContext : DbContext
     public AppDBContext(DbContextOptions<AppDBContext> options) : base(options) { }
 
     // aqui definimos o mapeamento dos objetos relacionais BD
-    public DbSet<Estado> Estados { get; set; }
-    public DbSet<TipoUsuario> tipoUsuarios { get; set; }
+    public DbSet<Estado> Estado { get; set; }
+    public DbSet<TipoUsuario> TipoUsuario { get; set; }
+    public DbSet<Cidade> Cidade { get; set; }
 
     // aqui usamos Fluent API e não Data Annotations
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -21,6 +22,12 @@ public class AppDBContext : DbContext
         modelBuilder.Entity<TipoUsuario>().Property(b => b.NivelAcesso).HasMaxLength(1).IsRequired();
         modelBuilder.Entity<TipoUsuario>().Property(b => b.NomeTipoUsuario).HasMaxLength(20).IsRequired();
         modelBuilder.Entity<TipoUsuario>().Property(b => b.DescricaoTipoUsuario).HasMaxLength(300).IsRequired();
+
+        modelBuilder.Entity<Cidade>().HasKey(b => b.Id);
+        modelBuilder.Entity<Cidade>().Property(b => b.NomeCidade).HasMaxLength(100).IsRequired();
+
+        // Relacionamento: Estado -> Cidade
+        modelBuilder.Entity<Estado>().HasMany(p => p.Cidades).WithOne(b => b.Estado).IsRequired().OnDelete(DeleteBehavior.Cascade);
     }
 
 

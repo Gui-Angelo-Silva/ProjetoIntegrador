@@ -18,5 +18,7 @@ namespace SGED.DTO.Entities
         [MaxLength(2)]
         public string? UfEstado { get; set; }
 
+        public ICollection<CidadeDTO>? CidadeDTO { get; set; }
+
     }
 }

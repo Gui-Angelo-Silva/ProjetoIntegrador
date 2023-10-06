@@ -32,10 +32,10 @@ public class TipoUsuarioService : ITipoUsuarioService
 
 	public async Task Create(TipoUsuarioDTO tipoUsuarioDTO)
 	{
-		var tipoUsuario = _mapper.Map<TipoUsuario>(tipoUsuarioDTO);
-		await _tipoUsuarioRepository.Create(tipoUsuario);
-		tipoUsuarioDTO.Id = tipoUsuario.Id;
-	}
+        var tipoUsuario = _mapper.Map<TipoUsuario>(tipoUsuarioDTO);
+        await _tipoUsuarioRepository.Create(tipoUsuario);
+        tipoUsuarioDTO.Id = tipoUsuario.Id;
+    }
 
 	public async Task Update(TipoUsuarioDTO tipousuarioDTO)
 	{

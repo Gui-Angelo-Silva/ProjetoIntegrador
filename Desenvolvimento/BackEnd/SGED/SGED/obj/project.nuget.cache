@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZQhqPz5YMCU+Zu8ahcD/Das+Ei50vCX6/4ldoKm6+Hw9QP8XcqUaDRlFX36mKqh/v01dtQEe+4PdLDtQ3wRAbw==",
+  "dgSpecHash": "8zq9nIedFbciPR3T1xFdfpZLfiD1OOlfzMd/olrdWTlkaqeeIbTQJjiB0MTzB7xUFoajTPmPWSN5Qk8kS2FVlQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Aluno\\Downloads\\ProjetoIntegrador\\Desenvolvimento\\BackEnd\\SGED\\SGED\\SGED.csproj",
+  "projectFilePath": "C:\\Users\\Aluno\\Documents\\ProjetoIntegrador\\Desenvolvimento\\BackEnd\\SGED\\SGED\\SGED.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Aluno\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Aluno\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

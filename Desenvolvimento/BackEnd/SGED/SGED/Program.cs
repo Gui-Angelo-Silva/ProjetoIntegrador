@@ -83,6 +83,10 @@ builder.Services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
 builder.Services.AddScoped<ICidadeRepository, CidadeRepository>();
 builder.Services.AddScoped<ICidadeService, CidadeService>();
 
+// Depedência: Pessoa
+builder.Services.AddScoped<IPessoaRepository, PessoaRepository>();
+builder.Services.AddScoped<IPessoaService, PessoaService>();
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("ApiScope", policy =>

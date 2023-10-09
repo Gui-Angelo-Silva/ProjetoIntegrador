@@ -23,7 +23,7 @@ namespace SGED.DTO.Entities
         [Required(ErrorMessage = "Preencha o campo número!")]
         [MinLength(20)]
         [MaxLength(20)]
-        public string? NumeroTelefone { get; set; }
+        public string? Telefone { get; set; }
 
         [Required(ErrorMessage = "Preencha o campo CPF!")]
         [MinLength(15)]

@@ -39,7 +39,7 @@ public class AppDBContext : DbContext
         modelBuilder.Entity<Pessoa>().Property(b => b.Nome).HasMaxLength(70).IsRequired();
         modelBuilder.Entity<Pessoa>().Property(b => b.Email).HasMaxLength(50).IsRequired();
         modelBuilder.Entity<Pessoa>().Property(b => b.Senha).HasMaxLength(300).IsRequired();
-        modelBuilder.Entity<Pessoa>().Property(b => b.NumeroTelefone).HasMaxLength(15).IsRequired();
+        modelBuilder.Entity<Pessoa>().Property(b => b.Telefone).HasMaxLength(15).IsRequired();
         modelBuilder.Entity<Pessoa>().Property(b => b.CpfCNPJ).HasMaxLength(20).IsRequired();
         modelBuilder.Entity<Pessoa>().Property(b => b.RgIE).HasMaxLength(20).IsRequired();
 

@@ -10,6 +10,13 @@ namespace SGED.DTO.Mappings
         {
             CreateMap<EstadoDTO, Estado>();
             CreateMap<Estado, EstadoDTO>().ReverseMap();
+
+            /* Estudo de Mapping
+            CreateMap<Estado, EstadoDTO>()
+            .ForMember(dest => dest.CidadeDTO, opt => opt.MapFrom(src => src.Cidades));
+            CreateMap<EstadoDTO, Estado>()
+                .ForMember(dest => dest.Cidades, opt => opt.MapFrom(src => src.CidadeDTO));
+            */
         }
     }
 }

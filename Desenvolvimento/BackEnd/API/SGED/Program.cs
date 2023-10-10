@@ -10,16 +10,16 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Adicione serviços ao container
 
 builder.Services.AddControllers().AddJsonOptions(
         c => c.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
     );
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Configuração do Swagger/OpenAPI: https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-// configurando Swagger para receber o Token
+// Configuração do Swagger para receber o Token
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "SGED", Version = "v1" });
@@ -56,20 +56,19 @@ builder.Services.AddSwaggerGen(c =>
 );
 
 
-// pegando a string de conexão
+// String de conexão com o banco de dados
 var sqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// usar para que o Entity Framework
-// crie nossas tabelas no banco de dados
+// Entity Framework: Criação das tabelas no banco de dados
 builder.Services.AddDbContext<AppDBContext>(options =>
     options.UseNpgsql(sqlConnection)
 );
 
-// garantir que todos os assemblies do domain sejam injetados
+// Garante que todos os assemblies do domain sejam injetados
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
-// criando a injeção de dependencia
+// Injeção de dependências
 
 // Depedência: Estado
 builder.Services.AddScoped<IEstadoRepository, EstadoRepository>();
@@ -83,6 +82,10 @@ builder.Services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
 builder.Services.AddScoped<ICidadeRepository, CidadeRepository>();
 builder.Services.AddScoped<ICidadeService, CidadeService>();
 
+// Depedência: Pessoa
+builder.Services.AddScoped<IPessoaRepository, PessoaRepository>();
+builder.Services.AddScoped<IPessoaService, PessoaService>();
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("ApiScope", policy =>
@@ -95,7 +98,7 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configurando o pipeline de solicitação HTTP
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

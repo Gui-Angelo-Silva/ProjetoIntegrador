@@ -11,7 +11,7 @@ namespace SGED.DTO.Mappings
             CreateMap<CidadeDTO, Cidade>();
 
             CreateMap<Cidade, CidadeDTO>().ForMember(
-                p => p.EstadoId,
+                p => p.EstadoDTO,
                 options => options.MapFrom(
                         src => src.Estado.Id
                     )

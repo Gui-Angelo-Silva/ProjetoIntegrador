@@ -44,6 +44,4 @@ public class AppDBContext : DbContext
         modelBuilder.Entity<Pessoa>().Property(b => b.RgIE).HasMaxLength(20).IsRequired();
 
     }
-
-
 }

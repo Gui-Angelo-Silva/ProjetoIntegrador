@@ -21,17 +21,17 @@ namespace SGED.DTO.Entities
         public string? Senha { get; set; }
 
         [Required(ErrorMessage = "O telefone é requerido!")]
-        [MinLength(20)]
-        [MaxLength(20)]
+        [MinLength(15)]
+        [MaxLength(19)]
         public string? Telefone { get; set; }
 
         [Required(ErrorMessage = "O CPF ou CNPJ é requerido!")]
-        [MinLength(15)]
-        [MaxLength(15)]
+        [MinLength(14)]
+        [MaxLength(18)]
         public string? CpfCNPJ { get; set; }
 
         [Required(ErrorMessage = "O RG ou IE é requerido!")]
-        [MinLength(15)]
+        [MinLength(12)]
         [MaxLength(15)]
         public string? RgIE { get; set; }
     }

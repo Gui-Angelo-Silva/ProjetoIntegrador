@@ -17,7 +17,5 @@ namespace SGED.DTO.Entities
         [JsonIgnore]
         public EstadoDTO? EstadoDTO { get; set; }
 
-        public int EstadoId { get; set; }
-
     }
 }

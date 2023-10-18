@@ -46,5 +46,4 @@ public class EstadoRepository : IEstadoRepository
         await _dbContext.SaveChangesAsync();
         return estado;
     }
-
 }

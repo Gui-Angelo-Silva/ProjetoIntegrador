@@ -60,8 +60,17 @@ builder.Services.AddSwaggerGen(c =>
 var sqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 
 // Entity Framework: Criação das tabelas no banco de dados
+
+// PostgreSQL
+/*
 builder.Services.AddDbContext<AppDBContext>(options =>
     options.UseNpgsql(sqlConnection)
+);
+*/
+
+// MySQL
+builder.Services.AddDbContext<AppDBContext>(options =>
+    options.UseMySQL(sqlConnection)
 );
 
 // Garante que todos os assemblies do domain sejam injetados

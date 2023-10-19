@@ -13,7 +13,7 @@ import background from '../../assets/imgTelaDeLogin.png';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Home from '../Home';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
@@ -90,14 +90,16 @@ export default function SignInSide() {
                 control={<Checkbox value="remember" color="primary" />}
                 label="Lembre de mim"
               />
-              <Button href='/'
-                type="submit"
-                fullWidth
-                variant= 'contained'
-                sx={{ mt: 5, mb: 10, backgroundColor: '#2D636B', padding: 1.5, ":hover": '#2D636B' }}
-              >
-                Entrar
-              </Button>
+              <NavLink to='/'>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant='contained'
+                  sx={{ mt: 5, mb: 10, backgroundColor: '#2D636B', padding: 1.5, ":hover": '#2D636B' }}
+                >
+                  Entrar
+                </Button>
+              </NavLink>
             </Box>
           </Box>
         </Grid>

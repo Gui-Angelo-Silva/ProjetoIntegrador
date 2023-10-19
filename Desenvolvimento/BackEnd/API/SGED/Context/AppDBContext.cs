@@ -30,6 +30,7 @@ public class AppDBContext : DbContext
         // Builder: Cidade
         modelBuilder.Entity<Cidade>().HasKey(b => b.Id);
         modelBuilder.Entity<Cidade>().Property(b => b.NomeCidade).HasMaxLength(100).IsRequired();
+        modelBuilder.Entity<Cidade>().Property(b => b.IdEstado);
 
         // Relacionamento: Estado -> Cidade
         modelBuilder.Entity<Estado>().HasMany(p => p.Cidades).WithOne(b => b.Estado).IsRequired().OnDelete(DeleteBehavior.Cascade);

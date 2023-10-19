@@ -180,10 +180,15 @@ export default function TypeUser() {
                         <input type="text" className="form-control" name="typeUserName" onChange={(e) => setTypeUserName(e.target.value)}
                             value={typeUserName} />
                         <br />
-                        <label>Uf:</label>
+                        <label>Descrição:</label>
                         <br />
-                        <input type="text" className="form-control" name="typeUserDescription" onChange={(e) => setTypeUserAcessLevel(e.target.value)}
+                        <input type="text" className="form-control" name="typeUserDescription" onChange={(e) => setTypeUserDescription(e.target.value)}
                             value={typeUserDescription} />
+                        <br />
+                        <label>Nivel de acesso:</label>
+                        <br />
+                        <input type="text" className="form-control" name="typeUserAcessLevel" onChange={(e) => setTypeUserAcessLevel(e.target.value)}
+                            value={typeUserAcessLevel} />
                         <br />
                     </div>
                 </ModalBody>

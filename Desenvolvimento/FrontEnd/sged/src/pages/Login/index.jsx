@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -8,12 +7,11 @@ import Checkbox from '@mui/material/Checkbox';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import background from '../../assets/imgTelaDeLogin.png';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Home from '../Home';
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import { red } from '@mui/material/colors';
 
 const defaultTheme = createTheme();
 
@@ -95,7 +93,9 @@ export default function SignInSide() {
                   type="submit"
                   fullWidth
                   variant='contained'
-                  sx={{ mt: 5, mb: 10, backgroundColor: '#2D636B', padding: 1.5, ":hover": '#2D636B' }}
+                  sx={{ mt: 5, mb: 10, backgroundColor: '#2D636B', padding: 1.5, ":hover": {
+                    backgroundColor: red,
+                  } }}
                 >
                   Entrar
                 </Button>

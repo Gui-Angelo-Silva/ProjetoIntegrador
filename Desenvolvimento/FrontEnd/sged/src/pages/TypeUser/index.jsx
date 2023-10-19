@@ -72,7 +72,7 @@ export default function TypeUser() {
 
     const PostOrder = async () => {
         delete selectTypeUser.id
-        await axios.post(baseUrl, { NomeTipoUsuario : typeUserName, DescricaoTipoUsuario : typeUserDescription, NivelAcesso : typeUserAcessLevel,  })
+        await axios.post(baseUrl, { NomeTipoUsuario : typeUserName, DescricaoTipoUsuario : typeUserDescription, NivelAcesso : typeUserAcessLevel  })
             .then(response => {
                 setData(data.concat(response.data));
                 openCloseModalInsert();
@@ -82,15 +82,16 @@ export default function TypeUser() {
     }
 
     async function PutOrder(){
-        delete selectState.id
-        await axios.put(baseUrl, { id: stateId, nomeEstado: stateName, ufEstado: stateUf })
+        delete selectTypeUser.id
+        await axios.put(baseUrl, { typeUserName, DescricaoTipoUsuario : typeUserDescription, NivelAcesso : typeUserAcessLevel })
             .then(response => {
                 var answer = response.data
                 var aux = data
-                aux.map(state => {
-                    if (state.id === selectState.id) {
-                        state.nomeEstado = answer.nomeEstado
-                        state.ufEstado = answer.ufEstado
+                aux.map(typeUser => {
+                    if (typeUser.id === selectTypeUser.id) {
+                        typeUserName.NomeTipoUsuario = answer.NomeTipoUsuario
+                        typeUserDescription.DescricaoTipoUsuario = answer.DescricaoTipoUsuario
+                        typeUserAcessLevel.NivelAcesso = answer.NivelAcesso
                     }
                 })
                 openCloseModalEdit();
@@ -119,27 +120,27 @@ export default function TypeUser() {
     return (
         <div className="state-container">
             <br />
-            <h3>Lista de Estado</h3>
+            <h3>Lista de Usuários do Sistema</h3>
             <header>
-                <button className="btn btn-success" onClick={() => openCloseModalInsert()}>Adicionar</button>
+                <button className="btn btn-success" onClick={() => openCloseModalInsert()}>Adicionar novo usuário</button>
             </header>
             <table className="table table-bordered">
                 <thead>
                     <tr>
                         <th>Id</th>
                         <th>Nome</th>
-                        <th>Uf</th>
+                        <th>Nivel de Acesso</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map(state => (
-                        <tr key={state.id}>
-                            <td>{state.id}</td>
-                            <td>{state.nomeEstado}</td>
-                            <td>{state.ufEstado}</td>
+                    {data.map(TypeUser => (
+                        <tr key={TypeUser.id}>
+                            <td>{TypeUser.id}</td>
+                            <td>{TypeUser.nomeEstado}</td>
+                            <td>{TypeUser.ufEstado}</td>
                             <td>
-                                <button className="btn btn-primary" onClick={() => StateSelect(state, "Editar")}>Editar</button>{"  "}
-                                <button className="btn btn-danger" onClick={() => StateSelect(state, "Excluir")}>Remover</button>
+                                <button className="btn btn-primary" onClick={() => SelectTypeUser(TypeUser, "Editar")}>Editar</button>{"  "}
+                                <button className="btn btn-danger" onClick={() => SelectTypeUser(TypeUser, "Excluir")}>Remover</button>
                             </td>
                         </tr>
                     ))}
@@ -151,11 +152,15 @@ export default function TypeUser() {
                     <div className="form-group">
                         <label>Nome: </label>
                         <br />
-                        <input type="text" className="form-control" onChange={(e) => setStateName(e.target.value)} />
+                        <input type="text" className="form-control" onChange={(e) => setTypeUserName(e.target.value)} />
                         <br />
-                        <label>Uf:</label>
+                        <label>Descrição: </label>
                         <br />
-                        <input type="text" className="form-control" onChange={(e) => setStateUf(e.target.value)} />
+                        <input type="text" className="form-control" onChange={(e) => setTypeUserDescription(e.target.value)} />
+                        <br />
+                        <label>Nivel de acesso:</label>
+                        <br />
+                        <input type="text" className="form-control" onChange={(e) => setTypeUserAcessLevel(e.target.value)} />
                         <br />
                     </div>
                 </ModalBody>
@@ -165,20 +170,20 @@ export default function TypeUser() {
                 </ModalFooter>
             </Modal>
             <Modal isOpen={modalEdit}>
-                <ModalHeader>Editar Estado</ModalHeader>
+                <ModalHeader>Editar Usuário</ModalHeader>
                 <ModalBody>
                     <div className="form-group">
-                        <label>ID: </label><br />
-                        <input type="text" className="form-control" readOnly value={stateId} /> <br />
+                        <label>Id: </label><br />
+                        <input type="text" className="form-control" readOnly value={typeUserId} /> <br />
 
                         <label>Nome:</label>
-                        <input type="text" className="form-control" name="nomeEstado" onChange={(e) => setStateName(e.target.value)}
-                            value={stateName} />
+                        <input type="text" className="form-control" name="typeUserName" onChange={(e) => setTypeUserName(e.target.value)}
+                            value={typeUserName} />
                         <br />
                         <label>Uf:</label>
                         <br />
-                        <input type="text" className="form-control" name="ufEstado" onChange={(e) => setStateUf(e.target.value)}
-                            value={stateUf} />
+                        <input type="text" className="form-control" name="typeUserDescription" onChange={(e) => setTypeUserAcessLevel(e.target.value)}
+                            value={typeUserDescription} />
                         <br />
                     </div>
                 </ModalBody>
@@ -189,7 +194,7 @@ export default function TypeUser() {
             </Modal>
             <Modal isOpen={modalDelete}>
                 <ModalBody>
-                    Confirma a exclusão deste estado : {selectState && selectState.nome} ?
+                    Confirma a exclusão deste usuário : {SelectTypeUser && selectTypeUser.NomeTipoUsuario} ?
                 </ModalBody>
                 <ModalFooter>
                     <button className='btn btn-primary' onClick={() => DeleteOrder()}>Sim</button>

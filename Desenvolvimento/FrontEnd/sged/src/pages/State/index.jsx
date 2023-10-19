@@ -55,14 +55,6 @@ export default function State() {
         setModalDelete(!modalDelete);
     }
 
-    const handleChange = e => {
-        const { name, value } = e.target;
-        setSelectState({
-            ...selectState, [name]: value
-        });
-        console.log(selectState);
-    }
-
     const GetOrder = async () => {
         await axios.get(baseUrl)
             .then(response => {
@@ -71,8 +63,6 @@ export default function State() {
                 console.log(error);
             })
     }
-
-
 
     const PostOrder = async () => {
         delete selectState.id

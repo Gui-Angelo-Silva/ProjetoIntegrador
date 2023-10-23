@@ -60,9 +60,20 @@ builder.Services.AddSwaggerGen(c =>
 var sqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 
 // Entity Framework: Criação das tabelas no banco de dados
+
+// PostgreSQL
+
 builder.Services.AddDbContext<AppDBContext>(options =>
 	options.UseNpgsql(sqlConnection)
 );
+
+
+// MySQL
+/*
+builder.Services.AddDbContext<AppDBContext>(options =>
+    options.UseMySQL(sqlConnection)
+);
+*/
 
 // Garante que todos os assemblies do domain sejam injetados
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -83,8 +94,8 @@ builder.Services.AddScoped<ICidadeRepository, CidadeRepository>();
 builder.Services.AddScoped<ICidadeService, CidadeService>();
 
 // Depedência: Pessoa
-builder.Services.AddScoped<IPessoaRepository, PessoaRepository>();
-builder.Services.AddScoped<IPessoaService, PessoaService>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 builder.Services.AddCors(o => o.AddPolicy("MyPolicy",
 					builder =>

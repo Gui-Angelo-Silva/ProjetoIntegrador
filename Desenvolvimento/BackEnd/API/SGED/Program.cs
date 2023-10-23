@@ -13,8 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Adicione serviços ao container
 
 builder.Services.AddControllers().AddJsonOptions(
-        c => c.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
-    );
+		c => c.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
+	);
 
 // Configuração do Swagger/OpenAPI: https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -22,36 +22,36 @@ builder.Services.AddEndpointsApiExplorer();
 // Configuração do Swagger para receber o Token
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "SGED", Version = "v1" });
+	c.SwaggerDoc("v1", new OpenApiInfo { Title = "SGED", Version = "v1" });
 
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = @"Enter 'Bearer' [space] your token",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    }
-    );
+	c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+	{
+		Description = @"Enter 'Bearer' [space] your token",
+		Name = "Authorization",
+		In = ParameterLocation.Header,
+		Type = SecuritySchemeType.ApiKey,
+		Scheme = "Bearer"
+	}
+	);
 
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        },
-                        Scheme = "oauth2",
-                        Name = "Bearer",
-                        In = ParameterLocation.Header
-                    },
-                    new List<string> ()
-                }
-            }
-    );
+	c.AddSecurityRequirement(new OpenApiSecurityRequirement
+			{
+				{
+					new OpenApiSecurityScheme
+					{
+						Reference = new OpenApiReference
+						{
+							Type = ReferenceType.SecurityScheme,
+							Id = "Bearer"
+						},
+						Scheme = "oauth2",
+						Name = "Bearer",
+						In = ParameterLocation.Header
+					},
+					new List<string> ()
+				}
+			}
+	);
 }
 );
 
@@ -64,7 +64,7 @@ var sqlConnection = builder.Configuration.GetConnectionString("DefaultConnection
 // PostgreSQL
 
 builder.Services.AddDbContext<AppDBContext>(options =>
-    options.UseNpgsql(sqlConnection)
+	options.UseNpgsql(sqlConnection)
 );
 
 
@@ -97,28 +97,41 @@ builder.Services.AddScoped<ICidadeService, CidadeService>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
+builder.Services.AddCors(o => o.AddPolicy("MyPolicy",
+					builder =>
+					{
+						builder.WithOrigins("http://localhost:3000", "http://localhost:5173")
+						.AllowAnyMethod()
+						.AllowAnyHeader()
+						.AllowCredentials();
+					}));
+
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("ApiScope", policy =>
-    {
-        policy.RequireClaim("scope", "sged");
-    });
-}
-    );
-
+	options.AddPolicy("ApiScope", policy =>
+	{
+		policy.RequireClaim("scope", "sged");
+	});
+	}
+);
 
 var app = builder.Build();
 
 // Configurando o pipeline de solicitação HTTP
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
 
 app.UseAuthentication();
+
 app.UseAuthorization();
 
+app.UseCors("MyPolicy");
+
 app.MapControllers();
+
+app.UseRouting();
 
 app.Run();

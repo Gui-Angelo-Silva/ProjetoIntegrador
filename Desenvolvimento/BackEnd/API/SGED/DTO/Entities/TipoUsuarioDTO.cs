@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace SGED.DTO.Entities
 {
@@ -26,5 +27,9 @@ namespace SGED.DTO.Entities
 		[MaxLength(300)]
         [Column("descricaoTipoUsuario")]
         public string DescricaoTipoUsuario { get; set; }
-	}
+
+        [JsonIgnore]
+        [Column("tipoUsuarios")]
+        public ICollection<UsuarioDTO>? UsuarioDTO { get; set; }
+    }
 }

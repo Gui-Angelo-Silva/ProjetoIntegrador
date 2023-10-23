@@ -18,10 +18,9 @@ namespace SGED.DTO.Entities
         [Column("nomeCidade")]
         public string NomeCidade { get; set; }
 
-        /*
+
         [JsonIgnore]
         public EstadoDTO? EstadoDTO { get; set; }
-        */
         
         [Required(ErrorMessage = "O Estado é requerido!")]
         [ForeignKey("idEstado")]

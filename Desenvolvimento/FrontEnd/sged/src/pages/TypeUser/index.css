@@ -1,0 +1,38 @@
+.typeUser-container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 5 10px;
+    margin: 30px auto;
+  }
+  
+  .typeUser-container header {
+    display: flex;
+    align-items: center;
+  }
+  
+  .typeUser-container header img {
+    height: 50px;
+  }
+  
+  .typeUser-container header button {
+    height: 50px;
+    width: 200px;
+    border-radius: 5px;
+    border: 1px solid #DCDCE6;
+    background: green;
+    margin-left: 16px;
+    transition: border-color 0.5s;
+  }
+  
+  .typeUser-container header button:hover {
+    border-color: #510bac;
+  }
+  
+  table, th, td {
+    border: 1px solid black;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 20px;
+    text-align: left;
+  }

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react"
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap'
 import axios from "axios"
-import '../State/index.css'
+import '../TypeUser/index.css'
 import "bootstrap/dist/css/bootstrap.min.css"
 
 export default function TypeUser() {
+    
 
-    const baseUrl = "https://localhost:7096/api/Estado"
+    const baseUrl = "https://localhost:7096/api/TipoUsuario"
 
     const [data, setData] = useState([])
 
@@ -22,22 +23,22 @@ export default function TypeUser() {
 
     const [typeUserAcessLevel, setTypeUserAcessLevel] = useState("");
 
-    const [typeUserDescription, setTypeUserDescription] = useState("");
-
+    const [typeUserDesc, setTypeUserDesc] = useState("");
+    
     const [typeUserId, setTypeUserId] = useState("");
 
     const [selectTypeUser, setSelectTypeUser] = useState({
         id: "",
-        NivelAcesso: "",
-        NomeTipoUsuario: "",
-        DescricaoTipoUsuario: ""
+        nomeTipoUsuario: "",
+        nivelAcesso: "",
+        descricaoTipoUsuario: ""
     })
 
-    const SelectTypeUser = (typeUser, option) => {
-        setTypeUserId(typeUser.id)
-        setTypeUserName(typeUser.NomeTipoUsuario)
-        setTypeUserDescription(typeUser.DescricaoTipoUsuario)
-        setTypeUserAcessLevel(typeUser.NivelAcesso)
+    const SelectTypeUser = (typeuser, option) => {
+        setTypeUserId(typeuser.id)
+        setTypeUserName(typeuser.nomeTipoUsuario)
+        setTypeUserAcessLevel(typeuser.nivelAcesso)
+        setTypeUserDesc(typeuser.descricaoTipoUsuario)
 
         if (option === "Editar") {
             openCloseModalEdit();
@@ -70,9 +71,10 @@ export default function TypeUser() {
 
 
 
+
     const PostOrder = async () => {
         delete selectTypeUser.id
-        await axios.post(baseUrl, { NomeTipoUsuario : typeUserName, DescricaoTipoUsuario : typeUserDescription, NivelAcesso : typeUserAcessLevel  })
+        await axios.post(baseUrl, { nomeTipoUsuario: typeUserName, nivelAcesso: typeUserAcessLevel, descricaoTipoUsuario: typeUserDesc })
             .then(response => {
                 setData(data.concat(response.data));
                 openCloseModalInsert();
@@ -83,15 +85,15 @@ export default function TypeUser() {
 
     async function PutOrder(){
         delete selectTypeUser.id
-        await axios.put(baseUrl, { typeUserName, DescricaoTipoUsuario : typeUserDescription, NivelAcesso : typeUserAcessLevel })
+        await axios.put(baseUrl, { id: typeUserId, nomeTipoUsuario: typeUserName,nivelAcesso: typeUserAcessLevel, descricaoTipoUsuario: typeUserDesc })
             .then(response => {
                 var answer = response.data
                 var aux = data
-                aux.map(typeUser => {
-                    if (typeUser.id === selectTypeUser.id) {
-                        typeUserName.NomeTipoUsuario = answer.NomeTipoUsuario
-                        typeUserDescription.DescricaoTipoUsuario = answer.DescricaoTipoUsuario
-                        typeUserAcessLevel.NivelAcesso = answer.NivelAcesso
+                aux.map(typeuser => {
+                    if (typeuser.id === selectTypeUser.id) {
+                        typeuser.nomeTipoUsuario = answer.nomeTipoUsuario
+                        typeuser.nivelAcesso = answer.nivelAcesso
+                        typeuser.descricaoTipoUsuario = answer.descricaoTipoUsuario
                     }
                 })
                 openCloseModalEdit();
@@ -101,9 +103,9 @@ export default function TypeUser() {
     }
 
     const DeleteOrder = async () => {
-        await axios.delete(baseUrl + "/" + selectState.id)
+        await axios.delete(baseUrl + "/" + selectTypeUser.id) 
             .then(response => {
-                setData(data.filter(state => state.id !== response.data));
+                setData(data.filter(typeuser => typeuser.id !== selectTypeUser.id)); 
                 openCloseModalDelete();
             }).catch(error => {
                 console.log(error);
@@ -118,49 +120,51 @@ export default function TypeUser() {
     }, [updateData])
 
     return (
-        <div className="state-container">
+        <div className="typeUser-container">
             <br />
-            <h3>Lista de Usuários do Sistema</h3>
+            <h3>Lista de Usuários</h3>
             <header>
-                <button className="btn btn-success" onClick={() => openCloseModalInsert()}>Adicionar novo usuário</button>
+                <button className="btn btn-success" onClick={() => openCloseModalInsert()}>Adicionar</button>
             </header>
             <table className="table table-bordered">
                 <thead>
                     <tr>
                         <th>Id</th>
                         <th>Nome</th>
-                        <th>Nivel de Acesso</th>
+                        <th>Nivel de acesso</th>
+                        <th>Descrição</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map(TypeUser => (
-                        <tr key={TypeUser.id}>
-                            <td>{TypeUser.id}</td>
-                            <td>{TypeUser.nomeEstado}</td>
-                            <td>{TypeUser.ufEstado}</td>
+                    {data.map(typeuser => (
+                        <tr key={typeuser.id}>
+                            <td>{typeuser.id}</td>
+                            <td>{typeuser.nomeTipoUsuario}</td>
+                            <td>{typeuser.nivelAcesso}</td>
+                            <td>{typeuser.descricaoTipoUsuario}</td>
                             <td>
-                                <button className="btn btn-primary" onClick={() => SelectTypeUser(TypeUser, "Editar")}>Editar</button>{"  "}
-                                <button className="btn btn-danger" onClick={() => SelectTypeUser(TypeUser, "Excluir")}>Remover</button>
+                                <button className="btn btn-primary" onClick={() => SelectTypeUser(typeuser, "Editar")}>Editar</button>{"  "}
+                                <button className="btn btn-danger" onClick={() => SelectTypeUser(typeuser, "Excluir")}>Remover</button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
             <Modal isOpen={modalInsert}>
-                <ModalHeader>Cadastrar Estado</ModalHeader>
+                <ModalHeader>Cadastrar Usuário</ModalHeader>
                 <ModalBody>
                     <div className="form-group">
                         <label>Nome: </label>
                         <br />
                         <input type="text" className="form-control" onChange={(e) => setTypeUserName(e.target.value)} />
                         <br />
-                        <label>Descrição: </label>
-                        <br />
-                        <input type="text" className="form-control" onChange={(e) => setTypeUserDescription(e.target.value)} />
-                        <br />
                         <label>Nivel de acesso:</label>
                         <br />
                         <input type="text" className="form-control" onChange={(e) => setTypeUserAcessLevel(e.target.value)} />
+                        <br />
+                        <label>Descrição:</label>
+                        <br />
+                        <input type="text" className="form-control" onChange={(e) => setTypeUserDesc(e.target.value)} />
                         <br />
                     </div>
                 </ModalBody>
@@ -173,22 +177,22 @@ export default function TypeUser() {
                 <ModalHeader>Editar Usuário</ModalHeader>
                 <ModalBody>
                     <div className="form-group">
-                        <label>Id: </label><br />
+                        <label>ID: </label><br />
                         <input type="text" className="form-control" readOnly value={typeUserId} /> <br />
 
                         <label>Nome:</label>
-                        <input type="text" className="form-control" name="typeUserName" onChange={(e) => setTypeUserName(e.target.value)}
+                        <input type="text" className="form-control" name="nomeTipoUsuario" onChange={(e) => setTypeUserName(e.target.value)}
                             value={typeUserName} />
-                        <br />
-                        <label>Descrição:</label>
-                        <br />
-                        <input type="text" className="form-control" name="typeUserDescription" onChange={(e) => setTypeUserDescription(e.target.value)}
-                            value={typeUserDescription} />
                         <br />
                         <label>Nivel de acesso:</label>
                         <br />
-                        <input type="text" className="form-control" name="typeUserAcessLevel" onChange={(e) => setTypeUserAcessLevel(e.target.value)}
+                        <input type="text" className="form-control" name="nivelAcesso" onChange={(e) => setTypeUserAcessLevel(e.target.value)}
                             value={typeUserAcessLevel} />
+                        <br />
+                        <label>Descrição:</label>
+                        <br />
+                        <input type="text" className="form-control" name="descricaoTipoUsuario" onChange={(e) => setTypeUserDesc(e.target.value)}
+                            value={typeUserDesc} />
                         <br />
                     </div>
                 </ModalBody>
@@ -199,7 +203,7 @@ export default function TypeUser() {
             </Modal>
             <Modal isOpen={modalDelete}>
                 <ModalBody>
-                    Confirma a exclusão deste usuário : {SelectTypeUser && selectTypeUser.NomeTipoUsuario} ?
+                    Confirma a exclusão deste usuário {selectTypeUser && selectTypeUser.nomeTipoUsuario} ?
                 </ModalBody>
                 <ModalFooter>
                     <button className='btn btn-primary' onClick={() => DeleteOrder()}>Sim</button>

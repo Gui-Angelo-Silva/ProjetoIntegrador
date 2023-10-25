@@ -5,26 +5,26 @@ using System.Text.Json.Serialization;
 
 namespace SGED.DTO.Entities
 {
-    [Table("Estado")]
+    [Table("estado")]
     public class EstadoDTO
     {
-        [Column("idEstado")]
+        [Column("idestado")]
         public int Id { get; set; }
         
         [Required(ErrorMessage = "O nome do Estado é requerido!")]
         [MinLength(3)]
         [MaxLength(50)]
-        [Column("nomeEstado")]
+        [Column("nomeestado")]
         public string NomeEstado { get; set; }
 
         [Required(ErrorMessage = "A sigla do Estado é requerida!")]
         [MinLength(2)]
         [MaxLength(2)]
-        [Column("ufEstado")]
+        [Column("ufestado")]
         public string UfEstado { get; set; }
 
         [JsonIgnore]
-        [Column("estadoCidades")]
+        [Column("cidades")]
         public ICollection<CidadeDTO>? CidadeDTO { get; set; }
 
     }

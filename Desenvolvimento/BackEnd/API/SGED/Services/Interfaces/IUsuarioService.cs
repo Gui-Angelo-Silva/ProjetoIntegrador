@@ -6,8 +6,8 @@ namespace SGED.Services.Interfaces
     {
         Task<IEnumerable<UsuarioDTO>> GetAll();
         Task<UsuarioDTO> GetById(int id);
-        Task Create(UsuarioDTO pessoaDTO);
-        Task Update(UsuarioDTO pessoaDTO);
+        Task Create(UsuarioDTO usuarioDTO);
+        Task Update(UsuarioDTO usuarioDTO);
         Task Remove(int id);
     }
 }

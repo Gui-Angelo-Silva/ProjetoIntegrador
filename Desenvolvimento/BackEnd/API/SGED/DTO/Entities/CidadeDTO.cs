@@ -6,16 +6,16 @@ using System.Text.Json.Serialization;
 
 namespace SGED.DTO.Entities
 {
-    [Table("Cidade")]
+    [Table("cidade")]
     public class CidadeDTO
     {
-        [Column("idCidade")]
+        [Column("idcidade")]
         public int Id { get; set; }
         
         [Required(ErrorMessage = "O nome da cidade é requerida!")]
         [MinLength(3)]
         [MaxLength(100)]
-        [Column("nomeCidade")]
+        [Column("nomecidade")]
         public string NomeCidade { get; set; }
 
 
@@ -23,7 +23,7 @@ namespace SGED.DTO.Entities
         public EstadoDTO? EstadoDTO { get; set; }
         
         [Required(ErrorMessage = "O Estado é requerido!")]
-        [ForeignKey("idEstado")]
+        [ForeignKey("idestado")]
         public int IdEstado { get; set; }
 
     }

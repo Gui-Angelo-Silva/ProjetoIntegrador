@@ -11,9 +11,9 @@ namespace SGED.DTO.Mappings
             CreateMap<UsuarioDTO, Usuario>();
 
             CreateMap<Usuario, UsuarioDTO>().ForMember(
-                p => p.IdTipoPessoa,
+                p => p.IdTipoUsuario,
                 options => options.MapFrom(
-                        src => src.TipoPessoa.Id
+                        src => src.TipoUsuario.Id
                     )
                 );
         }

@@ -4,32 +4,32 @@ using System.Text.Json.Serialization;
 
 namespace SGED.DTO.Entities
 {
-	[Table("TipoUsuario")]
+	[Table("tipousuario")]
 	public class TipoUsuarioDTO
 	{
-        [Column("idTipoUsuario")]
+        [Column("idtipousuario")]
         public int Id { get; set; }
 
 		[Required(ErrorMessage = "O nível de acesso é requerido!")]
 		[MinLength(1)]
 		[MaxLength(1)]
-        [Column("nivelAcesso")]
+        [Column("nivelacesso")]
         public string NivelAcesso { get; set; }
 
 		[Required(ErrorMessage = "O nome do tipo de usuário é requerido!")]
 		[MinLength(3)]
 		[MaxLength(20)]
-        [Column("nomeTipoUsuario")]
+        [Column("nometipousuario")]
         public string NomeTipoUsuario { get; set; }
 
 		[Required(ErrorMessage = "A descrição é requerida!")]
 		[MinLength (5)]
 		[MaxLength(300)]
-        [Column("descricaoTipoUsuario")]
+        [Column("descricaotipousuario")]
         public string DescricaoTipoUsuario { get; set; }
 
         [JsonIgnore]
-        [Column("tipoUsuarios")]
+        [Column("usuario")]
         public ICollection<UsuarioDTO>? UsuarioDTO { get; set; }
     }
 }

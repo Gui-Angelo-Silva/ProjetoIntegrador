@@ -4,43 +4,44 @@ using System.Text.Json.Serialization;
 
 namespace SGED.DTO.Entities
 {
-    [Table("Usuario")]
+    [Table("usuario")]
     public class UsuarioDTO
     {
-        [Column("idUsuario")]
+        [Column("idusuario")]
         public int IdUsuario { get; set; }
 
         [Required(ErrorMessage = "O nome é requerido!")]
         [MinLength(10)]
         [MaxLength(70)]
-        [Column("nomeUsuario")]
+        [Column("nomeusuario")]
         public string NomeUsuario { get; set; }
         
         [Required(ErrorMessage = "O e-mail é requerido!")]
         [EmailAddress]
-        [Column("emailUsuario")]
+        [Column("emailusuario")]
         public string EmailUsuario { get; set; }
 
         [Required(ErrorMessage = "A nome é requerida!")]
         [MinLength(6)]
         [MaxLength(50)]
-        [Column("senhaUsuario")]
+        [Column("senhausuario")]
         public string SenhaUsuario { get; set; }
 
         [Required(ErrorMessage = "O cargo é requerido!")]
         [MinLength(3)]
         [MaxLength(50)]
-        [Column("cargoUsuario")]
+        [Column("cargousuario")]
         public string CargoUsuario { get; set; }
 
-        [Column("statusUsuario")]
+        [Column("statususuario")]
         public Boolean StatusUsuario { get; set; }
 
 
+        [Column("tipousuario")]
         [JsonIgnore]
         public TipoUsuarioDTO? TipoUsuarioDTO { get; set; }
 
-        [ForeignKey("idTipoUsuario")]
+        [ForeignKey("idtipousuario")]
         public int IdTipoUsuario { get; set; }
 
     }

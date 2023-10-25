@@ -8,42 +8,42 @@ namespace SGED.Services.Entities;
 public class UsuarioService : IUsuarioService
 {
 
-    private readonly IUsuarioRepository _pessoaRepository;
+    private readonly IUsuarioRepository _usuarioRepository;
     private readonly IMapper _mapper;
 
-    public UsuarioService(IUsuarioRepository pessoaRepository, IMapper mapper)
+    public UsuarioService(IUsuarioRepository usuarioRepository, IMapper mapper)
     {
-        _pessoaRepository = pessoaRepository;
+        _usuarioRepository = usuarioRepository;
         _mapper = mapper;
     }
 
     public async Task<IEnumerable<UsuarioDTO>> GetAll()
     {
-        var pessoas = await _pessoaRepository.GetAll();
-        return _mapper.Map<IEnumerable<UsuarioDTO>>(pessoas);
+        var usuarios = await _usuarioRepository.GetAll();
+        return _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
     }
 
     public async Task<UsuarioDTO> GetById(int id)
     {
-        var pessoa = await _pessoaRepository.GetById(id);
-        return _mapper.Map<UsuarioDTO>(pessoa);
+        var usuario = await _usuarioRepository.GetById(id);
+        return _mapper.Map<UsuarioDTO>(usuario);
     }
 
-    public async Task Create(UsuarioDTO pessoaDTO)
+    public async Task Create(UsuarioDTO usuarioDTO)
     {
-        var pessoa = _mapper.Map<Usuario>(pessoaDTO);
-        await _pessoaRepository.Create(pessoa);
-        pessoaDTO.Id = pessoa.Id;
+        var usuario = _mapper.Map<Usuario>(usuarioDTO);
+        await _usuarioRepository.Create(usuario);
+        usuarioDTO.Id = usuario.Id;
     }
 
-    public async Task Update(UsuarioDTO pessoaDTO)
+    public async Task Update(UsuarioDTO usuarioDTO)
     {
-        var pessoa = _mapper.Map<Usuario>(pessoaDTO);
-        await _pessoaRepository.Update(pessoa);
+        var usuario = _mapper.Map<Usuario>(usuarioDTO);
+        await _usuarioRepository.Update(usuario);
     }
 
     public async Task Remove(int id)
     {
-        await _pessoaRepository.Delete(id);
+        await _usuarioRepository.Delete(id);
     }
 }

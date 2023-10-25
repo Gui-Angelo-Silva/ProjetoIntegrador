@@ -25,26 +25,26 @@ public class UsuarioRepository : IUsuarioRepository
     }
 
 
-    public async Task<Usuario> Create(Usuario pessoa)
+    public async Task<Usuario> Create(Usuario usuario)
     {
-        _dbContext.Usuario.Add(pessoa);
+        _dbContext.Usuario.Add(usuario);
         await _dbContext.SaveChangesAsync();
-        return pessoa;
+        return usuario;
     }
 
-    public async Task<Usuario> Update(Usuario pessoa)
+    public async Task<Usuario> Update(Usuario usuario)
     {
-        _dbContext.Entry(pessoa).State = EntityState.Modified;
+        _dbContext.Entry(usuario).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
-        return pessoa;
+        return usuario;
     }
 
     public async Task<Usuario> Delete(int id)
     {
-        var pessoa = await GetById(id);
-        _dbContext.Usuario.Remove(pessoa);
+        var usuario = await GetById(id);
+        _dbContext.Usuario.Remove(usuario);
         await _dbContext.SaveChangesAsync();
-        return pessoa;
+        return usuario;
     }
 
 }

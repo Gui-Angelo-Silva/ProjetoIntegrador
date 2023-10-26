@@ -3,6 +3,8 @@ using SGED.Services.Entities;
 using SGED.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
+using Npgsql;
+using SGED.Models.Entities;
 
 namespace SGED.Controllers;
 
@@ -18,7 +20,7 @@ public class EstadoController : Controller
         _estadoService = estadoService;
     }
 
-    [HttpGet]
+    [HttpGet(Name = "GetEstados")]
     public async Task<ActionResult<IEnumerable<EstadoDTO>>> Get()
     {
         var estadosDTO = await _estadoService.GetAll();
@@ -26,7 +28,7 @@ public class EstadoController : Controller
         return Ok(estadosDTO);
     }
 
-    [HttpGet("{id}", Name = "GetEstado")]
+    [HttpGet("{id}", Name = "GetById")]
     public async Task<ActionResult<EstadoDTO>> Get(int id)
     {
         var estadoDTO = await _estadoService.GetById(id);
@@ -34,12 +36,20 @@ public class EstadoController : Controller
         return Ok(estadoDTO);
     }
 
+    [HttpGet("{nomeestado}", Name = "GetByNomeEstado")]
+    public async Task<ActionResult<IEnumerable<EstadoDTO>>> Get(string nome)
+    {
+        var estadosDTO = await _estadoService.GetByNome(nome);
+        if (estadosDTO == null) return NotFound("Estados não encontrados!");
+        return Ok(estadosDTO);
+    }
+
     [HttpPost]
     public async Task<ActionResult> Post([FromBody] EstadoDTO estadoDTO)
     {
         if (estadoDTO is null) return BadRequest("Dado inválido!");
         await _estadoService.Create(estadoDTO);
-        return new CreatedAtRouteResult("GetEstado", new { id = estadoDTO.Id }, estadoDTO);
+        return new CreatedAtRouteResult("GetById", new { id = estadoDTO.Id }, estadoDTO);
     }
 
     [HttpPut()]

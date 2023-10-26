@@ -29,7 +29,13 @@ public class EstadoService : IEstadoService
 		return _mapper.Map<EstadoDTO>(estado);
 	}
 
-	public async Task Create(EstadoDTO estadoDTO)
+    public async Task<IEnumerable<EstadoDTO>> GetByNome(string nomeEstado)
+    {
+        var estados = await _estadoRepository.GetByNome(nomeEstado);
+        return _mapper.Map<IEnumerable<EstadoDTO>>(estados);
+    }
+
+    public async Task Create(EstadoDTO estadoDTO)
 	{
 		var estado = _mapper.Map<Estado>(estadoDTO);
 		await _estadoRepository.Create(estado);

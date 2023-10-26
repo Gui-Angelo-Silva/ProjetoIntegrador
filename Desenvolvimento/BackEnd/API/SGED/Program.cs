@@ -75,6 +75,11 @@ builder.Services.AddDbContext<AppDBContext>(options =>
 );
 */
 
+var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json")
+            .Build();
+
 // Garante que todos os assemblies do domain sejam injetados
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -93,7 +98,7 @@ builder.Services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
 builder.Services.AddScoped<ICidadeRepository, CidadeRepository>();
 builder.Services.AddScoped<ICidadeService, CidadeService>();
 
-// Depedência: Pessoa
+// Depedência: Usuario
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 

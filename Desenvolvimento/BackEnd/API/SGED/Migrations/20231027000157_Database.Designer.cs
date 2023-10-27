@@ -11,7 +11,7 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20231025202322_Database")]
+    [Migration("20231027000157_Database")]
     partial class Database
     {
         /// <inheritdoc />
@@ -33,9 +33,6 @@ namespace SGED.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("EstadoId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("IdEstado")
                         .HasColumnType("integer");
 
@@ -47,7 +44,7 @@ namespace SGED.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EstadoId");
+                    b.HasIndex("IdEstado");
 
                     b.ToTable("cidade");
                 });
@@ -198,12 +195,9 @@ namespace SGED.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("statususuario");
 
-                    b.Property<int>("TipoUsuarioId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("TipoUsuarioId");
+                    b.HasIndex("IdTipoUsuario");
 
                     b.ToTable("usuario");
                 });
@@ -212,7 +206,7 @@ namespace SGED.Migrations
                 {
                     b.HasOne("SGED.Models.Entities.Estado", "Estado")
                         .WithMany("Cidades")
-                        .HasForeignKey("EstadoId")
+                        .HasForeignKey("IdEstado")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -223,7 +217,7 @@ namespace SGED.Migrations
                 {
                     b.HasOne("SGED.Models.Entities.TipoUsuario", "TipoUsuario")
                         .WithMany("Usuarios")
-                        .HasForeignKey("TipoUsuarioId")
+                        .HasForeignKey("IdTipoUsuario")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

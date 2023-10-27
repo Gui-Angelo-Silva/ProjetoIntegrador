@@ -65,15 +65,14 @@ namespace SGED.Migrations
                     idcidade = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     nomecidade = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    EstadoId = table.Column<int>(type: "integer", nullable: false),
                     IdEstado = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_cidade", x => x.idcidade);
                     table.ForeignKey(
-                        name: "FK_cidade_estado_EstadoId",
-                        column: x => x.EstadoId,
+                        name: "FK_cidade_estado_IdEstado",
+                        column: x => x.IdEstado,
                         principalTable: "estado",
                         principalColumn: "idestado",
                         onDelete: ReferentialAction.Cascade);
@@ -90,29 +89,28 @@ namespace SGED.Migrations
                     senhausuario = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     cargousuario = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     statususuario = table.Column<bool>(type: "boolean", nullable: false),
-                    TipoUsuarioId = table.Column<int>(type: "integer", nullable: false),
                     IdTipoUsuario = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_usuario", x => x.idusuario);
                     table.ForeignKey(
-                        name: "FK_usuario_tipousuario_TipoUsuarioId",
-                        column: x => x.TipoUsuarioId,
+                        name: "FK_usuario_tipousuario_IdTipoUsuario",
+                        column: x => x.IdTipoUsuario,
                         principalTable: "tipousuario",
                         principalColumn: "idtipousuario",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_cidade_EstadoId",
+                name: "IX_cidade_IdEstado",
                 table: "cidade",
-                column: "EstadoId");
+                column: "IdEstado");
 
             migrationBuilder.CreateIndex(
-                name: "IX_usuario_TipoUsuarioId",
+                name: "IX_usuario_IdTipoUsuario",
                 table: "usuario",
-                column: "TipoUsuarioId");
+                column: "IdTipoUsuario");
         }
 
         /// <inheritdoc />

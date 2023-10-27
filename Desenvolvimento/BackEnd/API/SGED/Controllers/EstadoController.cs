@@ -21,26 +21,26 @@ public class EstadoController : Controller
     }
 
     [HttpGet(Name = "GetEstados")]
-    public async Task<ActionResult<IEnumerable<EstadoDTO>>> Get()
+    public async Task<ActionResult<IEnumerable<EstadoDTO>>> GetAll()
     {
         var estadosDTO = await _estadoService.GetAll();
         if (estadosDTO == null) return NotFound("Estados não econtrados!");
         return Ok(estadosDTO);
     }
 
-    [HttpGet("{id}", Name = "GetById")]
-    public async Task<ActionResult<EstadoDTO>> Get(int id)
+    [HttpGet("Id/{id}", Name = "GetById")]
+    public async Task<ActionResult<EstadoDTO>> GetId(int id)
     {
         var estadoDTO = await _estadoService.GetById(id);
         if (estadoDTO == null) return NotFound("Estado não encontrado!");
         return Ok(estadoDTO);
     }
 
-    [HttpGet("{nomeestado}", Name = "GetByNomeEstado")]
-    public async Task<ActionResult<IEnumerable<EstadoDTO>>> Get(string nome)
+    [HttpGet("Name/{nome}", Name = "GetByName")]
+    public async Task<ActionResult<IEnumerable<EstadoDTO>>> GetName(string nomeestado)
     {
-        var estadosDTO = await _estadoService.GetByNome(nome);
-        if (estadosDTO == null) return NotFound("Estados não encontrados!");
+        var estadosDTO = await _estadoService.GetByName(nomeestado);
+        if (estadosDTO == null) return NotFound("Estados não econtrados!");
         return Ok(estadosDTO);
     }
 
@@ -48,8 +48,17 @@ public class EstadoController : Controller
     public async Task<ActionResult> Post([FromBody] EstadoDTO estadoDTO)
     {
         if (estadoDTO is null) return BadRequest("Dado inválido!");
-        await _estadoService.Create(estadoDTO);
-        return new CreatedAtRouteResult("GetById", new { id = estadoDTO.Id }, estadoDTO);
+
+        var estadosDTO = await _estadoService.GetByName(estadoDTO.NomeEstado);
+        if (!estadosDTO.Any())
+        {
+            await _estadoService.Create(estadoDTO);
+            return new CreatedAtRouteResult("GetById", new { id = estadoDTO.Id }, estadoDTO);
+        }
+        else
+        {
+            return NotFound("Já existe o Estado " + estadoDTO.NomeEstado + " cadastrado.");
+        }
     }
 
     [HttpPut()]

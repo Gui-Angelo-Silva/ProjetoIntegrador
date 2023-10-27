@@ -20,7 +20,6 @@ namespace SGED.Models.Entities
         [Column("descricaotipousuario")]
         public string DescricaoTipoUsuario { get; set; }
 
-        [Column("usuarios")]
         public ICollection<Usuario>? Usuarios { get; set; }
     }
 }

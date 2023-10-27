@@ -13,7 +13,7 @@ namespace SGED.Models.Entities
 
         [Column("nomeusuario")]
         public string NomeUsuario { get; set; }
-
+     
         [Column("emailusuario")]
         public string EmailUsuario { get; set; }
 
@@ -27,7 +27,6 @@ namespace SGED.Models.Entities
         public Boolean StatusUsuario { get; set; }
 
 
-        [Column("tipousuario")]
         public TipoUsuario? TipoUsuario { get; set; }
 
         [ForeignKey("idtipousuario")]

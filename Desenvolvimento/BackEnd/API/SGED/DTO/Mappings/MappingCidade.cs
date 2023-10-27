@@ -16,6 +16,16 @@ namespace SGED.DTO.Mappings
                         src => src.Estado.Id
                     )
                 );
+
+
+            CreateMap<CidadeEstadoDTO, Cidade>();
+
+            CreateMap<Cidade, CidadeEstadoDTO>().ForMember(
+                p => p.IdEstado,
+                options => options.MapFrom(
+                        src => src.Estado.Id
+                    )
+                );
         }
     }
 }

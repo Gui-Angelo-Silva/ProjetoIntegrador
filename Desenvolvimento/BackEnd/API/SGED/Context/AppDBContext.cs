@@ -31,7 +31,7 @@ public class AppDBContext : DbContext
         // Builder: Cidade
         modelBuilder.Entity<Cidade>().HasKey(b => b.Id);
         modelBuilder.Entity<Cidade>().Property(b => b.NomeCidade).HasMaxLength(100).IsRequired();
-        modelBuilder.Entity<Cidade>().Property(b => b.IdEstado);
+        modelBuilder.Entity<Cidade>().HasOne(b => b.Estado).WithMany().HasForeignKey(b => b.IdEstado);
 
         // Relacionamento: Estado -> Cidade
         modelBuilder.Entity<Estado>().HasMany(p => p.Cidades).WithOne(b => b.Estado).IsRequired().OnDelete(DeleteBehavior.Cascade);
@@ -52,7 +52,7 @@ public class AppDBContext : DbContext
         modelBuilder.Entity<Usuario>().Property(b => b.SenhaUsuario).HasMaxLength(50).IsRequired();
         modelBuilder.Entity<Usuario>().Property(b => b.CargoUsuario).HasMaxLength(50).IsRequired();
         modelBuilder.Entity<Usuario>().Property(b => b.StatusUsuario).IsRequired();
-        modelBuilder.Entity<Usuario>().Property(b => b.IdTipoUsuario).IsRequired();
+        modelBuilder.Entity<Usuario>().HasOne(b => b.TipoUsuario).WithMany().HasForeignKey(b => b.IdTipoUsuario);
 
         // Relacionamento: TipoUsuario -> Usuario
         modelBuilder.Entity<TipoUsuario>().HasMany(p => p.Usuarios).WithOne(b => b.TipoUsuario).IsRequired().OnDelete(DeleteBehavior.Cascade);

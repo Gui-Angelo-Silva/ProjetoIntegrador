@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace SGED.Models.Entities
 {
@@ -15,7 +16,6 @@ namespace SGED.Models.Entities
         public string NomeCidade { get; set; }
 
 
-        [Column("estado")]
         public Estado? Estado { get; set; }
 
         [ForeignKey("idestado")]

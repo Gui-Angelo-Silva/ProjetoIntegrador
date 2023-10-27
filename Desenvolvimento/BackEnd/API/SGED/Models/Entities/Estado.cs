@@ -17,7 +17,6 @@ namespace SGED.Models.Entities
         [Column("ufestado")]
         public string UfEstado { get; set; }
 
-        [Column("cidades")]
         public ICollection<Cidade>? Cidades { get; set; }
 
     }

@@ -27,40 +27,9 @@ public class EstadoRepository : IEstadoRepository
         return await _dbContext.Estado.Where(p => p.Id == id).FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<Estado>> GetByNome(string nomeEstado)
+    public async Task<IEnumerable<Estado>> GetByName(string nomeestado)
     {
-        List<Estado> estados = new List<Estado>();
-
-        string connectionString = _configuration.GetConnectionString("ConnectionStrings");
-
-        using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-        {
-            connection.Open();
-
-            // Construir a consulta SQL com o parâmetro nome
-            string sql = "SELECT * FROM estado WHERE nomeestado ILIKE @nomeEstado";
-
-            using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
-            {
-                command.Parameters.AddWithValue("@nomeEstado", "%" + nomeEstado + "%");
-
-                using (NpgsqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        Estado estado = new Estado
-                        {
-                            Id = reader.GetInt32(reader.GetOrdinal("id")),
-                            NomeEstado = reader.GetString(reader.GetOrdinal("nomeestado")),
-                            UfEstado = reader.GetString(reader.GetOrdinal("ufestado"))
-                        };
-
-                        estados.Add(estado);
-                    }
-                }
-            }
-        }
-        return estados;
+        return await _dbContext.Estado.Where(p => p.NomeEstado.ToUpper() == nomeestado.ToUpper()).ToListAsync();
     }
 
     public async Task<Estado> Create(Estado estado)

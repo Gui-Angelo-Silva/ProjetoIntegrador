@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using SGED.DTO.Entities;
 
 namespace SGED.Models.Entities
 {

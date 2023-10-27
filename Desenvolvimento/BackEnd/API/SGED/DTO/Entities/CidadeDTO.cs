@@ -9,7 +9,7 @@ namespace SGED.DTO.Entities
     public class CidadeDTO
     {
         public int Id { get; set; }
-        
+
         [Required(ErrorMessage = "O nome da cidade é requerida!")]
         [MinLength(3)]
         [MaxLength(100)]
@@ -23,4 +23,18 @@ namespace SGED.DTO.Entities
         public int IdEstado { get; set; }
 
     }
+
+    public class CidadeEstadoDTO
+    {
+        public int Id { get; set; }
+
+        public string NomeCidade { get; set; }
+
+
+        public EstadoDTO? EstadoDTO { get; set; }
+
+        public int IdEstado { get; set; }
+
+    }
+
 }

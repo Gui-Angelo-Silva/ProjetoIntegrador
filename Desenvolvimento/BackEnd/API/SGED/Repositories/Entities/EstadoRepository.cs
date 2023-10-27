@@ -9,12 +9,10 @@ public class EstadoRepository : IEstadoRepository
 {
 
     private readonly AppDBContext _dbContext;
-    private readonly IConfiguration _configuration;
 
-    public EstadoRepository(AppDBContext dbContext, IConfiguration configuration)
+    public EstadoRepository(AppDBContext dbContext)
     {
         _dbContext = dbContext;
-        _configuration = configuration;
     }
 
     public async Task<IEnumerable<Estado>> GetAll()
@@ -27,9 +25,9 @@ public class EstadoRepository : IEstadoRepository
         return await _dbContext.Estado.Where(p => p.Id == id).FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<Estado>> GetByName(string nomeestado)
+    public async Task<IEnumerable<Estado>> GetByName(string nome)
     {
-        return await _dbContext.Estado.Where(p => p.NomeEstado.ToUpper() == nomeestado.ToUpper()).ToListAsync();
+        return await _dbContext.Estado.Where(p => p.NomeEstado.ToUpper().Contains(nome.ToUpper())).ToListAsync();
     }
 
     public async Task<Estado> Create(Estado estado)

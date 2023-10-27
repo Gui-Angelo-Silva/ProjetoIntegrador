@@ -4,7 +4,7 @@ namespace SGED.Services.Interfaces
 {
     public interface ICidadeService
     {
-        Task<IEnumerable<CidadeEstadoDTO>> GetAll();
+        Task<IEnumerable<CidadeDTO>> GetAll();
         Task<CidadeDTO> GetById(int id);
         Task Create(CidadeDTO cidadeDTO);
         Task Update(CidadeDTO cidadeDTO);

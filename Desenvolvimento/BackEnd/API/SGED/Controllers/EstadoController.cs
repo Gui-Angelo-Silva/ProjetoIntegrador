@@ -37,9 +37,9 @@ public class EstadoController : Controller
     }
 
     [HttpGet("Name/{nome}", Name = "GetByName")]
-    public async Task<ActionResult<IEnumerable<EstadoDTO>>> GetName(string nomeestado)
+    public async Task<ActionResult<IEnumerable<EstadoDTO>>> GetName(string nome)
     {
-        var estadosDTO = await _estadoService.GetByName(nomeestado);
+        var estadosDTO = await _estadoService.GetByName(nome);
         if (estadosDTO == null) return NotFound("Estados não econtrados!");
         return Ok(estadosDTO);
     }

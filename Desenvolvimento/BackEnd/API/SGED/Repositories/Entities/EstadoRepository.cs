@@ -17,7 +17,7 @@ public class EstadoRepository : IEstadoRepository
 
     public async Task<IEnumerable<Estado>> GetAll()
     {
-        return await _dbContext.Estado.ToListAsync();
+        return await _dbContext.Estado.Include(p => p.Cidades).ToListAsync();
     }
 
     public async Task<Estado> GetById(int id)

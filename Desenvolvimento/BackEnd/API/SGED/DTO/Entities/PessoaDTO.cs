@@ -35,7 +35,7 @@ namespace SGED.DTO.Entities
         public string RgIEPessoa { get; set; }
 
 
-        public static int CpfCnpj(string cpfCnpj)
+        public virtual int CpfCnpj(string cpfCnpj)
         {
 
             if (cpfCnpj.Length == 14)
@@ -65,7 +65,7 @@ namespace SGED.DTO.Entities
             return 0;
         }
 
-        public static bool verificarCpf(string cpf)
+        public virtual bool verificarCpf(string cpf)
         {
             int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
             int[] multiplicador2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
@@ -99,7 +99,7 @@ namespace SGED.DTO.Entities
             return cpf.EndsWith(digito);
         }
 
-        public static bool verificarCnpj(string cnpj)
+        public virtual bool verificarCnpj(string cnpj)
         {
             int[] multiplicador1 = new int[12] { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
             int[] multiplicador2 = new int[13] { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
@@ -130,7 +130,7 @@ namespace SGED.DTO.Entities
             return cnpj.EndsWith(digito);
         }
 
-        public static int RgIe(string rgIe)
+        public virtual int RgIe(string rgIe)
         {
 
             if (rgIe.Length == 12)
@@ -160,7 +160,7 @@ namespace SGED.DTO.Entities
             return 0;
         }
 
-        public static bool verificarRg(string rg)
+        public virtual bool verificarRg(string rg)
         {
             int[] multiplicador1 = new int[8] { 2, 3, 4, 5, 6, 7, 8, 9 };
             string digito;
@@ -179,7 +179,7 @@ namespace SGED.DTO.Entities
             return rg.EndsWith(digito);
         }
 
-        public static bool verificarIe(string ie)
+        public virtual bool verificarIe(string ie)
         {
             int[] multiplicador1 = new int[7] { 1, 3, 4, 5, 6, 7, 8 };
             string digito;
@@ -198,80 +198,5 @@ namespace SGED.DTO.Entities
             string ie2 = ie.Substring(0, 7) + digito.Substring(1) + ie.Substring(9, 11);
             return ie == ie2;
         }
-
-        If Left(strOrigem, 1) = "P" Then
-                strBase = Left(Trim(strOrigem) & "0000000000000", 13)
-                strBase2 = Mid(strBase, 2, 8)
-                intSoma = 0
-                intPeso = 1
-                 
-                For intPos = 1 To 8
-                    intValor = CInt(Mid(strBase, intPos, 1))
-                    intValor = intValor* intPeso
-                    intSoma = intSoma + intValor
-                    intPeso = intPeso + 1
-
-
-                    If intPeso = 2 Then
-                        intPeso = 3
-                    End If
-
-
-                    If intPeso = 9 Then
-                        intPeso = 10
-                    End If
-                Next
-
-                intResto = intSoma Mod 11
-                strDigito1 = Right(CStr(intResto), 1)
-                strBase2 = Left(strBase, 8) & strDigito1 & Mid(strBase, 11, 3)
-            Else
-                strBase = Left(Trim(strOrigem) & "000000000000", 12)
-                intSoma = 0
-                intPeso = 1
-                 
-                For intPos = 1 To 8
-                    intValor = CInt(Mid(strBase, intPos, 1))
-                    intValor = intValor* intPeso
-                    intSoma = intSoma + intValor
-                    intPeso = intPeso + 1
-
-
-                    If intPeso = 2 Then
-                        intPeso = 3
-                    End If
-
-
-                    If intPeso = 9 Then
-                        intPeso = 10
-                    End If
-                Next
-
-                intResto = intSoma Mod 11
-                strDigito1 = Right(CStr(intResto), 1)
-                strBase2 = Left(strBase, 8) & strDigito1 & Mid(strBase, 10, 2)
-                intSoma = 0
-                intPeso = 2
-                 
-                For intPos = 11 To 1 Step -1
-                    intValor = CInt(Mid(strBase, intPos, 1))
-                    intValor = intValor* intPeso
-                    intSoma = intSoma + intValor
-                    intPeso = intPeso + 1
-
-
-                    If intPeso > 10 Then
-                        intPeso = 2
-                    End If
-                Next
-
-                intResto = intSoma Mod 11
-                strDigito2 = Right(CStr(intResto), 1)
-                strBase2 = strBase2 & strDigito2
-            End If
-
-            If strBase2 = strOrigem Then
-                ChecaInscrE = True
-            End If
     }
 }

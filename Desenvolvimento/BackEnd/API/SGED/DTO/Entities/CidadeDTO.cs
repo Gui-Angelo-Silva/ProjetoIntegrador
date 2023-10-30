@@ -16,11 +16,11 @@ namespace SGED.DTO.Entities
         public string NomeCidade { get; set; }
 
 
-        [Required(ErrorMessage = "O Estado é requerido!")]
-        public int IdEstado { get; set; }
-
         [JsonIgnore]
         public EstadoDTO? EstadoDTO { get; set; }
+
+        [Required(ErrorMessage = "O Estado é requerido!")]
+        public int IdEstado { get; set; }
 
     }
 }

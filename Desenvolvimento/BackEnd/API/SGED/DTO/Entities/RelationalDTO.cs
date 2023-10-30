@@ -13,10 +13,10 @@ namespace SGED.DTO.Entities
         public string NomeCidade { get; set; }
 
 
+        public EstadoDTO? EstadoDTO { get; set; }
+
         [JsonIgnore]
         public int IdEstado { get; set; }
-
-        public EstadoDTO? EstadoDTO { get; set; }
     }
 
     public class EstadoCidadeDTO

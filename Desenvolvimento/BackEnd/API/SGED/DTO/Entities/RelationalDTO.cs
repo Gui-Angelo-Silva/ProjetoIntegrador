@@ -5,22 +5,29 @@ using System.Security.Cryptography.Xml;
 using System.Text.Json.Serialization;
 
 namespace SGED.DTO.Entities
-{
-    public class CidadeDTO
+{   
+    public class CidadeEstadoDTO
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "O nome da cidade é requerida!")]
-        [MinLength(3)]
-        [MaxLength(100)]
         public string NomeCidade { get; set; }
 
 
-        [Required(ErrorMessage = "O Estado é requerido!")]
+        [JsonIgnore]
         public int IdEstado { get; set; }
 
-        [JsonIgnore]
         public EstadoDTO? EstadoDTO { get; set; }
+    }
+
+    public class EstadoCidadeDTO
+    {
+        public int Id { get; set; }
+
+        public string NomeEstado { get; set; }
+
+        public string UfEstado { get; set; }
+
+        public ICollection<CidadeDTO>? CidadesDTO { get; set; }
 
     }
 }

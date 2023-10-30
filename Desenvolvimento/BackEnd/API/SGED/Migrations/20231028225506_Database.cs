@@ -26,21 +26,20 @@ namespace SGED.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "pessoa",
+                name: "municipe",
                 columns: table => new
                 {
-                    idpessoa = table.Column<int>(type: "integer", nullable: false)
+                    idmunicipe = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     nomepessoa = table.Column<string>(type: "character varying(70)", maxLength: 70, nullable: false),
                     emailpessoa = table.Column<string>(type: "text", nullable: false),
-                    senhapessoa = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     telefonepessoa = table.Column<string>(type: "character varying(19)", maxLength: 19, nullable: false),
                     cpfcnpjpessoa = table.Column<string>(type: "character varying(18)", maxLength: 18, nullable: false),
                     rgiepessoa = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_pessoa", x => x.idpessoa);
+                    table.PrimaryKey("PK_municipe", x => x.idmunicipe);
                 });
 
             migrationBuilder.CreateTable(
@@ -120,7 +119,7 @@ namespace SGED.Migrations
                 name: "cidade");
 
             migrationBuilder.DropTable(
-                name: "pessoa");
+                name: "municipe");
 
             migrationBuilder.DropTable(
                 name: "usuario");

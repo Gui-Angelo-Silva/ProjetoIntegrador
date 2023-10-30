@@ -11,7 +11,7 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20231027000157_Database")]
+    [Migration("20231028225506_Database")]
     partial class Database
     {
         /// <inheritdoc />
@@ -75,45 +75,39 @@ namespace SGED.Migrations
                     b.ToTable("estado");
                 });
 
-            modelBuilder.Entity("SGED.Models.Entities.Pessoa", b =>
+            modelBuilder.Entity("SGED.Models.Entities.Municipe", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("idpessoa");
+                        .HasColumnName("idmunicipe");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CpfCNPJ")
+                    b.Property<string>("CpfCNPJPessoa")
                         .IsRequired()
                         .HasMaxLength(18)
                         .HasColumnType("character varying(18)")
                         .HasColumnName("cpfcnpjpessoa");
 
-                    b.Property<string>("Email")
+                    b.Property<string>("EmailPessoa")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("emailpessoa");
 
-                    b.Property<string>("Nome")
+                    b.Property<string>("NomePessoa")
                         .IsRequired()
                         .HasMaxLength(70)
                         .HasColumnType("character varying(70)")
                         .HasColumnName("nomepessoa");
 
-                    b.Property<string>("RgIE")
+                    b.Property<string>("RgIEPessoa")
                         .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("character varying(15)")
                         .HasColumnName("rgiepessoa");
 
-                    b.Property<string>("Senha")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("senhapessoa");
-
-                    b.Property<string>("Telefone")
+                    b.Property<string>("TelefonePessoa")
                         .IsRequired()
                         .HasMaxLength(19)
                         .HasColumnType("character varying(19)")
@@ -121,7 +115,7 @@ namespace SGED.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("pessoa");
+                    b.ToTable("municipe");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.TipoUsuario", b =>

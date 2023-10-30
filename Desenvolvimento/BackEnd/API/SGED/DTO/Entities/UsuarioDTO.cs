@@ -15,7 +15,6 @@ namespace SGED.DTO.Entities
         
         [Required(ErrorMessage = "O e-mail é requerido!")]
         [EmailAddress]
-        [Unique]
         public string EmailUsuario { get; set; }
 
         [Required(ErrorMessage = "A nome é requerida!")]

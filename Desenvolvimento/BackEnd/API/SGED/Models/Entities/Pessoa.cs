@@ -4,28 +4,21 @@ using SGED.DTO.Entities;
 
 namespace SGED.Models.Entities
 {
-    [Table("pessoa")]
     public class Pessoa
     {
-        [Column("idpessoa")]
-        public int Id { get; set; }
-
         [Column("nomepessoa")]
-        public string Nome { get; set; }
+        public string NomePessoa { get; set; }
 
         [Column("emailpessoa")]
-        public string Email { get; set; }
-
-        [Column("senhapessoa")]
-        public string Senha { get; set; }
+        public string EmailPessoa { get; set; }
 
         [Column("telefonepessoa")]
-        public string Telefone { get; set; }
+        public string TelefonePessoa { get; set; }
 
         [Column("cpfcnpjpessoa")]
-        public string CpfCNPJ { get; set; }
+        public string CpfCNPJPessoa { get; set; }
 
         [Column("rgiepessoa")]
-        public string RgIE { get; set; }
+        public string RgIEPessoa { get; set; }
     }
 }

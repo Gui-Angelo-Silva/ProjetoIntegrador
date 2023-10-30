@@ -97,6 +97,10 @@ builder.Services.AddScoped<ICidadeService, CidadeService>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
+// Depedência: Municipe
+builder.Services.AddScoped<IMunicipeRepository, MunicipeRepository>();
+builder.Services.AddScoped<IMunicipeService, MunicipeService>();
+
 builder.Services.AddCors(o => o.AddPolicy("MyPolicy",
 					builder =>
 					{

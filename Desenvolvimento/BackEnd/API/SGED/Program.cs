@@ -93,9 +93,13 @@ builder.Services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
 builder.Services.AddScoped<ICidadeRepository, CidadeRepository>();
 builder.Services.AddScoped<ICidadeService, CidadeService>();
 
-// Depedência: Pessoa
+// Depedência: Usuario
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+
+// Depedência: Municipe
+builder.Services.AddScoped<IMunicipeRepository, MunicipeRepository>();
+builder.Services.AddScoped<IMunicipeService, MunicipeService>();
 
 builder.Services.AddCors(o => o.AddPolicy("MyPolicy",
 					builder =>

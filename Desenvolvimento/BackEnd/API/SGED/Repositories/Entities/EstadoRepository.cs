@@ -2,6 +2,7 @@
 using SGED.Models.Entities;
 using SGED.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace SGED.Repositories.Entities;
 public class EstadoRepository : IEstadoRepository
@@ -24,6 +25,10 @@ public class EstadoRepository : IEstadoRepository
         return await _dbContext.Estado.Where(p => p.Id == id).FirstOrDefaultAsync();
     }
 
+    public async Task<IEnumerable<Estado>> GetByName(string nome)
+    {
+        return await _dbContext.Estado.Where(p => p.NomeEstado.ToUpper().Contains(nome.ToUpper())).ToListAsync();
+    }
 
     public async Task<Estado> Create(Estado estado)
     {

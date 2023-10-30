@@ -17,10 +17,22 @@ public class CidadeService : ICidadeService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<CidadeDTO>> GetAll()
+    public async Task<IEnumerable<CidadeEstadoDTO>> GetAll()
     {
         var cidades = await _cidadeRepository.GetAll();
-        return _mapper.Map<IEnumerable<CidadeDTO>>(cidades);
+
+        List<CidadeEstadoDTO> cidadesDTO = new List<CidadeEstadoDTO>();
+        CidadeEstadoDTO cidadeDTO;
+
+        foreach (var cidade in cidades)
+        {
+            cidadeDTO = new CidadeEstadoDTO();
+            cidadeDTO = _mapper.Map<CidadeEstadoDTO>(cidade);
+            cidadeDTO.EstadoDTO = _mapper.Map<EstadoDTO>(cidade.Estado);
+            cidadesDTO.Add(cidadeDTO);
+        }
+
+        return _mapper.Map<IEnumerable<CidadeEstadoDTO>>(cidadesDTO);
     }
 
     public async Task<CidadeDTO> GetById(int id)

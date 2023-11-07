@@ -1,0 +1,38 @@
+.user-container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 5 10px;
+    margin: 30px auto;
+  }
+  
+  .user-container header {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-container header img {
+    height: 50px;
+  }
+  
+  .user-container header button {
+    height: 50px;
+    width: 200px;
+    border-radius: 5px;
+    border: 1px solid #DCDCE6;
+    background: green;
+    margin-left: 16px;
+    transition: border-color 0.5s;
+  }
+  
+  .user-container header button:hover {
+    border-color: #510bac;
+  }
+  
+  table, th, td {
+    border: 1px solid black;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 20px;
+    text-align: left;
+  }

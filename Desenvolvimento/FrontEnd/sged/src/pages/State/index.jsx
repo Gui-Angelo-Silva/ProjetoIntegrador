@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap'
 import axios from "axios"
 import '../State/index.css'
@@ -24,7 +24,7 @@ export default function State() {
 
     const [stateId, setStateId] = useState("");
 
-    const [selectState, setSelectState] = useState({
+    const [selectState] = useState({
         id: "",
         nomeEstado: "",
         ufEstado: ""
@@ -94,7 +94,7 @@ export default function State() {
     }
 
     const DeleteOrder = async () => {
-        await axios.delete(baseUrl + "/" + selectState.id)
+        await axios.delete(baseUrl + "/" + stateId)
             .then(response => {
                 setData(data.filter(state => state.id !== response.data));
                 openCloseModalDelete();

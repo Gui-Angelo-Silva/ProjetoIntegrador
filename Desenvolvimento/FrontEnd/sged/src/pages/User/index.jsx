@@ -81,9 +81,6 @@ export default function User() {
             })
     }
 
-
-
-
     const PostOrder = async () => {
         delete selectUser.id
         await axios.post(baseUrl, { nomeUsuario: userName, emailUsuario: userEmail, senhaUsuario: userPassword, cargoUsuario: userOffice, statusUsuario: userStatus, idTipoUsuario: typeUserId })

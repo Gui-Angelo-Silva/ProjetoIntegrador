@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Humanizer;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography;
@@ -181,22 +182,33 @@ namespace SGED.DTO.Entities
 
         public virtual bool verificarIe(string ie)
         {
-            int[] multiplicador1 = new int[7] { 1, 3, 4, 5, 6, 7, 8 };
-            string digito;
-            int soma;
-            int resto;
-            soma = 0;
+            string strBase2 = ie.Substring(1, 8);
+            int intSoma = 0;
+            int intPeso = 1;
 
-            for (int i = 0; i < 7; i++)
-                soma += int.Parse(ie[i].ToString()) * multiplicador1[i];
-            resto = soma % 11;
-            if (resto < 2)
-                resto = 0;
-            else
-                resto = 11 - resto;
-            digito = resto.ToString();
-            string ie2 = ie.Substring(0, 7) + digito.Substring(1) + ie.Substring(9, 11);
-            return ie == ie2;
+            for (int intPos = 0; intPos < 8; intPos++)
+            {
+                int intValor = int.Parse(ie[intPos].ToString());
+                intValor *= intPeso;
+                intSoma += intValor;
+                intPeso++;
+
+                if (intPeso == 2)
+                {
+                    intPeso = 3;
+                }
+
+                if (intPeso == 9)
+                {
+                    intPeso = 10;
+                }
+            }
+
+            int intResto = intSoma % 11;
+            string strDigito1 = intResto.ToString().Substring(intResto.ToString().Length - 1);
+            strBase2 = ie.Substring(0, 8) + strDigito1 + ie.Substring(9, 3);
+
+            return strBase2 == ie;
         }
     }
 }

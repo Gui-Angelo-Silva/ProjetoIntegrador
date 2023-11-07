@@ -6,20 +6,11 @@ using System.Runtime.CompilerServices;
 
 namespace SGED.Models.Entities
 {
-    [Table("cidade")]
-    public class Cidade
+    [Table("municipe")]
+    public class Municipe : Pessoa
     {
-        [Column("idcidade")]
+        [Column("idmunicipe")]
         public int Id { get; set; }
-
-        [Column("nomecidade")]
-        public string NomeCidade { get; set; }
-
-
-        public Estado? Estado { get; set; }
-
-        [ForeignKey("idestado")]
-        public int IdEstado { get; set; }
 
     }
 }

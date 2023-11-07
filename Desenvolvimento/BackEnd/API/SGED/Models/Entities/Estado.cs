@@ -1,8 +1,23 @@
-﻿namespace SGED.Models.Entities;
-public class Estado
+﻿using SGED.DTO.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
+namespace SGED.Models.Entities
 {
-    public int Id { get; set; }
-    public string NomeEstado { get; set; }
-    public string UfEstado { get; set; }
-    public ICollection<Cidade>? Cidades { get; set; }
+    [Table("estado")]
+    public class Estado
+    {
+        [Column("idestado")]
+        public int Id { get; set; }
+
+        [Column("nomeestado")]
+        public string NomeEstado { get; set; }
+
+        [Column("ufestado")]
+        public string UfEstado { get; set; }
+
+        public ICollection<Cidade>? Cidades { get; set; }
+
+    }
 }

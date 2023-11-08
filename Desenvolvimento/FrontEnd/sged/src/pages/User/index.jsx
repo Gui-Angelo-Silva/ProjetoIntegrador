@@ -47,11 +47,6 @@ export default function User() {
         }
     };
 
-    const [selectTypeUser] = useState({
-        id: "",
-        nomeTipoUsuario: ""
-    });
-
     const GetOrderTypeUser = async () => {
         await axios.get("https://localhost:7096/api/TipoUsuario")
             .then(response => {
@@ -128,7 +123,7 @@ export default function User() {
     const DeleteOrder = async () => {
         await axios.delete(baseUrl + "/" + userId)
             .then(response => {
-                setData(data.filter(user => user.id !== selectUser.id));
+                setData(data.filter(user => user.id !== response.data));
                 openCloseModalDelete();
             })
             .catch(error => {
@@ -156,10 +151,9 @@ export default function User() {
                     <tr>
                         <th>Nome</th>
                         <th>E-mail</th>
-                        <th>Senha</th>
                         <th>Cargo</th>
                         <th>Status</th>
-                        <th>Nome Usuário</th>
+                        <th>Tipo Usuário</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -171,7 +165,6 @@ export default function User() {
                             <tr key={user.id}>
                                 <td>{user.nomeUsuario}</td>
                                 <td>{user.emailUsuario}</td>
-                                <td>{user.senhaUsuario}</td>
                                 <td>{user.cargoUsuario}</td>
                                 <td>{user.statusUsuario ? 'Ativo' : 'Inativo'}</td>
                                 <td>{tipoUsuario ? tipoUsuario.nomeTipoUsuario : 'Tipo de usuário não encontrado'}</td>
@@ -239,18 +232,35 @@ export default function User() {
                         <input type="text" className="form-control" readOnly value={userId} /> <br />
 
                         <label>Nome:</label>
-                        <input type="text" className="form-control" name="nomeUsuario" onChange={(e) => setUserName(e.target.value)}
-                            value={userName} />
+                        <input type="text" className="form-control" name="nomeUsuario" onChange={(e) => setUserName(e.target.value)} value={userName} />
                         <br />
-                        <label>Nivel de acesso:</label>
+                        <label>E-mail:</label>
                         <br />
-                        <input type="text" className="form-control" name="emailUsuario" onChange={(e) => setUserEmail(e.target.value)}
-                            value={userEmail} />
+                        <input type="text" className="form-control" name="emailUsuario" onChange={(e) => setUserEmail(e.target.value)} value={userEmail} />
                         <br />
-                        <label>Passwordrição:</label>
+                        <label>Senha:</label>
                         <br />
-                        <input type="text" className="form-control" name="senhaUsuario" onChange={(e) => setUserPassword(e.target.value)}
-                            value={userPassword} />
+                        <input type="text" className="form-control" name="senhaUsuario" onChange={(e) => setUserPassword(e.target.value)} value={userPassword} />
+                        <br />
+                        <label>Cargo:</label>
+                        <input type="text" className="form-control" name="cargoUsuario" onChange={(e) => setUserOffice(e.target.value)} value={userOffice} />
+                        <br />
+                        <label>Status:</label>
+                        <br />
+                        <select className="form-control" onChange={(e) => setUserStatus(e.target.value)}>
+                            <option value="true" selected={userStatus === true}>Ativo</option>
+                            <option value="false" selected={userStatus === false}>Inativo</option>
+                        </select>
+                        <br />
+                        <label>Tipo Usuário:</label>
+                        <br />
+                        <select className="form-control" onChange={(e) => setIdTypeUser(e.target.value)}>
+                            {dataTypeUser.map((typeuser) => (
+                                <option key={typeuser.id} value={typeuser.id} selected={typeuser.id === idTypeUser}>
+                                    {typeuser.nomeTipoUsuario}
+                                </option>
+                            ))}
+                        </select>
                         <br />
                     </div>
                 </ModalBody>

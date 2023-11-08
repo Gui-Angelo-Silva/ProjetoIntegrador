@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap'
 import axios from "axios"
 import '../TypeUser/index.css'
@@ -27,7 +27,7 @@ export default function TypeUser() {
     
     const [typeUserId, setTypeUserId] = useState("");
 
-    const [selectTypeUser, setSelectTypeUser] = useState({
+    const [selectTypeUser] = useState({
         id: "",
         nomeTipoUsuario: "",
         nivelAcesso: "",
@@ -105,7 +105,7 @@ export default function TypeUser() {
     const DeleteOrder = async () => {
         await axios.delete(baseUrl + "/" + typeUserId) 
             .then(response => {
-                setData(data.filter(typeuser => typeuser.id !== selectTypeUser.id)); 
+                setData(data.filter(typeuser => typeuser.id !== response.data)); 
                 openCloseModalDelete();
             }).catch(error => {
                 console.log(error);
@@ -129,16 +129,15 @@ export default function TypeUser() {
             <table className="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Id</th>
                         <th>Nome</th>
-                        <th>Nivel de acesso</th>
+                        <th>Nivel de Acesso</th>
                         <th>Descrição</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     {data.map(typeuser => (
                         <tr key={typeuser.id}>
-                            <td>{typeuser.id}</td>
                             <td>{typeuser.nomeTipoUsuario}</td>
                             <td>{typeuser.nivelAcesso}</td>
                             <td>{typeuser.descricaoTipoUsuario}</td>

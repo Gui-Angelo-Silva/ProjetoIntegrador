@@ -128,15 +128,14 @@ export default function State() {
                     <table className="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Id</th>
                                 <th>Nome</th>
-                                <th>Uf</th>
+                                <th>Sigla</th>
+                                <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody>
                             {data.map(state => (
                                 <tr key={state.id}>
-                                    <td>{state.id}</td>
                                     <td>{state.nomeEstado}</td>
                                     <td>{state.ufEstado}</td>
                                     <td>
@@ -157,7 +156,7 @@ export default function State() {
                         <br />
                         <input type="text" className="form-control" onChange={(e) => setStateName(e.target.value)} />
                         <br />
-                        <label>Uf:</label>
+                        <label>Sigla:</label>
                         <br />
                         <input type="text" className="form-control" onChange={(e) => setStateUf(e.target.value)} />
                         <br />
@@ -179,7 +178,7 @@ export default function State() {
                         <input type="text" className="form-control" name="nomeEstado" onChange={(e) => setStateName(e.target.value)}
                             value={stateName} />
                         <br />
-                        <label>Uf:</label>
+                        <label>Sigla:</label>
                         <br />
                         <input type="text" className="form-control" name="ufEstado" onChange={(e) => setStateUf(e.target.value)}
                             value={stateUf} />

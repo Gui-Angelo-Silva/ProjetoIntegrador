@@ -9,10 +9,10 @@ export default function AppRoutes(){
     return (
         <Router>
             <Routes>
-                <Route path="/" exact element={ <Home /> }></Route>
+                <Route path="/" exact element={ <Login /> }></Route>
                 <Route path="/city" element={ <City /> }></Route>
                 <Route path="/state" element={ <State /> }></Route>
-                <Route path="/login" element={ <Login /> }></Route>
+                <Route path="/home" element={ <Home /> }></Route>
             </Routes>
         </Router>
     )

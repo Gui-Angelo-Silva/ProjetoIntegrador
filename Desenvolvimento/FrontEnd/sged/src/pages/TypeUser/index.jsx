@@ -103,7 +103,7 @@ export default function TypeUser() {
     }
 
     const DeleteOrder = async () => {
-        await axios.delete(baseUrl + "/" + selectTypeUser.id) 
+        await axios.delete(baseUrl + "/" + typeUserId) 
             .then(response => {
                 setData(data.filter(typeuser => typeuser.id !== selectTypeUser.id)); 
                 openCloseModalDelete();

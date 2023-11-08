@@ -5,11 +5,11 @@ import '../User/index.css'
 import "bootstrap/dist/css/bootstrap.min.css"
 
 export default function User() {
-    
+
 
     const baseUrl = "https://localhost:7096/api/Usuario"
 
-    const [data, setData] = useState([])
+    const [dataUser, setData] = useState([])
 
     const [modalInsert, setModalInsert] = useState(false)
 
@@ -29,8 +29,8 @@ export default function User() {
 
     const [userStatus, setUserStatus] = useState("");
 
-    const [typeUserId, setTypeUserId] = useState("");
-    
+    const [idTypeUser, setIdTypeUser] = useState("");
+
     const [userId, setUserId] = useState("");
 
     const [selectUser, setSelectUser] = useState({
@@ -50,7 +50,7 @@ export default function User() {
         setUserPassword(user.senhaUsuario)
         setUserOffice(user.cargoUsuario)
         setUserStatus(user.statusUsuario)
-        setTypeUserId(user.idTipoUsuario)
+        setIdTypeUser(user.idTipoUsuario)
 
         if (option === "Editar") {
             openCloseModalEdit();
@@ -59,6 +59,22 @@ export default function User() {
             openCloseModalDelete();
         }
     }
+
+
+    const [typeUserName, setTypeUserName] = useState("");
+    
+    const [typeUserId, setTypeUserId] = useState("");
+
+    const [selectTypeUser, setSelectTypeUser] = useState({
+        id: "",
+        nomeTipoUsuario: ""
+    })
+
+    const SelectTypeUser = (typeuser, option) => {
+        setTypeUserId(typeuser.id)
+        setTypeUserName(typeuser.nomeTipoUsuario)
+    }
+
 
     const openCloseModalInsert = () => {
         setModalInsert(!modalInsert);
@@ -72,35 +88,46 @@ export default function User() {
         setModalDelete(!modalDelete);
     }
 
-    const GetOrder = async () => {
+    const GetOrderUser = async () => {
         await axios.get(baseUrl)
             .then(response => {
-                setData(response.data)
-            }).catch(error => {
-                console.log(error);
+                setData(response.dataUser);
             })
-    }
+            .catch(error => {
+                console.log(error);
+            });
+    };
+    
+    const GetOrderTypeUser = async () => {
+        await axios.get("https://localhost:7096/api/TipoUsuario")
+            .then(response => {
+                setDataTypeUser(response.dataTypeUser);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
 
 
 
 
     const PostOrder = async () => {
         delete selectUser.id
-        await axios.post(baseUrl, { nomeUsuario: userName, emailUsuario: userEmail, senhaUsuario: userPassword, cargoUsuario: userOffice, statusUsuario: userStatus, idTipoUsuario: typeUserId })
+        await axios.post(baseUrl, { nomeUsuario: userName, emailUsuario: userEmail, senhaUsuario: userPassword, cargoUsuario: userOffice, statusUsuario: userStatus, idTipoUsuario: idTypeUser })
             .then(response => {
-                setData(data.concat(response.data));
+                setData(dataUser.concat(response.dataUser));
                 openCloseModalInsert();
             }).catch(error => {
                 console.log(error);
             })
     }
 
-    async function PutOrder(){
+    async function PutOrder() {
         delete selectUser.id
-        await axios.put(baseUrl, { id: userId, nomeUsuario: userName,emailUsuario: userEmail, senhaUsuario: userPassword, cargoUsuario: userOffice, statusUsuario: userStatus, idTipoUsuario: typeUserId })
+        await axios.put(baseUrl, { id: userId, nomeUsuario: userName, emailUsuario: userEmail, senhaUsuario: userPassword, cargoUsuario: userOffice, statusUsuario: userStatus, idTipoUsuario: idTypeUser })
             .then(response => {
-                var answer = response.data
-                var aux = data
+                var answer = response.dataUser
+                var aux = dataUser
                 aux.map(user => {
                     if (user.id === selectUser.id) {
                         user.nomeUsuario = answer.nomeUsuario
@@ -118,9 +145,9 @@ export default function User() {
     }
 
     const DeleteOrder = async () => {
-        await axios.delete(baseUrl + "/" + selectUser.id) 
+        await axios.delete(baseUrl + "/" + userId)
             .then(response => {
-                setData(data.filter(user => user.id !== selectUser.id)); 
+                setData(dataUser.filter(user => user.id !== selectUser.id));
                 openCloseModalDelete();
             }).catch(error => {
                 console.log(error);
@@ -129,7 +156,8 @@ export default function User() {
 
     useEffect(() => {
         if (updateData) {
-            GetOrder();
+            GetOrderUser();
+            GetOrderTypeUser();
             setUpdateData(false);
         }
     }, [updateData])
@@ -153,7 +181,7 @@ export default function User() {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map(user => (
+                    {dataUser.map(user => (
                         <tr key={user.id}>
                             <td>{user.nomeUsuario}</td>
                             <td>{user.emailUsuario}</td>
@@ -187,16 +215,19 @@ export default function User() {
                         <br />
                         <label>Cargo: </label>
                         <br />
-                        <input type="text" className="form-control" onChange={(e) => setUserName(e.target.value)} />
+                        <input type="text" className="form-control" onChange={(e) => setUserOffice(e.target.value)} />
                         <br />
                         <label>Status:</label>
                         <br />
-                        <input type="text" className="form-control" onChange={(e) => setUserEmail(e.target.value)} />
+                        <input type="text" className="form-control" onChange={(e) => setUserStatus(e.target.value)} />
                         <br />
-                        <label>Tipo Usuário:</label>
-                        <br />
-                        <input type="text" className="form-control" onChange={(e) => setUserPassword(e.target.value)} />
-                        <br />
+                        <select className="form-control" onChange={(e) => setIdTypeUser(e.target.value)}>
+                            {dataTypeUser.map((typeuser) => (
+                                <option key={typeuser.id} value={typeuser.id}>
+                                    {typeuser.nomeTipoUsuario}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </ModalBody>
                 <ModalFooter>

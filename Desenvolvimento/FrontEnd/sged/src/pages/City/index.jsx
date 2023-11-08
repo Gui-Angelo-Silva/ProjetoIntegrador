@@ -89,7 +89,7 @@ export default function City() {
     }
 
     const DeleteOrder = async () => {
-        await axios.delete(baseUrl + "/" + selectCity.id)
+        await axios.delete(baseUrl + "/" + cityId)
             .then(response => {
                 setData(data.filter(city => city.id !== response.data));
                 openCloseModalDelete();

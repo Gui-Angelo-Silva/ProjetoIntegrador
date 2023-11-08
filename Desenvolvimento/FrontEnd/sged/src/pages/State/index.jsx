@@ -94,7 +94,7 @@ export default function State() {
     }
 
     const DeleteOrder = async () => {
-        await axios.delete(baseUrl + "/" + selectState.id)
+        await axios.delete(baseUrl + "/" + stateId)
             .then(response => {
                 setData(data.filter(state => state.id !== response.data));
                 openCloseModalDelete();

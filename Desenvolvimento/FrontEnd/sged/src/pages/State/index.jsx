@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap'
 import axios from "axios"
 import '../State/index.css'
+import SideBar from "../../components/SideBar"
+import NavBar from "../../components/NavBar"
 import "bootstrap/dist/css/bootstrap.min.css"
 
 export default function State() {
@@ -75,7 +77,7 @@ export default function State() {
             })
     }
 
-    async function PutOrder(){
+    async function PutOrder() {
         delete selectState.id
         await axios.put(baseUrl, { id: stateId, nomeEstado: stateName, ufEstado: stateUf })
             .then(response => {
@@ -111,34 +113,42 @@ export default function State() {
     }, [updateData])
 
     return (
-        <div className="state-container">
-            <br />
-            <h3>Lista de Estado</h3>
-            <header>
-                <button className="btn btn-success" onClick={() => openCloseModalInsert()}>Adicionar</button>
-            </header>
-            <table className="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Nome</th>
-                        <th>Uf</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.map(state => (
-                        <tr key={state.id}>
-                            <td>{state.id}</td>
-                            <td>{state.nomeEstado}</td>
-                            <td>{state.ufEstado}</td>
-                            <td>
-                                <button className="btn btn-primary" onClick={() => StateSelect(state, "Editar")}>Editar</button>{"  "}
-                                <button className="btn btn-danger" onClick={() => StateSelect(state, "Excluir")}>Remover</button>
-                            </td>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <NavBar style={{ width: '100%' }} /> {/* NavBar ocupando 100% da largura */}
+        <div style={{ display: 'flex' }}>
+            <div className="flex-2 container-fluid">
+                <SideBar />
+            </div>
+            <div className="flex-3 container-fluid" style={{ marginLeft: '-800px' }}>
+                <br />
+                <h3>Lista de Estado</h3>
+                <header>
+                    <button className="btn btn-success" onClick={() => openCloseModalInsert()}>Adicionar</button>
+                </header>
+                <table className="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Nome</th>
+                            <th>Uf</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {data.map(state => (
+                            <tr key={state.id}>
+                                <td>{state.id}</td>
+                                <td>{state.nomeEstado}</td>
+                                <td>{state.ufEstado}</td>
+                                <td>
+                                    <button className="btn btn-primary" onClick={() => StateSelect(state, "Editar")}>Editar</button>{"  "}
+                                    <button className="btn btn-danger" onClick={() => StateSelect(state, "Excluir")}>Remover</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                </div>
+            </div>
             <Modal isOpen={modalInsert}>
                 <ModalHeader>Cadastrar Estado</ModalHeader>
                 <ModalBody>

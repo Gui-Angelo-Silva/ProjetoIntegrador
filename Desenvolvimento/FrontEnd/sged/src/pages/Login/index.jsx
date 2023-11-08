@@ -88,7 +88,7 @@ export default function SignInSide() {
                 control={<Checkbox value="remember" color="primary" />}
                 label="Lembre de mim"
               />
-              <NavLink to='/'>
+              <NavLink to='/home'>
                 <Button
                   type="submit"
                   fullWidth

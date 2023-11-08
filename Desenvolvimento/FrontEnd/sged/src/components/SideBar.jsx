@@ -1,58 +1,51 @@
-import React from 'react'
-import 
-{BsCart3, BsGrid1X2Fill, BsFillArchiveFill, BsFillGrid3X3GapFill, BsPeopleFill, 
-  BsListCheck, BsMenuButtonWideFill, BsFillGearFill}
- from 'react-icons/bs'
+import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
+import HomeIcon from '@mui/icons-material/Home';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import EngineeringIcon from '@mui/icons-material/Engineering';
+import GroupsIcon from '@mui/icons-material/Groups';
+import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
+import Person3Icon from '@mui/icons-material/Person3';
+import SwitchAccountIcon from '@mui/icons-material/SwitchAccount';
 
-function Sidebar({openSidebarToggle, OpenSidebar}) {
+const sidebarStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+};
+
+export default function SideBar() {
   return (
-    <aside id="sidebar" className={openSidebarToggle ? "sidebar-responsive": ""}>
-        <div className='sidebar-title'>
-            <div className='sidebar-brand'>
-                <BsCart3  className='icon_header'/> SHOP
-            </div>
-            <span className='icon close_icon' onClick={OpenSidebar}>X</span>
-        </div>
-
-        <ul className='sidebar-list'>
-            <li className='sidebar-list-item'>
-                <a href="">
-                    <BsGrid1X2Fill className='icon'/> Dashboard
-                </a>
-            </li>
-            <li className='sidebar-list-item'>
-                <a href="">
-                    <BsFillArchiveFill className='icon'/> Products
-                </a>
-            </li>
-            <li className='sidebar-list-item'>
-                <a href="">
-                    <BsFillGrid3X3GapFill className='icon'/> Categories
-                </a>
-            </li>
-            <li className='sidebar-list-item'>
-                <a href="">
-                    <BsPeopleFill className='icon'/> Customers
-                </a>
-            </li>
-            <li className='sidebar-list-item'>
-                <a href="">
-                    <BsListCheck className='icon'/> Inventory
-                </a>
-            </li>
-            <li className='sidebar-list-item'>
-                <a href="">
-                    <BsMenuButtonWideFill className='icon'/> Reports
-                </a>
-            </li>
-            <li className='sidebar-list-item'>
-                <a href="">
-                    <BsFillGearFill className='icon'/> Setting
-                </a>
-            </li>
-        </ul>
-    </aside>
-  )
+    <div style={{ display: 'flex', height: '93.5vh' }}>
+      <Sidebar style={sidebarStyle}>
+        <Menu 
+          menuItemStyles={{
+            button: ({ level, active, disabled }) => {
+              if (level === 0) {
+                return {
+                  color: disabled ? "#eee" : "#455A64",
+                  backgroundColor: active ? "#fff" : undefined,
+                  "&:hover": {
+                     backgroundColor: "#58AFAE !important",
+                     color: "white !important",
+                     fontWeight: "bold !important"
+                   },
+                };
+              }
+            },
+          }}
+        >
+          <MenuItem icon={ <HomeIcon />}> Página Inicial </MenuItem>
+          <SubMenu icon={ <Person3Icon />} label="Atendente">
+            <MenuItem> Pie charts </MenuItem>
+            <MenuItem> Line charts </MenuItem>
+          </SubMenu>
+          <SubMenu icon={ <SwitchAccountIcon />} label="Perfil Público">
+            <MenuItem icon={ <GroupsIcon />}> Munícipe</MenuItem>
+            <MenuItem icon={ <SupervisedUserCircleIcon />}> Fiscal </MenuItem>
+            <MenuItem icon={ <EngineeringIcon />}> Engenheiro </MenuItem>
+            <MenuItem icon={ <AssignmentIndIcon />}> Estagiário </MenuItem>
+          </SubMenu>
+        </Menu>
+      </Sidebar>
+    </div>
+  );
 }
-
-export default Sidebar

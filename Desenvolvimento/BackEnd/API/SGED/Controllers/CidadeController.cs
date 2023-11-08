@@ -19,7 +19,7 @@ public class CidadeController : Controller
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CidadeEstadoDTO>>> Get()
+    public async Task<ActionResult<IEnumerable<CidadeDTO>>> Get()
     {
         var cidadesDTO = await _cidadeService.GetAll();
         if (!cidadesDTO.Any()) return NotFound("Cidades não encontradas!");

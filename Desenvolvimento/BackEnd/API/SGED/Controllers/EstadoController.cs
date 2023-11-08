@@ -21,7 +21,7 @@ public class EstadoController : Controller
     }
 
     [HttpGet(Name = "GetEstados")]
-    public async Task<ActionResult<IEnumerable<EstadoDTO>>> GetAll()
+    public async Task<ActionResult<IEnumerable<EstadoCidadeDTO>>> GetAll()
     {
         var estadosDTO = await _estadoService.GetAll();
         if (estadosDTO == null) return NotFound("Estados não econtrados!");
@@ -50,15 +50,17 @@ public class EstadoController : Controller
         if (estadoDTO is null) return BadRequest("Dado inválido!");
 
         var estadosDTO = await _estadoService.GetByName(estadoDTO.NomeEstado);
-        if (!estadosDTO.Any())
+
+        foreach (var estado in estadosDTO)
         {
-            await _estadoService.Create(estadoDTO);
-            return new CreatedAtRouteResult("GetById", new { id = estadoDTO.Id }, estadoDTO);
+            if (estado.NomeEstado.ToUpper() == estadoDTO.NomeEstado.ToUpper())
+            {
+                return NotFound("Já existe o Estado " + estadoDTO.NomeEstado + " cadastrado.");
+            }
         }
-        else
-        {
-            return NotFound("Já existe o Estado " + estadoDTO.NomeEstado + " cadastrado.");
-        }
+
+        await _estadoService.Create(estadoDTO);
+        return new CreatedAtRouteResult("GetById", new { id = estadoDTO.Id }, estadoDTO);
     }
 
     [HttpPut()]

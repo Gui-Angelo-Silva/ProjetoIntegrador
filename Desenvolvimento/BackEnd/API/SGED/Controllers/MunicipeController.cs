@@ -37,6 +37,19 @@ namespace SGED.Controllers
         public async Task<ActionResult> Post([FromBody] MunicipeDTO municipeDTO)
         {
             if (municipeDTO is null) return BadRequest("Dado inválido!");
+
+            int response = municipeDTO.CpfCnpj(municipeDTO.CpfCnpjPessoa);
+            if (response == 0) return BadRequest("Documento incorreto!");
+            else if (response == -1) return BadRequest("CPF inválido!");
+            else if (response == -2) return BadRequest("CNPJ inválido!");
+            else if (response == -3) return BadRequest("Documento incompleto!");
+
+            response = municipeDTO.RgIe(municipeDTO.RgIEPessoa);
+            if (response == 0) return BadRequest("Documento incorreto!");
+            else if (response == -1) return BadRequest("RG inválido!");
+            else if (response == -2) return BadRequest("IE inválido!");
+            else if (response == -3) return BadRequest("Documento incompleto!");
+
             await _municipeService.Create(municipeDTO);
             return new CreatedAtRouteResult("GetMunicipe", new { id = municipeDTO.Id }, municipeDTO);
         }

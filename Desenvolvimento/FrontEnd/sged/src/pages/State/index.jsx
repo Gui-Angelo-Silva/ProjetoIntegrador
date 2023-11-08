@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap'
 import axios from "axios"
 import '../State/index.css'
@@ -24,7 +24,7 @@ export default function State() {
 
     const [stateId, setStateId] = useState("");
 
-    const [selectState, setSelectState] = useState({
+    const [selectState] = useState({
         id: "",
         nomeEstado: "",
         ufEstado: ""

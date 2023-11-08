@@ -1,7 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Humanizer;
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Cryptography;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SGED.DTO.Entities
 {
@@ -32,7 +36,7 @@ namespace SGED.DTO.Entities
         public string RgIEPessoa { get; set; }
 
 
-        public static int CpfCnpj(string cpfCnpj)
+        public virtual int CpfCnpj(string cpfCnpj)
         {
 
             if (cpfCnpj.Length == 14)
@@ -62,7 +66,7 @@ namespace SGED.DTO.Entities
             return 0;
         }
 
-        public static bool verificarCpf(string cpf)
+        public virtual bool verificarCpf(string cpf)
         {
             int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
             int[] multiplicador2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
@@ -96,7 +100,7 @@ namespace SGED.DTO.Entities
             return cpf.EndsWith(digito);
         }
 
-        public static bool verificarCnpj(string cnpj)
+        public virtual bool verificarCnpj(string cnpj)
         {
             int[] multiplicador1 = new int[12] { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
             int[] multiplicador2 = new int[13] { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
@@ -127,7 +131,7 @@ namespace SGED.DTO.Entities
             return cnpj.EndsWith(digito);
         }
 
-        public static int RgIe(string rgIe)
+        public virtual int RgIe(string rgIe)
         {
 
             if (rgIe.Length == 12)
@@ -157,6 +161,54 @@ namespace SGED.DTO.Entities
             return 0;
         }
 
+        public virtual bool verificarRg(string rg)
+        {
+            int[] multiplicador1 = new int[8] { 2, 3, 4, 5, 6, 7, 8, 9 };
+            string digito;
+            int soma;
+            int resto;
+            soma = 0;
 
+            for (int i = 0; i < 8; i++)
+                soma += int.Parse(rg[i].ToString()) * multiplicador1[i];
+            resto = soma % 11;
+            if (resto < 2)
+                resto = 0;
+            else
+                resto = 11 - resto;
+            digito = resto.ToString();
+            return rg.EndsWith(digito);
+        }
+
+        public virtual bool verificarIe(string ie)
+        {
+            string strBase2 = ie.Substring(1, 8);
+            int intSoma = 0;
+            int intPeso = 1;
+
+            for (int intPos = 0; intPos < 8; intPos++)
+            {
+                int intValor = int.Parse(ie[intPos].ToString());
+                intValor *= intPeso;
+                intSoma += intValor;
+                intPeso++;
+
+                if (intPeso == 2)
+                {
+                    intPeso = 3;
+                }
+
+                if (intPeso == 9)
+                {
+                    intPeso = 10;
+                }
+            }
+
+            int intResto = intSoma % 11;
+            string strDigito1 = intResto.ToString().Substring(intResto.ToString().Length - 1);
+            strBase2 = ie.Substring(0, 8) + strDigito1 + ie.Substring(9, 3);
+
+            return strBase2 == ie;
+        }
     }
 }

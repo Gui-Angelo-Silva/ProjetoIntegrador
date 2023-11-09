@@ -35,8 +35,8 @@ export default function SideBar() {
         >
           <MenuItem icon={ <HomeIcon />}> Página Inicial </MenuItem>
           <SubMenu icon={ <Person3Icon />} label="Atendente">
-            <MenuItem> Pie charts </MenuItem>
-            <MenuItem> Line charts </MenuItem>
+            <MenuItem>Cadastros</MenuItem>
+            <MenuItem></MenuItem>
           </SubMenu>
           <SubMenu icon={ <SwitchAccountIcon />} label="Perfil Público">
             <MenuItem icon={ <GroupsIcon />}> Munícipe</MenuItem>

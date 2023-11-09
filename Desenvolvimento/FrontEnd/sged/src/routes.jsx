@@ -6,6 +6,7 @@ import State from '../src/pages/State'
 import City from '../src/pages/City'
 import TypeUser from '../src/pages/TypeUser'
 import User from '../src/pages/User'
+import Registrations from './pages/Registrations'
 
 export default function AppRoutes(){
     return (
@@ -17,6 +18,7 @@ export default function AppRoutes(){
                 <Route path="/city" element={ <City /> }></Route>
                 <Route path="/typeuser" element={ <TypeUser /> }></Route>
                 <Route path="/user" element={ <User /> }></Route>
+                <Route path="/registration" element={ <Registrations /> }></Route>
             </Routes>
         </Router>
     )

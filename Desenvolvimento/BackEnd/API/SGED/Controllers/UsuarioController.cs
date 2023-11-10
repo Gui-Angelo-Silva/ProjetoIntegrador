@@ -33,7 +33,7 @@ namespace SGED.Controllers
             return Ok(usuarioDTO);
         }
 
-        [HttpGet("{login}", Name = "Login")]
+        [HttpGet("/Login", Name = "Login")]
         public async Task<ActionResult<UsuarioDTO>> Login([FromBody] LoginDTO loginDTO)
         {
             if (loginDTO is null) return BadRequest("Dado inválido!");

@@ -11,42 +11,57 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { NavLink } from 'react-router-dom';
 import { red } from '@mui/material/colors';
-import { Redirect } from 'react-router-dom';
+
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Navigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
-  const baseUrl = "https://localhost:7096/api/Usuario";
+  const baseUrl = "https://localhost:7096/api/Usuario/Login";
 
   const [data, setData] = useState([]);
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [userId, setUserId] = useState("");
+  const [redirectToHome, setRedirectToHome] = useState(false);
 
   const [selectUser] = useState({
     id: "",
-    emailUsuario: "",
-    senhaUsuario: ""
+    email: "",
+    senha: ""
   });
 
   const [emailError, setEmailError] = useState('');
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setEmailError('');
-    await axios.get(baseUrl, { emailUsuario: userEmail, senhaUsuario: userPassword })
-      .then(response => {
-        setData(response.data);
-        if (data && data.id) {
-          if (data.emailUsuario === emailUsuario && data.senhaUsuario === senhaUsuario) return <Redirect to={{ pathname: '../Home/index.jsx', state: { data } }} />;
-          else setEmailError("E-mail ou senha incorretos!");
-        } else if (typeof data === 'string') {
-          if (data.includes("E-mail ou senha incorretos!")) setEmailError("E-mail ou senha incorretos!");
-        }
-      })
-      .catch(error => {
-        console.log(error);
+
+    try {
+      const response = await axios.get(baseUrl, {
+        email: userEmail,
+        senha: userPassword
       });
+
+      setData(response.data);
+
+      if (response.data && response.data.id) {
+        setRedirectToHome(true);
+      } else if (typeof response.data === 'string') {
+        if (response.data.includes("E-mail ou senha incorretos!")) {
+          setEmailError("E-mail ou senha incorretos!");
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
+
+  if (redirectToHome) {
+    return <Navigate to="/home" />;
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -117,20 +132,18 @@ export default function SignInSide() {
                 control={<Checkbox value="remember" color="primary" />}
                 label="Lembre de mim"
               />
-              <NavLink to='/home'>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant='contained'
-                  sx={{
-                    mt: 5, mb: 10, backgroundColor: '#2D636B', padding: 1.5, ":hover": {
-                      backgroundColor: red,
-                    }
-                  }}
-                >
-                  Entrar
-                </Button>
-              </NavLink>
+              <Button
+                type="submit"
+                fullWidth
+                variant='contained'
+                sx={{
+                  mt: 5, mb: 10, backgroundColor: '#2D636B', padding: 1.5, ":hover": {
+                    backgroundColor: red,
+                  }
+                }}
+              >
+                Entrar
+              </Button>
             </Box>
           </Box>
         </Grid>

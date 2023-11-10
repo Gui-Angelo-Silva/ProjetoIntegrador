@@ -56,5 +56,64 @@ public class AppDBContext : DbContext
         modelBuilder.Entity<Municipe>().Property(b => b.CpfCNPJPessoa).HasMaxLength(18).IsRequired();
         modelBuilder.Entity<Municipe>().Property(b => b.RgIEPessoa).HasMaxLength(15).IsRequired();
 
+
+
+        // Inserções:
+        modelBuilder.Entity<Estado>().HasData(
+            new Estado
+            {
+                NomeEstado = "São Paulo",
+                UfEstado = "SP"
+            });
+
+        modelBuilder.Entity<Cidade>().HasData(
+           new Cidade
+           {
+               NomeCidade = "Jales",
+               IdEstado = 1
+           });
+
+        modelBuilder.Entity<TipoUsuario>().HasData(
+            new TipoUsuario
+            {
+                NomeTipoUsuario = "Desenvolvedor",
+                NivelAcesso = "A",
+                DescricaoTipoUsuario = "Pode efetuar todas as funcionalidades disponíveis. Voltado ao time de desenvolvimento."
+            },
+           new TipoUsuario
+           {
+               NomeTipoUsuario = "Secretário Geral",
+               NivelAcesso = "A",
+               DescricaoTipoUsuario = "Pode efetuar todas as funcionalidades disponíveis."
+           },
+           new TipoUsuario
+           {
+               NomeTipoUsuario = "Secretário",
+               NivelAcesso = "B",
+               DescricaoTipoUsuario = "Pode efetuar todas as funcionalidades disponíveis, porém com auditoria de ações."
+           },
+           new TipoUsuario
+           {
+               NomeTipoUsuario = "Jurídico",
+               NivelAcesso = "C",
+               DescricaoTipoUsuario = "Apenas pode vizualidar informações."
+           },
+           new TipoUsuario
+           {
+               NomeTipoUsuario = "Físico",
+               NivelAcesso = "D",
+               DescricaoTipoUsuario = "Apenas pode vizualidar informações, porém dados sensíveis são mascarados."
+           });
+
+        modelBuilder.Entity<Usuario>().HasData(
+           new Usuario
+           {
+               NomeUsuario = "Dev",
+               EmailUsuario = "devops@developtment.com",
+               SenhaUsuario = "123456",
+               CargoUsuario = "Desenvolvimento",
+               StatusUsuario = true,
+               IdTipoUsuario = 1
+           });
     }
 }

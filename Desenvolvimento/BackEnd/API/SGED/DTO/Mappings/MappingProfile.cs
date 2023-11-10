@@ -29,6 +29,8 @@ namespace SGED.DTO.Mappings
             CreateMap<UsuarioDTO, Usuario>();
             CreateMap<Usuario, UsuarioDTO>().ReverseMap();
 
+            CreateMap<LoginDTO, Login>();
+
             CreateMap<MunicipeDTO, Municipe>();
             CreateMap<Municipe, MunicipeDTO>().ReverseMap();
         }

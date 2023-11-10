@@ -16,7 +16,7 @@ namespace SGED.Repositories.Entities
 
 		public async Task<IEnumerable<TipoUsuario>> GetAll()
 		{
-			return await _dbContext.TipoUsuario.ToListAsync();
+			return await _dbContext.TipoUsuario.Where(p => p.NomeTipoUsuario != "Desenvolvedor").ToListAsync();
 		}
 
 		public async Task<TipoUsuario> GetById(int id)

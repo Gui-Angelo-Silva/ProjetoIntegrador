@@ -33,10 +33,30 @@ namespace SGED.Controllers
             return Ok(usuarioDTO);
         }
 
+        [HttpGet("{login}", Name = "Login")]
+        public async Task<ActionResult<UsuarioDTO>> Login([FromBody] LoginDTO loginDTO)
+        {
+            if (loginDTO is null) return BadRequest("Dado inválido!");
+            var usuarioDTO = await _usuarioService.Login(loginDTO);
+            if (usuarioDTO == null) return NotFound("E-mail ou senha incorretos!");
+            return Ok(usuarioDTO);
+        }
+
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] UsuarioDTO usuarioDTO)
         {
             if (usuarioDTO is null) return BadRequest("Dado inválido!");
+
+            var usuariosDTO = await _usuarioService.GetByEmail(usuarioDTO.EmailUsuario);
+            foreach (var usuario in usuariosDTO)
+            {
+                if (usuario.EmailUsuario.ToUpper() == usuarioDTO.EmailUsuario.ToUpper())
+                {
+                    return NotFound("O e-mail informado já existe!");
+                }
+            }
+            if(usuarioDTO.EmailUsuario == "devops@developtment.com") NotFound("O e-mail informado já existe!");
+
             await _usuarioService.Create(usuarioDTO);
             return new CreatedAtRouteResult("GetUsuario", new { id = usuarioDTO.Id }, usuarioDTO);
         }
@@ -45,6 +65,22 @@ namespace SGED.Controllers
         public async Task<ActionResult> Put([FromBody] UsuarioDTO usuarioDTO)
         {
             if (usuarioDTO is null) return BadRequest("Dado inválido!");
+
+            var dadoAnterior = await _usuarioService.GetById(usuarioDTO.Id);
+            if (dadoAnterior == null) return NotFound("Usuário não encontrado!");
+            if (dadoAnterior.EmailUsuario.ToUpper() != usuarioDTO.EmailUsuario.ToUpper())
+            {
+                var usuariosDTO = await _usuarioService.GetByEmail(usuarioDTO.EmailUsuario);
+                foreach (var usuario in usuariosDTO)
+                {
+                    if (usuario.EmailUsuario.ToUpper() == usuarioDTO.EmailUsuario.ToUpper())
+                    {
+                        return NotFound("O e-mail informado já existe!");
+                    }
+                }
+                if (usuarioDTO.EmailUsuario == "devops@developtment.com") NotFound("O e-mail informado já existe!");
+            }
+
             await _usuarioService.Update(usuarioDTO);
             return Ok(usuarioDTO);
         }

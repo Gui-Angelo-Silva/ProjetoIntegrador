@@ -11,17 +11,41 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { NavLink } from 'react-router-dom';
 import { red } from '@mui/material/colors';
+import { Redirect } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+  const baseUrl = "https://localhost:7096/api/Usuario";
+
+  const [data, setData] = useState([]);
+  const [userEmail, setUserEmail] = useState("");
+  const [userPassword, setUserPassword] = useState("");
+  const [userId, setUserId] = useState("");
+
+  const [selectUser] = useState({
+    id: "",
+    emailUsuario: "",
+    senhaUsuario: ""
+  });
+
+  const [emailError, setEmailError] = useState('');
+
+  const handleSubmit = async () => {
+    setEmailError('');
+    await axios.get(baseUrl, { emailUsuario: userEmail, senhaUsuario: userPassword })
+      .then(response => {
+        setData(response.data);
+        if (data && data.id) {
+          if (data.emailUsuario === emailUsuario && data.senhaUsuario === senhaUsuario) return <Redirect to={{ pathname: '../Home/index.jsx', state: { data } }} />;
+          else setEmailError("E-mail ou senha incorretos!");
+        } else if (typeof data === 'string') {
+          if (data.includes("E-mail ou senha incorretos!")) setEmailError("E-mail ou senha incorretos!");
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   return (
@@ -67,11 +91,13 @@ export default function SignInSide() {
                 margin="normal"
                 required
                 fullWidth
+                type="text"
                 id="email"
                 label="Email"
                 name="email"
                 autoComplete="email"
                 autoFocus
+                onChange={(e) => setUserEmail(e.target.value)}
               />
               <TextField
                 margin="normal"
@@ -82,7 +108,11 @@ export default function SignInSide() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={(e) => setUserPassword(e.target.value)}
               />
+              <br />
+              <div className="error-message">{emailError}</div>
+              <br />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Lembre de mim"
@@ -92,9 +122,11 @@ export default function SignInSide() {
                   type="submit"
                   fullWidth
                   variant='contained'
-                  sx={{ mt: 5, mb: 10, backgroundColor: '#2D636B', padding: 1.5, ":hover": {
-                    backgroundColor: red,
-                  } }}
+                  sx={{
+                    mt: 5, mb: 10, backgroundColor: '#2D636B', padding: 1.5, ":hover": {
+                      backgroundColor: red,
+                    }
+                  }}
                 >
                   Entrar
                 </Button>

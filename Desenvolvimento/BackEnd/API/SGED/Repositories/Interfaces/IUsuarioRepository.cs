@@ -5,6 +5,8 @@ public interface IUsuarioRepository
 {
     Task<IEnumerable<Usuario>> GetAll();
     Task<Usuario> GetById(int id);
+    Task<IEnumerable<Usuario>> GetByEmail(string email);
+    Task<Usuario> Login(Login login);
     Task<Usuario> Create(Usuario usuario);
     Task<Usuario> Update(Usuario usuario);
     Task<Usuario> Delete(int id);

@@ -7,8 +7,8 @@ import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import Person3Icon from '@mui/icons-material/Person3';
 import SwitchAccountIcon from '@mui/icons-material/SwitchAccount';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
-import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import DescriptionIcon from '@mui/icons-material/Description';
+import { Link} from "react-router-dom";
 
 const sidebarStyle = {
   display: 'flex',
@@ -36,10 +36,10 @@ export default function SideBar() {
             },
           }}
         >
-          <MenuItem icon={ <HomeIcon />}> Página Inicial </MenuItem>
+          <MenuItem icon={ <HomeIcon />} component={<Link to="/home"/>}> Página Inicial </MenuItem>
           <SubMenu icon={ <Person3Icon />} label="Atendente">
-            <MenuItem className='text-gray-600' icon={ <SaveAsIcon /> }>Cadastros</MenuItem>
-            <MenuItem className='text-gray-600' icon={ <DescriptionIcon /> }> Documentos</MenuItem>
+            <MenuItem className='text-gray-600' icon={ <SaveAsIcon /> } component={<Link to="/registration" />}>Cadastros</MenuItem>
+            <MenuItem className='text-gray-600' icon={ <DescriptionIcon /> } component={<Link to="/document"/>}> Documentos</MenuItem>
           </SubMenu>
           <SubMenu icon={ <SwitchAccountIcon />} label="Perfil Público">
             <MenuItem className='text-gray-600' icon={ <GroupsIcon />}> Munícipe</MenuItem>

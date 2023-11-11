@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap'
 import axios from "axios"
-import '../State/index.css'
 import SideBar from "../../components/SideBar"
 import NavBar from "../../components/NavBar"
 import "bootstrap/dist/css/bootstrap.min.css"

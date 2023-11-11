@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import axios from "axios";
-import '../User/index.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const PasswordStrengthIndicator = ({ userPassword, setUserPassword }) => {

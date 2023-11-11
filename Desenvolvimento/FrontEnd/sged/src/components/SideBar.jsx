@@ -6,6 +6,9 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import Person3Icon from '@mui/icons-material/Person3';
 import SwitchAccountIcon from '@mui/icons-material/SwitchAccount';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
+import DescriptionIcon from '@mui/icons-material/Description';
+import { Link} from "react-router-dom";
 
 const sidebarStyle = {
   display: 'flex',
@@ -33,16 +36,16 @@ export default function SideBar() {
             },
           }}
         >
-          <MenuItem icon={ <HomeIcon />}> Página Inicial </MenuItem>
+          <MenuItem icon={ <HomeIcon />} component={<Link to="/home"/>}> Página Inicial </MenuItem>
           <SubMenu icon={ <Person3Icon />} label="Atendente">
-            <MenuItem> Pie charts </MenuItem>
-            <MenuItem> Line charts </MenuItem>
+            <MenuItem className='text-gray-600' icon={ <SaveAsIcon /> } component={<Link to="/registration" />}>Cadastros</MenuItem>
+            <MenuItem className='text-gray-600' icon={ <DescriptionIcon /> } component={<Link to="/document"/>}> Documentos</MenuItem>
           </SubMenu>
           <SubMenu icon={ <SwitchAccountIcon />} label="Perfil Público">
-            <MenuItem icon={ <GroupsIcon />}> Munícipe</MenuItem>
-            <MenuItem icon={ <SupervisedUserCircleIcon />}> Fiscal </MenuItem>
-            <MenuItem icon={ <EngineeringIcon />}> Engenheiro </MenuItem>
-            <MenuItem icon={ <AssignmentIndIcon />}> Estagiário </MenuItem>
+            <MenuItem className='text-gray-600' icon={ <GroupsIcon />}> Munícipe</MenuItem>
+            <MenuItem className='text-gray-600' icon={ <SupervisedUserCircleIcon />}> Fiscal </MenuItem>
+            <MenuItem className='text-gray-600' icon={ <EngineeringIcon />}> Engenheiro </MenuItem>
+            <MenuItem className='text-gray-600' icon={ <AssignmentIndIcon />}> Estagiário </MenuItem>
           </SubMenu>
         </Menu>
       </Sidebar>

@@ -16,6 +16,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20231002133340_CriarBanco.cs" />
     <Compile Remove="Migrations\20231002133340_CriarBanco.Designer.cs" />
+    <Compile Remove="Migrations\20231028225506_Database.cs" />
+    <Compile Remove="Migrations\20231028225506_Database.Designer.cs" />
     <Compile Remove="Migrations\AppDBContextModelSnapshot.cs" />
   </ItemGroup>
 

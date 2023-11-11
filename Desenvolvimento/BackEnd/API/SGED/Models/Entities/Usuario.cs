@@ -5,10 +5,32 @@ using System.Text.Json.Serialization;
 
 namespace SGED.Models.Entities
 {
-    public class Login
+    [Table("usuario")]
+    public class Usuario
     {
-        public string Email { get; set; }
+        [Column("idusuario")]
+        public int Id { get; set; }
 
-        public string Senha { get; set; }
+        [Column("nomeusuario")]
+        public string NomeUsuario { get; set; }
+
+        [Column("emailusuario")]
+        public string EmailUsuario { get; set; }
+
+        [Column("senhausuario")]
+        public string SenhaUsuario { get; set; }
+
+        [Column("cargousuario")]
+        public string CargoUsuario { get; set; }
+
+        [Column("statususuario")]
+        public Boolean StatusUsuario { get; set; }
+
+
+        public TipoUsuario? TipoUsuario { get; set; }
+
+        [ForeignKey("idtipousuario")]
+        public int IdTipoUsuario { get; set; }
+
     }
 }

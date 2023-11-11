@@ -60,68 +60,23 @@ public class AppDBContext : DbContext
 
         // Inserções:
         modelBuilder.Entity<Estado>().HasData(
-            new Estado
-            {
-                Id = 1,
-                NomeEstado = "São Paulo",
-                UfEstado = "SP"
-            });
+            new Estado { Id = 1, NomeEstado = "São Paulo", UfEstado = "SP" }
+        );
 
         modelBuilder.Entity<Cidade>().HasData(
-           new Cidade
-           {
-               Id = 1,
-               NomeCidade = "Jales",
-               IdEstado = 1
-           });
+            new Cidade { Id = 1, NomeCidade = "Jales", IdEstado = 1 }
+        );
 
         modelBuilder.Entity<TipoUsuario>().HasData(
-            new TipoUsuario
-            {
-                Id = 1,
-                NomeTipoUsuario = "Desenvolvedor",
-                NivelAcesso = "A",
-                DescricaoTipoUsuario = "Pode efetuar todas as funcionalidades disponíveis. Voltado ao time de desenvolvimento."
-            },
-           new TipoUsuario
-           {
-               Id = 2,
-               NomeTipoUsuario = "Secretário Geral",
-               NivelAcesso = "A",
-               DescricaoTipoUsuario = "Pode efetuar todas as funcionalidades disponíveis."
-           },
-           new TipoUsuario
-           {
-               Id = 3,
-               NomeTipoUsuario = "Secretário",
-               NivelAcesso = "B",
-               DescricaoTipoUsuario = "Pode efetuar todas as funcionalidades disponíveis, porém com auditoria de ações."
-           },
-           new TipoUsuario
-           {
-               Id = 4,
-               NomeTipoUsuario = "Jurídico",
-               NivelAcesso = "C",
-               DescricaoTipoUsuario = "Apenas pode vizualidar informações."
-           },
-           new TipoUsuario
-           {
-               Id = 5,
-               NomeTipoUsuario = "Físico",
-               NivelAcesso = "D",
-               DescricaoTipoUsuario = "Apenas pode vizualidar informações, porém dados sensíveis são mascarados."
-           });
+            new TipoUsuario { Id = 1, NomeTipoUsuario = "Desenvolvedor", NivelAcesso = "A", DescricaoTipoUsuario = "Pode efetuar todas as funcionalidades disponíveis. Voltado ao time de desenvolvimento." },
+            new TipoUsuario { Id = 2, NomeTipoUsuario = "Secretário Geral", NivelAcesso = "A", DescricaoTipoUsuario = "Pode efetuar todas as funcionalidades disponíveis." },
+            new TipoUsuario { Id = 3, NomeTipoUsuario = "Secretário", NivelAcesso = "B", DescricaoTipoUsuario = "Pode efetuar todas as funcionalidades disponíveis, porém com auditoria de ações." },
+            new TipoUsuario { Id = 4, NomeTipoUsuario = "Jurídico", NivelAcesso = "C", DescricaoTipoUsuario = "Apenas pode vizualizar informações, exceto senhas." },
+            new TipoUsuario { Id = 5, NomeTipoUsuario = "Físico", NivelAcesso = "D", DescricaoTipoUsuario = "Apenas pode vizualizar informações, porém dados sensíveis são mascarados." }
+        );
 
         modelBuilder.Entity<Usuario>().HasData(
-           new Usuario
-           {
-               Id = 1,
-               NomeUsuario = "Dev",
-               EmailUsuario = "devops@developtment.com",
-               SenhaUsuario = "123456",
-               CargoUsuario = "Desenvolvimento",
-               StatusUsuario = true,
-               IdTipoUsuario = 1
-           });
+            new Usuario { Id = 1, NomeUsuario = "Dev", EmailUsuario = "devops@development.com", SenhaUsuario = "123456", CargoUsuario = "Desenvolvimento", StatusUsuario = true, IdTipoUsuario = 1 }
+        );
     }
 }

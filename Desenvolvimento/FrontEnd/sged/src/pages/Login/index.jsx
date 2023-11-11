@@ -12,8 +12,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { NavLink } from 'react-router-dom';
 import { red } from '@mui/material/colors';
 
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"
+import axios from "axios"
 import { Navigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
@@ -24,7 +24,6 @@ export default function SignInSide() {
   const [data, setData] = useState([]);
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  const [userId, setUserId] = useState("");
   const [redirectToHome, setRedirectToHome] = useState(false);
 
   const [selectUser] = useState({
@@ -40,7 +39,7 @@ export default function SignInSide() {
     setEmailError('');
 
     try {
-      const response = await axios.get(baseUrl, {
+      const response = await axios.post(baseUrl, {
         email: userEmail,
         senha: userPassword
       });
@@ -133,17 +132,17 @@ export default function SignInSide() {
                 label="Lembre de mim"
               />
               <Button
-                type="submit"
-                fullWidth
-                variant='contained'
-                sx={{
-                  mt: 5, mb: 10, backgroundColor: '#2D636B', padding: 1.5, ":hover": {
-                    backgroundColor: red,
-                  }
-                }}
-              >
-                Entrar
-              </Button>
+                  type="submit"
+                  fullWidth
+                  variant='contained'
+                  sx={{
+                    mt: 5, mb: 10, backgroundColor: '#2D636B', padding: 1.5, ":hover": {
+                      backgroundColor: red,
+                    }
+                  }}
+                >
+                  Entrar
+                </Button>
             </Box>
           </Box>
         </Grid>

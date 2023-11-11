@@ -33,7 +33,7 @@ namespace SGED.Controllers
             return Ok(usuarioDTO);
         }
 
-        [HttpGet("/Login", Name = "Login")]
+        [HttpPost("Login", Name = "Login")]
         public async Task<ActionResult<UsuarioDTO>> Login([FromBody] LoginDTO loginDTO)
         {
             if (loginDTO is null) return BadRequest("Dado inválido!");
@@ -55,7 +55,7 @@ namespace SGED.Controllers
                     return NotFound("O e-mail informado já existe!");
                 }
             }
-            if(usuarioDTO.EmailUsuario == "devops@developtment.com") NotFound("O e-mail informado já existe!");
+            if(usuarioDTO.EmailUsuario == "devops@development.com") NotFound("O e-mail informado já existe!");
 
             await _usuarioService.Create(usuarioDTO);
             return new CreatedAtRouteResult("GetUsuario", new { id = usuarioDTO.Id }, usuarioDTO);
@@ -78,7 +78,7 @@ namespace SGED.Controllers
                         return NotFound("O e-mail informado já existe!");
                     }
                 }
-                if (usuarioDTO.EmailUsuario == "devops@developtment.com") NotFound("O e-mail informado já existe!");
+                if (usuarioDTO.EmailUsuario == "devops@development.com") NotFound("O e-mail informado já existe!");
             }
 
             await _usuarioService.Update(usuarioDTO);

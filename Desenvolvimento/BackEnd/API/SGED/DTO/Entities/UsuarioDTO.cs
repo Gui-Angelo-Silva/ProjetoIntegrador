@@ -4,15 +4,36 @@ using System.Text.Json.Serialization;
 
 namespace SGED.DTO.Entities
 {
-    public class LoginDTO
+    public class UsuarioDTO
     {
+        public int Id { get; set; }
+
+        [Required(ErrorMessage = "O nome é requerido!")]
+        [MinLength(10)]
+        [MaxLength(70)]
+        public string NomeUsuario { get; set; }
+
         [Required(ErrorMessage = "O e-mail é requerido!")]
         [EmailAddress]
-        public string Email { get; set; }
+        public string EmailUsuario { get; set; }
 
         [Required(ErrorMessage = "A senha é requerida!")]
         [MinLength(6)]
         [MaxLength(50)]
-        public string Senha { get; set; }
+        public string SenhaUsuario { get; set; }
+
+        [Required(ErrorMessage = "O cargo é requerido!")]
+        [MinLength(3)]
+        [MaxLength(50)]
+        public string CargoUsuario { get; set; }
+
+        public Boolean StatusUsuario { get; set; }
+
+
+        [JsonIgnore]
+        public TipoUsuarioDTO? TipoUsuarioDTO { get; set; }
+
+        public int IdTipoUsuario { get; set; }
+
     }
 }

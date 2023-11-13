@@ -1,9 +1,20 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import axios from "axios";
+import '../User/index.css';
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useSession } from '../Session/index'
+import { useNavigate } from 'react-router-dom';
 
 const PasswordStrengthIndicator = ({ userPassword, setUserPassword }) => {
+
+    const { getToken } = useSession();
+    const navigate = useNavigate();
+
+    const VerifySession = () => {
+        if (getToken()) navigate('/');
+    };
+
     const [passwordStrength, setPasswordStrength] = useState('Fraca');
 
     const checkPasswordStrength = (password) => {
@@ -162,7 +173,7 @@ export default function User() {
     async function PutOrder() {
 
         clearErrors();
-        
+
         delete selectUser.id;
         await axios.put(baseUrl, {
             id: userId,
@@ -182,7 +193,7 @@ export default function User() {
                 console.log(error);
             });
     }
-    
+
     const DeleteOrder = async () => {
         await axios.delete(baseUrl + "/" + userId)
             .then(response => {
@@ -193,15 +204,16 @@ export default function User() {
                 console.log(error);
             });
     };
-    
+
     useEffect(() => {
         if (updateData) {
+            VerifySession();
             GetOrderUser();
             GetOrderTypeUser();
             setUpdateData(false);
         }
     }, [updateData]);
-    
+
     return (
         <div className="user-container">
             <br />
@@ -223,7 +235,7 @@ export default function User() {
                 <tbody>
                     {data.map(user => {
                         const tipoUsuario = dataTypeUser.find(typeuser => typeuser.id === user.idTipoUsuario);
-    
+
                         return (
                             <tr key={user.id}>
                                 <td>{user.nomeUsuario}</td>
@@ -295,7 +307,7 @@ export default function User() {
                     <div className="form-group">
                         <label>ID: </label><br />
                         <input type="text" className="form-control" readOnly value={userId} /> <br />
-    
+
                         <label>Nome:</label>
                         <input type="text" className="form-control" name="nomeUsuario" onChange={(e) => setUserName(e.target.value)} value={userName} />
                         <br />

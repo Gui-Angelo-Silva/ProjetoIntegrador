@@ -7,13 +7,28 @@ import Typography from '@mui/material/Typography';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import Home from '../pages/Home';
+import { useSession } from '../pages/Session/index';
+import { useEffect, useState } from "react";
 
 export default function NavBar() {
+
+  const { getSession } = useSession();
+  const [userName, setUserName] = useState("");
+
+  const GetUser = () => {
+    const user = getSession();
+    setUserName(user.nomeUsuario);
+  };
+
+  useEffect(() => {
+    GetUser();
+  }, []);
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -106,7 +121,7 @@ export default function NavBar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar style={{ backgroundColor: '#2D636B', height: 40 }}>
+        <Toolbar style={{backgroundColor: '#2D636B', height: 40}}>
           {/* <IconButton
             size="large"
             edge="start"
@@ -123,7 +138,7 @@ export default function NavBar() {
             sx={{ display: { xs: 'none', sm: 'block' }, marginLeft: 5 }}
           >
             <img className='' src='./src/assets/LogoJales.png' alt="Logo de Jales"></img>
-          </Typography>
+          </Typography> 
           <Box sx={{ flexGrow: 1 }} />
           <Typography
             variant="h6"
@@ -131,8 +146,8 @@ export default function NavBar() {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' }, marginLeft: 5 }}
           >
-            Olá, administrador!
-          </Typography>
+            Olá, { userName }!
+          </Typography> 
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton
               size="large"

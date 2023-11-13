@@ -1,11 +1,21 @@
 import { useEffect, useState } from "react"
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap'
 import axios from "axios"
+import '../State/index.css'
 import SideBar from "../../components/SideBar"
 import NavBar from "../../components/NavBar"
 import "bootstrap/dist/css/bootstrap.min.css"
+import { useSession } from '../Session/index'
+import { useNavigate } from 'react-router-dom';
 
 export default function State() {
+
+    const { getToken } = useSession();
+    const navigate = useNavigate();
+
+    const VerifySession = () => {
+        if (getToken()) navigate('/');
+    };
 
     const baseUrl = "https://localhost:7096/api/Estado"
 
@@ -106,6 +116,7 @@ export default function State() {
 
     useEffect(() => {
         if (updateData) {
+            VerifySession();
             GetOrder();
             setUpdateData(false);
         }

@@ -3,8 +3,18 @@ import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
 import axios from "axios";
 import "../City/index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useSession } from '../Session/index'
+import { useNavigate } from 'react-router-dom';
 
 export default function City() {
+
+    const { getToken } = useSession();
+    const navigate = useNavigate();
+    
+    const VerifySession = () => {
+      if (getToken()) navigate('/');
+    };
+
     const baseUrl = "https://localhost:7096/api/Cidade";
 
     const [data, setData] = useState([]);
@@ -118,6 +128,7 @@ export default function City() {
 
     useEffect(() => {
         if (updateData) {
+            VerifySession();
             GetOrder();
             GetOrderState();
             setUpdateData(false);

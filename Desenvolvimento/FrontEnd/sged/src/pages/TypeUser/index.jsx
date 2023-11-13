@@ -1,10 +1,19 @@
 import { useEffect, useState } from "react"
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap'
 import axios from "axios"
+import '../TypeUser/index.css'
 import "bootstrap/dist/css/bootstrap.min.css"
+import { useSession } from '../Session/index'
+import { useNavigate } from 'react-router-dom';
 
 export default function TypeUser() {
-    
+
+    const { getToken } = useSession();
+    const navigate = useNavigate();
+
+    const VerifySession = () => {
+        if (getToken()) navigate('/');
+    };
 
     const baseUrl = "https://localhost:7096/api/TipoUsuario"
 
@@ -23,7 +32,7 @@ export default function TypeUser() {
     const [typeUserAcessLevel, setTypeUserAcessLevel] = useState("");
 
     const [typeUserDesc, setTypeUserDesc] = useState("");
-    
+
     const [typeUserId, setTypeUserId] = useState("");
 
     const [selectTypeUser] = useState({
@@ -82,9 +91,9 @@ export default function TypeUser() {
             })
     }
 
-    async function PutOrder(){
+    async function PutOrder() {
         delete selectTypeUser.id
-        await axios.put(baseUrl, { id: typeUserId, nomeTipoUsuario: typeUserName,nivelAcesso: typeUserAcessLevel, descricaoTipoUsuario: typeUserDesc })
+        await axios.put(baseUrl, { id: typeUserId, nomeTipoUsuario: typeUserName, nivelAcesso: typeUserAcessLevel, descricaoTipoUsuario: typeUserDesc })
             .then(response => {
                 var answer = response.data
                 var aux = data
@@ -102,9 +111,9 @@ export default function TypeUser() {
     }
 
     const DeleteOrder = async () => {
-        await axios.delete(baseUrl + "/" + typeUserId) 
+        await axios.delete(baseUrl + "/" + typeUserId)
             .then(response => {
-                setData(data.filter(typeuser => typeuser.id !== response.data)); 
+                setData(data.filter(typeuser => typeuser.id !== response.data));
                 openCloseModalDelete();
             }).catch(error => {
                 console.log(error);
@@ -113,6 +122,7 @@ export default function TypeUser() {
 
     useEffect(() => {
         if (updateData) {
+            VerifySession();
             GetOrder();
             setUpdateData(false);
         }

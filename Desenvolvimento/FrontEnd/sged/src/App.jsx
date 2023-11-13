@@ -1,10 +1,12 @@
-import AppRoutes from './routes'
+import AppRoutes from './routes';
+import { SessionProvider } from './pages/Session/index.jsx';
 
 function App() {
-  
   return (
-    <AppRoutes />
-  )
+    <SessionProvider>
+      <AppRoutes />
+    </SessionProvider>
+  );
 }
 
-export default App
+export default App;

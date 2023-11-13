@@ -12,12 +12,12 @@ namespace SGED.DTO.Entities
         [MinLength(10)]
         [MaxLength(70)]
         public string NomeUsuario { get; set; }
-        
+
         [Required(ErrorMessage = "O e-mail é requerido!")]
         [EmailAddress]
         public string EmailUsuario { get; set; }
 
-        [Required(ErrorMessage = "A nome é requerida!")]
+        [Required(ErrorMessage = "A senha é requerida!")]
         [MinLength(6)]
         [MaxLength(50)]
         public string SenhaUsuario { get; set; }

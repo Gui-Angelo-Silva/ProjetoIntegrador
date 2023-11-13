@@ -29,6 +29,19 @@ public class UsuarioService : IUsuarioService
         return _mapper.Map<UsuarioDTO>(usuario);
     }
 
+    public async Task<IEnumerable<UsuarioDTO>> GetByEmail(string email)
+    {
+        var usuarios = await _usuarioRepository.GetByEmail(email);
+        return _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
+    }
+
+    public async Task<UsuarioDTO> Login(LoginDTO loginDTO)
+    {
+        var login = _mapper.Map<Login>(loginDTO);
+        var usuario = await _usuarioRepository.Login(login);
+        return _mapper.Map<UsuarioDTO>(usuario);
+    }
+
     public async Task Create(UsuarioDTO usuarioDTO)
     {
         var usuario = _mapper.Map<Usuario>(usuarioDTO);

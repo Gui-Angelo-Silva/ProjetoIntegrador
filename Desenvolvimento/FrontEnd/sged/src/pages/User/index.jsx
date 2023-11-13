@@ -3,6 +3,39 @@ import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+const PasswordStrengthIndicator = ({ userPassword, setUserPassword }) => {
+    const [passwordStrength, setPasswordStrength] = useState('Fraca');
+
+    const checkPasswordStrength = (password) => {
+        let strength = 'Fraca';
+
+        if (password.length >= 7) {
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasLowerCase = /[a-z]/.test(password);
+            const hasNumber = /\d/.test(password);
+            const hasSpecialChar = /[!@#$%^&*]/.test(password);
+
+            if (hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar) {
+                strength = 'Forte';
+            } else if ((hasUpperCase || hasLowerCase) && hasNumber && password.length >= 10) {
+                strength = 'Média';
+            }
+        }
+
+        setPasswordStrength(strength);
+    };
+
+    useEffect(() => {
+        checkPasswordStrength(userPassword);
+    }, [userPassword]);
+
+    return (
+        <div>
+            Força da Senha: <span>{passwordStrength}</span>
+        </div>
+    );
+};
+
 export default function User() {
     const baseUrl = "https://localhost:7096/api/Usuario";
 
@@ -19,6 +52,16 @@ export default function User() {
     const [userStatus, setUserStatus] = useState("");
     const [idTypeUser, setIdTypeUser] = useState("");
     const [userId, setUserId] = useState("");
+
+    const [emailError, setEmailError] = useState('');
+    const [cpfCnpjError, setCpfCnpjError] = useState('');
+    const [rgIeError, setRgIeError] = useState('');
+
+    const clearErrors = () => {
+        setEmailError('');
+        setCpfCnpjError('');
+        setRgIeError('');
+    };
 
     const [selectUser] = useState({
         id: "",
@@ -79,6 +122,9 @@ export default function User() {
     };
 
     const PostOrder = async () => {
+
+        clearErrors();
+
         delete selectUser.id;
         const postData = {
             nomeUsuario: userName,
@@ -90,8 +136,23 @@ export default function User() {
         };
         await axios.post(baseUrl, postData)
             .then(response => {
-                setData(data.concat(response.data));
-                openCloseModalInsert();
+                if (response.data && response.data.id) {
+                    setEmailError('');
+                    setCpfCnpjError('');
+                    setRgIeError('');
+                    setData(data.concat(response.data));
+                    openCloseModalInsert();
+                } else if (typeof response.data === 'string') {
+                    if (response.data.includes("O e-mail informado já existe!")) {
+                        setEmailError("O e-mail informado já existe!");
+                    }
+                    if (response.data.includes("CPF inválido!")) {
+                        setCpfError("CPF inválido!");
+                    }
+                    if (response.data.includes("CNPJ inválido!")) {
+                        setCnpjError("CNPJ inválido!");
+                    }
+                }
             })
             .catch(error => {
                 console.log(error);
@@ -99,6 +160,9 @@ export default function User() {
     }
 
     async function PutOrder() {
+
+        clearErrors();
+        
         delete selectUser.id;
         await axios.put(baseUrl, {
             id: userId,
@@ -106,7 +170,7 @@ export default function User() {
             emailUsuario: userEmail,
             senhaUsuario: userPassword,
             cargoUsuario: userOffice,
-            statusUsuario: userStatus,
+            statusUsuario: Boolean(userStatus),
             idTipoUsuario: idTypeUser
         })
             .then(response => {
@@ -118,7 +182,7 @@ export default function User() {
                 console.log(error);
             });
     }
-
+    
     const DeleteOrder = async () => {
         await axios.delete(baseUrl + "/" + userId)
             .then(response => {
@@ -129,7 +193,7 @@ export default function User() {
                 console.log(error);
             });
     };
-
+    
     useEffect(() => {
         if (updateData) {
             GetOrderUser();
@@ -137,7 +201,7 @@ export default function User() {
             setUpdateData(false);
         }
     }, [updateData]);
-
+    
     return (
         <div className="user-container">
             <br />
@@ -159,14 +223,14 @@ export default function User() {
                 <tbody>
                     {data.map(user => {
                         const tipoUsuario = dataTypeUser.find(typeuser => typeuser.id === user.idTipoUsuario);
-
+    
                         return (
                             <tr key={user.id}>
                                 <td>{user.nomeUsuario}</td>
                                 <td>{user.emailUsuario}</td>
                                 <td>{user.cargoUsuario}</td>
                                 <td>{user.statusUsuario ? 'Ativo' : 'Inativo'}</td>
-                                <td>{tipoUsuario ? tipoUsuario.nomeTipoUsuario : 'Tipo de usuário não encontrado'}</td>
+                                <td>{tipoUsuario ? tipoUsuario.nomeTipoUsuario : 'Tipo de usuário não encontrado!'}</td>
                                 <td>
                                     <button className="btn btn-primary" onClick={() => SelectUser(user, "Editar")}>Editar</button>{"  "}
                                     <button className="btn btn-danger" onClick={() => SelectUser(user, "Excluir")}>Remover</button>
@@ -187,10 +251,12 @@ export default function User() {
                         <label>E-mail:</label>
                         <br />
                         <input type="text" className="form-control" onChange={(e) => setUserEmail(e.target.value)} />
+                        <div className="error-message">{emailError}</div>
                         <br />
                         <label>Senha:</label>
                         <br />
-                        <input type="text" className="form-control" onChange={(e) => setUserPassword(e.target.value)} />
+                        <input type="password" className="form-control" onChange={(e) => setUserPassword(e.target.value)} />
+                        <PasswordStrengthIndicator userPassword={userPassword} setUserPassword={setUserPassword} />
                         <br />
                         <label>Cargo: </label>
                         <br />
@@ -229,24 +295,26 @@ export default function User() {
                     <div className="form-group">
                         <label>ID: </label><br />
                         <input type="text" className="form-control" readOnly value={userId} /> <br />
-
+    
                         <label>Nome:</label>
                         <input type="text" className="form-control" name="nomeUsuario" onChange={(e) => setUserName(e.target.value)} value={userName} />
                         <br />
                         <label>E-mail:</label>
                         <br />
                         <input type="text" className="form-control" name="emailUsuario" onChange={(e) => setUserEmail(e.target.value)} value={userEmail} />
+                        <div className="error-message">{emailError}</div>
                         <br />
                         <label>Senha:</label>
                         <br />
-                        <input type="text" className="form-control" name="senhaUsuario" onChange={(e) => setUserPassword(e.target.value)} value={userPassword} />
+                        <input type="password" className="form-control" name="senhaUsuario" onChange={(e) => setUserPassword(e.target.value)} value={userPassword} />
+                        <PasswordStrengthIndicator userPassword={userPassword} setUserPassword={setUserPassword} />
                         <br />
                         <label>Cargo:</label>
                         <input type="text" className="form-control" name="cargoUsuario" onChange={(e) => setUserOffice(e.target.value)} value={userOffice} />
                         <br />
                         <label>Status:</label>
                         <br />
-                        <select className="form-control" onChange={(e) => setUserStatus(e.target.value)}>
+                        <select className="form-control" onChange={(e) => setUserStatus(e.target.value === "true")}>
                             <option value="true" selected={userStatus === true}>Ativo</option>
                             <option value="false" selected={userStatus === false}>Inativo</option>
                         </select>
@@ -277,6 +345,6 @@ export default function User() {
                     <button className='btn btn-danger' onClick={() => openCloseModalDelete()}>Não</button>
                 </ModalFooter>
             </Modal>
-        </div>
+        </div >
     );
 }

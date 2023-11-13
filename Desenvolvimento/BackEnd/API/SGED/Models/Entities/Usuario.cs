@@ -13,7 +13,7 @@ namespace SGED.Models.Entities
 
         [Column("nomeusuario")]
         public string NomeUsuario { get; set; }
-     
+
         [Column("emailusuario")]
         public string EmailUsuario { get; set; }
 

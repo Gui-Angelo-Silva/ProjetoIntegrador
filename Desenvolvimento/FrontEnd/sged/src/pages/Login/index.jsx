@@ -12,17 +12,55 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { NavLink } from 'react-router-dom';
 import { red } from '@mui/material/colors';
 
+import { useEffect, useState } from "react"
+import axios from "axios"
+import { Navigate } from 'react-router-dom';
+
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+  const baseUrl = "https://localhost:7096/api/Usuario/Login";
+
+  const [data, setData] = useState([]);
+  const [userEmail, setUserEmail] = useState("");
+  const [userPassword, setUserPassword] = useState("");
+  const [redirectToHome, setRedirectToHome] = useState(false);
+
+  const [selectUser] = useState({
+    id: "",
+    email: "",
+    senha: ""
+  });
+
+  const [emailError, setEmailError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setEmailError('');
+
+    try {
+      const response = await axios.post(baseUrl, {
+        email: userEmail,
+        senha: userPassword
+      });
+
+      setData(response.data);
+
+      if (response.data && response.data.id) {
+        setRedirectToHome(true);
+      } else if (typeof response.data === 'string') {
+        if (response.data.includes("E-mail ou senha incorretos!")) {
+          setEmailError("E-mail ou senha incorretos!");
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
+
+  if (redirectToHome) {
+    return <Navigate to="/home" />;
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -67,11 +105,13 @@ export default function SignInSide() {
                 margin="normal"
                 required
                 fullWidth
+                type="text"
                 id="email"
                 label="Email"
                 name="email"
                 autoComplete="email"
                 autoFocus
+                onChange={(e) => setUserEmail(e.target.value)}
               />
               <TextField
                 margin="normal"
@@ -82,23 +122,27 @@ export default function SignInSide() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={(e) => setUserPassword(e.target.value)}
               />
+              <br />
+              <div className="error-message">{emailError}</div>
+              <br />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Lembre de mim"
               />
-              <NavLink to='/home'>
-                <Button
+              <Button
                   type="submit"
                   fullWidth
                   variant='contained'
-                  sx={{ mt: 5, mb: 10, backgroundColor: '#2D636B', padding: 1.5, ":hover": {
-                    backgroundColor: red,
-                  } }}
+                  sx={{
+                    mt: 5, mb: 10, backgroundColor: '#2D636B', padding: 1.5, ":hover": {
+                      backgroundColor: red,
+                    }
+                  }}
                 >
                   Entrar
                 </Button>
-              </NavLink>
             </Box>
           </Box>
         </Grid>

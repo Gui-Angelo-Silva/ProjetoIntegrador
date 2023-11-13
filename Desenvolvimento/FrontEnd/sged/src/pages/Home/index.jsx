@@ -6,11 +6,15 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
 
-  const { getToken, getSession } = useSession();
+  const { getToken, getSession, isTokenInvalid } = useSession();
   const navigate = useNavigate();
 
   const VerifySession = () => {
-    if (getToken()) navigate('/');
+    const token = getToken();
+
+    if (isTokenInvalid(token)) {
+      navigate('/');
+    }
   };
 
   const [userName, setUserName] = useState("");

@@ -14,7 +14,6 @@ import { red } from '@mui/material/colors';
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Navigate } from 'react-router-dom';
 import { useSession } from '../Session/index';
 import { useNavigate } from 'react-router-dom';
 

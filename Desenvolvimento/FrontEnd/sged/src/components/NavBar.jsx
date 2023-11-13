@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 
 export default function NavBar() {
 
-  const { getSession } = useSession();
+  const { getSession, closeSession } = useSession();
   const [userName, setUserName] = useState("");
 
   const GetUser = () => {
@@ -71,6 +71,7 @@ export default function NavBar() {
     >
       <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
       <MenuItem onClick={handleMenuClose}>Minha conta</MenuItem>
+      <MenuItem onClick={closeSession()}>Sair</MenuItem>
     </Menu>
   );
 
@@ -146,7 +147,7 @@ export default function NavBar() {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' }, marginLeft: 5 }}
           >
-            Olá, { userName }!
+            Olá, { userName }
           </Typography> 
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton

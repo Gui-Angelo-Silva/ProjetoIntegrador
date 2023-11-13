@@ -1,23 +1,4 @@
 import { useEffect, createContext, useContext } from 'react';
-import 'buffer';
-//import 'util';
-import jwt from 'jsonwebtoken';
-
-/*if (typeof util === 'undefined') {
-    var util = require('util');
-}
-
-if (!util.inherits) {
-    // Adicione um polyfill para 'util.inherits' se não estiver presente
-    util.inherits = function (ctor, superCtor) {
-        Object.setPrototypeOf(ctor.prototype, superCtor.prototype);
-        Object.defineProperty(ctor.prototype, 'constructor', {
-            value: ctor,
-            enumerable: false,
-            writable: true,
-        });
-    }
-};*/
 
 const SessionContext = createContext();
 
@@ -32,25 +13,35 @@ export const useSession = () => {
 export const SessionProvider = ({ children }) => {
 
     const defaultSession = () => {
-        sessionStorage.setItem('token', false);
+        sessionStorage.setItem('token', null);
     };
 
     useEffect(() => {
         defaultSession();
     }, []);
 
-    const generateToken = (data) => {
-        //const jwt = require('jsonwebtoken');
-        const user = { email: data.emailUsuario, senha: data.senhaUsuario };
-        const key = 'Desenvolvimento';
-        const time = { expiresIn: '1h' };
+    const base64UrlEncode = (data) => {
+        let base64 = btoa(JSON.stringify(data));
+        base64 = base64.replace('+', '-').replace('/', '_').replace(/=+$/, '');
+        return base64;
+    };
 
-        const token = jwt.sign(user, key, time);
-        return token;
+    const generateToken = (payload, secret, expiresIn) => {
+        const header = {
+            alg: 'HS256',
+            typ: 'JWT',
+        };
+    
+        const encodedHeader = base64UrlEncode(header);
+        const encodedPayload = base64UrlEncode({ ...payload, exp: Math.floor(Date.now() / 1000) + expiresIn });
+    
+        const signature = btoa(`${encodedHeader}.${encodedPayload}.${secret}`);
+        
+        return `${encodedHeader}.${encodedPayload}.${signature}`;
     };
 
     const createSession = (data) => {
-        const token = generateToken(data);
+        const token = generateToken({ emailUsuario: data.emailUsuario, senhaUsuario: data.senhaUsuario }, "Dev", 1);
         sessionStorage.setItem('token', token);
         sessionStorage.setItem('user', JSON.stringify(data));
     };
@@ -58,6 +49,41 @@ export const SessionProvider = ({ children }) => {
     const getToken = () => {
         const token = sessionStorage.getItem('token');
         return token;
+    };
+
+    const isTokenInvalid = (token) => {
+        if (!token) {
+            // Token está ausente
+            return true;
+        }
+    
+        const tokenParts = token.split('.');
+        
+        if (tokenParts.length !== 3) {
+            // O token não possui as três partes esperadas (header, payload, signature)
+            return true;
+        }
+    
+        const [encodedHeader, encodedPayload, signature] = tokenParts;
+    
+        try {
+            // Decodificar as partes do token
+            const decodedHeader = atob(encodedHeader);
+            const decodedPayload = atob(encodedPayload);
+    
+            // Verificar se o token está expirado (a lógica exata pode depender do conteúdo do payload)
+            const payload = JSON.parse(decodedPayload);
+            if (payload.exp && payload.exp < Date.now() / 1000) {
+                return true; // Token expirado
+            }
+    
+        } catch (error) {
+            // Um erro ocorreu ao decodificar as partes do token
+            return true;
+        }
+    
+        // O token não é inválido
+        return false;
     };
 
     const getSession = () => {
@@ -76,6 +102,7 @@ export const SessionProvider = ({ children }) => {
         generateToken,
         createSession,
         getToken,
+        isTokenInvalid,
         getSession,
         closeSession,
     };

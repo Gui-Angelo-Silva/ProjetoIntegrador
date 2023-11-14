@@ -14,7 +14,6 @@ import { red } from '@mui/material/colors';
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Navigate } from 'react-router-dom';
 import { useSession } from '../Session/index';
 import { useNavigate } from 'react-router-dom';
 
@@ -27,10 +26,25 @@ export default function SignInSide() {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [redirectToHome, setRedirectToHome] = useState(false);
+  const [persistLogin, setPersistLogin] = useState(false);
   const [emailError, setEmailError] = useState('');
 
-  const { createSession } = useSession();
+  const { createSession, persistsLogin, getLogin } = useSession();
   const navigate = useNavigate();
+
+  const getDataLogin = () => {
+    const data = JSON.parse(getLogin());
+    if (data && data.persist) {
+      setUserEmail(data.emailUsuario);
+      setUserPassword(data.senhaUsuario);
+      setPersistLogin(true);
+    }
+  };
+
+  const handlePersistLoginChange = (e) => {
+    const checked = e.target.checked;
+    setPersistLogin(checked);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,6 +60,14 @@ export default function SignInSide() {
 
       if (data && data.id) {
         createSession(data);
+
+        if (persistLogin) {
+          const login = { email: userEmail, senha: userPassword };
+          persistsLogin(login);
+        } else {
+          localStorage.removeItem('login');
+        }
+
         navigate('/home');
       } else if (typeof response.data === 'string') {
         if (response.data.includes("E-mail ou senha incorretos!")) {
@@ -56,6 +78,10 @@ export default function SignInSide() {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    getDataLogin();
+  }, []);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -107,6 +133,7 @@ export default function SignInSide() {
                 autoComplete="email"
                 autoFocus
                 onChange={(e) => setUserEmail(e.target.value)}
+                value={userEmail}
               />
               <TextField
                 margin="normal"
@@ -118,26 +145,28 @@ export default function SignInSide() {
                 id="password"
                 autoComplete="current-password"
                 onChange={(e) => setUserPassword(e.target.value)}
+                value={userPassword}
               />
               <br />
               <div className="error-message">{emailError}</div>
               <br />
               <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
+                control={<Checkbox value="remember" color="primary" checked={persistLogin} />}
+                onChange={handlePersistLoginChange}
                 label="Lembre de mim"
               />
               <Button
-                  type="submit"
-                  fullWidth
-                  variant='contained'
-                  sx={{
-                    mt: 5, mb: 10, backgroundColor: '#2D636B', padding: 1.5, ":hover": {
-                      backgroundColor: red,
-                    }
-                  }}
-                >
-                  Entrar
-                </Button>
+                type="submit"
+                fullWidth
+                variant='contained'
+                sx={{
+                  mt: 5, mb: 10, backgroundColor: '#2D636B', padding: 1.5, ":hover": {
+                    backgroundColor: red,
+                  }
+                }}
+              >
+                Entrar
+              </Button>
             </Box>
           </Box>
         </Grid>

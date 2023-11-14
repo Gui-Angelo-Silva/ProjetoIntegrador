@@ -13,7 +13,7 @@ export const useSession = () => {
 export const SessionProvider = ({ children }) => {
 
     const defaultSession = () => {
-        localStorage.setItem('token', false);
+        sessionStorage.setItem('token', false);
     };
 
     const base64UrlEncode = (data) => {
@@ -38,12 +38,22 @@ export const SessionProvider = ({ children }) => {
 
     const createSession = (data) => {
         const token = generateToken({ emailUsuario: data.emailUsuario, senhaUsuario: data.senhaUsuario }, "Dev", 1);
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(data));
+        sessionStorage.setItem('token', token);
+        sessionStorage.setItem('user', JSON.stringify(data));
+    };
+
+    const persistsLogin = (data) => {
+        const login = { persist: true, emailUsuario: data.email, senhaUsuario: data.senha };
+        localStorage.setItem('login', JSON.stringify(login));
+    };
+
+    const getLogin = () => {
+        const login = localStorage.getItem('login');
+        return login;
     };
 
     const getToken = () => {
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         return token;
     };
 
@@ -57,13 +67,13 @@ export const SessionProvider = ({ children }) => {
     };
 
     const getSession = () => {
-        const session = localStorage.getItem('user');
+        const session = sessionStorage.getItem('user');
         return session ? JSON.parse(session) : null;
     };
 
     const closeSession = () => {
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
+        sessionStorage.removeItem('user');
+        sessionStorage.removeItem('token');
         defaultSession();
     };
 
@@ -71,6 +81,8 @@ export const SessionProvider = ({ children }) => {
         defaultSession,
         generateToken,
         createSession,
+        persistsLogin,
+        getLogin,
         getToken,
         isTokenValid,
         getSession,

@@ -1,9 +1,48 @@
-import SideBar from "../../components/SideBar"
-import NavBar from "../../components/NavBar"
-import Seta from '../../assets/setaPraDireita.png'
+import SideBar from "../../components/SideBar";
+import NavBar from "../../components/NavBar";
+import Seta from '../../assets/setaPraDireita.png';
 import { FaAngleRight, FaTableCellsLarge, FaFile } from "react-icons/fa6";
+import { useSession } from '../Session/index';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
 
 export default function Home() {
+
+  const { getToken, getSession, isTokenValid } = useSession();
+  const navigate = useNavigate();
+
+  const VerifySession = () => {
+    const token = getToken();
+    if (isTokenValid(token)) {
+      navigate('/');
+    }
+  };
+
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [userPassword, setUserPassword] = useState("");
+  const [userOffice, setUserOffice] = useState("");
+  const [userStatus, setUserStatus] = useState("");
+  const [idTypeUser, setIdTypeUser] = useState("");
+  const [userId, setUserId] = useState("");
+
+  const GetUser = () => {
+
+    const user = getSession();
+
+    setUserId(user.id);
+    setUserName(user.nomeUsuario);
+    setUserEmail(user.emailUsuario);
+    setUserPassword(user.senhaUsuario);
+    setUserOffice(user.cargoUsuario);
+    setUserStatus(user.statusUsuario);
+    setIdTypeUser(user.idTipoUsuario);
+  };
+
+  useEffect(() => {
+    VerifySession();
+    GetUser();
+  }, [getToken]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>

@@ -14,15 +14,23 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { useSession } from '../pages/Session/index';
 import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 export default function NavBar() {
 
-  const { getSession, closeSession } = useSession();
+  const { getSession, closeSession, defaultSession } = useSession();
+  const navigate = useNavigate();
   const [userName, setUserName] = useState("");
 
   const GetUser = () => {
     const user = getSession();
     setUserName(user.nomeUsuario);
+  };
+
+  const encerateSession = () => {
+    closeSession();
+    defaultSession();
+    navigate('/');
   };
 
   useEffect(() => {
@@ -71,7 +79,7 @@ export default function NavBar() {
     >
       <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
       <MenuItem onClick={handleMenuClose}>Minha conta</MenuItem>
-      <MenuItem onClick={closeSession()}>Sair</MenuItem>
+      <MenuItem onClick={encerateSession}>Sair</MenuItem>
     </Menu>
   );
 

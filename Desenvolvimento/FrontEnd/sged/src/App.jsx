@@ -1,11 +1,17 @@
 import AppRoutes from './routes';
-import { SessionProvider } from './pages/Session/index.jsx';
+//import { useSession } from './pages/Session/index.jsx';
+//import { useEffect } from "react";
 
 function App() {
+
+  /*const { defaultSession } = useSession();
+
+  useEffect(() => {
+    defaultSession();
+  }, []);*/
+
   return (
-    <SessionProvider>
       <AppRoutes />
-    </SessionProvider>
   );
 }
 

@@ -8,11 +8,14 @@ import { useNavigate } from 'react-router-dom';
 
 export default function City() {
 
-    const { getToken } = useSession();
+    const { getToken, getSession, isTokenValid } = useSession();
     const navigate = useNavigate();
-    
+
     const VerifySession = () => {
-      if (getToken()) navigate('/');
+        const token = getToken();
+        if (isTokenValid(token)) {
+            navigate('/');
+        }
     };
 
     const baseUrl = "https://localhost:7096/api/Cidade";

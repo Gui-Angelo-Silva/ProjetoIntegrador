@@ -6,13 +6,12 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
 
-  const { getToken, getSession, isTokenInvalid } = useSession();
+  const { getToken, getSession, isTokenValid } = useSession();
   const navigate = useNavigate();
 
   const VerifySession = () => {
     const token = getToken();
-
-    if (isTokenInvalid(token)) {
+    if (isTokenValid(token)) {
       navigate('/');
     }
   };
@@ -41,7 +40,7 @@ export default function Home() {
   useEffect(() => {
     VerifySession();
     GetUser();
-  }, []);
+  }, [getToken]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>

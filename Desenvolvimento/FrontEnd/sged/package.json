@@ -21,7 +21,6 @@
     "buffer": "^6.0.3",
     "flowbite": "^1.8.1",
     "flowbite-react": "^0.6.4",
-    "jsonwebtoken": "^9.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",

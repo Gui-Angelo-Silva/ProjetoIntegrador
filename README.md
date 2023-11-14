@@ -11,7 +11,9 @@
 <br />
 ✔️ Sprint 3 - Completa.
 <br />
-🚧 Sprint 4 - Em desenvolvimento.
+✔️ Sprint 4 - Completa.
+<br />
+🚧 Sprint 5 - Em desenvolvimento.
 
 <br />
 

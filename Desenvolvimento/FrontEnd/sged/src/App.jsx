@@ -1,10 +1,18 @@
-import AppRoutes from './routes'
+import AppRoutes from './routes';
+//import { useSession } from './pages/Session/index.jsx';
+//import { useEffect } from "react";
 
 function App() {
-  
+
+  /*const { defaultSession } = useSession();
+
+  useEffect(() => {
+    defaultSession();
+  }, []);*/
+
   return (
-    <AppRoutes />
-  )
+      <AppRoutes />
+  );
 }
 
-export default App
+export default App;

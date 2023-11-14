@@ -12,9 +12,11 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { NavLink } from 'react-router-dom';
 import { red } from '@mui/material/colors';
 
-import { useEffect, useState } from "react"
-import axios from "axios"
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { Navigate } from 'react-router-dom';
+import { useSession } from '../Session/index';
+import { useNavigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
@@ -25,14 +27,10 @@ export default function SignInSide() {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [redirectToHome, setRedirectToHome] = useState(false);
-
-  const [selectUser] = useState({
-    id: "",
-    email: "",
-    senha: ""
-  });
-
   const [emailError, setEmailError] = useState('');
+
+  const { createSession } = useSession();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,8 +44,9 @@ export default function SignInSide() {
 
       setData(response.data);
 
-      if (response.data && response.data.id) {
-        setRedirectToHome(true);
+      if (data && data.id) {
+        createSession(data);
+        navigate('/home');
       } else if (typeof response.data === 'string') {
         if (response.data.includes("E-mail ou senha incorretos!")) {
           setEmailError("E-mail ou senha incorretos!");
@@ -57,10 +56,6 @@ export default function SignInSide() {
       console.error(error);
     }
   };
-
-  if (redirectToHome) {
-    return <Navigate to="/home" />;
-  }
 
   return (
     <ThemeProvider theme={defaultTheme}>

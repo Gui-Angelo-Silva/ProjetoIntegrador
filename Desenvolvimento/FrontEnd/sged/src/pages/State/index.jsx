@@ -5,12 +5,10 @@ import '../State/index.css'
 import SideBar from "../../components/SideBar"
 import NavBar from "../../components/NavBar"
 import "bootstrap/dist/css/bootstrap.min.css"
-<<<<<<< HEAD
-import { useSession } from '../Session/index'
-import { useNavigate } from 'react-router-dom';
-=======
 import { Link } from "react-router-dom"
->>>>>>> d5f414cf72a013b6b39b9efa75c880a6d55557af
+
+import { useSession } from '../Session/index'
+import { useNavigate } from 'react-router-dom'
 
 export default function State() {
 

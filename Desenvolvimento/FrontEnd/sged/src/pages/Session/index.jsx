@@ -22,22 +22,7 @@ export const SessionProvider = ({ children }) => {
         return base64;
     };
 
-    const generateToken = (payload, secret, expiresIn) => {
-        const header = {
-            alg: 'HS256',
-            typ: 'JWT',
-        };
-
-        const encodedHeader = base64UrlEncode(header);
-        const encodedPayload = base64UrlEncode({ ...payload, exp: Math.floor(Date.now() / 1000) + expiresIn });
-
-        const signature = btoa(`${encodedHeader}.${encodedPayload}.${secret}`);
-
-        return `${encodedHeader}.${encodedPayload}.${signature}`;
-    };
-
-    const createSession = (data) => {
-        const token = generateToken({ emailUsuario: data.emailUsuario, senhaUsuario: data.senhaUsuario }, "Dev", 1);
+    const createSession = (token, data) => {
         sessionStorage.setItem('token', token);
         sessionStorage.setItem('user', JSON.stringify(data));
     };
@@ -59,11 +44,11 @@ export const SessionProvider = ({ children }) => {
 
     const isTokenValid = (token) => {
         if (!token) {
-            return true;
+            return false;
         }
 
         const tokenParts = token.split('.');
-        return tokenParts.length === 3? false : true;
+        return tokenParts.length === 3;
     };
 
     const getSession = () => {
@@ -79,7 +64,6 @@ export const SessionProvider = ({ children }) => {
 
     const value = {
         defaultSession,
-        generateToken,
         createSession,
         persistsLogin,
         getLogin,

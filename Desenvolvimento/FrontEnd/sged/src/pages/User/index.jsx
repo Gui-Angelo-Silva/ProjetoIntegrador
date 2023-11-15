@@ -13,7 +13,7 @@ const PasswordStrengthIndicator = ({ userPassword, setUserPassword }) => {
 
     const VerifySession = () => {
         const token = getToken();
-        if (isTokenValid(token)) {
+        if (!isTokenValid(token)) {
             navigate('/');
         }
     };

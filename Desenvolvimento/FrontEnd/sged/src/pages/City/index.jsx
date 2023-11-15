@@ -13,7 +13,7 @@ export default function City() {
 
     const VerifySession = () => {
         const token = getToken();
-        if (isTokenValid(token)) {
+        if (!isTokenValid(token)) {
             navigate('/');
         }
     };

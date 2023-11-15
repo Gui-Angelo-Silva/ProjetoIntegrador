@@ -1,5 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace SGED.DTO.Entities
@@ -14,5 +18,6 @@ namespace SGED.DTO.Entities
         [MinLength(6)]
         [MaxLength(50)]
         public string Senha { get; set; }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SGED.DTO.Entities;
 using SGED.Services.Interfaces;
 
@@ -7,6 +8,7 @@ namespace SGED.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize("ApiScope")]
     public class MunicipeController : Controller
     {
 

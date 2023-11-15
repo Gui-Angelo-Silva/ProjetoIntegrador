@@ -17,7 +17,7 @@ export default function State() {
 
     const VerifySession = () => {
         const token = getToken();
-        if (isTokenValid(token)) {
+        if (!isTokenValid(token)) {
             navigate('/');
         }
     };

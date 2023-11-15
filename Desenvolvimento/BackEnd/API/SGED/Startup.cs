@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using System.Text;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace SGED
 {
@@ -134,7 +135,20 @@ namespace SGED
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sua API V1");
+                    // Adicione essas linhas para habilitar o botão "Authorize"
+                    c.DocExpansion(DocExpansion.None);
+                    c.DisplayRequestDuration();
+                    c.EnableDeepLinking();
+                    c.EnableFilter();
+                    c.ShowExtensions();
+                    c.EnableValidator();
+                    c.SupportedSubmitMethods(SubmitMethod.Get, SubmitMethod.Post, SubmitMethod.Put, SubmitMethod.Delete);
+                    c.OAuthClientId("swagger-ui");
+                    c.OAuthAppName("Swagger UI");
+                });
             }
             else
             {
@@ -154,9 +168,7 @@ namespace SGED
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
             });
         }
     }

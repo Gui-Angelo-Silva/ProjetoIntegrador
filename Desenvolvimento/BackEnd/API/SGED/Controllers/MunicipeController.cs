@@ -8,7 +8,7 @@ namespace SGED.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize("ApiScope")]
+    //[Authorize("ApiScope")]
     public class MunicipeController : Controller
     {
 

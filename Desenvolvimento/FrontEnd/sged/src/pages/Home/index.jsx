@@ -1,6 +1,5 @@
 import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
-import Seta from '../../assets/setaPraDireita.png';
 import { FaAngleRight, FaTableCellsLarge, FaFile } from "react-icons/fa6";
 import { useSession } from '../Session/index';
 import { useNavigate } from 'react-router-dom';
@@ -42,7 +41,7 @@ export default function Home() {
   useEffect(() => {
     VerifySession();
     GetUser();
-  }, [getToken]);
+  }, []);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>

@@ -47,6 +47,9 @@ export const SessionProvider = ({ children }) => {
             return false;
         }
 
+        //const jwt = require('jsonwebtoken');
+        //const payload = jwt.decode(token, { complete: true });
+
         const tokenParts = token.split('.');
         return tokenParts.length === 3;
     };
@@ -62,6 +65,25 @@ export const SessionProvider = ({ children }) => {
         defaultSession();
     };
 
+    const getAuthConfig = () => {
+        const token = getToken();
+      
+        if (token) {
+          return {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            }
+          };
+        } else {
+          return {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          };
+        }
+      };
+
     const value = {
         defaultSession,
         createSession,
@@ -71,6 +93,7 @@ export const SessionProvider = ({ children }) => {
         isTokenValid,
         getSession,
         closeSession,
+        getAuthConfig,
     };
 
     return (

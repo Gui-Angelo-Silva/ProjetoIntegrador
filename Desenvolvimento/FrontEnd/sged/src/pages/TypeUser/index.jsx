@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function TypeUser() {
 
-    const { getToken, getSession, isTokenValid } = useSession();
+    const { getToken, isTokenValid, getAuthConfig } = useSession();
     const navigate = useNavigate();
 
     const VerifySession = () => {
@@ -72,7 +72,7 @@ export default function TypeUser() {
     }
 
     const GetOrder = async () => {
-        await axios.get(baseUrl)
+        await axios.get(baseUrl, getAuthConfig())
             .then(response => {
                 setData(response.data)
             }).catch(error => {
@@ -85,7 +85,7 @@ export default function TypeUser() {
 
     const PostOrder = async () => {
         delete selectTypeUser.id
-        await axios.post(baseUrl, { nomeTipoUsuario: typeUserName, nivelAcesso: typeUserAcessLevel, descricaoTipoUsuario: typeUserDesc })
+        await axios.post(baseUrl, { nomeTipoUsuario: typeUserName, nivelAcesso: typeUserAcessLevel, descricaoTipoUsuario: typeUserDesc }, getAuthConfig())
             .then(response => {
                 setData(data.concat(response.data));
                 openCloseModalInsert();
@@ -96,7 +96,7 @@ export default function TypeUser() {
 
     async function PutOrder() {
         delete selectTypeUser.id
-        await axios.put(baseUrl, { id: typeUserId, nomeTipoUsuario: typeUserName, nivelAcesso: typeUserAcessLevel, descricaoTipoUsuario: typeUserDesc })
+        await axios.put(baseUrl, { id: typeUserId, nomeTipoUsuario: typeUserName, nivelAcesso: typeUserAcessLevel, descricaoTipoUsuario: typeUserDesc }, getAuthConfig())
             .then(response => {
                 var answer = response.data
                 var aux = data
@@ -114,7 +114,7 @@ export default function TypeUser() {
     }
 
     const DeleteOrder = async () => {
-        await axios.delete(baseUrl + "/" + typeUserId)
+        await axios.delete(baseUrl + "/" + typeUserId, getAuthConfig())
             .then(response => {
                 setData(data.filter(typeuser => typeuser.id !== response.data));
                 openCloseModalDelete();

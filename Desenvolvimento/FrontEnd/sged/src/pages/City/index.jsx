@@ -8,12 +8,12 @@ import { useNavigate } from 'react-router-dom';
 
 export default function City() {
 
-    const { getToken, getSession, isTokenValid } = useSession();
+    const { getToken, isTokenValid, getAuthConfig } = useSession();
     const navigate = useNavigate();
 
     const VerifySession = () => {
         const token = getToken();
-        if (isTokenValid(token)) {
+        if (!isTokenValid(token)) {
             navigate('/');
         }
     };
@@ -72,7 +72,7 @@ export default function City() {
 
     const GetOrderState = async () => {
         await axios
-            .get("https://localhost:7096/api/Estado")
+            .get("https://localhost:7096/api/Estado", getAuthConfig())
             .then((response) => {
                 setDataState(response.data);
             })
@@ -83,7 +83,7 @@ export default function City() {
 
     const PostOrder = async () => {
         await axios
-            .post(baseUrl, { nomeCidade: cityName, idEstado: idState })
+            .post(baseUrl, { nomeCidade: cityName, idEstado: idState }, getAuthConfig())
             .then((response) => {
                 setData([...data, response.data]);
                 openCloseModalInsert();
@@ -99,7 +99,7 @@ export default function City() {
                 id: cityId,
                 nomeCidade: cityName,
                 idEstado: idState,
-            })
+            }, getAuthConfig())
             .then((response) => {
                 setData((previousData) =>
                     previousData.map((city) =>
@@ -117,7 +117,7 @@ export default function City() {
 
     const DeleteOrder = async () => {
         await axios
-            .delete(baseUrl + "/" + cityId)
+            .delete(baseUrl + "/" + cityId, getAuthConfig())
             .then(() => {
                 setData((previousData) =>
                     previousData.filter((city) => city.id !== cityId)

@@ -1,12 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using SGED.DTO.Entities;
+using SGED.Models.Entities;
 using SGED.Services.Interfaces;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace SGED.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize("ApiScope")]
     public class UsuarioController : Controller
     {
 
@@ -33,20 +39,10 @@ namespace SGED.Controllers
             return Ok(usuarioDTO);
         }
 
-        [HttpPost("Login", Name = "Login")]
-        public async Task<ActionResult<UsuarioDTO>> Login([FromBody] LoginDTO loginDTO)
-        {
-            if (loginDTO is null) return BadRequest("Dado inválido!");
-            var usuarioDTO = await _usuarioService.Login(loginDTO);
-            if (usuarioDTO == null) return NotFound("E-mail ou senha incorretos!");
-            return Ok(usuarioDTO);
-        }
-
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] UsuarioDTO usuarioDTO)
         {
             if (usuarioDTO is null) return BadRequest("Dado inválido!");
-
             var usuariosDTO = await _usuarioService.GetByEmail(usuarioDTO.EmailUsuario);
             foreach (var usuario in usuariosDTO)
             {

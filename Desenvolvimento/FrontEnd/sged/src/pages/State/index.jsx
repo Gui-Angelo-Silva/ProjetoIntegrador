@@ -12,12 +12,12 @@ import { FaPlus } from "react-icons/fa6";
 
 export default function State() {
 
-    const { getToken, getSession, isTokenValid } = useSession();
+    const { getToken, isTokenValid, getAuthConfig } = useSession();
     const navigate = useNavigate();
 
     const VerifySession = () => {
         const token = getToken();
-        if (isTokenValid(token)) {
+        if (!isTokenValid(token)) {
             navigate('/');
         }
     };
@@ -72,7 +72,7 @@ export default function State() {
     }
 
     const GetOrder = async () => {
-        await axios.get(baseUrl)
+        await axios.get(baseUrl, getAuthConfig())
             .then(response => {
                 setData(response.data)
             }).catch(error => {
@@ -82,7 +82,7 @@ export default function State() {
 
     const PostOrder = async () => {
         delete selectState.id
-        await axios.post(baseUrl, { nomeEstado: stateName, ufEstado: stateUf })
+        await axios.post(baseUrl, { nomeEstado: stateName, ufEstado: stateUf }, getAuthConfig())
             .then(response => {
                 setData(data.concat(response.data));
                 openCloseModalInsert();
@@ -93,7 +93,7 @@ export default function State() {
 
     async function PutOrder() {
         delete selectState.id
-        await axios.put(baseUrl, { id: stateId, nomeEstado: stateName, ufEstado: stateUf })
+        await axios.put(baseUrl, { id: stateId, nomeEstado: stateName, ufEstado: stateUf }, getAuthConfig())
             .then(response => {
                 var answer = response.data
                 var aux = data
@@ -110,7 +110,7 @@ export default function State() {
     }
 
     const DeleteOrder = async () => {
-        await axios.delete(baseUrl + "/" + stateId)
+        await axios.delete(baseUrl + "/" + stateId, getAuthConfig())
             .then(response => {
                 setData(data.filter(state => state.id !== response.data));
                 openCloseModalDelete();

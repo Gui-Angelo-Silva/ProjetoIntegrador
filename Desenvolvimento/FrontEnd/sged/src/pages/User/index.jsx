@@ -6,17 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useSession } from '../Session/index'
 import { useNavigate } from 'react-router-dom';
 
-const PasswordStrengthIndicator = ({ userPassword, setUserPassword }) => {
-
-    const { getToken, getSession, isTokenValid } = useSession();
-    const navigate = useNavigate();
-
-    const VerifySession = () => {
-        const token = getToken();
-        if (isTokenValid(token)) {
-            navigate('/');
-        }
-    };
+const PasswordStrengthIndicator = ({ data }) => {
 
     const [passwordStrength, setPasswordStrength] = useState('Fraca');
 
@@ -40,9 +30,8 @@ const PasswordStrengthIndicator = ({ userPassword, setUserPassword }) => {
     };
 
     useEffect(() => {
-        VerifySession();
-        checkPasswordStrength(userPassword);
-    }, [userPassword]);
+        checkPasswordStrength(data);
+    }, [data]);
 
     return (
         <div>
@@ -52,6 +41,17 @@ const PasswordStrengthIndicator = ({ userPassword, setUserPassword }) => {
 };
 
 export default function User() {
+
+    const { getToken, isTokenValid, getAuthConfig } = useSession();
+    const navigate = useNavigate();
+
+    const VerifySession = () => {
+        const token = getToken();
+        if (!isTokenValid(token)) {
+            navigate('/');
+        }
+    };
+
     const baseUrl = "https://localhost:7096/api/Usuario";
 
     const [data, setData] = useState([]);
@@ -69,13 +69,9 @@ export default function User() {
     const [userId, setUserId] = useState("");
 
     const [emailError, setEmailError] = useState('');
-    const [cpfCnpjError, setCpfCnpjError] = useState('');
-    const [rgIeError, setRgIeError] = useState('');
 
     const clearErrors = () => {
         setEmailError('');
-        setCpfCnpjError('');
-        setRgIeError('');
     };
 
     const [selectUser] = useState({
@@ -105,7 +101,7 @@ export default function User() {
     };
 
     const GetOrderTypeUser = async () => {
-        await axios.get("https://localhost:7096/api/TipoUsuario")
+        await axios.get("https://localhost:7096/api/TipoUsuario", getAuthConfig())
             .then(response => {
                 setDataTypeUser(response.data);
             })
@@ -127,7 +123,7 @@ export default function User() {
     };
 
     const GetOrderUser = async () => {
-        await axios.get(baseUrl)
+        await axios.get(baseUrl, getAuthConfig())
             .then(response => {
                 setData(response.data);
             })
@@ -149,25 +145,10 @@ export default function User() {
             statusUsuario: Boolean(userStatus),
             idTipoUsuario: idTypeUser
         };
-        await axios.post(baseUrl, postData)
+        await axios.post(baseUrl, postData, getAuthConfig())
             .then(response => {
-                if (response.data && response.data.id) {
-                    setEmailError('');
-                    setCpfCnpjError('');
-                    setRgIeError('');
-                    setData(data.concat(response.data));
-                    openCloseModalInsert();
-                } else if (typeof response.data === 'string') {
-                    if (response.data.includes("O e-mail informado já existe!")) {
-                        setEmailError("O e-mail informado já existe!");
-                    }
-                    if (response.data.includes("CPF inválido!")) {
-                        setCpfError("CPF inválido!");
-                    }
-                    if (response.data.includes("CNPJ inválido!")) {
-                        setCnpjError("CNPJ inválido!");
-                    }
-                }
+                setData(data.concat(response.data));
+                openCloseModalInsert();
             })
             .catch(error => {
                 console.log(error);
@@ -187,7 +168,7 @@ export default function User() {
             cargoUsuario: userOffice,
             statusUsuario: Boolean(userStatus),
             idTipoUsuario: idTypeUser
-        })
+        }, getAuthConfig())
             .then(response => {
                 var answer = response.data;
                 setData(data.map(user => user.id === selectUser.id ? answer : user));
@@ -199,7 +180,7 @@ export default function User() {
     }
 
     const DeleteOrder = async () => {
-        await axios.delete(baseUrl + "/" + userId)
+        await axios.delete(baseUrl + "/" + userId, getAuthConfig())
             .then(response => {
                 setData(data.filter(user => user.id !== response.data));
                 openCloseModalDelete();

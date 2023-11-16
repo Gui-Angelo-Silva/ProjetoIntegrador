@@ -9,53 +9,112 @@ import Grid from '@mui/material/Grid';
 import background from '../../assets/imgTelaDeLogin.png';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { NavLink } from 'react-router-dom';
 import { red } from '@mui/material/colors';
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Navigate } from 'react-router-dom';
 import { useSession } from '../Session/index';
 import { useNavigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
-  const baseUrl = "https://localhost:7096/api/Usuario/Login";
+  const baseUrl = "https://localhost:7096/api/Login";
 
-  const [data, setData] = useState([]);
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  const [redirectToHome, setRedirectToHome] = useState(false);
+  const [persistLogin, setPersistLogin] = useState(false);
   const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [loginError, setLoginError] = useState('');
 
-  const { createSession } = useSession();
+  const { isTokenValid, createSession, persistsLogin, getLogin } = useSession();
   const navigate = useNavigate();
+
+  const getDataLogin = () => {
+    const data = JSON.parse(getLogin());
+    if (data && data.persist) {
+      setUserEmail(data.emailUsuario);
+      setUserPassword(data.senhaUsuario);
+      setPersistLogin(true);
+    }
+  };
+
+  const handlePersistLoginChange = (e) => {
+    const checked = e.target.checked;
+    setPersistLogin(checked);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setEmailError('');
-
-    try {
-      const response = await axios.post(baseUrl, {
-        email: userEmail,
-        senha: userPassword
-      });
-
-      setData(response.data);
-
-      if (data && data.id) {
-        createSession(data);
-        navigate('/home');
-      } else if (typeof response.data === 'string') {
-        if (response.data.includes("E-mail ou senha incorretos!")) {
-          setEmailError("E-mail ou senha incorretos!");
+    setPasswordError('');
+    setLoginError('');
+  
+    if (!userEmail) {
+      setEmailError('Informe o e-mail!');
+    }
+  
+    if (!userPassword) {
+      setPasswordError('Informe a senha!');
+    }
+  
+    if (userEmail && (!userEmail.includes('@') || !userEmail.includes('.') || userEmail.indexOf('.') < userEmail.indexOf('@'))) {
+      setEmailError('Insira um email válido!');
+    }
+  
+    if (userPassword && userPassword.length < 6) {
+      setPasswordError('A senha deve ter pelo menos 6 caracteres!');
+    }
+  
+    if (!emailError && !passwordError) {
+      try {
+        const response = await axios.post(baseUrl, {
+          email: userEmail,
+          senha: userPassword
+        });
+  
+        if (response.status === 200) {
+          const data = response.data;
+  
+          if (isTokenValid(data.token)) {
+            createSession(data.token, data.usuario);
+          } else {
+            console.error('Token inválido!');
+          }
+  
+          if (persistLogin) {
+            const login = { email: userEmail, senha: userPassword };
+            persistsLogin(login);
+          } else {
+            localStorage.removeItem('login');
+          }
+  
+          navigate('/home');
+        } else {
+          console.error('Erro no login:', 'E-mail ou senha incorretos!');
+        }
+      } catch (error) {
+        console.error('Erro na solicitação:', error.message);
+  
+        if (error.response) {
+          // O servidor respondeu com um código de status diferente de 2xx
+          setLoginError(error.response.data.message);
+          console.error('Erro no login:', error.response.data.message);
+        } else if (error.request) {
+          // A solicitação foi feita, mas não recebeu resposta
+          console.error('Erro na solicitação: Sem resposta do servidor!');
+        } else {
+          // Algo aconteceu durante a configuração da solicitação que desencadeou um erro
+          console.error('Erro na solicitação: Configuração de solicitação inválida!');
         }
       }
-    } catch (error) {
-      console.error(error);
     }
   };
+
+  useEffect(() => {
+    getDataLogin();
+  }, []);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -107,7 +166,11 @@ export default function SignInSide() {
                 autoComplete="email"
                 autoFocus
                 onChange={(e) => setUserEmail(e.target.value)}
+                value={userEmail}
               />
+              <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                {emailError}
+              </div>
               <TextField
                 margin="normal"
                 required
@@ -118,26 +181,33 @@ export default function SignInSide() {
                 id="password"
                 autoComplete="current-password"
                 onChange={(e) => setUserPassword(e.target.value)}
+                value={userPassword}
               />
+              <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                {passwordError}
+              </div>
               <br />
-              <div className="error-message">{emailError}</div>
+              <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                {loginError}
+              </div>
               <br />
               <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
+                control={<Checkbox value="remember" color="primary" checked={persistLogin} />}
+                onChange={handlePersistLoginChange}
                 label="Lembre de mim"
               />
               <Button
-                  type="submit"
-                  fullWidth
-                  variant='contained'
-                  sx={{
-                    mt: 5, mb: 10, backgroundColor: '#2D636B', padding: 1.5, ":hover": {
-                      backgroundColor: red,
-                    }
-                  }}
-                >
-                  Entrar
-                </Button>
+                type="submit"
+                fullWidth
+                variant='contained'
+                sx={{
+                  mt: 5, mb: 10, backgroundColor: '#2D636B', padding: 1.5, ":hover": {
+                    backgroundColor: red,
+                  }
+                }}
+              >
+                Entrar
+              </Button>
             </Box>
           </Box>
         </Grid>

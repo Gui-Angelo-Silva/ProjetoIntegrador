@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Jose;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SGED.DTO.Entities;
 using SGED.Models.Entities;
@@ -31,28 +32,42 @@ namespace SGED.Controllers
             {
                 if (loginDTO.Email == usuarioDTO.EmailUsuario && loginDTO.Senha == usuarioDTO.SenhaUsuario)
                 {
-                    string GenerateToken(string username)
-                    {
-                        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SGED_BarramentUser_API_Autentication"));
-                        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-                        var token = new JwtSecurityToken(
-                            issuer: "Server API",
-                            audience: "WebSite",
-                            claims: new[] { new Claim(ClaimTypes.Name, username) },
-                            expires: DateTime.Now.AddHours(1),
-                            signingCredentials: credentials
-                        );
-
-                        return new JwtSecurityTokenHandler().WriteToken(token);
-                    }
-
-                    var token = GenerateToken(usuarioDTO.NomeUsuario);
+                    var token = GenerateToken("SGED_BarramentUser_API_Autentication", "Server API", "WebSite", usuarioDTO.EmailUsuario, 1);
                     return Ok(new { token, usuario = usuarioDTO });
                 }
             }
 
             return Unauthorized(new { message = "E-mail ou senha incorretos!" });
+        }
+
+        /*string GenerateToken(string email)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SGED_BarramentUser_API_Autentication"));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: "Server API",
+                audience: "WebSite",
+                claims: new[] { new Claim(ClaimTypes.Email, email) },
+                expires: DateTime.UtcNow.AddHours(1),
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }*/
+
+        private string GenerateToken(string secretKey, string issuer, string audience, string subject, int expiryInMinutes)
+        {
+            var payload = new Dictionary<string, object>
+            {
+                { "iss", issuer },
+                { "aud", audience },
+                { "sub", subject },
+                { "exp", DateTimeOffset.UtcNow.AddMinutes(expiryInMinutes).ToUnixTimeSeconds() }
+            };
+
+            string token = JWT.Encode(payload, Encoding.UTF8.GetBytes(secretKey), JwsAlgorithm.HS256);
+            return token;
         }
 
     }

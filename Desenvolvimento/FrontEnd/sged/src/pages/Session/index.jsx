@@ -1,4 +1,5 @@
 import { useEffect, createContext, useContext } from 'react';
+import * as jose from 'jose'
 
 const SessionContext = createContext();
 
@@ -44,14 +45,42 @@ export const SessionProvider = ({ children }) => {
 
     const isTokenValid = (token) => {
         if (!token) {
+            console.log('Token vazio!');
             return false;
         }
 
-        //const jwt = require('jsonwebtoken');
-        //const payload = jwt.decode(token, { complete: true });
-
         const tokenParts = token.split('.');
-        return tokenParts.length === 3;
+        if (tokenParts.length !== 3) {
+            console.log('Token malicioso!');
+            return false;
+        }
+
+        try {
+            const secretKey = 'SGED_BarramentUser_API_Autentication';
+            const decoded = jose.jwtVerify(token, secretKey);
+            
+            console.log('Token decodificado:', token);
+            
+            if (!decoded) {
+                console.log('Token inválido');
+                return false;
+            }
+
+            if (!decoded.exp) {
+                console.log('sem campo exp ' + decoded.issuer);
+                return false;
+            }
+        
+            const currentTimestamp = Math.floor(Date.now() / 1000);
+            
+            console.log('Tempo atual:', currentTimestamp);
+            console.log('Tempo de expiração do token:', decoded.exp);
+        
+            return decoded.exp > currentTimestamp;
+        } catch (error) {
+            console.log('Erro ao decodificar o token:', error);
+            return false;
+        }
     };
 
     const getSession = () => {
@@ -67,22 +96,22 @@ export const SessionProvider = ({ children }) => {
 
     const getAuthConfig = () => {
         const token = getToken();
-      
+
         if (token) {
-          return {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`
-            }
-          };
+            return {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                }
+            };
         } else {
-          return {
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          };
+            return {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
         }
-      };
+    };
 
     const value = {
         defaultSession,

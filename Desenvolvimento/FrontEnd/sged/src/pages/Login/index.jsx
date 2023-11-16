@@ -78,19 +78,20 @@ export default function SignInSide() {
           const data = response.data;
   
           if (isTokenValid(data.token)) {
+
+            if (persistLogin) {
+              const login = { email: userEmail, senha: userPassword };
+              persistsLogin(login);
+            } else {
+              localStorage.removeItem('login');
+            }
+
             createSession(data.token, data.usuario);
+            //navigate('/home');
           } else {
             console.error('Token inválido!');
           }
-  
-          if (persistLogin) {
-            const login = { email: userEmail, senha: userPassword };
-            persistsLogin(login);
-          } else {
-            localStorage.removeItem('login');
-          }
-  
-          navigate('/home');
+
         } else {
           console.error('Erro no login:', 'E-mail ou senha incorretos!');
         }

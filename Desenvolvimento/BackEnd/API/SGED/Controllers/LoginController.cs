@@ -23,14 +23,14 @@ namespace SGED.Controllers
         }
 
         [HttpPost("Autentication")]
-        public async Task<ActionResult> Autentication([FromBody] LoginDTO loginDTO)
+        public async Task<ActionResult> Autentication([FromBody] AutenticationDTO autenticationDTO)
         {
-            if (loginDTO is null) return BadRequest("Dado inválido!");
-            var usuarioDTO = await _usuarioService.Login(loginDTO);
+            if (autenticationDTO is null) return BadRequest("Dado inválido!");
+            var usuarioDTO = await _usuarioService.Autentication(autenticationDTO);
 
             if (!(usuarioDTO is null))
             {
-                if (loginDTO.Email == usuarioDTO.EmailUsuario && loginDTO.Senha == usuarioDTO.SenhaUsuario)
+                if (autenticationDTO.Email == usuarioDTO.EmailUsuario && autenticationDTO.Senha == usuarioDTO.SenhaUsuario)
                 {
                     EntitySecurityDTO entitySecurity = new EntitySecurityDTO();
                     var token = GenerateToken(entitySecurity.Key, entitySecurity.Issuer, entitySecurity.Audience, usuarioDTO.EmailUsuario, 1);
@@ -56,11 +56,11 @@ namespace SGED.Controllers
         }
 
         [HttpPost("Validation")]
-        public async Task<ActionResult> Validation([FromBody] string email, string token)
+        public async Task<ActionResult> Validation([FromBody] ValidationDTO validationDTO)
         {
-            if (email is null || token is null) return BadRequest(new { status = "false", message = "Dado inválido!" });
+            if (validationDTO is null) return BadRequest(new { status = "false", message = "Dado inválido!" });
 
-            if (ValidateToken(token, email))
+            if (ValidateToken(validationDTO.Token, validationDTO.Email))
             {
                 return Ok(new { status = "true" });
             }
@@ -121,6 +121,56 @@ namespace SGED.Controllers
             }
         }
 
+        private object ValidateToken(string token, string email)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            EntitySecurityDTO entitySecurity = new EntitySecurityDTO();
 
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = entitySecurity.Issuer,
+                ValidAudience = entitySecurity.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(entitySecurity.Key)),
+                ClockSkew = TimeSpan.Zero // Para evitar tempo de tolerância, considerando expiração exata
+            };
+
+            try
+            {
+                SecurityToken jwtSecurityToken;
+
+                // Valida e descriptografa o token
+                var principal = tokenHandler.ValidateToken(token, validationParameters, out jwtSecurityToken);
+
+                if (principal is not ClaimsPrincipal claimsPrincipal)
+                    return new { status = "false", message = "Token inválido!" };
+
+                // Verifica se o token tem três partes
+                var identity = claimsPrincipal.Identity as ClaimsIdentity;
+
+                if (identity?.Claims.Count() != 3)
+                    return new { status = "false", message = "Token inválido!" };
+
+                // Verifica se o email no token é igual ao email passado por parâmetro
+                var emailClaim = identity.FindFirst(ClaimTypes.Email)?.Value;
+
+                if (!string.Equals(emailClaim, email, StringComparison.InvariantCultureIgnoreCase))
+                    return new { status = "false", message = "Token inválido!" };
+
+                // Verifica se o token expirou
+                if (jwtSecurityToken.ValidTo < DateTime.UtcNow)
+                    return new { status = "false", message = "Token expirado!" };
+
+                return new { status = "true" }; // Se todas as verificações passaram, o token é válido
+            }
+            catch (Exception ex)
+            {
+                // Em caso de erro na validação ou descriptografia do token
+                Console.WriteLine(ex.Message);
+                return new { status = "false", message = "Erro na validação do token!" };
+            }
+        }
     }
 }

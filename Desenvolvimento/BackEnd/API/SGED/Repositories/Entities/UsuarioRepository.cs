@@ -29,9 +29,9 @@ public class UsuarioRepository : IUsuarioRepository
         return await _dbContext.Usuario.Where(p => p.EmailUsuario.ToUpper().Contains(email.ToUpper()) && p.EmailUsuario != "devops@development.com").ToListAsync();
     }
 
-    public async Task<Usuario> Login(Login login)
+    public async Task<Usuario> Autentication(Autentication autentication)
     {
-        return await _dbContext.Usuario.Where(p => p.EmailUsuario == login.Email && p.SenhaUsuario == login.Senha).FirstOrDefaultAsync();
+        return await _dbContext.Usuario.Where(p => p.EmailUsuario == autentication.Email && p.SenhaUsuario == autentication.Senha).FirstOrDefaultAsync();
     }
 
     public async Task<Usuario> Create(Usuario usuario)

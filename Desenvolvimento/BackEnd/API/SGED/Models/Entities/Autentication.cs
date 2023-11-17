@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace SGED.Models.Entities
 {
-    public class Login
+    public class Autentication
     {
         public string Email { get; set; }
         public string Senha { get; set; }

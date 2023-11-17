@@ -35,10 +35,10 @@ public class UsuarioService : IUsuarioService
         return _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
     }
 
-    public async Task<UsuarioDTO> Login(LoginDTO loginDTO)
+    public async Task<UsuarioDTO> Autentication(AutenticationDTO autenticationDTO)
     {
-        var login = _mapper.Map<Login>(loginDTO);
-        var usuario = await _usuarioRepository.Login(login);
+        var autentication = _mapper.Map<Autentication>(autenticationDTO);
+        var usuario = await _usuarioRepository.Autentication(autentication);
         return _mapper.Map<UsuarioDTO>(usuario);
     }
 

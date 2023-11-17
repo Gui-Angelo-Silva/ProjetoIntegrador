@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import axios from "axios";
-import '../State/index.css';
 import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -169,28 +168,27 @@ export default function State() {
                         </div>
 
                     </div>
-
-                    <table className="table table-rounded mt-16">
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Sigla</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data.map(state => (
-                                <tr key={state.id}>
-                                    <td>{state.nomeEstado}</td>
-                                    <td>{state.ufEstado}</td>
-                                    <td>
-                                        <button className="btn btn-primary" onClick={() => StateSelect(state, "Editar")}>Editar</button>{"  "}
-                                        <button className="btn btn-danger" onClick={() => StateSelect(state, "Excluir")}>Remover</button>
-                                    </td>
+                        <table>
+                            <thead className="" style={{background: '#58AFAE'}}>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Sigla</th>
+                                    <th>Ações</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {data.map(state => (
+                                    <tr key={state.id}>
+                                        <td>{state.nomeEstado}</td>
+                                        <td>{state.ufEstado}</td>
+                                        <td>
+                                            <button className="btn btn-primary" onClick={() => StateSelect(state, "Editar")}>Editar</button>{"  "}
+                                            <button className="btn btn-danger" onClick={() => StateSelect(state, "Excluir")}>Remover</button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                 </div>
             </div>
             <Modal isOpen={modalInsert}>

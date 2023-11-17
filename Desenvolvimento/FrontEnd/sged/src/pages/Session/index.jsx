@@ -1,5 +1,5 @@
 import { useEffect, createContext, useContext } from 'react';
-import * as jose from 'jose'
+import axios from "axios";
 
 const SessionContext = createContext();
 
@@ -43,42 +43,30 @@ export const SessionProvider = ({ children }) => {
         return token;
     };
 
-    const isTokenValid = (token) => {
-        if (!token) {
-            console.log('Token vazio!');
-            return false;
-        }
+    const isTokenValid = async (e) => {
+        const baseUrl = "https://localhost:7096/api//Login/Validation";
+        const token = getToken();
+        const user = getLogin();
 
-        const tokenParts = token.split('.');
-        if (tokenParts.length !== 3) {
-            console.log('Token malicioso!');
-            return false;
-        }
+        if (token || user.emailUsuario) {
+            try {
+                const response = await axios.post(baseUrl, {
+                    email: user.emailUsuario,
+                    token: token
+                });
 
-        try {
-            const secretKey = 'SGED_BarramentUser_API_Autentication';
-            const decoded = jose.jwtVerify(token, secretKey);
-            
-            console.log('Token decodificado:', token);
-            
-            if (!decoded) {
-                console.log('Token inválido');
+                return Boolean(response.status);
+            } catch (error) {
+                console.error('Erro na solicitação: ', error.message);
+                if (error.request) {
+                    console.error('Erro na solicitação: Sem resposta do servidor!');
+                } else {
+                    console.error('Erro na solicitação: Configuração de solicitação inválida!');
+                }
+
                 return false;
             }
-
-            if (!decoded.exp) {
-                console.log('sem campo exp ' + decoded.issuer);
-                return false;
-            }
-        
-            const currentTimestamp = Math.floor(Date.now() / 1000);
-            
-            console.log('Tempo atual:', currentTimestamp);
-            console.log('Tempo de expiração do token:', decoded.exp);
-        
-            return decoded.exp > currentTimestamp;
-        } catch (error) {
-            console.log('Erro ao decodificar o token:', error);
+        } else {
             return false;
         }
     };

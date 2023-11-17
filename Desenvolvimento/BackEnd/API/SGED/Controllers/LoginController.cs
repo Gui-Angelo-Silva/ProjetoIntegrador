@@ -22,8 +22,8 @@ namespace SGED.Controllers
             _usuarioService = usuarioService;
         }
 
-        [HttpPost]
-        public async Task<ActionResult> Login([FromBody] LoginDTO loginDTO)
+        [HttpPost("Autentication")]
+        public async Task<ActionResult> Autentication([FromBody] LoginDTO loginDTO)
         {
             if (loginDTO is null) return BadRequest("Dado inválido!");
             var usuarioDTO = await _usuarioService.Login(loginDTO);
@@ -32,29 +32,14 @@ namespace SGED.Controllers
             {
                 if (loginDTO.Email == usuarioDTO.EmailUsuario && loginDTO.Senha == usuarioDTO.SenhaUsuario)
                 {
-                    var token = GenerateToken("SGED_BarramentUser_API_Autentication", "Server API", "WebSite", usuarioDTO.EmailUsuario, 1);
+                    EntitySecurityDTO entitySecurity = new EntitySecurityDTO();
+                    var token = GenerateToken(entitySecurity.Key, entitySecurity.Issuer, entitySecurity.Audience, usuarioDTO.EmailUsuario, 1);
                     return Ok(new { token, usuario = usuarioDTO });
                 }
             }
 
             return Unauthorized(new { message = "E-mail ou senha incorretos!" });
         }
-
-        /*string GenerateToken(string email)
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SGED_BarramentUser_API_Autentication"));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: "Server API",
-                audience: "WebSite",
-                claims: new[] { new Claim(ClaimTypes.Email, email) },
-                expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: credentials
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }*/
 
         private string GenerateToken(string secretKey, string issuer, string audience, string subject, int expiryInMinutes)
         {
@@ -69,6 +54,73 @@ namespace SGED.Controllers
             string token = JWT.Encode(payload, Encoding.UTF8.GetBytes(secretKey), JwsAlgorithm.HS256);
             return token;
         }
+
+        [HttpPost("Validation")]
+        public async Task<ActionResult> Validation([FromBody] string email, string token)
+        {
+            if (email is null || token is null) return BadRequest(new { status = "false", message = "Dado inválido!" });
+
+            if (ValidateToken(token, email))
+            {
+                return Ok(new { status = "true" });
+            }
+            else {
+                return Unauthorized(new { status = "false", message = "Acesso malicioso!" });
+            }
+        }
+
+        private bool ValidateToken(string token, string email)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            EntitySecurityDTO entitySecurity = new EntitySecurityDTO();
+
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = entitySecurity.Issuer,
+                ValidAudience = entitySecurity.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(entitySecurity.Key)),
+                ClockSkew = TimeSpan.Zero // Para evitar tempo de tolerância, considerando expiração exata
+            };
+
+            try
+            {
+                SecurityToken jwtSecurityToken;
+
+                // Valida e descriptografa o token
+                var principal = tokenHandler.ValidateToken(token, validationParameters, out jwtSecurityToken);
+
+                if (principal is not ClaimsPrincipal claimsPrincipal)
+                    return false;
+
+                // Verifica se o token tem três partes
+                var identity = claimsPrincipal.Identity as ClaimsIdentity;
+
+                if (identity?.Claims.Count() != 3)
+                    return false;
+
+                // Verifica se o email no token é igual ao email passado por parâmetro
+                var emailClaim = identity.FindFirst(ClaimTypes.Email)?.Value;
+
+                if (!string.Equals(emailClaim, email, StringComparison.InvariantCultureIgnoreCase))
+                    return false;
+
+                // Verifica se o token expirou
+                if (jwtSecurityToken.ValidTo < DateTime.UtcNow)
+                    return false;
+
+                return true; // Se todas as verificações passaram, o token é válido
+            }
+            catch (Exception ex)
+            {
+                // Em caso de erro na validação ou descriptografia do token
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
 
     }
 }

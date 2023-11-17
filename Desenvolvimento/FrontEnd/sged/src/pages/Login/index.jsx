@@ -19,7 +19,7 @@ import { useNavigate } from 'react-router-dom';
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
-  const baseUrl = "https://localhost:7096/api/Login";
+  const baseUrl = "https://localhost:7096/api/Login/Autentication";
 
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
@@ -30,6 +30,13 @@ export default function SignInSide() {
 
   const { isTokenValid, createSession, persistsLogin, getLogin } = useSession();
   const navigate = useNavigate();
+
+  const VerifySession = () => {
+    const token = getToken();
+    if (isTokenValid(token)) {
+      navigate('/home');
+    }
+  };
 
   const getDataLogin = () => {
     const data = JSON.parse(getLogin());
@@ -114,6 +121,7 @@ export default function SignInSide() {
   };
 
   useEffect(() => {
+    VerifySession();
     getDataLogin();
   }, []);
 

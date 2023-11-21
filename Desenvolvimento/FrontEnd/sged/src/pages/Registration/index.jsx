@@ -3,6 +3,7 @@ import SideBar from "../../components/SideBar";
 import ImgEstado from "../../assets/ImgEstado.png";
 import ImgCidade from "../../assets/ImgCidade.png";
 import ImgUsuario from "../../assets/ImgUsuario.png";
+import ImgTipoUsuario from "../../assets/ImgTipoUsuario.png"
 import { Link } from "react-router-dom";
 
 export default function Registrations() {
@@ -48,6 +49,16 @@ export default function Registrations() {
                                     </p>
                                     <div style={{ width: 104, height: 104, alignItems: 'center' }}>
                                         <img src={ImgUsuario} alt="Abrir Cadastro de Estado" />
+                                    </div>
+                                </div>
+                            </Link>
+                            <Link to="/typeuser">
+                                <div className="flex flex-col ml-12" style={{ width: 229, border: '2px solid #58AFAE', height: 229, justifyContent: 'center', alignItems: 'center', backgroundColor: '#DAEEEE', borderRadius: 20 }}>
+                                    <p className="text-2xl pb-2 text-green-800 font-medium" style={{ textAlign: 'center' }}>
+                                        Tipo Usuário
+                                    </p>
+                                    <div style={{ width: 95, height: 104, alignItems: 'center' }}>
+                                        <img src={ImgTipoUsuario} alt="Abrir Cadastro de Estado" />
                                     </div>
                                 </div>
                             </Link>

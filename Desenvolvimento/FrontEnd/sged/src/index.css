@@ -23,7 +23,7 @@ thead {
 
 th, td {
     border: none;
-    border-bottom: 1px solid #C8E5E5;
+    /* border-bottom: 1px solid #C8E5E5; */
 }
 
 th {
@@ -32,4 +32,6 @@ th {
 
 td {
     text-align: center;
+    padding-top: 7.5px;
+    padding-bottom: 7.5px;
 }

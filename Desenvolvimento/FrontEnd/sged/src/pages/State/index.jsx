@@ -130,17 +130,17 @@ export default function State() {
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <NavBar /> {/* NavBar no topo */}
             <div style={{ display: 'flex', flex: 1 }}> {/* Container principal flexível */}
-                <div style={{ flex: 0, width: '200px' }}>
+                <div className="overscroll-y-none" style={{ flex: 0, width: '200px' }}>
                     <SideBar /> {/* Sidebar à esquerda */}
                 </div>
                 <div style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
                     <br />
                     <div className="flex flex-row">
                         <Link to="/registration">
-                            <h3 className="text-2xl font-semibold text-gray-600 pr-2">Cadastro</h3>
+                            <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
                         </Link>
                         <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
-                        <h3 className="text-2xl font-semibold text-gray-600">Estado</h3>
+                        <h3 className="text-2xl font-semibold text-gray-800">Estado</h3>
 
                     </div>
                     {/* <div className="bg-slate-200 rounded-md mb-10" style={{ marginTop: 15 }}>
@@ -166,12 +166,11 @@ export default function State() {
                                 Novo <FaPlus className="inline-block" style={{ alignItems: 'center' }} />
                             </button>
                         </div>
-
                     </div>
                         <table>
                             <thead className="" style={{background: '#58AFAE'}}>
                                 <tr>
-                                    <th>Nome</th>
+                                    <th>Estado</th>
                                     <th>Sigla</th>
                                     <th>Ações</th>
                                 </tr>

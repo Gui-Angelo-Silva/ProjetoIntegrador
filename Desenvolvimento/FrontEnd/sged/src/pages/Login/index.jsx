@@ -137,7 +137,8 @@ export default function SignInSide() {
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square
           sx={{
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            justifyContent:'center',
           }}>
           <Box
             sx={{
@@ -151,10 +152,11 @@ export default function SignInSide() {
             {/* <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
               <LockOutlinedIcon />
             </Avatar> */}
-            <Typography component="h1" variant="h5" fontSize={40} paddingBottom={5}>
+
+            <Typography component="h1" variant="h5" fontSize={40} paddingBottom={5} >
               Entrar
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }} style={{width:450}}>
               <TextField
                 margin="normal"
                 required
@@ -201,10 +203,11 @@ export default function SignInSide() {
                 fullWidth
                 variant='contained'
                 sx={{
-                  mt: 5, mb: 10, backgroundColor: '#2D636B', padding: 1.5, ":hover": {
-                    backgroundColor: red,
+                  mt: 5, mb: 10, backgroundColor: '#58AFAE', padding: 1.5, ":hover": {
+                    backgroundColor: '#2D636B'
                   }
                 }}
+                style={{}}
               >
                 Entrar
               </Button>

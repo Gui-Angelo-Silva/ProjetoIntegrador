@@ -44,7 +44,7 @@ export const SessionProvider = ({ children }) => {
     };
 
     const isTokenValid = async (e) => {
-        const baseUrl = "https://localhost:7096/api//Login/Validation";
+        const baseUrl = "https://localhost:7096/api/Login/Validation";
         const token = getToken();
         const user = getLogin();
 

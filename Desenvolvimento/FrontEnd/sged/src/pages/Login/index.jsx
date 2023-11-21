@@ -28,12 +28,12 @@ export default function SignInSide() {
   const [passwordError, setPasswordError] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  const { isTokenValid, createSession, persistsLogin, getLogin } = useSession();
+  const { isTokenValid, createSession, persistsLogin, getLogin, getToken } = useSession();
   const navigate = useNavigate();
 
   const VerifySession = () => {
     const token = getToken();
-    if (isTokenValid(token)) {
+    if (token && isTokenValid(token)) {
       navigate('/home');
     }
   };
@@ -94,7 +94,7 @@ export default function SignInSide() {
             }
 
             createSession(data.token, data.usuario);
-            //navigate('/home');
+            navigate('/home');
           } else {
             console.error('Token inválido!');
           }

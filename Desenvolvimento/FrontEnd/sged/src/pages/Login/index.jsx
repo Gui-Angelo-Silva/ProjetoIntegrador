@@ -28,12 +28,11 @@ export default function SignInSide() {
   const [passwordError, setPasswordError] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  const { isTokenValid, createSession, persistsLogin, getLogin, getToken } = useSession();
+  const { isTokenValid, createSession, persistsLogin, getLogin } = useSession();
   const navigate = useNavigate();
 
   const VerifySession = () => {
-    const token = getToken();
-    if (token && isTokenValid(token)) {
+    if (isTokenValid()) {
       navigate('/home');
     }
   };

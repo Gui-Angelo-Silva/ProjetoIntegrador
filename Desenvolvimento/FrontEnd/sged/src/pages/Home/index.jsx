@@ -7,13 +7,18 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
 
-  const { getToken, getSession, isTokenValid } = useSession();
+  const { getToken, getSession, isTokenValid, newToken } = useSession();
   const navigate = useNavigate();
 
   const VerifySession = () => {
     const token = getToken();
-    if (!isTokenValid(token)) {
+    if (!token || !isTokenValid(token)) {
       navigate('/');
+
+    } else {
+      if (!newToken()) {
+        navigate('/');
+      }
     }
   };
 

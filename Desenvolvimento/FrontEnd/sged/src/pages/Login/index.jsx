@@ -19,7 +19,6 @@ import { useNavigate } from 'react-router-dom';
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
-  const baseUrl = "https://localhost:7096/api/Login/Autentication";
 
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
@@ -32,7 +31,9 @@ export default function SignInSide() {
   const navigate = useNavigate();
 
   const VerifySession = () => {
-    if (isTokenValid()) {
+    const status = isTokenValid();
+    console.error(Boolean(status));
+    if (Boolean(status)) {
       navigate('/home');
     }
   };
@@ -56,66 +57,30 @@ export default function SignInSide() {
     setEmailError('');
     setPasswordError('');
     setLoginError('');
-  
+
     if (!userEmail) {
       setEmailError('Informe o e-mail!');
     }
-  
+
     if (!userPassword) {
       setPasswordError('Informe a senha!');
     }
-  
-    if (userEmail && (!userEmail.includes('@') || !userEmail.includes('.') || userEmail.indexOf('.') < userEmail.indexOf('@'))) {
+
+    if (!emailError && (!userEmail.includes('@') || !userEmail.includes('.') || userEmail.indexOf('.') < userEmail.indexOf('@'))) {
       setEmailError('Insira um email válido!');
     }
-  
-    if (userPassword && userPassword.length < 6) {
+
+    if (!passwordError && userPassword.length < 6) {
       setPasswordError('A senha deve ter pelo menos 6 caracteres!');
     }
-  
+
     if (!emailError && !passwordError) {
-      try {
-        const response = await axios.post(baseUrl, {
-          email: userEmail,
-          senha: userPassword
-        });
-  
-        if (response.status === 200) {
-          const data = response.data;
-  
-          if (isTokenValid(data.token)) {
 
-            if (persistLogin) {
-              const login = { email: userEmail, senha: userPassword };
-              persistsLogin(login);
-            } else {
-              localStorage.removeItem('login');
-            }
-
-            createSession(data.token, data.usuario);
-            navigate('/home');
-          } else {
-            console.error('Token inválido!');
-          }
-
-        } else {
-          console.error('Erro no login:', 'E-mail ou senha incorretos!');
-        }
-      } catch (error) {
-        console.error('Erro na solicitação:', error.message);
-  
-        if (error.response) {
-          // O servidor respondeu com um código de status diferente de 2xx
-          setLoginError(error.response.data.message);
-          console.error('Erro no login:', error.response.data.message);
-        } else if (error.request) {
-          // A solicitação foi feita, mas não recebeu resposta
-          console.error('Erro na solicitação: Sem resposta do servidor!');
-        } else {
-          // Algo aconteceu durante a configuração da solicitação que desencadeou um erro
-          console.error('Erro na solicitação: Configuração de solicitação inválida!');
-        }
+      setLoginError(createSession(userEmail, userPassword, persistLogin));
+      if (loginError) {
+        navigate('/home');
       }
+
     }
   };
 

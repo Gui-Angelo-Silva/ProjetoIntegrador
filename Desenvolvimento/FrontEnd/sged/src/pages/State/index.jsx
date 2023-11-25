@@ -12,13 +12,24 @@ import { useNavigate } from 'react-router-dom';
 
 export default function State() {
 
-    const { getToken, isTokenValid, getAuthConfig } = useSession();
+    const [verifyStatus, setVerifyStatus] = useState(false);
+    const { defaultSession, isTokenValid, getAuthConfig, newToken } = useSession();
     const navigate = useNavigate();
 
-    const VerifySession = () => {
-        const token = getToken();
-        if (!isTokenValid(token)) {
-            navigate('/');
+    const VerifySession = async () => {
+        if (!verifyStatus) {
+            setVerifyStatus(true);
+            const status = await isTokenValid();
+            //console.error(status);
+            if (status === false) {
+                //console.error('Entrou');
+                navigate('/');
+            } else {
+                if (await newToken() === false) {
+                    defaultSession();
+                    navigate('/');
+                }
+            }
         }
     };
 
@@ -125,7 +136,37 @@ export default function State() {
             GetOrder();
             setUpdateData(false);
         }
+
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(baseUrl, getAuthConfig());
+                setData(response.data);
+                setStatesToRender(response.data); // Define os estados a serem renderizados ao iniciar
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchData();
     }, [updateData])
+
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const [statesToRender, setStatesToRender] = useState([]); // Inicialmente, exibe todos os estados
+
+    const handleSearch = (searchTerm) => {
+        setSearchTerm(searchTerm);
+
+        if (searchTerm === '') {
+            setStatesToRender(data); // Se o campo de pesquisa estiver vazio, exibe todos os estados
+        } else {
+            const filtered = data.filter((state) =>
+                state.nomeEstado.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            setStatesToRender(filtered);
+        }
+    };
+
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -142,22 +183,31 @@ export default function State() {
                         </Link>
                         <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
                         <h3 className="text-2xl font-semibold text-gray-600">Estado</h3>
-                        
+
                     </div>
                     {/* <div className="bg-slate-200 rounded-md mb-10" style={{ marginTop: 15 }}>
                         <h4 className="pl-4 pt-2 pb-2 text-gray-500">Funções</h4>
                     </div> */}
                     <div className="flex justify-center">
                         <div className="w-50 h-20">
-                            <label for="default-search" className="mb-5 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                            <label htmlFor="default-search" className="mb-5 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                             <div className="relative">
-                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                     <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                     </svg>
                                 </div>
-                                <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar estado" required />
-                                <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-emerald-600 hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Pesquisar</button>
+                                <input
+                                    type="search"
+                                    id="default-search"
+                                    className="block w-full pt-3 pb-3 pl-10 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Pesquisar estado"
+                                    required
+                                    onChange={(e) => handleSearch(e.target.value)}
+                                />
+                                {/* Este é o botão que foi comentado
+                                    <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-emerald-600 hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Pesquisar</button>
+                                */}
                             </div>
                         </div>
                     </div>
@@ -174,13 +224,24 @@ export default function State() {
                             </tr>
                         </thead>
                         <tbody>
-                            {data.map(state => (
+                            {/* Use statesToRender para renderizar os estados filtrados */}
+                            {statesToRender.map((state) => (
                                 <tr key={state.id}>
                                     <td>{state.nomeEstado}</td>
                                     <td>{state.ufEstado}</td>
                                     <td>
-                                        <button className="btn btn-primary" onClick={() => StateSelect(state, "Editar")}>Editar</button>{"  "}
-                                        <button className="btn btn-danger" onClick={() => StateSelect(state, "Excluir")}>Remover</button>
+                                        <button
+                                            className="btn btn-primary"
+                                            onClick={() => StateSelect(state, "Editar")}
+                                        >
+                                            Editar
+                                        </button>{" "}
+                                        <button
+                                            className="btn btn-danger"
+                                            onClick={() => StateSelect(state, "Excluir")}
+                                        >
+                                            Remover
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

@@ -3,8 +3,10 @@ import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import axios from "axios";
 import '../User/index.css';
 import "bootstrap/dist/css/bootstrap.min.css";
+
 import { useSession } from '../Session/index'
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const PasswordStrengthIndicator = ({ data }) => {
 
@@ -19,7 +21,7 @@ const PasswordStrengthIndicator = ({ data }) => {
             const hasNumber = /\d/.test(password);
             const hasSpecialChar = /[!@#$%^&*]/.test(password);
 
-            if (hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar) {
+            if (hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar && password.length >= 15) {
                 strength = 'Forte';
             } else if ((hasUpperCase || hasLowerCase) && hasNumber && password.length >= 10) {
                 strength = 'Média';
@@ -40,15 +42,30 @@ const PasswordStrengthIndicator = ({ data }) => {
     );
 };
 
+PasswordStrengthIndicator.propTypes = {
+    data: PropTypes.any.isRequired,
+};
+
 export default function User() {
 
-    const { getToken, isTokenValid, getAuthConfig } = useSession();
+    const [verifyStatus, setVerifyStatus] = useState(false);
+    const { defaultSession, isTokenValid, getAuthConfig, newToken } = useSession();
     const navigate = useNavigate();
 
-    const VerifySession = () => {
-        const token = getToken();
-        if (!isTokenValid(token)) {
-            navigate('/');
+    const VerifySession = async () => {
+        if (!verifyStatus) {
+            setVerifyStatus(true);
+            const status = await isTokenValid();
+            //console.error(status);
+            if (status === false) {
+                //console.error('Entrou');
+                navigate('/');
+            } else {
+                if (await newToken() === false) {
+                    defaultSession();
+                    navigate('/');
+                }
+            }
         }
     };
 
@@ -145,14 +162,29 @@ export default function User() {
             statusUsuario: Boolean(userStatus),
             idTipoUsuario: idTypeUser
         };
-        await axios.post(baseUrl, postData, getAuthConfig())
-            .then(response => {
-                setData(data.concat(response.data));
-                openCloseModalInsert();
-            })
-            .catch(error => {
-                console.log(error);
-            });
+
+        try {
+            const response = await axios.post(baseUrl, postData, getAuthConfig());
+            setData(data.concat(response.data));
+            openCloseModalInsert();
+        } catch (error) {
+            // Aqui você pode exibir uma mensagem de erro na interface do usuário
+            if (error.response) {
+                // Requisição foi feita e o servidor respondeu com um status de erro
+                console.log('Erro de status:', error.response.status);
+                console.log('Resposta do servidor:', error.response.data);
+                console.log('Objeto:', error.response.data);
+
+                // Aqui você pode atualizar o state com a mensagem de erro para exibir na interface do usuário
+                // setErrorMsg(error.response.data.message);
+            } else if (error.request) {
+                // A requisição foi feita, mas não houve resposta do servidor
+                console.log('Erro de resposta do servidor:', error.request);
+            } else {
+                // Algo aconteceu ao configurar a requisição que desencadeou o erro
+                console.log('Erro ao configurar a requisição:', error.message);
+            }
+        }
     }
 
     async function PutOrder() {
@@ -160,7 +192,7 @@ export default function User() {
         clearErrors();
 
         delete selectUser.id;
-        await axios.put(baseUrl, {
+        const postData = {
             id: userId,
             nomeUsuario: userName,
             emailUsuario: userEmail,
@@ -168,15 +200,30 @@ export default function User() {
             cargoUsuario: userOffice,
             statusUsuario: Boolean(userStatus),
             idTipoUsuario: idTypeUser
-        }, getAuthConfig())
-            .then(response => {
-                var answer = response.data;
-                setData(data.map(user => user.id === selectUser.id ? answer : user));
-                openCloseModalEdit();
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        };
+
+        try {
+            const response = await axios.put(baseUrl, postData, getAuthConfig());
+            setData(data.concat(response.data));
+            openCloseModalInsert();
+        } catch (error) {
+            // Aqui você pode exibir uma mensagem de erro na interface do usuário
+            if (error.response) {
+                // Requisição foi feita e o servidor respondeu com um status de erro
+                console.log('Erro de status:', error.response.status);
+                console.log('Resposta do servidor:', error.response.data);
+                console.log('Objeto:', postData);
+
+                // Aqui você pode atualizar o state com a mensagem de erro para exibir na interface do usuário
+                // setErrorMsg(error.response.data.message);
+            } else if (error.request) {
+                // A requisição foi feita, mas não houve resposta do servidor
+                console.log('Erro de resposta do servidor:', error.request);
+            } else {
+                // Algo aconteceu ao configurar a requisição que desencadeou o erro
+                console.log('Erro ao configurar a requisição:', error.message);
+            }
+        }
     }
 
     const DeleteOrder = async () => {
@@ -253,7 +300,7 @@ export default function User() {
                         <label>Senha:</label>
                         <br />
                         <input type="password" className="form-control" onChange={(e) => setUserPassword(e.target.value)} />
-                        <PasswordStrengthIndicator userPassword={userPassword} setUserPassword={setUserPassword} />
+                        <PasswordStrengthIndicator data={userPassword} />
                         <br />
                         <label>Cargo: </label>
                         <br />
@@ -304,7 +351,7 @@ export default function User() {
                         <label>Senha:</label>
                         <br />
                         <input type="password" className="form-control" name="senhaUsuario" onChange={(e) => setUserPassword(e.target.value)} value={userPassword} />
-                        <PasswordStrengthIndicator userPassword={userPassword} setUserPassword={setUserPassword} />
+                        <PasswordStrengthIndicator data={userPassword} />
                         <br />
                         <label>Cargo:</label>
                         <input type="text" className="form-control" name="cargoUsuario" onChange={(e) => setUserOffice(e.target.value)} value={userOffice} />

@@ -59,16 +59,16 @@ namespace SGED.Controllers
         [HttpPost("Validation")]
         public ActionResult Validation([FromBody] ValidationDTO validationDTO)
         {
-            if (validationDTO is null) return BadRequest(new { status = "false", message = "Dado inválido!" });
+            if (validationDTO is null) return BadRequest(new { validation = "false", message = "Dado inválido!" });
 
             EntitySecurityDTO entitySecurityDTO = new EntitySecurityDTO();
             if (ValidateToken(validationDTO.Token, entitySecurityDTO.Issuer, entitySecurityDTO.Audience, validationDTO.Email))
             {
-                return Ok(new { status = "true" });
+                return Ok(new { validation = "true" });
             }
             else
             {
-                return Unauthorized(new { status = "false", message = "Acesso negado!" });
+                return Unauthorized(new { validation = "false", message = "Acesso negado!" });
             }
         }
 

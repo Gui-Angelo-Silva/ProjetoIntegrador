@@ -12,7 +12,6 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { red } from '@mui/material/colors';
 
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useSession } from '../Session/index';
 import { useNavigate } from 'react-router-dom';
 
@@ -26,15 +25,20 @@ export default function SignInSide() {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [loginError, setLoginError] = useState('');
+  const [verifyStatus, setVerifyStatus] = useState(false);
 
-  const { isTokenValid, createSession, persistsLogin, getLogin } = useSession();
+  const { isTokenValid, createSession, getLogin } = useSession();
   const navigate = useNavigate();
 
-  const VerifySession = () => {
-    const status = isTokenValid();
-    console.error(Boolean(status));
-    if (Boolean(status)) {
-      navigate('/home');
+  const VerifySession = async () => {
+    if (!verifyStatus) {
+      setVerifyStatus(true);
+      const status = await isTokenValid();
+      //console.error(status);
+      if (status === true) {
+        //console.error('Entrou');
+        navigate('/home');
+      }
     }
   };
 
@@ -75,12 +79,16 @@ export default function SignInSide() {
     }
 
     if (!emailError && !passwordError) {
-
-      setLoginError(createSession(userEmail, userPassword, persistLogin));
-      if (loginError) {
-        navigate('/home');
+      try {
+        const loginResult = await createSession(userEmail, userPassword, persistLogin);
+        if (loginResult) {
+          navigate('/home');
+        } else {
+          setLoginError('Erro ao fazer login: dados inválidos!');
+        }
+      } catch (error) {
+        console.error('Erro ao fazer login:', error);
       }
-
     }
   };
 

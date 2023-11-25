@@ -8,13 +8,24 @@ import { useNavigate } from 'react-router-dom';
 
 export default function City() {
 
-    const { getToken, isTokenValid, getAuthConfig } = useSession();
+    const [verifyStatus, setVerifyStatus] = useState(false);
+    const { defaultSession, isTokenValid, getAuthConfig, newToken } = useSession();
     const navigate = useNavigate();
 
-    const VerifySession = () => {
-        const token = getToken();
-        if (!isTokenValid(token)) {
-            navigate('/');
+    const VerifySession = async () => {
+        if (!verifyStatus) {
+            setVerifyStatus(true);
+            const status = await isTokenValid();
+            //console.error(status);
+            if (status === false) {
+                //console.error('Entrou');
+                navigate('/');
+            } else {
+                if (await newToken() === false) {
+                    defaultSession();
+                    navigate('/');
+                }
+            }
         }
     };
 

@@ -39,8 +39,8 @@ export const SessionProvider = ({ children }) => {
                         localStorage.removeItem('login');
                     }
 
-                    sessionStorage.setItem('token', token);
-                    sessionStorage.setItem('user', JSON.stringify(data));
+                    sessionStorage.setItem('token', data.token);
+                    sessionStorage.setItem('user', JSON.stringify(data.usuario));
                     return true;
                 } else {
                     console.error('Token inválido!');
@@ -49,6 +49,7 @@ export const SessionProvider = ({ children }) => {
 
             } else {
                 console.error('Erro no login:', 'E-mail ou senha incorretos!');
+                return false;
             }
 
         } catch (error) {
@@ -88,30 +89,30 @@ export const SessionProvider = ({ children }) => {
         const token = getToken();
         const user = getSession();
 
-        if (!token || !user) {
+        if (token === null || user === null) {
             return false;
-        }
+        } else {
+            try {
+                const response = await axios.post(baseUrl + "Validation", {
+                    email: user.emailUsuario,
+                    token: token
+                });
 
-        try {
-            const response = await axios.post(baseUrl + "Validation", {
-                email: user.emailUsuario,
-                token: token
-            });
+                if (response.status === 200) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (error) {
+                console.error('Erro na solicitação: ', error.message);
+                if (error.request) {
+                    console.error('Erro na solicitação: Sem resposta do servidor!');
+                } else {
+                    console.error('Erro na solicitação: Configuração de solicitação inválida!');
+                }
 
-            if (response.status === 200) {
-                return true;
-            } else {
                 return false;
             }
-        } catch (error) {
-            console.error('Erro na solicitação: ', error.message);
-            if (error.request) {
-                console.error('Erro na solicitação: Sem resposta do servidor!');
-            } else {
-                console.error('Erro na solicitação: Configuração de solicitação inválida!');
-            }
-
-            return false;
         }
     };
 
@@ -121,7 +122,7 @@ export const SessionProvider = ({ children }) => {
     };
 
     const newToken = async () => {
-        const session = sessionStorage.getItem('user');
+        const session = getSession();
 
         try {
             const response = await axios.post(baseUrl + "Autentication", {
@@ -143,7 +144,6 @@ export const SessionProvider = ({ children }) => {
             console.error('Erro na solicitação:', error.message);
 
             if (error.response) {
-                setLoginError(error.response.data.message);
                 console.error('Erro no login:', error.response.data.message);
 
             } else if (error.request) {

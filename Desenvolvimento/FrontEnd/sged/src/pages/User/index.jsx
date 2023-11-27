@@ -162,37 +162,22 @@ export default function User() {
             statusUsuario: Boolean(userStatus),
             idTipoUsuario: idTypeUser
         };
+        await axios.post(baseUrl, postData, getAuthConfig())
+            .then(response => {
+                setData(data.concat(response.data));
+                openCloseModalInsert();
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
 
-        try {
-            const response = await axios.post(baseUrl, postData, getAuthConfig());
-            setData(data.concat(response.data));
-            openCloseModalInsert();
-        } catch (error) {
-            // Aqui você pode exibir uma mensagem de erro na interface do usuário
-            if (error.response) {
-                // Requisição foi feita e o servidor respondeu com um status de erro
-                console.log('Erro de status:', error.response.status);
-                console.log('Resposta do servidor:', error.response.data);
-                console.log('Objeto:', error.response.data);
-
-                // Aqui você pode atualizar o state com a mensagem de erro para exibir na interface do usuário
-                // setErrorMsg(error.response.data.message);
-            } else if (error.request) {
-                // A requisição foi feita, mas não houve resposta do servidor
-                console.log('Erro de resposta do servidor:', error.request);
-            } else {
-                // Algo aconteceu ao configurar a requisição que desencadeou o erro
-                console.log('Erro ao configurar a requisição:', error.message);
-            }
-        }
-    }
-
-    async function PutOrder() {
+    const PutOrder = async () => {
 
         clearErrors();
 
         delete selectUser.id;
-        const postData = {
+        await axios.put(baseUrl, {
             id: userId,
             nomeUsuario: userName,
             emailUsuario: userEmail,
@@ -200,31 +185,16 @@ export default function User() {
             cargoUsuario: userOffice,
             statusUsuario: Boolean(userStatus),
             idTipoUsuario: idTypeUser
-        };
-
-        try {
-            const response = await axios.put(baseUrl, postData, getAuthConfig());
-            setData(data.concat(response.data));
-            openCloseModalInsert();
-        } catch (error) {
-            // Aqui você pode exibir uma mensagem de erro na interface do usuário
-            if (error.response) {
-                // Requisição foi feita e o servidor respondeu com um status de erro
-                console.log('Erro de status:', error.response.status);
-                console.log('Resposta do servidor:', error.response.data);
-                console.log('Objeto:', postData);
-
-                // Aqui você pode atualizar o state com a mensagem de erro para exibir na interface do usuário
-                // setErrorMsg(error.response.data.message);
-            } else if (error.request) {
-                // A requisição foi feita, mas não houve resposta do servidor
-                console.log('Erro de resposta do servidor:', error.request);
-            } else {
-                // Algo aconteceu ao configurar a requisição que desencadeou o erro
-                console.log('Erro ao configurar a requisição:', error.message);
-            }
-        }
-    }
+        }, getAuthConfig())
+            .then(response => {
+                var answer = response.data;
+                setData(data.map(user => user.id === selectUser.id ? answer : user));
+                openCloseModalEdit();
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
 
     const DeleteOrder = async () => {
         await axios.delete(baseUrl + "/" + userId, getAuthConfig())

@@ -90,6 +90,15 @@ export default function State() {
             })
     }
 
+    const PutState = async () => {
+        await axios.get(baseUrl, getAuthConfig())
+            .then(response => {
+                setData(response.data)
+            }).catch(error => {
+                console.log(error);
+            })
+    }
+
     async function PutOrder() {
         delete selectState.id
         await axios.put(baseUrl, { id: stateId, nomeEstado: stateName, ufEstado: stateUf }, getAuthConfig())
@@ -102,6 +111,18 @@ export default function State() {
                         state.ufEstado = answer.ufEstado
                     }
                 })
+
+                const updatedState = response.data;
+
+                setData((prevData) => {
+                    return prevData.map((state) => {
+                      if (state.id === stateId) {
+                        return updatedState;
+                      }
+                      return state;
+                    });
+                  });
+
                 openCloseModalEdit();
             }).catch(error => {
                 console.log(error)
@@ -112,6 +133,7 @@ export default function State() {
         await axios.delete(baseUrl + "/" + stateId, getAuthConfig())
             .then(response => {
                 setData(data.filter(state => state.id !== response.data));
+                PutState();
                 openCloseModalDelete();
             }).catch(error => {
                 console.log(error);
@@ -234,7 +256,7 @@ export default function State() {
             </Modal>
             <Modal isOpen={modalDelete}>
                 <ModalBody>
-                    Confirma a exclusão deste estado : {selectState && selectState.nome} ?
+                    Confirma a exclusão deste estado: {stateName} ?
                 </ModalBody>
                 <ModalFooter>
                     <button className='btn btn-primary' onClick={() => DeleteOrder()}>Sim</button>

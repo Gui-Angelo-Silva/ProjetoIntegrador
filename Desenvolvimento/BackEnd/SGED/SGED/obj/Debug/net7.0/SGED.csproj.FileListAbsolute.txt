@@ -1,0 +1,7 @@
+C:\Users\Aluno\Documents\ProjetoIntegrador\Desenvolvimento\BackEnd\SGED\SGED\obj\Debug\net7.0\SGED.csproj.AssemblyReference.cache
+C:\Users\Aluno\Documents\ProjetoIntegrador\Desenvolvimento\BackEnd\SGED\SGED\obj\Debug\net7.0\SGED.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Aluno\Documents\ProjetoIntegrador\Desenvolvimento\BackEnd\SGED\SGED\obj\Debug\net7.0\SGED.AssemblyInfoInputs.cache
+C:\Users\Aluno\Documents\ProjetoIntegrador\Desenvolvimento\BackEnd\SGED\SGED\obj\Debug\net7.0\SGED.AssemblyInfo.cs
+C:\Users\Aluno\Documents\ProjetoIntegrador\Desenvolvimento\BackEnd\SGED\SGED\obj\Debug\net7.0\SGED.csproj.CoreCompileInputs.cache
+C:\Users\Aluno\Documents\ProjetoIntegrador\Desenvolvimento\BackEnd\SGED\SGED\obj\Debug\net7.0\SGED.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Aluno\Documents\ProjetoIntegrador\Desenvolvimento\BackEnd\SGED\SGED\obj\Debug\net7.0\SGED.MvcApplicationPartsAssemblyInfo.cache

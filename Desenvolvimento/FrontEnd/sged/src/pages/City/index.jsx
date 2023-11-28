@@ -84,6 +84,17 @@ export default function City() {
             });
     };
 
+    const PutCity = async () => {
+        await axios
+            .get("https://localhost:7096/api/Estado", getAuthConfig())
+            .then((response) => {
+                setDataState(response.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
     const PostOrder = async () => {
         await axios
             .post(baseUrl, { nomeCidade: cityName, idEstado: idState }, getAuthConfig())
@@ -111,6 +122,18 @@ export default function City() {
                             : city
                     )
                 );
+
+                const updateCity = response.data;
+
+                setData((prevData) => {
+                    return prevData.map((city) => {
+                      if (city.id === cityId) {
+                        return updateCity;
+                      }
+                      return city;
+                    });
+                  });
+
                 openCloseModalEdit();
             })
             .catch((error) => {
@@ -125,6 +148,7 @@ export default function City() {
                 setData((previousData) =>
                     previousData.filter((city) => city.id !== cityId)
                 );
+                PutCity();
                 openCloseModalDelete();
             })
             .catch((error) => {
@@ -296,7 +320,7 @@ export default function City() {
             </Modal>
             <Modal isOpen={modalDelete}>
                 <ModalBody>
-                    Confirma a exclusão desta Cidade: {selectCity && selectCity.nome} ?
+                    Confirma a exclusão desta Cidade: {cityName} ?
                 </ModalBody>
                 <ModalFooter>
                     <button className="btn btn-primary" onClick={() => DeleteOrder()}>

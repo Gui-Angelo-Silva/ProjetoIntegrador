@@ -83,8 +83,14 @@ export default function TypeUser() {
             })
     }
 
-
-
+    const PutTypeUser = async () => {
+        await axios.get(baseUrl, getAuthConfig())
+            .then(response => {
+                setData(response.data)
+            }).catch(error => {
+                console.log(error);
+            })
+    }
 
     const PostOrder = async () => {
         delete selectTypeUser.id
@@ -110,6 +116,18 @@ export default function TypeUser() {
                         typeuser.descricaoTipoUsuario = answer.descricaoTipoUsuario
                     }
                 })
+
+                const updateTypeUser = response.data;
+
+                setData((prevData) => {
+                    return prevData.map((typeuser) => {
+                      if (typeuser.id === typeUserId) {
+                        return updateTypeUser;
+                      }
+                      return typeuser;
+                    });
+                  });
+
                 openCloseModalEdit();
             }).catch(error => {
                 console.log(error)
@@ -120,6 +138,7 @@ export default function TypeUser() {
         await axios.delete(baseUrl + "/" + typeUserId, getAuthConfig())
             .then(response => {
                 setData(data.filter(typeuser => typeuser.id !== response.data));
+                PutTypeUser();
                 openCloseModalDelete();
             }).catch(error => {
                 console.log(error);
@@ -253,7 +272,7 @@ export default function TypeUser() {
             </Modal>
             <Modal isOpen={modalDelete}>
                 <ModalBody>
-                    Confirma a exclusão deste usuário {selectTypeUser && selectTypeUser.nomeTipoUsuario} ?
+                    Confirma a exclusão deste tipo de usuário: {typeUserName} ?
                 </ModalBody>
                 <ModalFooter>
                     <button className='btn btn-primary' onClick={() => DeleteOrder()}>Sim</button>

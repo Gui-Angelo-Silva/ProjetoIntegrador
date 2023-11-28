@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import axios from "axios";
@@ -7,6 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useSession } from '../Session/index'
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import InputMask from 'react-input-mask';
 
 const PasswordStrengthIndicator = ({ data }) => {
 
@@ -77,9 +79,12 @@ export default function User() {
     const [modalEdit, setModalEdit] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
     const [updateData, setUpdateData] = useState(true);
-    const [userName, setUserName] = useState("");
-    const [userEmail, setUserEmail] = useState("");
+    const [personName, setUserName] = useState("");
+    const [personEmail, setPersonEmail] = useState("");
     const [userPassword, setUserPassword] = useState("");
+    const [personTelephone, setPersonTelephone] = useState("");
+    const [personCpfCnpj, setPersonCpfCnpj] = useState("");
+    const [personRgIe, setPersonRgIe] = useState("");
     const [userOffice, setUserOffice] = useState("");
     const [userStatus, setUserStatus] = useState("");
     const [idTypeUser, setIdTypeUser] = useState("");
@@ -93,8 +98,8 @@ export default function User() {
 
     const [selectUser] = useState({
         id: "",
-        nomeUsuario: "",
-        emailUsuario: "",
+        nomePessoa: "",
+        emailPessoa: "",
         senhaUsuario: "",
         cargoUsuario: "",
         statusUsuario: "",
@@ -103,9 +108,12 @@ export default function User() {
 
     const SelectUser = (user, option) => {
         setUserId(user.id);
-        setUserName(user.nomeUsuario);
-        setUserEmail(user.emailUsuario);
+        setUserName(user.nomePessoa);
+        setPersonEmail(user.emailPessoa);
         setUserPassword(user.senhaUsuario);
+        setUserName(user.telefonePessoa);
+        setPersonEmail(user.cpfCnpjPessoa);
+        setUserName(user.rgIePessoa);
         setUserOffice(user.cargoUsuario);
         setUserStatus(user.statusUsuario);
         setIdTypeUser(user.idTipoUsuario);
@@ -155,9 +163,12 @@ export default function User() {
 
         delete selectUser.id;
         const postData = {
-            nomeUsuario: userName,
-            emailUsuario: userEmail,
+            nomePessoa: personName,
+            emailPessoa: personEmail,
             senhaUsuario: userPassword,
+            telefonePessoa: personTelephone,
+            cpfCnpjPessoa: personCpfCnpj,
+            rgIePessoa: personRgIe,
             cargoUsuario: userOffice,
             statusUsuario: Boolean(userStatus),
             idTipoUsuario: idTypeUser
@@ -179,9 +190,12 @@ export default function User() {
         delete selectUser.id;
         await axios.put(baseUrl, {
             id: userId,
-            nomeUsuario: userName,
-            emailUsuario: userEmail,
+            nomePessoa: personName,
+            emailPessoa: personEmail,
             senhaUsuario: userPassword,
+            telefonePessoa: personTelephone,
+            cpfCnpjPessoa: personCpfCnpj,
+            rgIePessoa: personRgIe,
             cargoUsuario: userOffice,
             statusUsuario: Boolean(userStatus),
             idTipoUsuario: idTypeUser
@@ -216,6 +230,32 @@ export default function User() {
         }
     }, [updateData]);
 
+    const handleKeyDown = (e) => {
+        const charCode = e.which ? e.which : e.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            e.preventDefault();
+        }
+    };
+
+    const [maskCpfCnpj, setMaskCpfCnpj] = useState("999.999.999-99");
+    const [maskRgIe, setMaskRgIe] = useState("999.999.999.999");
+
+    const implementMaskCpfCnpj = (e) => {
+        if (e === "cpf") {
+            setMaskCpfCnpj("999.999.999-99");
+        } else if (e === "cnpj") {
+            setMaskCpfCnpj("99.999.999/9999-99");
+        }
+    };
+
+    const implementMaskRgIe = (e) => {
+        if (e === "rg") {
+            setMaskRgIe("99.999.999-9");
+        } else if (e === "ie") {
+            setMaskRgIe("999.999.999.999");
+        }
+    };
+
     return (
         <div className="user-container">
             <br />
@@ -228,9 +268,12 @@ export default function User() {
                     <tr>
                         <th>Nome</th>
                         <th>E-mail</th>
-                        <th>Cargo</th>
-                        <th>Status</th>
                         <th>Tipo Usuário</th>
+                        <th>Status</th>
+                        <th>Cargo</th>
+                        <th>Telefone</th>
+                        <th>CPF / CNPJ</th>
+                        <th>RG / IE</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -240,11 +283,14 @@ export default function User() {
 
                         return (
                             <tr key={user.id}>
-                                <td>{user.nomeUsuario}</td>
-                                <td>{user.emailUsuario}</td>
-                                <td>{user.cargoUsuario}</td>
-                                <td>{user.statusUsuario ? 'Ativo' : 'Inativo'}</td>
+                                <td>{user.nomePessoa}</td>
+                                <td>{user.emailPessoa}</td>
                                 <td>{tipoUsuario ? tipoUsuario.nomeTipoUsuario : 'Tipo de usuário não encontrado!'}</td>
+                                <td>{user.statusUsuario ? 'Ativo' : 'Inativo'}</td>
+                                <td>{user.cargoUsuario}</td>
+                                <td>{user.telefonePessoa}</td>
+                                <td>{user.cpfCnpjPessoa}</td>
+                                <td>{user.rgIePessoa}</td>
                                 <td>
                                     <button className="btn btn-primary" onClick={() => SelectUser(user, "Editar")}>Editar</button>{"  "}
                                     <button className="btn btn-danger" onClick={() => SelectUser(user, "Excluir")}>Remover</button>
@@ -264,7 +310,7 @@ export default function User() {
                         <br />
                         <label>E-mail:</label>
                         <br />
-                        <input type="text" className="form-control" onChange={(e) => setUserEmail(e.target.value)} />
+                        <input type="text" className="form-control" onChange={(e) => setPersonEmail(e.target.value)} />
                         <div className="error-message">{emailError}</div>
                         <br />
                         <label>Senha:</label>
@@ -275,6 +321,36 @@ export default function User() {
                         <label>Cargo: </label>
                         <br />
                         <input type="text" className="form-control" onChange={(e) => setUserOffice(e.target.value)} />
+                        <br />
+                        <label>Telefone: </label>
+                        <br />
+                        <InputMask mask="(99) 99 99999-9999" type="text" className="form-control" onKeyDown={handleKeyDown} onChange={(e) => setUserOffice(e.target.value)} />
+                        <br />
+                        <label>CPF / CNPJ: </label>
+                        <br />
+                        <select className="form-control" onChange={(e) => implementMaskCpfCnpj(e.target.value)}>
+                            <option key="cpf" value="cpf">
+                                CPF
+                            </option>
+                            <option key="cnpj" value="cnpj">
+                                CNPJ
+                            </option>
+                        </select>
+                        <br />
+                        <InputMask mask={maskCpfCnpj} type="text" className="form-control" onKeyDown={handleKeyDown} onChange={(e) => setUserOffice(e.target.value)} />
+                        <br />
+                        <label>RG / IE: </label>
+                        <br />
+                        <select className="form-control" onChange={(e) => implementMaskRgIe(e.target.value)}>
+                            <option key="rg" value="rg">
+                                RG
+                            </option>
+                            <option key="ie" value="ie">
+                                IE
+                            </option>
+                        </select>
+                        <br />
+                        <InputMask mask={maskRgIe} type="text" className="form-control" onKeyDown={handleKeyDown} onChange={(e) => setUserOffice(e.target.value)} />
                         <br />
                         <label>Status:</label>
                         <br />
@@ -311,11 +387,11 @@ export default function User() {
                         <input type="text" className="form-control" readOnly value={userId} /> <br />
 
                         <label>Nome:</label>
-                        <input type="text" className="form-control" name="nomeUsuario" onChange={(e) => setUserName(e.target.value)} value={userName} />
+                        <input type="text" className="form-control" name="nomePessoa" onChange={(e) => setUserName(e.target.value)} value={personName} />
                         <br />
                         <label>E-mail:</label>
                         <br />
-                        <input type="text" className="form-control" name="emailUsuario" onChange={(e) => setUserEmail(e.target.value)} value={userEmail} />
+                        <input type="text" className="form-control" name="emailPessoa" onChange={(e) => setPersonEmail(e.target.value)} value={personEmail} />
                         <div className="error-message">{emailError}</div>
                         <br />
                         <label>Senha:</label>
@@ -352,7 +428,7 @@ export default function User() {
             </Modal>
             <Modal isOpen={modalDelete}>
                 <ModalBody>
-                    Confirma a exclusão deste usuário {selectUser && selectUser.nomeUsuario} ?
+                    Confirma a exclusão deste usuário {selectUser && selectUser.nomePessoa} ?
                 </ModalBody>
                 <ModalFooter>
                     <button className='btn btn-primary' onClick={() => DeleteOrder()}>Sim</button>

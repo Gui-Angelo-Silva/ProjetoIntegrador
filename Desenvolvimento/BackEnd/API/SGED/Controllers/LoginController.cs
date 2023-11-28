@@ -29,7 +29,7 @@ namespace SGED.Controllers
 
             if (!(usuarioDTO is null))
             {
-                if (loginDTO.Email == usuarioDTO.EmailUsuario && loginDTO.Senha == usuarioDTO.SenhaUsuario)
+                if (loginDTO.Email == usuarioDTO.EmailPessoa && loginDTO.Senha == usuarioDTO.SenhaUsuario)
                 {
                     string GenerateToken(string username)
                     {
@@ -47,7 +47,7 @@ namespace SGED.Controllers
                         return new JwtSecurityTokenHandler().WriteToken(token);
                     }
 
-                    var token = GenerateToken(usuarioDTO.NomeUsuario);
+                    var token = GenerateToken(usuarioDTO.NomePessoa);
                     return Ok(new { token, usuario = usuarioDTO });
                 }
             }

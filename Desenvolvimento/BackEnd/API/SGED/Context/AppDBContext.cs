@@ -38,9 +38,12 @@ public class AppDBContext : DbContext
 
         // Builder: Usuario 
         modelBuilder.Entity<Usuario>().HasKey(b => b.Id);
-        modelBuilder.Entity<Usuario>().Property(b => b.NomeUsuario).HasMaxLength(70).IsRequired();
-        modelBuilder.Entity<Usuario>().Property(b => b.EmailUsuario).IsRequired();
+        modelBuilder.Entity<Usuario>().Property(b => b.NomePessoa).HasMaxLength(70).IsRequired();
+        modelBuilder.Entity<Usuario>().Property(b => b.EmailPessoa).IsRequired();
         modelBuilder.Entity<Usuario>().Property(b => b.SenhaUsuario).HasMaxLength(50).IsRequired();
+        modelBuilder.Entity<Usuario>().Property(b => b.TelefonePessoa).HasMaxLength(19).IsRequired();
+        modelBuilder.Entity<Usuario>().Property(b => b.CpfCNPJPessoa).HasMaxLength(18).IsRequired();
+        modelBuilder.Entity<Usuario>().Property(b => b.RgIEPessoa).HasMaxLength(15).IsRequired();
         modelBuilder.Entity<Usuario>().Property(b => b.CargoUsuario).HasMaxLength(50).IsRequired();
         modelBuilder.Entity<Usuario>().Property(b => b.StatusUsuario).IsRequired();
         modelBuilder.Entity<Usuario>().HasOne(b => b.TipoUsuario).WithMany().HasForeignKey(b => b.IdTipoUsuario);
@@ -71,12 +74,12 @@ public class AppDBContext : DbContext
             new TipoUsuario { Id = 1, NomeTipoUsuario = "Desenvolvedor", NivelAcesso = "A", DescricaoTipoUsuario = "Pode efetuar todas as funcionalidades disponíveis. Voltado ao time de desenvolvimento." },
             new TipoUsuario { Id = 2, NomeTipoUsuario = "Secretário Geral", NivelAcesso = "A", DescricaoTipoUsuario = "Pode efetuar todas as funcionalidades disponíveis." },
             new TipoUsuario { Id = 3, NomeTipoUsuario = "Secretário", NivelAcesso = "B", DescricaoTipoUsuario = "Pode efetuar todas as funcionalidades disponíveis, porém com auditoria de ações." },
-            new TipoUsuario { Id = 4, NomeTipoUsuario = "Jurídico", NivelAcesso = "C", DescricaoTipoUsuario = "Apenas pode vizualizar informações, exceto senhas." },
-            new TipoUsuario { Id = 5, NomeTipoUsuario = "Físico", NivelAcesso = "D", DescricaoTipoUsuario = "Apenas pode vizualizar informações, porém dados sensíveis são mascarados." }
+            new TipoUsuario { Id = 4, NomeTipoUsuario = "Jurídico", NivelAcesso = "C", DescricaoTipoUsuario = "Apenas vizualizar informações, exceto senhas." },
+            new TipoUsuario { Id = 5, NomeTipoUsuario = "Físico", NivelAcesso = "D", DescricaoTipoUsuario = "Apenas vizualizar informações, porém dados sensíveis são mascarados." }
         );
 
         modelBuilder.Entity<Usuario>().HasData(
-            new Usuario { Id = 1, NomeUsuario = "Dev", EmailUsuario = "devops@development.com", SenhaUsuario = "123456", CargoUsuario = "Desenvolvimento", StatusUsuario = true, IdTipoUsuario = 1 }
+            new Usuario { Id = 1, NomePessoa = "Dev", EmailPessoa = "devops@development.com", SenhaUsuario = "123456", TelefonePessoa = "11999665555", CpfCNPJPessoa = "123.123.123-21", RgIEPessoa = "43.345.345-1", CargoUsuario = "Desenvolvimento", StatusUsuario = true, IdTipoUsuario = 1 }
         );
     }
 }

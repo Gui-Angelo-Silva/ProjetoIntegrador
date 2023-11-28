@@ -24,9 +24,9 @@ public class UsuarioRepository : IUsuarioRepository
         return await _dbContext.Usuario.Where(p => p.Id == id && p.EmailUsuario != "devops@development.com").FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<Usuario>> GetByEmail(string email)
+    public async Task<IEnumerable<Usuario>> GetByEmail(int id, string email)
     {
-        return await _dbContext.Usuario.Where(p => p.EmailUsuario.ToUpper().Contains(email.ToUpper()) && p.EmailUsuario != "devops@development.com").ToListAsync();
+        return await _dbContext.Usuario.Where(p => p.Id != id && p.EmailUsuario.ToUpper().Contains(email.ToUpper()) && p.EmailUsuario != "devops@development.com").ToListAsync();
     }
 
     public async Task<Usuario> Autentication(Autentication autentication)

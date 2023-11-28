@@ -29,10 +29,10 @@ public class UsuarioService : IUsuarioService
         return _mapper.Map<UsuarioDTO>(usuario);
     }
 
-    public async Task<IEnumerable<UsuarioDTO>> GetByEmail(string email)
+    public async Task<IEnumerable<string>> GetByEmail(int id, string email)
     {
-        var usuarios = await _usuarioRepository.GetByEmail(email);
-        return _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
+        var usuarios = await _usuarioRepository.GetByEmail(id, email);
+        return usuarios.Select(u => u.EmailUsuario).ToList();
     }
 
     public async Task<UsuarioDTO> Autentication(AutenticationDTO autenticationDTO)

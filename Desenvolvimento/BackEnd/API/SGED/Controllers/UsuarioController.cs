@@ -47,15 +47,11 @@ namespace SGED.Controllers
         public async Task<ActionResult> Post([FromBody] UsuarioDTO usuarioDTO)
         {
             if (usuarioDTO is null) return BadRequest("Dado inválido!");
-            var usuarios = await _usuarioService.GetByEmail(usuarioDTO.EmailUsuario);
-            foreach (var usuario in usuarios)
-            {
-                if (usuario.EmailUsuario.ToUpper() == usuarioDTO.EmailUsuario.ToUpper())
-                {
-                    return NotFound("O e-mail informado já existe!");
-                }
-            }
-            if(usuarioDTO.EmailUsuario == "devops@development.com") NotFound("O e-mail informado já existe!");
+
+            var result = await GetEmail(0, usuarioDTO.EmailUsuario);
+            if (result) { return NotFound("O e-mail informado já existe!"); };
+
+            if (usuarioDTO.EmailUsuario.ToUpper() == "devops@development.com") { NotFound("O e-mail informado já existe!"); }
 
             await _usuarioService.Create(usuarioDTO);
             return new CreatedAtRouteResult("GetUsuario", new { id = usuarioDTO.Id }, usuarioDTO);
@@ -66,16 +62,10 @@ namespace SGED.Controllers
         {
             if (usuarioDTO is null) return BadRequest("Dado inválido!");
 
-            var emailExists = await EmailExistsForOtherUser(usuarioDTO.Id, usuarioDTO.EmailUsuario);
-            if (emailExists)
-            {
-                return NotFound("O e-mail informado já existe!");
-            }
+            var result = await GetEmail(usuarioDTO.Id, usuarioDTO.EmailUsuario);
+            if (result) { return NotFound("O e-mail informado já existe!"); };
 
-            if (usuarioDTO.EmailUsuario == "devops@development.com")
-            {
-                NotFound("O e-mail informado já existe!");
-            }
+            if (usuarioDTO.EmailUsuario.ToUpper() == "devops@development.com") { NotFound("O e-mail informado já existe!"); }
 
             await _usuarioService.Update(usuarioDTO);
             return new CreatedAtRouteResult("GetUsuario", new { id = usuarioDTO.Id }, usuarioDTO);
@@ -90,10 +80,17 @@ namespace SGED.Controllers
             return Ok(usuarioDTO);
         }
 
-        private async Task<bool> EmailExistsForOtherUser(int id, string email)
+        private async Task<bool> GetEmail(int idUsuario, string emailUsuario)
         {
-            var usuarios = await _usuarioService.GetByEmail(email);
-            return usuarios.Any(usuario => usuario.Id != id && usuario.EmailUsuario.ToUpper() != email.ToUpper());
+            var emails = await _usuarioService.GetByEmail(idUsuario, emailUsuario);
+            foreach (var email in emails)
+            {
+                if (email.ToUpper() == emailUsuario.ToUpper())
+                {
+                    return true;
+                };
+            }
+            return false;
         }
 
     }

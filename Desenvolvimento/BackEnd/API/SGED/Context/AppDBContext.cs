@@ -38,9 +38,12 @@ public class AppDBContext : DbContext
 
         // Builder: Usuario 
         modelBuilder.Entity<Usuario>().HasKey(b => b.Id);
-        modelBuilder.Entity<Usuario>().Property(b => b.NomeUsuario).HasMaxLength(70).IsRequired();
-        modelBuilder.Entity<Usuario>().Property(b => b.EmailUsuario).IsRequired();
+        modelBuilder.Entity<Usuario>().Property(b => b.NomePessoa).HasMaxLength(70).IsRequired();
+        modelBuilder.Entity<Usuario>().Property(b => b.EmailPessoa).IsRequired();
         modelBuilder.Entity<Usuario>().Property(b => b.SenhaUsuario).HasMaxLength(50).IsRequired();
+        modelBuilder.Entity<Usuario>().Property(b => b.TelefonePessoa).HasMaxLength(19).IsRequired();
+        modelBuilder.Entity<Usuario>().Property(b => b.CpfCNPJPessoa).HasMaxLength(18).IsRequired();
+        modelBuilder.Entity<Usuario>().Property(b => b.RgIEPessoa).HasMaxLength(15).IsRequired();
         modelBuilder.Entity<Usuario>().Property(b => b.CargoUsuario).HasMaxLength(50).IsRequired();
         modelBuilder.Entity<Usuario>().Property(b => b.StatusUsuario).IsRequired();
         modelBuilder.Entity<Usuario>().HasOne(b => b.TipoUsuario).WithMany().HasForeignKey(b => b.IdTipoUsuario);

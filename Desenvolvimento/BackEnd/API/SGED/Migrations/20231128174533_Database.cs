@@ -85,12 +85,15 @@ namespace SGED.Migrations
                 {
                     idusuario = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    nomeusuario = table.Column<string>(type: "character varying(70)", maxLength: 70, nullable: false),
-                    emailusuario = table.Column<string>(type: "text", nullable: false),
                     senhausuario = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     cargousuario = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     statususuario = table.Column<bool>(type: "boolean", nullable: false),
-                    IdTipoUsuario = table.Column<int>(type: "integer", nullable: false)
+                    IdTipoUsuario = table.Column<int>(type: "integer", nullable: false),
+                    nomepessoa = table.Column<string>(type: "character varying(70)", maxLength: 70, nullable: false),
+                    emailpessoa = table.Column<string>(type: "text", nullable: false),
+                    telefonepessoa = table.Column<string>(type: "character varying(19)", maxLength: 19, nullable: false),
+                    cpfcnpjpessoa = table.Column<string>(type: "character varying(18)", maxLength: 18, nullable: false),
+                    rgiepessoa = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -116,8 +119,8 @@ namespace SGED.Migrations
                     { 1, "Pode efetuar todas as funcionalidades disponíveis. Voltado ao time de desenvolvimento.", "A", "Desenvolvedor" },
                     { 2, "Pode efetuar todas as funcionalidades disponíveis.", "A", "Secretário Geral" },
                     { 3, "Pode efetuar todas as funcionalidades disponíveis, porém com auditoria de ações.", "B", "Secretário" },
-                    { 4, "Apenas pode vizualizar informações, exceto senhas.", "C", "Jurídico" },
-                    { 5, "Apenas pode vizualizar informações, porém dados sensíveis são mascarados.", "D", "Físico" }
+                    { 4, "Apenas vizualizar informações, exceto senhas.", "C", "Jurídico" },
+                    { 5, "Apenas vizualizar informações, porém dados sensíveis são mascarados.", "D", "Físico" }
                 });
 
             migrationBuilder.InsertData(
@@ -127,8 +130,8 @@ namespace SGED.Migrations
 
             migrationBuilder.InsertData(
                 table: "usuario",
-                columns: new[] { "idusuario", "cargousuario", "emailusuario", "IdTipoUsuario", "nomeusuario", "senhausuario", "statususuario" },
-                values: new object[] { 1, "Desenvolvimento", "devops@development.com", 1, "Dev", "123456", true });
+                columns: new[] { "idusuario", "cargousuario", "cpfcnpjpessoa", "emailpessoa", "IdTipoUsuario", "nomepessoa", "rgiepessoa", "senhausuario", "statususuario", "telefonepessoa" },
+                values: new object[] { 1, "Desenvolvimento", "123.123.123-21", "devops@development.com", 1, "Dev", "43.345.345-1", "123456", true, "11999665555" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_cidade_IdEstado",

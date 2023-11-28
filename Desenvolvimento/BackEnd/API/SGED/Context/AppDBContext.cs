@@ -79,7 +79,7 @@ public class AppDBContext : DbContext
         );
 
         modelBuilder.Entity<Usuario>().HasData(
-            new Usuario { Id = 1, NomeUsuario = "Dev", EmailUsuario = "devops@development.com", SenhaUsuario = "123456", CargoUsuario = "Desenvolvimento", StatusUsuario = true, IdTipoUsuario = 1 }
+            new Usuario { Id = 1, NomePessoa = "Dev", EmailPessoa = "devops@development.com", SenhaUsuario = "123456", CargoUsuario = "Desenvolvimento", StatusUsuario = true, IdTipoUsuario = 1 }
         );
     }
 }

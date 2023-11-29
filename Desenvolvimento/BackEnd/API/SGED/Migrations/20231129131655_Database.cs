@@ -131,7 +131,7 @@ namespace SGED.Migrations
             migrationBuilder.InsertData(
                 table: "usuario",
                 columns: new[] { "idusuario", "cargousuario", "cpfcnpjpessoa", "emailpessoa", "IdTipoUsuario", "nomepessoa", "rgiepessoa", "senhausuario", "statususuario", "telefonepessoa" },
-                values: new object[] { 1, "Desenvolvimento", "123.123.123-21", "devops@development.com", 1, "Dev", "43.345.345-1", "123456", true, "11999665555" });
+                values: new object[] { 1, "Desenvolvimento", "123.123.123-21", "devops@development.com", 1, "Dev", "43.345.345-1", "123456", true, "+55 (17) 99966-5555" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_cidade_IdEstado",

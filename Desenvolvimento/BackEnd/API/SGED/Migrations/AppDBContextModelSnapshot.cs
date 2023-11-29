@@ -275,7 +275,7 @@ namespace SGED.Migrations
                             RgIEPessoa = "43.345.345-1",
                             SenhaUsuario = "123456",
                             StatusUsuario = true,
-                            TelefonePessoa = "11999665555"
+                            TelefonePessoa = "+55 (17) 99966-5555"
                         });
                 });
 

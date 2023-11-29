@@ -79,7 +79,7 @@ public class AppDBContext : DbContext
         );
 
         modelBuilder.Entity<Usuario>().HasData(
-            new Usuario { Id = 1, NomePessoa = "Dev", EmailPessoa = "devops@development.com", SenhaUsuario = "123456", TelefonePessoa = "11999665555", CpfCNPJPessoa = "123.123.123-21", RgIEPessoa = "43.345.345-1", CargoUsuario = "Desenvolvimento", StatusUsuario = true, IdTipoUsuario = 1 }
+            new Usuario { Id = 1, NomePessoa = "Dev", EmailPessoa = "devops@development.com", SenhaUsuario = "123456", TelefonePessoa = "+55 (17) 99966-5555", CpfCNPJPessoa = "123.123.123-21", RgIEPessoa = "43.345.345-1", CargoUsuario = "Desenvolvimento", StatusUsuario = true, IdTipoUsuario = 1 }
         );
     }
 }

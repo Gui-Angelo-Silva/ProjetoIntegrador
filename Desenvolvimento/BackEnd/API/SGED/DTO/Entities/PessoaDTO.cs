@@ -27,7 +27,7 @@ namespace SGED.DTO.Entities
 
         [Required(ErrorMessage = "O CPF ou CNPJ é requerido!")]
         [MinLength(14)]
-        [MaxLength(18)]
+        [MaxLength(19)]
         public string CpfCnpjPessoa { get; set; }
 
         [Required(ErrorMessage = "O RG ou IE é requerido!")]

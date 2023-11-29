@@ -162,7 +162,13 @@ export default function User() {
     };
 
     const checkEmailExists = (email) => {
-        const emailExists = data.some(usuario => usuario.EmailUsuario.toLowerCase().trim() === email.toLowerCase().trim());
+        var emailExists = data.some(usuario => usuario.EmailUsuario.toLowerCase() === email.toLowerCase());
+        if (!emailExists) {
+            const string = "devops@development.com";
+            if (email.toLowerCase() === string.toLowerCase()) {
+                emailExists = true;
+            }
+        }
         return emailExists;
     };
 
@@ -324,11 +330,40 @@ export default function User() {
         }
 
         if (personEmail) {
+            console.log(personEmail);
+
+            if (personEmail.includes(' ')) {
+                setErrorPersonEmail('O e-mail não pode conter espaço em branco!');
+                status = false;
+            }
+
+            /*const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(personEmail);
+
+            if (!isValidEmail) {
+                setErrorPersonEmail('E-mail inválido!');
+            }*/
+
+            const hasAtSymbol = personEmail.includes('@');
+            const hasDot = personEmail.includes('.');
+            const lastDotPosition = personEmail.lastIndexOf('.');
+
+            if (status && !hasAtSymbol) {
+                setErrorPersonEmail('E-mail inválido! Deve conter um @');
+                status = false;
+            } else if (status && !hasDot) {
+                setErrorPersonEmail('E-mail inválido! Deve conter um "."');
+                status = false;
+            } else if (status && lastDotPosition <= personEmail.indexOf('@')) {
+                setErrorPersonEmail('E-mail inválido! O ponto deve estar após o "@"');
+                status = false;
+            }
 
             const emailExists = checkEmailExists(personEmail);
 
-            if (emailExists) { setErrorPersonEmail('Este e-mail já existe!'); }
-            status = false;
+            if (status && emailExists) {
+                setErrorPersonEmail('Este e-mail já existe!');
+                status = false;
+            }
 
         } else {
             setErrorPersonEmail('O e-mail é requerido!');
@@ -368,13 +403,13 @@ export default function User() {
 
             const response = RgIe(personRgIe);
 
-            if (response === -1) { setErrorPersonCpfCnpj('RG inválido!'); }
-            else if (response === -2) { setErrorPersonCpfCnpj('IE inválido!'); }
-            else if (response === -3) { setErrorPersonCpfCnpj('Documento incorreto!'); }
+            if (response === -1) { setErrorPersonRgIe('RG inválido!'); }
+            else if (response === -2) { setErrorPersonRgIe('IE inválido!'); }
+            else if (response === -3) { setErrorPersonRgIe('Documento incorreto!'); }
             status = false;
 
         } else {
-            setErrorPersonRgIe('O RG ouIE é requerido!');
+            setErrorPersonRgIe('O RG ou IE é requerido!');
             status = false;
         }
 
@@ -487,7 +522,7 @@ export default function User() {
     };
 
     const [maskCpfCnpj, setMaskCpfCnpj] = useState("999.999.999-99");
-    const [maskRgIe, setMaskRgIe] = useState("999.999.999.999");
+    const [maskRgIe, setMaskRgIe] = useState("99.999.999-9");
 
     const implementMaskCpfCnpj = (e) => {
         if (e === "cpf") {
@@ -571,11 +606,16 @@ export default function User() {
                         <label>Nome: </label>
                         <br />
                         <input type="text" className="form-control" onChange={(e) => setPersonName(e.target.value)} />
+                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            {errorPersonName}
+                        </div>
                         <br />
                         <label>E-mail:</label>
                         <br />
                         <input type="text" className="form-control" onChange={(e) => setPersonEmail(e.target.value)} />
-                        <div className="error-message">{erroPersonEmail}</div>
+                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            {erroPersonEmail}
+                        </div>
                         <br />
                         <label>Senha:</label>
                         <br />
@@ -584,14 +624,23 @@ export default function User() {
                             <i class="toggle-password fas fa-eye" onClick={() => togglePasswordVisibility()} ></i>
                         </div>
                         <PasswordStrengthIndicator data={userPassword} />
+                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            {erroUserPassword}
+                        </div>
                         <br />
                         <label>Cargo: </label>
                         <br />
                         <input type="text" className="form-control" onChange={(e) => setUserOffice(e.target.value)} />
+                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            {erroUserOffice}
+                        </div>
                         <br />
                         <label>Telefone: </label>
                         <br />
-                        <InputMask mask="(99) 99 99999-9999" type="text" className="form-control" onKeyDown={handleKeyDown} onChange={(e) => setPersonTelephone(e.target.value)} />
+                        <InputMask mask="(99) 99999-9999" type="text" className="form-control" onKeyDown={handleKeyDown} onChange={(e) => setPersonTelephone(e.target.value)} />
+                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            {erroPersonTelephone}
+                        </div>
                         <br />
                         <label>CPF / CNPJ: </label>
                         <br />
@@ -605,6 +654,9 @@ export default function User() {
                         </select>
                         <br />
                         <InputMask mask={maskCpfCnpj} type="text" className="form-control" onKeyDown={handleKeyDown} onChange={(e) => setPersonCpfCnpj(e.target.value)} />
+                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            {erroPersonCpfCnpj}
+                        </div>
                         <br />
                         <label>RG / IE: </label>
                         <br />
@@ -617,7 +669,10 @@ export default function User() {
                             </option>
                         </select>
                         <br />
-                        <InputMask mask={maskRgIe} type="text" className="form-control" onKeyDown={handleKeyDown} onChange={(e) => setPersonCpfCnpj(e.target.value)} />
+                        <InputMask mask={maskRgIe} type="text" className="form-control" onKeyDown={handleKeyDown} onChange={(e) => setPersonRgIe(e.target.value)} />
+                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            {erroPersonRgIe}
+                        </div>
                         <br />
                         <label>Status:</label>
                         <br />

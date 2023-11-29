@@ -160,8 +160,9 @@ export default function State() {
         if (searchTerm === '') {
             setStatesToRender(data); // Se o campo de pesquisa estiver vazio, exibe todos os estados
         } else {
+            const searchTermLower = searchTerm.toLocaleLowerCase('pt-BR');
             const filtered = data.filter((state) =>
-                state.nomeEstado.toLowerCase().includes(searchTerm.toLowerCase())
+                state.nomeEstado.toLocaleLowerCase('pt-BR').includes(searchTermLower)
             );
             setStatesToRender(filtered);
         }

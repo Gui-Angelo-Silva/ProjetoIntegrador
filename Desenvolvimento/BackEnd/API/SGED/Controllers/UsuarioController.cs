@@ -51,7 +51,7 @@ namespace SGED.Controllers
             var result = await GetEmail(0, usuarioDTO.EmailUsuario);
             if (result) { return NotFound("O e-mail informado já existe!"); };
 
-            if (usuarioDTO.EmailUsuario.ToUpper() == "devops@development.com") { NotFound("O e-mail informado já existe!"); }
+            if (usuarioDTO.EmailUsuario.ToUpper() == "devops@development.com".ToUpper()) { NotFound("O e-mail informado já existe!"); }
 
             await _usuarioService.Create(usuarioDTO);
             return new CreatedAtRouteResult("GetUsuario", new { id = usuarioDTO.Id }, usuarioDTO);
@@ -65,7 +65,7 @@ namespace SGED.Controllers
             var result = await GetEmail(usuarioDTO.Id, usuarioDTO.EmailUsuario);
             if (result) { return NotFound("O e-mail informado já existe!"); };
 
-            if (usuarioDTO.EmailUsuario.ToUpper() == "devops@development.com") { NotFound("O e-mail informado já existe!"); }
+            if (usuarioDTO.EmailUsuario.ToUpper() == "devops@development.com".ToUpper()) { NotFound("O e-mail informado já existe!"); }
 
             await _usuarioService.Update(usuarioDTO);
             return new CreatedAtRouteResult("GetUsuario", new { id = usuarioDTO.Id }, usuarioDTO);

@@ -161,8 +161,15 @@ export default function User() {
         setModalDelete(!modalDelete);
     };
 
-    const checkEmailExists = (email) => {
-        var emailExists = data.some(usuario => usuario.EmailUsuario.toLowerCase() === email.toLowerCase());
+    const checkEmailExists = (id, email) => {
+        var emailExists;
+
+        if (id === 0) {
+            emailExists = data.some(usuario => usuario.EmailUsuario.toLowerCase() === email.toLowerCase());
+        } else {
+            emailExists = data.some(usuario => usuario.Id !== id && usuario.EmailUsuario.toLowerCase() === email.toLowerCase());
+        }
+
         if (!emailExists) {
             const string = "devops@development.com";
             if (email.toLowerCase() === string.toLowerCase()) {
@@ -170,6 +177,10 @@ export default function User() {
             }
         }
         return emailExists;
+    };
+
+    const checkCaracters = (document) => {
+        return /^(.)\1+$/.test(document);
     };
 
     function CpfCnpj(cpfCnpj) {
@@ -182,10 +193,13 @@ export default function User() {
                 cpfCnpj[11] === '-'
             ) {
                 cpfCnpj = cpfCnpj.replace(/\./g, '').replace('-', '');
-                if (!/^\d+$/.test(cpfCnpj)) return -3;
 
-                if (verificarCpf(cpfCnpj)) return 1;
-                else return -1;
+                if (!checkCaracters(cpfCnpj)) {
+                    if (!/^\d+$/.test(cpfCnpj)) return -3;
+
+                    if (verificarCpf(cpfCnpj)) return 1;
+                    else return -1;
+                } else { return -1; }
             }
         } else {
             if (
@@ -195,10 +209,13 @@ export default function User() {
                 cpfCnpj[15] === '-'
             ) {
                 cpfCnpj = cpfCnpj.replace(/\./g, '').replace(/\//g, '').replace('-', '');
-                if (!/^\d+$/.test(cpfCnpj)) return -3;
 
-                if (verificarCnpj(cpfCnpj)) return 2;
-                else return -2;
+                if (!checkCaracters(cpfCnpj)) {
+                    if (!/^\d+$/.test(cpfCnpj)) return -3;
+
+                    if (verificarCnpj(cpfCnpj)) return 2;
+                    else return -2;
+                } else { return -2; }
             }
         }
         return 0;
@@ -262,10 +279,13 @@ export default function User() {
                 rgIe[10] === '-'
             ) {
                 rgIe = rgIe.replace(/\./g, '').replace('-', '');
-                if (!/^\d+$/.test(rgIe)) return -3;
 
-                if (verificarRg(rgIe)) return 1;
-                else return -1;
+                if (!checkCaracters(rgIe)) {
+                    if (!/^\d+$/.test(rgIe)) return -3;
+
+                    if (verificarRg(rgIe)) return 1;
+                    else return -1;
+                } else { return -1; }
             }
         } else {
             if (
@@ -274,10 +294,13 @@ export default function User() {
                 rgIe[11] === '.'
             ) {
                 rgIe = rgIe.replace(/\./g, '');
-                if (!/^\d+$/.test(rgIe)) return -3;
 
-                if (verificarIe(rgIe)) return 2;
-                else return -2;
+                if (!checkCaracters(rgIe)) {
+                    if (!/^\d+$/.test(rgIe)) return -3;
+
+                    if (verificarIe(rgIe)) return 2;
+                    else return -2;
+                } else { return -2; }
             }
         }
         return 0;
@@ -324,7 +347,12 @@ export default function User() {
     const verificarDados = () => {
         var status = true;
 
-        if (!personName) {
+        if (personName) {
+            if (personName.length < 5) {
+                setErrorPersonName('O nome precisa ter no mínimo 5 letras!');
+                status = false;
+            }
+        } else {
             setErrorPersonName('O nome é requerido!');
             status = false;
         }
@@ -337,32 +365,34 @@ export default function User() {
                 status = false;
             }
 
-            /*const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(personEmail);
+            var hasAtSymbol = personEmail.includes('@');
+            var hasDot = personEmail.includes('.');
+            var lastDotPosition = personEmail.lastIndexOf('.');
 
-            if (!isValidEmail) {
-                setErrorPersonEmail('E-mail inválido!');
-            }*/
-
-            const hasAtSymbol = personEmail.includes('@');
-            const hasDot = personEmail.includes('.');
-            const lastDotPosition = personEmail.lastIndexOf('.');
-
-            if (status && !hasAtSymbol) {
-                setErrorPersonEmail('E-mail inválido! Deve conter um @');
+            if (!erroPersonEmail && !hasAtSymbol) {
+                setErrorPersonEmail('E-mail inválido: O e-mail deve conter um "@"!');
                 status = false;
-            } else if (status && !hasDot) {
-                setErrorPersonEmail('E-mail inválido! Deve conter um "."');
+            } else if (!erroPersonEmail && !hasDot) {
+                setErrorPersonEmail('E-mail inválido: O e-mail deve conter um "."!');
                 status = false;
-            } else if (status && lastDotPosition <= personEmail.indexOf('@')) {
-                setErrorPersonEmail('E-mail inválido! O ponto deve estar após o "@"');
+            } else if (!erroPersonEmail && lastDotPosition <= personEmail.indexOf('@')) {
+                setErrorPersonEmail('E-mail inválido: O "." deve estar após o "@"!');
                 status = false;
             }
 
-            const emailExists = checkEmailExists(personEmail);
+            if (!erroPersonEmail) {
+                var emailExists;
 
-            if (status && emailExists) {
-                setErrorPersonEmail('Este e-mail já existe!');
-                status = false;
+                if (userId) {
+                    emailExists = checkEmailExists(userId, personEmail);
+                } else {
+                    emailExists = checkEmailExists(0, personEmail);
+                }
+
+                if (emailExists) {
+                    setErrorPersonEmail('Este e-mail já existe!');
+                    status = false;
+                }
             }
 
         } else {
@@ -380,7 +410,12 @@ export default function User() {
             status = false;
         }
 
-        if (!personTelephone) {
+        if (/\d/.test(personTelephone)) {
+            if (personTelephone.length !== 15) {
+                setErrorPersonTelephone('O telefone inválido: informe o número e ddd!');
+                status = false;
+            }
+        } else {
             setErrorPersonTelephone('O telefone é requerido!');
             status = false;
         }
@@ -413,7 +448,12 @@ export default function User() {
             status = false;
         }
 
-        if (!userOffice) {
+        if (userOffice) {
+            if (userOffice.length < 3) {
+                setErrorUserOffice('O cargo deve ter no mínimo 3 letras!');
+                status = false;
+            }
+        } else {
             setErrorUserOffice('O cargo é requerido!');
             status = false;
         }
@@ -707,10 +747,12 @@ export default function User() {
                     <div className="form-group">
                         <label>ID: </label><br />
                         <input type="text" className="form-control" readOnly value={userId} /> <br />
-
                         <label>Nome:</label>
                         <input type="text" className="form-control" name="nomePessoa" onChange={(e) => setPersonName(e.target.value)} value={personName} />
                         <br />
+                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            {errorPersonName}
+                        </div>
                         <label>E-mail:</label>
                         <br />
                         <input type="text" className="form-control" name="emailPessoa" onChange={(e) => setPersonEmail(e.target.value)} value={personEmail} />
@@ -729,7 +771,7 @@ export default function User() {
                         <br />
                         <label>Telefone: </label>
                         <br />
-                        <InputMask mask="(99) 99 99999-9999" type="text" className="form-control" onKeyDown={handleKeyDown} onChange={(e) => setPersonTelephone(e.target.value)} value={personTelephone} />
+                        <InputMask mask="(99) 99999-9999" type="text" className="form-control" onKeyDown={handleKeyDown} onChange={(e) => setPersonTelephone(e.target.value)} value={personTelephone} />
                         <br />
                         <label>CPF / CNPJ: </label>
                         <br />

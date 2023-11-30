@@ -1,12 +1,13 @@
 import NavBar from "../../components/NavBar";
 import SideBar from "../../components/SideBar";
-import ImgEstado from "../../assets/ImgEstado.png";
+import ImgEstado from "../../assets/imgEstado.png";
 import ImgCidade from "../../assets/ImgCidade2.png";
 import ImgUsuario from "../../assets/ImgUsuario.png";
 import ImgTipoUsuario from "../../assets/ImgTipoUsuario.png"
 import { Link } from "react-router-dom";
 
 export default function Registrations() {
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <NavBar /> {/* NavBar no topo */}
@@ -23,8 +24,8 @@ export default function Registrations() {
                     <div style={{ paddingTop: 40 }}>
                         <div className="flex flex-row">
                             <Link to="/state">
-                                <div className="flex flex-col bg-[#DAEEEE] hover:bg-[#58AFAE] text-green-800 hover:scale-105" style={{ width: 229, border: '2px solid #58AFAE', height: 229, justifyContent: 'center', alignItems: 'center', borderRadius: 20 }}>
-                                    <p className="text-2xl pb-2 text-green-800 font-medium" style={{ textAlign: 'center' }}>
+                            <div className="flex flex-col ml-12 bg-[#DAEEEE] hover:bg-[#58AFAE] text-green-800 hover:scale-105" style={{ width: 229, border: '2px solid #58AFAE', height: 229, justifyContent: 'center', alignItems: 'center', borderRadius: 20 }}>
+                                    <p className="text-2xl pb-2 font-medium" style={{ textAlign: 'center' }}>
                                         Estado
                                     </p>
                                     <div style={{ width: 165, height: 104, alignItems: 'center' }}>

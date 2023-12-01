@@ -43,15 +43,15 @@ namespace SGED.Controllers
         public async Task<ActionResult> Post([FromBody] UsuarioDTO usuarioDTO)
         {
             if (usuarioDTO is null) return BadRequest("Dado inválido!");
-            var usuariosDTO = await _usuarioService.GetByEmail(usuarioDTO.EmailUsuario);
+            var usuariosDTO = await _usuarioService.GetByEmail(usuarioDTO.EmailPessoa);
             foreach (var usuario in usuariosDTO)
             {
-                if (usuario.EmailUsuario.ToUpper() == usuarioDTO.EmailUsuario.ToUpper())
+                if (usuario.EmailPessoa.ToUpper() == usuarioDTO.EmailPessoa.ToUpper())
                 {
                     return NotFound("O e-mail informado já existe!");
                 }
             }
-            if(usuarioDTO.EmailUsuario == "devops@development.com") NotFound("O e-mail informado já existe!");
+            if(usuarioDTO.EmailPessoa == "devops@development.com") NotFound("O e-mail informado já existe!");
 
             await _usuarioService.Create(usuarioDTO);
             return new CreatedAtRouteResult("GetUsuario", new { id = usuarioDTO.Id }, usuarioDTO);
@@ -64,17 +64,17 @@ namespace SGED.Controllers
 
             var dadoAnterior = await _usuarioService.GetById(usuarioDTO.Id);
             if (dadoAnterior == null) return NotFound("Usuário não encontrado!");
-            if (dadoAnterior.EmailUsuario.ToUpper() != usuarioDTO.EmailUsuario.ToUpper())
+            if (dadoAnterior.EmailPessoa.ToUpper() != usuarioDTO.EmailPessoa.ToUpper())
             {
-                var usuariosDTO = await _usuarioService.GetByEmail(usuarioDTO.EmailUsuario);
+                var usuariosDTO = await _usuarioService.GetByEmail(usuarioDTO.EmailPessoa);
                 foreach (var usuario in usuariosDTO)
                 {
-                    if (usuario.EmailUsuario.ToUpper() == usuarioDTO.EmailUsuario.ToUpper())
+                    if (usuario.EmailPessoa.ToUpper() == usuarioDTO.EmailPessoa.ToUpper())
                     {
                         return NotFound("O e-mail informado já existe!");
                     }
                 }
-                if (usuarioDTO.EmailUsuario == "devops@development.com") NotFound("O e-mail informado já existe!");
+                if (usuarioDTO.EmailPessoa == "devops@development.com") NotFound("O e-mail informado já existe!");
             }
 
             await _usuarioService.Update(usuarioDTO);

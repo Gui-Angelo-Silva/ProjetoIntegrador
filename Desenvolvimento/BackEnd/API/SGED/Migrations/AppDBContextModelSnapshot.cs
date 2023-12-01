@@ -187,14 +187,14 @@ namespace SGED.Migrations
                         new
                         {
                             Id = 4,
-                            DescricaoTipoUsuario = "Apenas pode vizualizar informações, exceto senhas.",
+                            DescricaoTipoUsuario = "Apenas vizualizar informações, exceto senhas.",
                             NivelAcesso = "C",
                             NomeTipoUsuario = "Jurídico"
                         },
                         new
                         {
                             Id = 5,
-                            DescricaoTipoUsuario = "Apenas pode vizualizar informações, porém dados sensíveis são mascarados.",
+                            DescricaoTipoUsuario = "Apenas vizualizar informações, porém dados sensíveis são mascarados.",
                             NivelAcesso = "D",
                             NomeTipoUsuario = "Físico"
                         });
@@ -215,19 +215,31 @@ namespace SGED.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("cargousuario");
 
-                    b.Property<string>("EmailUsuario")
+                    b.Property<string>("CpfCNPJPessoa")
+                        .IsRequired()
+                        .HasMaxLength(18)
+                        .HasColumnType("character varying(18)")
+                        .HasColumnName("cpfcnpjpessoa");
+
+                    b.Property<string>("EmailPessoa")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("emailusuario");
+                        .HasColumnName("emailpessoa");
 
                     b.Property<int>("IdTipoUsuario")
                         .HasColumnType("integer");
 
-                    b.Property<string>("NomeUsuario")
+                    b.Property<string>("NomePessoa")
                         .IsRequired()
                         .HasMaxLength(70)
                         .HasColumnType("character varying(70)")
-                        .HasColumnName("nomeusuario");
+                        .HasColumnName("nomepessoa");
+
+                    b.Property<string>("RgIEPessoa")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("rgiepessoa");
 
                     b.Property<string>("SenhaUsuario")
                         .IsRequired()
@@ -238,6 +250,12 @@ namespace SGED.Migrations
                     b.Property<bool>("StatusUsuario")
                         .HasColumnType("boolean")
                         .HasColumnName("statususuario");
+
+                    b.Property<string>("TelefonePessoa")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("telefonepessoa");
 
                     b.HasKey("Id");
 
@@ -250,11 +268,14 @@ namespace SGED.Migrations
                         {
                             Id = 1,
                             CargoUsuario = "Desenvolvimento",
-                            EmailUsuario = "devops@development.com",
+                            CpfCNPJPessoa = "123.123.123-21",
+                            EmailPessoa = "devops@development.com",
                             IdTipoUsuario = 1,
-                            NomeUsuario = "Dev",
+                            NomePessoa = "Dev",
+                            RgIEPessoa = "43.345.345-1",
                             SenhaUsuario = "123456",
-                            StatusUsuario = true
+                            StatusUsuario = true,
+                            TelefonePessoa = "+55 (17) 99966-5555"
                         });
                 });
 

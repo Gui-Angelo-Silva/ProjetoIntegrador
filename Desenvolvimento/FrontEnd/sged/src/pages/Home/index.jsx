@@ -1,46 +1,31 @@
 import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import { FaAngleRight, FaTableCellsLarge, FaFile } from "react-icons/fa6";
+
 import { useSession } from '../Session/index';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function Home() {
-
-  const { getToken, getSession, isTokenValid } = useSession();
+  const { defaultSession, isTokenValid, newToken } = useSession();
   const navigate = useNavigate();
 
-  const VerifySession = () => {
-    const token = getToken();
-    if (!isTokenValid(token)) {
+  const VerifySession = async () => {
+    const status = await isTokenValid();
+    //console.error(status);
+    if (status === false) {
+      //console.error('Entrou');
       navigate('/');
+    } else {
+      if (await newToken() === false) {
+        defaultSession();
+        navigate('/');
+      }
     }
-  };
-
-  const [userName, setUserName] = useState("");
-  const [userEmail, setUserEmail] = useState("");
-  const [userPassword, setUserPassword] = useState("");
-  const [userOffice, setUserOffice] = useState("");
-  const [userStatus, setUserStatus] = useState("");
-  const [idTypeUser, setIdTypeUser] = useState("");
-  const [userId, setUserId] = useState("");
-
-  const GetUser = () => {
-
-    const user = getSession();
-
-    setUserId(user.id);
-    setUserName(user.nomeUsuario);
-    setUserEmail(user.emailUsuario);
-    setUserPassword(user.senhaUsuario);
-    setUserOffice(user.cargoUsuario);
-    setUserStatus(user.statusUsuario);
-    setIdTypeUser(user.idTipoUsuario);
   };
 
   useEffect(() => {
     VerifySession();
-    GetUser();
   }, []);
 
   return (
@@ -60,7 +45,7 @@ export default function Home() {
             <div className="text-slate-100 rounded-md w-[20%]" style={{ background: '#057BFF', height: 130 }}>
               <p className="pl-5 pt-3 text-lg" >NOVAS</p>
               <p className="pl-5 text-base pb-3">Total: 0</p>
-              <hr className="border-t-4 border-sky-700" />  
+              <hr className="border-t-4 border-sky-700" />
               <p className="pl-5 text-base pt-2 flex justify-between pr-5 " style={{ alignItems: 'center' }}>Detalhes <FaAngleRight className="text-end" />
               </p>
             </div>

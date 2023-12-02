@@ -7,9 +7,9 @@ import Typography from '@mui/material/Typography';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
+//import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import MailIcon from '@mui/icons-material/Mail';
+//import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { useSession } from '../pages/Session/index';
@@ -24,7 +24,7 @@ export default function NavBar() {
 
   const GetUser = () => {
     const user = getSession();
-    setUserName(user.nomeUsuario);
+    setUserName(user.nomePessoa);
   };
 
   const encerateSession = () => {
@@ -155,7 +155,7 @@ export default function NavBar() {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' }, marginLeft: 5 }}
           >
-            Olá, { userName }
+            { userName }
           </Typography> 
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton

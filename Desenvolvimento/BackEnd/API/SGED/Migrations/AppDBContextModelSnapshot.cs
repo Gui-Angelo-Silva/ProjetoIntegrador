@@ -166,35 +166,35 @@ namespace SGED.Migrations
                         new
                         {
                             Id = 1,
-                            DescricaoTipoUsuario = "Pode efetuar todas as funcionalidades disponíveis. Voltado ao time de desenvolvimento.",
+                            DescricaoTipoUsuario = "Entidade voltada ao time de desenvolvimento para uso da plataforma durante testes.",
                             NivelAcesso = "A",
                             NomeTipoUsuario = "Desenvolvedor"
                         },
                         new
                         {
                             Id = 2,
-                            DescricaoTipoUsuario = "Pode efetuar todas as funcionalidades disponíveis.",
+                            DescricaoTipoUsuario = "Entidade administrativa do orgão da Secretária.",
                             NivelAcesso = "A",
-                            NomeTipoUsuario = "Secretário Geral"
+                            NomeTipoUsuario = "Administrador"
                         },
                         new
                         {
                             Id = 3,
-                            DescricaoTipoUsuario = "Pode efetuar todas as funcionalidades disponíveis, porém com auditoria de ações.",
+                            DescricaoTipoUsuario = "Entidade de suporte para a comunidade local.",
                             NivelAcesso = "B",
-                            NomeTipoUsuario = "Secretário"
+                            NomeTipoUsuario = "Funcionário"
                         },
                         new
                         {
                             Id = 4,
-                            DescricaoTipoUsuario = "Apenas vizualizar informações, exceto senhas.",
+                            DescricaoTipoUsuario = "Entidade que representa empresas, instituições ou qualquer entidade jurídica perante a lei.",
                             NivelAcesso = "C",
                             NomeTipoUsuario = "Jurídico"
                         },
                         new
                         {
                             Id = 5,
-                            DescricaoTipoUsuario = "Apenas vizualizar informações, porém dados sensíveis são mascarados.",
+                            DescricaoTipoUsuario = "Entidade que representa todos os munícipes da cidade.",
                             NivelAcesso = "D",
                             NomeTipoUsuario = "Físico"
                         });
@@ -253,8 +253,8 @@ namespace SGED.Migrations
 
                     b.Property<string>("TelefonePessoa")
                         .IsRequired()
-                        .HasMaxLength(19)
-                        .HasColumnType("character varying(19)")
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
                         .HasColumnName("telefonepessoa");
 
                     b.HasKey("Id");
@@ -268,14 +268,27 @@ namespace SGED.Migrations
                         {
                             Id = 1,
                             CargoUsuario = "Desenvolvimento",
-                            CpfCNPJPessoa = "123.123.123-21",
+                            CpfCNPJPessoa = "000.000.000-00",
                             EmailPessoa = "devops@development.com",
                             IdTipoUsuario = 1,
                             NomePessoa = "Dev",
-                            RgIEPessoa = "43.345.345-1",
+                            RgIEPessoa = "00.000.000-0",
                             SenhaUsuario = "123456",
                             StatusUsuario = true,
-                            TelefonePessoa = "+55 (17) 99966-5555"
+                            TelefonePessoa = "(00) 00000-0000"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CargoUsuario = "Secretário Geral",
+                            CpfCNPJPessoa = "000.000.000-00",
+                            EmailPessoa = "admin@gmail.com",
+                            IdTipoUsuario = 2,
+                            NomePessoa = "Secretário Geral",
+                            RgIEPessoa = "00.000.000-0",
+                            SenhaUsuario = "987654",
+                            StatusUsuario = true,
+                            TelefonePessoa = "(00) 00000-0000"
                         });
                 });
 

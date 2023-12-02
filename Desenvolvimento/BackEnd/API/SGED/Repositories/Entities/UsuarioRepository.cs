@@ -24,14 +24,14 @@ public class UsuarioRepository : IUsuarioRepository
         return await _dbContext.Usuario.Where(p => p.Id == id && p.EmailPessoa != "devops@development.com").FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<Usuario>> GetByEmail(string email)
+    public async Task<IEnumerable<Usuario>> GetByEmail(int id, string email)
     {
-        return await _dbContext.Usuario.Where(p => p.EmailPessoa.ToUpper().Contains(email.ToUpper()) && p.EmailPessoa != "devops@development.com").ToListAsync();
+        return await _dbContext.Usuario.Where(p => p.Id != id && p.EmailPessoa.Contains(email) && p.EmailPessoa != "devops@development.com").ToListAsync();
     }
 
-    public async Task<Usuario> Login(Login login)
+    public async Task<Usuario> Autentication(Autentication autentication)
     {
-        return await _dbContext.Usuario.Where(p => p.EmailPessoa == login.Email && p.SenhaUsuario == login.Senha).FirstOrDefaultAsync();
+        return await _dbContext.Usuario.Where(p => p.EmailPessoa == autentication.Email && p.SenhaUsuario == autentication.Senha).FirstOrDefaultAsync();
     }
 
     public async Task<Usuario> Create(Usuario usuario)

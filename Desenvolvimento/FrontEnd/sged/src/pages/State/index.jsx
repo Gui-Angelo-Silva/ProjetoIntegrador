@@ -11,13 +11,24 @@ import { FaPlus } from "react-icons/fa6";
 
 export default function State() {
 
-    const { getToken, isTokenValid, getAuthConfig } = useSession();
+    const [verifyStatus, setVerifyStatus] = useState(false);
+    const { defaultSession, isTokenValid, getAuthConfig, newToken } = useSession();
     const navigate = useNavigate();
 
-    const VerifySession = () => {
-        const token = getToken();
-        if (!isTokenValid(token)) {
-            navigate('/');
+    const VerifySession = async () => {
+        if (!verifyStatus) {
+            setVerifyStatus(true);
+            const status = await isTokenValid();
+            //console.error(status);
+            if (status === false) {
+                //console.error('Entrou');
+                navigate('/');
+            } else {
+                if (await newToken() === false) {
+                    defaultSession();
+                    navigate('/');
+                }
+            }
         }
     };
 
@@ -116,12 +127,12 @@ export default function State() {
 
                 setData((prevData) => {
                     return prevData.map((state) => {
-                      if (state.id === stateId) {
-                        return updatedState;
-                      }
-                      return state;
+                        if (state.id === stateId) {
+                            return updatedState;
+                        }
+                        return state;
                     });
-                  });
+                });
 
                 openCloseModalEdit();
             }).catch(error => {
@@ -146,7 +157,38 @@ export default function State() {
             GetOrder();
             setUpdateData(false);
         }
+
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(baseUrl, getAuthConfig());
+                setData(response.data);
+                setStatesToRender(response.data); // Define os estados a serem renderizados ao iniciar
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchData();
     }, [updateData])
+
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const [statesToRender, setStatesToRender] = useState([]); // Inicialmente, exibe todos os estados
+
+    const handleSearch = (searchTerm) => {
+        setSearchTerm(searchTerm);
+
+        if (searchTerm === '') {
+            setStatesToRender(data); // Se o campo de pesquisa estiver vazio, exibe todos os estados
+        } else {
+            const searchTermLower = searchTerm.toLocaleLowerCase('pt-BR');
+            const filtered = data.filter((state) =>
+                state.nomeEstado.toLocaleLowerCase('pt-BR').includes(searchTermLower)
+            );
+            setStatesToRender(filtered);
+        }
+    };
+
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -178,8 +220,7 @@ export default function State() {
                                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                         </svg>
                                     </div>
-                                    <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar estado" required />
-                                    <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-emerald-600 hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Pesquisar</button>
+                                    <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar estado" required onChange={(e) => handleSearch(e.target.value)} />
                                 </div>
                             </div>
                         </div>
@@ -189,27 +230,42 @@ export default function State() {
                             </button>
                         </div>
                     </div>
-                        <table>
-                            <thead className="" style={{background: '#58AFAE'}}>
-                                <tr>
-                                    <th>Estado</th>
-                                    <th>Sigla</th>
-                                    <th>Ações</th>
+                    <div style={{}}>
+                        <button className="btn btn-success" onClick={() => openCloseModalInsert()}>Adicionar</button>
+                    </div>
+
+                    <table>
+                        <thead className="" style={{ background: '#58AFAE' }}>
+                            <tr>
+                                <th>Estado</th>
+                                <th>Sigla</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {/* Use statesToRender para renderizar os estados filtrados */}
+                            {statesToRender.map((state) => (
+                                <tr key={state.id}>
+                                    <td>{state.nomeEstado}</td>
+                                    <td>{state.ufEstado}</td>
+                                    <td>
+                                        <button
+                                            className="btn btn-primary"
+                                            onClick={() => StateSelect(state, "Editar")}
+                                        >
+                                            Editar
+                                        </button>{" "}
+                                        <button
+                                            className="btn btn-danger"
+                                            onClick={() => StateSelect(state, "Excluir")}
+                                        >
+                                            Remover
+                                        </button>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {data.map(state => (
-                                    <tr key={state.id}>
-                                        <td>{state.nomeEstado}</td>
-                                        <td>{state.ufEstado}</td>
-                                        <td>
-                                            <button className="btn btn-primary" onClick={() => StateSelect(state, "Editar")}>Editar</button>{"  "}
-                                            <button className="btn btn-danger" onClick={() => StateSelect(state, "Excluir")}>Remover</button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <Modal isOpen={modalInsert}>

@@ -6,7 +6,36 @@ import ImgUsuario from "../../assets/ImgUsuario.png";
 import ImgTipoUsuario from "../../assets/ImgTipoUsuario.png"
 import { Link } from "react-router-dom";
 
+import { useSession } from '../Session/index';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+
 export default function Registrations() {
+
+    const [verifyStatus, setVerifyStatus] = useState(false);
+    const { defaultSession, isTokenValid, newToken } = useSession();
+    const navigate = useNavigate();
+
+    const VerifySession = async () => {
+        if (!verifyStatus) {
+            setVerifyStatus(true);
+            const status = await isTokenValid();
+            //console.error(status);
+            if (status === false) {
+                //console.error('Entrou');
+                navigate('/');
+            } else {
+                if (await newToken() === false) {
+                    defaultSession();
+                    navigate('/');
+                }
+            }
+        }
+    };
+
+    useEffect(() => {
+        VerifySession();
+      }, []);
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>

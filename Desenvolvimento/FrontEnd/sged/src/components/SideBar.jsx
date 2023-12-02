@@ -42,10 +42,10 @@ export default function SideBar() {
             <MenuItem className='text-gray-600' icon={ <DescriptionIcon /> } component={<Link to="/document"/>}> Documentos</MenuItem>
           </SubMenu>
           <SubMenu icon={<SwitchAccountIcon />} label="Perfil Público">
-            <MenuItem className='text-gray-600' icon={<GroupsIcon />}> Munícipe</MenuItem>
-            <MenuItem className='text-gray-600' icon={<SupervisedUserCircleIcon />}> Fiscal </MenuItem>
-            <MenuItem className='text-gray-600' icon={<EngineeringIcon />}> Engenheiro </MenuItem>
-            <MenuItem className='text-gray-600' icon={<AssignmentIndIcon />}> Estagiário </MenuItem>
+            <MenuItem className='text-gray-600' icon={<GroupsIcon />} component={<Link to="/development" />}> Munícipe</MenuItem>
+            <MenuItem className='text-gray-600' icon={<SupervisedUserCircleIcon />} component={<Link to="/development" />}> Fiscal </MenuItem>
+            <MenuItem className='text-gray-600' icon={<EngineeringIcon />} component={<Link to="/development" />}> Engenheiro </MenuItem>
+            <MenuItem className='text-gray-600' icon={<AssignmentIndIcon />} component={<Link to="/development" />}> Estagiário </MenuItem>
           </SubMenu>
         </Menu>
       </Sidebar>

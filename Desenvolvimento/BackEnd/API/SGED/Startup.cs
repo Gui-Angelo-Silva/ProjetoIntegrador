@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using System.Text;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using SGED.DTO.Entities;
 
 namespace SGED
 {
@@ -71,15 +72,16 @@ namespace SGED
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
+                    EntitySecurityDTO entitySecurity = new EntitySecurityDTO();
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = "Server API",
-                        ValidAudience = "WebSite",
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SGED_BarramentUser_API_Autentication")),
+                        ValidIssuer = entitySecurity.Issuer,
+                        ValidAudience = entitySecurity.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(entitySecurity.Key)),
                     };
                 });
 

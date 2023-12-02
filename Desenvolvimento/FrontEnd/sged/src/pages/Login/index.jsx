@@ -9,17 +9,15 @@ import Grid from '@mui/material/Grid';
 import background from '../../assets/imgTelaDeLogin.png';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { red } from '@mui/material/colors';
+//import { red } from '@mui/material/colors';
 
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useSession } from '../Session/index';
 import { useNavigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
-  const baseUrl = "https://localhost:7096/api/Login";
 
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
@@ -28,13 +26,22 @@ export default function SignInSide() {
   const [passwordError, setPasswordError] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  const { isTokenValid, createSession, persistsLogin, getLogin } = useSession();
+  const { isTokenValid, createSession, getLogin } = useSession();
   const navigate = useNavigate();
+
+  const VerifySession = async () => {
+    const status = await isTokenValid();
+    //console.error(status);
+    if (status === true) {
+      //console.error('Entrou');
+      navigate('/home');
+    }
+  };
 
   const getDataLogin = () => {
     const data = JSON.parse(getLogin());
     if (data && data.persist) {
-      setUserEmail(data.emailUsuario);
+      setUserEmail(data.emailPessoa);
       setUserPassword(data.senhaUsuario);
       setPersistLogin(true);
     }
@@ -50,70 +57,41 @@ export default function SignInSide() {
     setEmailError('');
     setPasswordError('');
     setLoginError('');
-  
+
     if (!userEmail) {
       setEmailError('Informe o e-mail!');
     }
-  
+
     if (!userPassword) {
       setPasswordError('Informe a senha!');
     }
-  
-    if (userEmail && (!userEmail.includes('@') || !userEmail.includes('.') || userEmail.indexOf('.') < userEmail.indexOf('@'))) {
+
+    if (!emailError && (!userEmail.includes('@') || !userEmail.includes('.') || userEmail.indexOf('.') < userEmail.indexOf('@'))) {
       setEmailError('Insira um email válido!');
     }
-  
-    if (userPassword && userPassword.length < 6) {
+
+    if (!passwordError && userPassword.length < 6) {
       setPasswordError('A senha deve ter pelo menos 6 caracteres!');
     }
-  
+
     if (!emailError && !passwordError) {
       try {
-        const response = await axios.post(baseUrl, {
-          email: userEmail,
-          senha: userPassword
-        });
-  
-        if (response.status === 200) {
-          const data = response.data;
-  
-          if (isTokenValid(data.token)) {
-            createSession(data.token, data.usuario);
-          } else {
-            console.error('Token inválido!');
-          }
-  
-          if (persistLogin) {
-            const login = { email: userEmail, senha: userPassword };
-            persistsLogin(login);
-          } else {
-            localStorage.removeItem('login');
-          }
-  
+        const loginResult = await createSession(userEmail, userPassword, persistLogin);
+        if (loginResult) {
           navigate('/home');
         } else {
-          console.error('Erro no login:', 'E-mail ou senha incorretos!');
+          setLoginError('Erro ao fazer login: dados inválidos!');
         }
       } catch (error) {
-        console.error('Erro na solicitação:', error.message);
-  
-        if (error.response) {
-          // O servidor respondeu com um código de status diferente de 2xx
-          setLoginError(error.response.data.message);
-          console.error('Erro no login:', error.response.data.message);
-        } else if (error.request) {
-          // A solicitação foi feita, mas não recebeu resposta
-          console.error('Erro na solicitação: Sem resposta do servidor!');
-        } else {
-          // Algo aconteceu durante a configuração da solicitação que desencadeou um erro
-          console.error('Erro na solicitação: Configuração de solicitação inválida!');
-        }
+        console.error('Erro ao fazer login:', error);
       }
     }
   };
 
   useEffect(() => {
+    VerifySession();
     getDataLogin();
+    //window.location.reload();
   }, []);
 
   return (

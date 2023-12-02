@@ -18,7 +18,12 @@ namespace SGED.DTO.Entities
 
         [Required(ErrorMessage = "O e-mail é requerido!")]
         [EmailAddress]
-        public string EmailPessoa { get; set; }
+        public string EmailPessoa
+        {
+            get => _emailPessoa;
+            set => _emailPessoa = value?.ToLower();
+        }
+        private string _emailPessoa;
 
         [Required(ErrorMessage = "O telefone é requerido!")]
         [MinLength(15)]
@@ -27,7 +32,7 @@ namespace SGED.DTO.Entities
 
         [Required(ErrorMessage = "O CPF ou CNPJ é requerido!")]
         [MinLength(14)]
-        [MaxLength(18)]
+        [MaxLength(19)]
         public string CpfCnpjPessoa { get; set; }
 
         [Required(ErrorMessage = "O RG ou IE é requerido!")]
@@ -35,6 +40,16 @@ namespace SGED.DTO.Entities
         [MaxLength(15)]
         public string RgIEPessoa { get; set; }
 
+
+        public virtual bool verificaIdentico(string documento) {
+            var statusIdentity = true;
+            for (int i = 1; i < documento.Length; i++)
+            {
+                if (documento[i] != documento[0])
+                    statusIdentity = false;
+            }
+            return statusIdentity;
+        }
 
         public virtual int CpfCnpj(string cpfCnpj)
         {
@@ -47,7 +62,9 @@ namespace SGED.DTO.Entities
                     cpfCnpj = cpfCnpj.Replace(".", "").Replace("-", "");
                     if (!Regex.IsMatch(cpfCnpj, @"^\d+$")) return -3;
 
-                    if (verificarCpf(cpfCnpj)) return 1;
+                    var statusIdentity = verificaIdentico(cpfCnpj);
+
+                    if (verificarCpf(cpfCnpj) && !statusIdentity) return 1;
                     else return -1;
                 }
             }
@@ -59,7 +76,9 @@ namespace SGED.DTO.Entities
                     cpfCnpj = cpfCnpj.Replace(".", "").Replace("/", "").Replace("-", "");
                     if (!Regex.IsMatch(cpfCnpj, @"^\d+$")) return -3;
 
-                    if (verificarCnpj(cpfCnpj)) return 2;
+                    var statusIdentity = verificaIdentico(cpfCnpj);
+
+                    if (verificarCnpj(cpfCnpj) && !statusIdentity) return 2;
                     else return -2;
                 }
             }
@@ -142,7 +161,9 @@ namespace SGED.DTO.Entities
                     rgIe = rgIe.Replace(".", "").Replace("-", "");
                     if (!Regex.IsMatch(rgIe, @"^\d+$")) return -3;
 
-                    if (verificarRg(rgIe)) return 1;
+                    var statusIdentity = verificaIdentico(rgIe);
+
+                    if (verificarRg(rgIe) && !statusIdentity) return 1;
                     else return -1;
                 }
             }
@@ -154,7 +175,9 @@ namespace SGED.DTO.Entities
                     rgIe = rgIe.Replace(".", "");
                     if (!Regex.IsMatch(rgIe, @"^\d+$")) return -3;
 
-                    if (verificarIe(rgIe)) return 2;
+                    var statusIdentity = verificaIdentico(rgIe);
+
+                    if (verificarIe(rgIe) && !statusIdentity) return 2;
                     else return -2;
                 }
             }

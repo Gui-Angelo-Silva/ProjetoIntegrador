@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "SGED": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:56018;http://localhost:56019"
+    }
+  }
+}

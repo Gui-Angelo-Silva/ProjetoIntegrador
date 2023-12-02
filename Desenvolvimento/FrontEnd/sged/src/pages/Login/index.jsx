@@ -9,7 +9,7 @@ import Grid from '@mui/material/Grid';
 import background from '../../assets/imgTelaDeLogin.png';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { red } from '@mui/material/colors';
+//import { red } from '@mui/material/colors';
 
 import { useEffect, useState } from "react";
 import { useSession } from '../Session/index';
@@ -25,27 +25,23 @@ export default function SignInSide() {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [loginError, setLoginError] = useState('');
-  const [verifyStatus, setVerifyStatus] = useState(false);
 
   const { isTokenValid, createSession, getLogin } = useSession();
   const navigate = useNavigate();
 
   const VerifySession = async () => {
-    if (!verifyStatus) {
-      setVerifyStatus(true);
-      const status = await isTokenValid();
-      //console.error(status);
-      if (status === true) {
-        //console.error('Entrou');
-        navigate('/home');
-      }
+    const status = await isTokenValid();
+    //console.error(status);
+    if (status === true) {
+      //console.error('Entrou');
+      navigate('/home');
     }
   };
 
   const getDataLogin = () => {
     const data = JSON.parse(getLogin());
     if (data && data.persist) {
-      setUserEmail(data.emailUsuario);
+      setUserEmail(data.emailPessoa);
       setUserPassword(data.senhaUsuario);
       setPersistLogin(true);
     }
@@ -95,6 +91,7 @@ export default function SignInSide() {
   useEffect(() => {
     VerifySession();
     getDataLogin();
+    //window.location.reload();
   }, []);
 
   return (
@@ -118,7 +115,8 @@ export default function SignInSide() {
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square
           sx={{
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            justifyContent:'center',
           }}>
           <Box
             sx={{
@@ -132,10 +130,11 @@ export default function SignInSide() {
             {/* <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
               <LockOutlinedIcon />
             </Avatar> */}
-            <Typography component="h1" variant="h5" fontSize={40} paddingBottom={5}>
+
+            <Typography component="h1" variant="h5" fontSize={40} paddingBottom={5} >
               Entrar
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }} style={{width:450}}>
               <TextField
                 margin="normal"
                 required
@@ -182,10 +181,11 @@ export default function SignInSide() {
                 fullWidth
                 variant='contained'
                 sx={{
-                  mt: 5, mb: 10, backgroundColor: '#2D636B', padding: 1.5, ":hover": {
-                    backgroundColor: red,
+                  mt: 5, mb: 10, backgroundColor: '#58AFAE', padding: 1.5, ":hover": {
+                    backgroundColor: '#2D636B'
                   }
                 }}
+                style={{}}
               >
                 Entrar
               </Button>

@@ -31,10 +31,10 @@ namespace SGED.Controllers
 
             if (!(usuarioDTO is null))
             {
-                if (autenticationDTO.Email == usuarioDTO.EmailUsuario && autenticationDTO.Senha == usuarioDTO.SenhaUsuario)
+                if (autenticationDTO.Email == usuarioDTO.EmailPessoa && autenticationDTO.Senha == usuarioDTO.SenhaUsuario)
                 {
                     EntitySecurityDTO entitySecurity = new EntitySecurityDTO();
-                    var token = GenerateToken(entitySecurity.Key, entitySecurity.Issuer, entitySecurity.Audience, usuarioDTO.EmailUsuario, 1);
+                    var token = GenerateToken(entitySecurity.Key, entitySecurity.Issuer, entitySecurity.Audience, usuarioDTO.EmailPessoa, 1);
                     return Ok(new { token, usuario = usuarioDTO });
                 }
             }
@@ -49,7 +49,7 @@ namespace SGED.Controllers
                 { "iss", issuer },
                 { "aud", audience },
                 { "sub", subject },
-                { "exp", DateTimeOffset.UtcNow.AddMinutes(expiryInMinutes).ToUnixTimeSeconds() }
+                { "exp", DateTimeOffset.UtcNow.AddHours(expiryInMinutes).ToUnixTimeSeconds() }
             };
 
             string token = JWT.Encode(payload, Encoding.UTF8.GetBytes(secretKey), JwsAlgorithm.HS256);

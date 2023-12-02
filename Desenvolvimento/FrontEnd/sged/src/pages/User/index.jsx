@@ -2,9 +2,11 @@ import React from 'react';
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import axios from "axios";
-import '../User/index.css';
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import SideBar from "../../components/SideBar";
+import NavBar from "../../components/NavBar";
+import { FaPlus } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 import { useSession } from '../Session/index'
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -115,6 +117,9 @@ export default function User() {
         nomePessoa: "",
         emailPessoa: "",
         senhaUsuario: "",
+        telefonePessoa: "",
+        cpfCnpjPessoa: "",
+        rgIEPessoa: "",
         cargoUsuario: "",
         statusUsuario: "",
         idTipoUsuario: ""
@@ -125,9 +130,9 @@ export default function User() {
         setPersonName(user.nomePessoa);
         setPersonEmail(user.emailPessoa);
         setUserPassword(user.senhaUsuario);
-        setPersonName(user.telefonePessoa);
-        setPersonEmail(user.cpfCnpjPessoa);
-        setPersonName(user.rgIePessoa);
+        setPersonTelephone(user.telefonePessoa);
+        setPersonCpfCnpj(user.cpfCnpjPessoa);
+        setPersonRgIe(user.rgIEPessoa);
         setUserOffice(user.cargoUsuario);
         setUserStatus(user.statusUsuario);
         setIdTypeUser(user.idTipoUsuario);
@@ -162,17 +167,17 @@ export default function User() {
     };
 
     const checkEmailExists = (id, email) => {
-        var emailExists;
+        var emailExists = "";
 
         if (id === 0) {
-            emailExists = data.some(usuario => usuario.EmailUsuario.toLowerCase() === email.toLowerCase());
+            emailExists = data.some(usuario => usuario.emailPessoa === email);
         } else {
-            emailExists = data.some(usuario => usuario.Id !== id && usuario.EmailUsuario.toLowerCase() === email.toLowerCase());
+            emailExists = data.some(usuario => usuario.Id !== id && usuario.emailPessoa === email);
         }
 
         if (!emailExists) {
             const string = "devops@development.com";
-            if (email.toLowerCase() === string.toLowerCase()) {
+            if (email === string) {
                 emailExists = true;
             }
         }
@@ -344,7 +349,7 @@ export default function User() {
         return strBase2 === ie;
     }
 
-    const verificarDados = () => {
+    const verificarDados = async () => {
         var status = true;
 
         if (personName) {
@@ -358,7 +363,7 @@ export default function User() {
         }
 
         if (personEmail) {
-            console.log(personEmail);
+            //console.log(personEmail);
 
             if (personEmail.includes(' ')) {
                 setErrorPersonEmail('O e-mail não pode conter espaço em branco!');
@@ -401,10 +406,10 @@ export default function User() {
         }
 
         if (userPassword) {
-
-            if (userPassword.length <= 6) { setErrorUserPassword('A senha precisa ter no mínimo 6 caracteres!'); }
-            status = false;
-
+            if (userPassword.length <= 6) {
+                setErrorUserPassword('A senha precisa ter no mínimo 6 caracteres!');
+                status = false;
+            }
         } else {
             setErrorUserPassword('A senha é requerida!');
             status = false;
@@ -424,10 +429,9 @@ export default function User() {
 
             const response = CpfCnpj(personCpfCnpj);
 
-            if (response === -1) { setErrorPersonCpfCnpj('CPF inválido!'); }
-            else if (response === -2) { setErrorPersonCpfCnpj('CNPJ inválido!'); }
-            else if (response === -3) { setErrorPersonCpfCnpj('Documento incorreto!'); }
-            status = false;
+            if (response === -1) { setErrorPersonCpfCnpj('CPF inválido!'); status = false; }
+            else if (response === -2) { setErrorPersonCpfCnpj('CNPJ inválido!'); status = false; }
+            else if (response === -3) { setErrorPersonCpfCnpj('Documento incorreto!'); status = false; }
 
         } else {
             setErrorPersonCpfCnpj('O CPF ou CNPJ é requerido!');
@@ -438,10 +442,9 @@ export default function User() {
 
             const response = RgIe(personRgIe);
 
-            if (response === -1) { setErrorPersonRgIe('RG inválido!'); }
-            else if (response === -2) { setErrorPersonRgIe('IE inválido!'); }
-            else if (response === -3) { setErrorPersonRgIe('Documento incorreto!'); }
-            status = false;
+            if (response === -1) { setErrorPersonRgIe('RG inválido!'); status = false; }
+            else if (response === -2) { setErrorPersonRgIe('IE inválido!'); status = false; }
+            else if (response === -3) { setErrorPersonRgIe('Documento incorreto!'); status = false; }
 
         } else {
             setErrorPersonRgIe('O RG ou IE é requerido!');
@@ -474,7 +477,7 @@ export default function User() {
     const PostOrder = async () => {
 
         clearErrors();
-        var response = verificarDados();
+        var response = await verificarDados();
 
         if (response) {
 
@@ -485,7 +488,7 @@ export default function User() {
                 senhaUsuario: userPassword,
                 telefonePessoa: personTelephone,
                 cpfCnpjPessoa: personCpfCnpj,
-                rgIePessoa: personRgIe,
+                rgIEPessoa: personRgIe,
                 cargoUsuario: userOffice,
                 statusUsuario: Boolean(userStatus),
                 idTipoUsuario: idTypeUser
@@ -505,7 +508,7 @@ export default function User() {
     const PutOrder = async () => {
 
         clearErrors();
-        var response = verificarDados();
+        var response = await verificarDados();
 
         if (response) {
 
@@ -517,7 +520,7 @@ export default function User() {
                 senhaUsuario: userPassword,
                 telefonePessoa: personTelephone,
                 cpfCnpjPessoa: personCpfCnpj,
-                rgIePessoa: personRgIe,
+                rgIEPessoa: personRgIe,
                 cargoUsuario: userOffice,
                 statusUsuario: Boolean(userStatus),
                 idTipoUsuario: idTypeUser
@@ -596,63 +599,89 @@ export default function User() {
     };
 
     return (
-        <div className="user-container">
-            <br />
-            <h3>Lista de Usuários</h3>
-            <header>
-                <button className="btn btn-success" onClick={() => openCloseModalInsert()}>Adicionar</button>
-            </header>
-            <table className="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>E-mail</th>
-                        <th>Tipo Usuário</th>
-                        <th>Status</th>
-                        <th>Cargo</th>
-                        <th>Telefone</th>
-                        <th>CPF / CNPJ</th>
-                        <th>RG / IE</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.map(user => {
-                        const tipoUsuario = dataTypeUser.find(typeuser => typeuser.id === user.idTipoUsuario);
-
-                        return (
-                            <tr key={user.id}>
-                                <td>{user.nomePessoa}</td>
-                                <td>{user.emailPessoa}</td>
-                                <td>{tipoUsuario ? tipoUsuario.nomeTipoUsuario : 'Tipo de usuário não encontrado!'}</td>
-                                <td>{user.statusUsuario ? 'Ativo' : 'Inativo'}</td>
-                                <td>{user.cargoUsuario}</td>
-                                <td>{user.telefonePessoa}</td>
-                                <td>{user.cpfCnpjPessoa}</td>
-                                <td>{user.rgIePessoa}</td>
-                                <td>
-                                    <button className="btn btn-primary" onClick={() => SelectUser(user, "Editar")}>Editar</button>{"  "}
-                                    <button className="btn btn-danger" onClick={() => SelectUser(user, "Excluir")}>Remover</button>
-                                </td>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <NavBar /> {/* NavBar no topo */}
+            <div style={{ display: 'flex', flex: 1 }}> {/* Container principal flexível */}
+                <div className="overscroll-y-none" style={{ flex: 0, width: '200px' }}>
+                    <SideBar /> {/* Sidebar à esquerda */}
+                </div>
+                <div style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
+                    <br />
+                    <div className="flex flex-row">
+                        <Link to="/registration">
+                            <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
+                        </Link>
+                        <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
+                        <h3 className="text-2xl font-semibold text-gray-800">Usuário</h3>
+                    </div>
+                    <div className="flex" style={{ alignItems: 'center' }}>
+                        <div className="flex justify-center items-center mx-auto">
+                            <div className="relative items-stretch self-center justify-center" style={{ width: 500 }}>
+                                <label htmlFor="default-search" className="mb-5 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                        <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                        </svg>
+                                    </div>
+                                    <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar usuário" required />
+                                    <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-emerald-600 hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Pesquisar</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex items-center">
+                            <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert()}>
+                                Novo <FaPlus className="inline-block" style={{ alignItems: 'center' }} />
+                            </button>
+                        </div>
+                    </div>
+                    <table>
+                        <thead className="" style={{ background: '#58AFAE' }}>
+                            <tr>
+                                <th>Nome</th>
+                                <th>E-mail</th>
+                                <th>Tipo Usuário</th>
+                                <th>Cargo</th>
+                                <th>Status</th>
+                                <th>Ações</th>
                             </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
+                        </thead>
+                        <tbody>
+                            {data.map(user => {
+                                const tipoUsuario = dataTypeUser.find(typeuser => typeuser.id === user.idTipoUsuario);
+
+                                return (
+                                    <tr key={user.id}>
+                                        <td>{user.nomePessoa}</td>
+                                        <td>{user.emailPessoa}</td>
+                                        <td>{tipoUsuario ? tipoUsuario.nomeTipoUsuario : 'Tipo de usuário não encontrado!'}</td>
+                                        <td>{user.cargoUsuario}</td>
+                                        <td>{user.statusUsuario ? 'Ativo' : 'Inativo'}</td>
+                                        <td>
+                                            <button className="btn btn-primary" onClick={() => SelectUser(user, "Editar")}>Editar</button>{"  "}
+                                            <button className="btn btn-danger" onClick={() => SelectUser(user, "Excluir")}>Remover</button>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             <Modal isOpen={modalInsert}>
-                <ModalHeader>Cadastrar Usuário</ModalHeader>
+                <ModalHeader style={{ justifyContent: 'center', textAlign: 'center', fontSize: 25, color: '#444444' }}>Cadastrar Usuário</ModalHeader>
                 <ModalBody>
                     <div className="form-group">
-                        <label>Nome: </label>
+                        <label style={{ color: '#444444' }}>Nome: </label>
                         <br />
-                        <input type="text" className="form-control" onChange={(e) => setPersonName(e.target.value)} />
+                        <input type="text" className="form-control rounded border" onChange={(e) => setPersonName(e.target.value)} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {errorPersonName}
                         </div>
                         <br />
                         <label>E-mail:</label>
                         <br />
-                        <input type="text" className="form-control" onChange={(e) => setPersonEmail(e.target.value)} />
+                        <input type="text" className="form-control rounded border" onChange={(e) => setPersonEmail(e.target.value)} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {erroPersonEmail}
                         </div>
@@ -660,7 +689,7 @@ export default function User() {
                         <label>Senha:</label>
                         <br />
                         <div class="password-input">
-                            <input type="password" className="form-control" onChange={(e) => setUserPassword(e.target.value)} id="passwordInput" />
+                            <input type="password" className="form-control rounded border" onChange={(e) => setUserPassword(e.target.value)} id="passwordInput" />
                             <i class="toggle-password fas fa-eye" onClick={() => togglePasswordVisibility()} ></i>
                         </div>
                         <PasswordStrengthIndicator data={userPassword} />
@@ -670,21 +699,21 @@ export default function User() {
                         <br />
                         <label>Cargo: </label>
                         <br />
-                        <input type="text" className="form-control" onChange={(e) => setUserOffice(e.target.value)} />
+                        <input type="text" className="form-control rounded border" onChange={(e) => setUserOffice(e.target.value)} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {erroUserOffice}
                         </div>
                         <br />
                         <label>Telefone: </label>
                         <br />
-                        <InputMask mask="(99) 99999-9999" type="text" className="form-control" onKeyDown={handleKeyDown} onChange={(e) => setPersonTelephone(e.target.value)} />
+                        <InputMask mask="(99) 99999-9999" type="text" className="form-control rounded border" onKeyDown={handleKeyDown} onChange={(e) => setPersonTelephone(e.target.value)} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {erroPersonTelephone}
                         </div>
                         <br />
                         <label>CPF / CNPJ: </label>
                         <br />
-                        <select className="form-control" onChange={(e) => implementMaskCpfCnpj(e.target.value)}>
+                        <select className="form-control rounded border" onChange={(e) => implementMaskCpfCnpj(e.target.value)}>
                             <option key="cpf" value="cpf">
                                 CPF
                             </option>
@@ -693,14 +722,14 @@ export default function User() {
                             </option>
                         </select>
                         <br />
-                        <InputMask mask={maskCpfCnpj} type="text" className="form-control" onKeyDown={handleKeyDown} onChange={(e) => setPersonCpfCnpj(e.target.value)} />
+                        <InputMask mask={maskCpfCnpj} type="text" className="form-control rounded border" onKeyDown={handleKeyDown} onChange={(e) => setPersonCpfCnpj(e.target.value)} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {erroPersonCpfCnpj}
                         </div>
                         <br />
                         <label>RG / IE: </label>
                         <br />
-                        <select className="form-control" onChange={(e) => implementMaskRgIe(e.target.value)}>
+                        <select className="form-control rounded border" onChange={(e) => implementMaskRgIe(e.target.value)}>
                             <option key="rg" value="rg">
                                 RG
                             </option>
@@ -709,14 +738,16 @@ export default function User() {
                             </option>
                         </select>
                         <br />
-                        <InputMask mask={maskRgIe} type="text" className="form-control" onKeyDown={handleKeyDown} onChange={(e) => setPersonRgIe(e.target.value)} />
+                        <InputMask mask={maskRgIe} type="text" className="form-control rounded border" onKeyDown={handleKeyDown} onChange={(e) => setPersonRgIe(e.target.value)} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {erroPersonRgIe}
                         </div>
                         <br />
                         <label>Status:</label>
                         <br />
-                        <select className="form-control" onChange={(e) => setUserStatus(e.target.value === "true")}>
+                        <select className="form-control rounded border" onChange={(e) => setUserStatus(e.target.value === "true")}>
+                            <option key="option" value="">
+                            </option>
                             <option key="true" value="true">
                                 Ativo
                             </option>
@@ -727,7 +758,9 @@ export default function User() {
                         <br />
                         <label>Tipo Usuário:</label>
                         <br />
-                        <select className="form-control" onChange={(e) => setIdTypeUser(e.target.value)}>
+                        <select className="form-control rounded border" onChange={(e) => setIdTypeUser(e.target.value)}>
+                            <option key="option" value="">
+                            </option>
                             {dataTypeUser.map((typeuser) => (
                                 <option key={typeuser.id} value={typeuser.id}>
                                     {typeuser.nomeTipoUsuario}
@@ -742,40 +775,49 @@ export default function User() {
                 </ModalFooter>
             </Modal>
             <Modal isOpen={modalEdit}>
-                <ModalHeader>Editar Usuário</ModalHeader>
+                <ModalHeader style={{ justifyContent: 'center', textAlign: 'center', fontSize: 25, color: '#444444' }}>Editar Usuário</ModalHeader>
                 <ModalBody>
                     <div className="form-group">
                         <label>ID: </label><br />
-                        <input type="text" className="form-control" readOnly value={userId} /> <br />
+                        <input type="text" className="form-control rounded border" readOnly value={userId} /> <br />
+
                         <label>Nome:</label>
-                        <input type="text" className="form-control" name="nomePessoa" onChange={(e) => setPersonName(e.target.value)} value={personName} />
+                        <input type="text" className="form-control rounded border" name="nomePessoa" onChange={(e) => setPersonName(e.target.value)} value={personName} />
                         <br />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {errorPersonName}
                         </div>
                         <label>E-mail:</label>
                         <br />
-                        <input type="text" className="form-control" name="emailPessoa" onChange={(e) => setPersonEmail(e.target.value)} value={personEmail} />
-                        <div className="error-message">{erroPersonEmail}</div>
+                        <input type="text" className="form-control rounded border" name="emailPessoa" onChange={(e) => setPersonEmail(e.target.value)} value={personEmail} />
+                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            {erroPersonEmail}
+                        </div>
                         <br />
                         <label>Senha:</label>
                         <br />
-                        <div class="password-input">
-                            <input type="password" className="form-control" onChange={(e) => setUserPassword(e.target.value)} value={userPassword} id="passwordInput" />
-                            <i class="toggle-password fas fa-eye" onClick={() => togglePasswordVisibility()} ></i>
-                        </div>
+                        <input type="password" className="form-control rounded border" name="senhaUsuario" onChange={(e) => setUserPassword(e.target.value)} value={userPassword} />
                         <PasswordStrengthIndicator data={userPassword} />
+                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            {erroUserPassword}
+                        </div>
                         <br />
                         <label>Cargo:</label>
-                        <input type="text" className="form-control" name="cargoUsuario" onChange={(e) => setUserOffice(e.target.value)} value={userOffice} />
+                        <input type="text" className="form-control rounded border" name="cargoUsuario" onChange={(e) => setUserOffice(e.target.value)} value={userOffice} />
+                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            {erroUserOffice}
+                        </div>
                         <br />
                         <label>Telefone: </label>
                         <br />
-                        <InputMask mask="(99) 99999-9999" type="text" className="form-control" onKeyDown={handleKeyDown} onChange={(e) => setPersonTelephone(e.target.value)} value={personTelephone} />
+                        <InputMask mask="(99) 99999-9999" type="text" className="form-control rounded border" onKeyDown={handleKeyDown} onChange={(e) => setPersonTelephone(e.target.value)} value={personTelephone} />
+                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            {erroPersonTelephone}
+                        </div>
                         <br />
                         <label>CPF / CNPJ: </label>
                         <br />
-                        <select className="form-control" onChange={(e) => implementMaskCpfCnpj(e.target.value)}>
+                        <select className="form-control rounded border" onChange={(e) => implementMaskCpfCnpj(e.target.value)}>
                             <option key="cpf" value="cpf">
                                 CPF
                             </option>
@@ -784,11 +826,14 @@ export default function User() {
                             </option>
                         </select>
                         <br />
-                        <InputMask mask={maskCpfCnpj} type="text" className="form-control" onKeyDown={handleKeyDown} onChange={(e) => setPersonCpfCnpj(e.target.value)} />
+                        <InputMask mask={maskCpfCnpj} type="text" className="form-control rounded border" onKeyDown={handleKeyDown} onChange={(e) => setPersonCpfCnpj(e.target.value)} value={personCpfCnpj} />
+                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            {erroPersonCpfCnpj}
+                        </div>
                         <br />
                         <label>RG / IE: </label>
                         <br />
-                        <select className="form-control" onChange={(e) => implementMaskRgIe(e.target.value)}>
+                        <select className="form-control rounded border" onChange={(e) => implementMaskRgIe(e.target.value)}>
                             <option key="rg" value="rg">
                                 RG
                             </option>
@@ -797,17 +842,21 @@ export default function User() {
                             </option>
                         </select>
                         <br />
-                        <InputMask mask={maskRgIe} type="text" className="form-control" onKeyDown={handleKeyDown} onChange={(e) => setPersonCpfCnpj(e.target.value)} />
+                        <InputMask mask={maskRgIe} type="text" className="form-control rounded border" onKeyDown={handleKeyDown} onChange={(e) => setPersonCpfCnpj(e.target.value)} value={personRgIe} />
+                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            {erroPersonRgIe}
+                        </div>
+                        <br />
                         <label>Status:</label>
                         <br />
-                        <select className="form-control" onChange={(e) => setUserStatus(e.target.value === "true")}>
+                        <select className="form-control rounded border" onChange={(e) => setUserStatus(e.target.value === "true")}>
                             <option value="true" selected={userStatus === true}>Ativo</option>
                             <option value="false" selected={userStatus === false}>Inativo</option>
                         </select>
                         <br />
                         <label>Tipo Usuário:</label>
                         <br />
-                        <select className="form-control" onChange={(e) => setIdTypeUser(e.target.value)}>
+                        <select className="form-control rounded border" onChange={(e) => setIdTypeUser(e.target.value)}>
                             {dataTypeUser.map((typeuser) => (
                                 <option key={typeuser.id} value={typeuser.id} selected={typeuser.id === idTypeUser}>
                                     {typeuser.nomeTipoUsuario}
@@ -824,7 +873,7 @@ export default function User() {
             </Modal>
             <Modal isOpen={modalDelete}>
                 <ModalBody>
-                    Confirma a exclusão deste usuário {selectUser && selectUser.nomePessoa} ?
+                    Confirma a exclusão do(a) {personName} ?
                 </ModalBody>
                 <ModalFooter>
                     <button className='btn btn-primary' onClick={() => DeleteOrder()}>Sim</button>

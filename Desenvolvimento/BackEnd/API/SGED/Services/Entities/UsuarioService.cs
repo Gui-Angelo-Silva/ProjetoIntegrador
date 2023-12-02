@@ -32,7 +32,7 @@ public class UsuarioService : IUsuarioService
     public async Task<IEnumerable<string>> GetByEmail(int id, string email)
     {
         var usuarios = await _usuarioRepository.GetByEmail(id, email);
-        return usuarios.Select(u => u.EmailUsuario).ToList();
+        return usuarios.Select(u => u.EmailPessoa).ToList();
     }
 
     public async Task<UsuarioDTO> Autentication(AutenticationDTO autenticationDTO)

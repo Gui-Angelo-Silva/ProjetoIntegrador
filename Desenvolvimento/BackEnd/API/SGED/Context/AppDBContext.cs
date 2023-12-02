@@ -38,9 +38,12 @@ public class AppDBContext : DbContext
 
         // Builder: Usuario 
         modelBuilder.Entity<Usuario>().HasKey(b => b.Id);
-        modelBuilder.Entity<Usuario>().Property(b => b.NomeUsuario).HasMaxLength(70).IsRequired();
-        modelBuilder.Entity<Usuario>().Property(b => b.EmailUsuario).IsRequired();
+        modelBuilder.Entity<Usuario>().Property(b => b.NomePessoa).HasMaxLength(70).IsRequired();
+        modelBuilder.Entity<Usuario>().Property(b => b.EmailPessoa).IsRequired();
         modelBuilder.Entity<Usuario>().Property(b => b.SenhaUsuario).HasMaxLength(50).IsRequired();
+        modelBuilder.Entity<Usuario>().Property(b => b.TelefonePessoa).HasMaxLength(15).IsRequired();
+        modelBuilder.Entity<Usuario>().Property(b => b.CpfCNPJPessoa).HasMaxLength(18).IsRequired();
+        modelBuilder.Entity<Usuario>().Property(b => b.RgIEPessoa).HasMaxLength(15).IsRequired();
         modelBuilder.Entity<Usuario>().Property(b => b.CargoUsuario).HasMaxLength(50).IsRequired();
         modelBuilder.Entity<Usuario>().Property(b => b.StatusUsuario).IsRequired();
         modelBuilder.Entity<Usuario>().HasOne(b => b.TipoUsuario).WithMany().HasForeignKey(b => b.IdTipoUsuario);
@@ -68,15 +71,16 @@ public class AppDBContext : DbContext
         );
 
         modelBuilder.Entity<TipoUsuario>().HasData(
-            new TipoUsuario { Id = 1, NomeTipoUsuario = "Desenvolvedor", NivelAcesso = "A", DescricaoTipoUsuario = "Este perfil é voltado ao time de desenvolvimento para uso da plataforma durante testes." },
-            new TipoUsuario { Id = 2, NomeTipoUsuario = "Secretário Geral", NivelAcesso = "A", DescricaoTipoUsuario = "Entidade administrativa do orgão." },
-            new TipoUsuario { Id = 3, NomeTipoUsuario = "Secretário", NivelAcesso = "B", DescricaoTipoUsuario = "Entidade auxiliar para a comunidade local." },
-            new TipoUsuario { Id = 4, NomeTipoUsuario = "Jurídico", NivelAcesso = "C", DescricaoTipoUsuario = "Este perfil representa empresas, instituições ou qualquer entidade jurídica perante a lei." },
-            new TipoUsuario { Id = 5, NomeTipoUsuario = "Físico", NivelAcesso = "D", DescricaoTipoUsuario = "Este perfil representa todos os munícipes da cidade." }
+            new TipoUsuario { Id = 1, NomeTipoUsuario = "Desenvolvedor", NivelAcesso = "A", DescricaoTipoUsuario = "Entidade voltada ao time de desenvolvimento para uso da plataforma durante testes." },
+            new TipoUsuario { Id = 2, NomeTipoUsuario = "Administrador", NivelAcesso = "A", DescricaoTipoUsuario = "Entidade administrativa do orgão da Secretária." },
+            new TipoUsuario { Id = 3, NomeTipoUsuario = "Funcionário", NivelAcesso = "B", DescricaoTipoUsuario = "Entidade de suporte para a comunidade local." },
+            new TipoUsuario { Id = 4, NomeTipoUsuario = "Jurídico", NivelAcesso = "C", DescricaoTipoUsuario = "Entidade que representa empresas, instituições ou qualquer entidade jurídica perante a lei." },
+            new TipoUsuario { Id = 5, NomeTipoUsuario = "Físico", NivelAcesso = "D", DescricaoTipoUsuario = "Entidade que representa todos os munícipes da cidade." }
         );
 
         modelBuilder.Entity<Usuario>().HasData(
-            new Usuario { Id = 1, NomeUsuario = "Dev", EmailUsuario = "devops@development.com", SenhaUsuario = "123456", CargoUsuario = "Desenvolvimento", StatusUsuario = true, IdTipoUsuario = 1 }
+            new Usuario { Id = 1, NomePessoa = "Dev", EmailPessoa = "devops@development.com", SenhaUsuario = "123456", TelefonePessoa = "(00) 00000-0000", CpfCNPJPessoa = "000.000.000-00", RgIEPessoa = "00.000.000-0", CargoUsuario = "Desenvolvimento", StatusUsuario = true, IdTipoUsuario = 1 },
+            new Usuario { Id = 2, NomePessoa = "Secretário Geral", EmailPessoa = "admin@gmail.com", SenhaUsuario = "987654", TelefonePessoa = "(00) 00000-0000", CpfCNPJPessoa = "000.000.000-00", RgIEPessoa = "00.000.000-0", CargoUsuario = "Secretário Geral", StatusUsuario = true, IdTipoUsuario = 2 }
         );
     }
 }

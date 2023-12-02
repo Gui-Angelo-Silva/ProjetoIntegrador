@@ -4,27 +4,22 @@ import { FaAngleRight, FaTableCellsLarge, FaFile } from "react-icons/fa6";
 
 import { useSession } from '../Session/index';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function Home() {
-
-  const [verifyStatus, setVerifyStatus] = useState(false);
   const { defaultSession, isTokenValid, newToken } = useSession();
   const navigate = useNavigate();
 
   const VerifySession = async () => {
-    if (!verifyStatus) {
-      setVerifyStatus(true);
-      const status = await isTokenValid();
-      //console.error(status);
-      if (status === false) {
-        //console.error('Entrou');
+    const status = await isTokenValid();
+    //console.error(status);
+    if (status === false) {
+      //console.error('Entrou');
+      navigate('/');
+    } else {
+      if (await newToken() === false) {
+        defaultSession();
         navigate('/');
-      } else {
-        if (await newToken() === false) {
-          defaultSession();
-          navigate('/');
-        }
       }
     }
   };
@@ -46,36 +41,36 @@ export default function Home() {
           <div className="bg-slate-200 rounded-md" style={{ marginTop: 15 }}>
             <h4 className="pl-4 pt-2 pb-2 text-gray-500">Solitações</h4>
           </div>
-          <div className="flex" style={{ justifyContent: 'space-between', paddingTop: 40 }}>
-            <div className="text-slate-100 rounded-md" style={{ background: '#057BFF', width: 270, height: 130 }}>
+          <div className="flex gap-3  justify-around" style={{ paddingTop: 40 }}>
+            <div className="text-slate-100 rounded-md w-[20%]" style={{ background: '#057BFF', height: 130 }}>
               <p className="pl-5 pt-3 text-lg" >NOVAS</p>
               <p className="pl-5 text-base pb-3">Total: 0</p>
               <hr className="border-t-4 border-sky-700" />
               <p className="pl-5 text-base pt-2 flex justify-between pr-5 " style={{ alignItems: 'center' }}>Detalhes <FaAngleRight className="text-end" />
               </p>
             </div>
-            <div className="text-slate-100 rounded-md" style={{ background: '#19A2B4', width: 270, height: 130 }}>
+            <div className="text-slate-100 rounded-md w-[20%]" style={{ background: '#19A2B4', height: 130 }}>
               <p className="pl-5 pt-3 text-lg" >EM ANDAMENTO</p>
               <p className="pl-5 text-base pb-3">Total: 0</p>
               <hr className="border-t-4 border-t-emerald-600" />
               <p className="pl-5 text-base pt-2 flex justify-between pr-5 " style={{ alignItems: 'center' }}>Detalhes <FaAngleRight className="text-end" />
               </p>
             </div>
-            <div className="text-slate-100 rounded-md" style={{ background: '#F1B900', width: 270, height: 130 }}>
+            <div className="text-slate-100 rounded-md w-[20%]" style={{ background: '#F1B900', height: 130 }}>
               <p className="pl-5 pt-3 text-lg" >PENDENTE</p>
               <p className="pl-5 text-base pb-3">Total: 0</p>
               <hr className="border-t-4 border-t-amber-600" />
               <p className="pl-5 text-base pt-2 flex justify-between pr-5 " style={{ alignItems: 'center' }}>Detalhes <FaAngleRight className="text-end" />
               </p>
             </div>
-            <div className="text-slate-100 rounded-md" style={{ background: '#D6313F', width: 270, height: 130 }}>
+            <div className="text-slate-100 rounded-md w-[20%]" style={{ background: '#D6313F', height: 130 }}>
               <p className="pl-5 pt-3 text-lg" >ATRASO</p>
               <p className="pl-5 text-base pb-3">Total: 0</p>
               <hr className="border-t-4 border-t-red-800" />
               <p className="pl-5 text-base pt-2 flex justify-between pr-5 " style={{ alignItems: 'center' }}>Detalhes <FaAngleRight className="text-end" />
               </p>
             </div>
-            <div className="text-slate-100 rounded-md" style={{ background: '#26A242', width: 270, height: 130 }}>
+            <div className="text-slate-100 rounded-md w-[20%]" style={{ background: '#26A242', height: 130 }}>
               <p className="pl-5 pt-3 text-lg" >PRAZO HOJE</p>
               <p className="pl-5 text-base pb-3">Total: 0</p>
               <hr className="border-t-4 border-t-green-700" />

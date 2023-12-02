@@ -16,22 +16,22 @@ public class UsuarioRepository : IUsuarioRepository
 
     public async Task<IEnumerable<Usuario>> GetAll()
     {
-        return await _dbContext.Usuario.Where(p => p.EmailUsuario.ToUpper() != "devops@development.com".ToUpper()).ToListAsync();
+        return await _dbContext.Usuario.Where(p => p.EmailPessoa != "devops@development.com").ToListAsync();
     }
 
     public async Task<Usuario> GetById(int id)
     {
-        return await _dbContext.Usuario.Where(p => p.Id == id && p.EmailUsuario.ToUpper() != "devops@development.com".ToUpper()).FirstOrDefaultAsync();
+        return await _dbContext.Usuario.Where(p => p.Id == id && p.EmailPessoa != "devops@development.com").FirstOrDefaultAsync();
     }
 
     public async Task<IEnumerable<Usuario>> GetByEmail(int id, string email)
     {
-        return await _dbContext.Usuario.Where(p => p.Id != id && p.EmailUsuario.ToUpper().Contains(email.ToUpper()) && p.EmailUsuario.ToUpper() != "devops@development.com".ToUpper()).ToListAsync();
+        return await _dbContext.Usuario.Where(p => p.Id != id && p.EmailPessoa.Contains(email) && p.EmailPessoa != "devops@development.com").ToListAsync();
     }
 
     public async Task<Usuario> Autentication(Autentication autentication)
     {
-        return await _dbContext.Usuario.Where(p => p.EmailUsuario == autentication.Email && p.SenhaUsuario == autentication.Senha).FirstOrDefaultAsync();
+        return await _dbContext.Usuario.Where(p => p.EmailPessoa == autentication.Email && p.SenhaUsuario == autentication.Senha).FirstOrDefaultAsync();
     }
 
     public async Task<Usuario> Create(Usuario usuario)

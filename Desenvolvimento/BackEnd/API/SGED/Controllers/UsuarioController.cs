@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -48,10 +48,24 @@ namespace SGED.Controllers
         {
             if (usuarioDTO is null) return BadRequest("Dado inválido!");
 
-            var result = await GetEmail(0, usuarioDTO.EmailUsuario);
+            usuarioDTO.EmailPessoa = usuarioDTO.EmailPessoa.ToLower();
+
+            var result = await GetEmail(0, usuarioDTO.EmailPessoa);
             if (result) { return NotFound("O e-mail informado já existe!"); };
 
-            if (usuarioDTO.EmailUsuario.ToUpper() == "devops@development.com".ToUpper()) { NotFound("O e-mail informado já existe!"); }
+            if (usuarioDTO.EmailPessoa == "devops@development.com") { NotFound("O e-mail informado já existe!"); }
+
+            int response = usuarioDTO.CpfCnpj(usuarioDTO.CpfCnpjPessoa);
+            if (response == 0) return BadRequest("Documento incorreto!");
+            else if (response == -1) return BadRequest("CPF inválido!");
+            else if (response == -2) return BadRequest("CNPJ inválido!");
+            else if (response == -3) return BadRequest("Documento incompleto!");
+
+            response = usuarioDTO.RgIe(usuarioDTO.RgIEPessoa);
+            if (response == 0) return BadRequest("Documento incorreto!");
+            else if (response == -1) return BadRequest("RG inválido!");
+            else if (response == -2) return BadRequest("IE inválido!");
+            else if (response == -3) return BadRequest("Documento incompleto!");
 
             await _usuarioService.Create(usuarioDTO);
             return new CreatedAtRouteResult("GetUsuario", new { id = usuarioDTO.Id }, usuarioDTO);
@@ -62,10 +76,24 @@ namespace SGED.Controllers
         {
             if (usuarioDTO is null) return BadRequest("Dado inválido!");
 
-            var result = await GetEmail(usuarioDTO.Id, usuarioDTO.EmailUsuario);
+            usuarioDTO.EmailPessoa = usuarioDTO.EmailPessoa.ToLower();
+
+            var result = await GetEmail(usuarioDTO.Id, usuarioDTO.EmailPessoa);
             if (result) { return NotFound("O e-mail informado já existe!"); };
 
-            if (usuarioDTO.EmailUsuario.ToUpper() == "devops@development.com".ToUpper()) { NotFound("O e-mail informado já existe!"); }
+            if (usuarioDTO.EmailPessoa == "devops@development.com") { NotFound("O e-mail informado já existe!"); }
+
+            int response = usuarioDTO.CpfCnpj(usuarioDTO.CpfCnpjPessoa);
+            if (response == 0) return BadRequest("Documento incorreto!");
+            else if (response == -1) return BadRequest("CPF inválido!");
+            else if (response == -2) return BadRequest("CNPJ inválido!");
+            else if (response == -3) return BadRequest("Documento incompleto!");
+
+            response = usuarioDTO.RgIe(usuarioDTO.RgIEPessoa);
+            if (response == 0) return BadRequest("Documento incorreto!");
+            else if (response == -1) return BadRequest("RG inválido!");
+            else if (response == -2) return BadRequest("IE inválido!");
+            else if (response == -3) return BadRequest("Documento incompleto!");
 
             await _usuarioService.Update(usuarioDTO);
             return new CreatedAtRouteResult("GetUsuario", new { id = usuarioDTO.Id }, usuarioDTO);

@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react';
 import axios from "axios";
+import PropTypes from 'prop-types';
 
 const SessionContext = createContext();
 
@@ -16,8 +17,8 @@ export const SessionProvider = ({ children }) => {
     const baseUrl = "https://localhost:7096/api/Login/";
 
     const defaultSession = () => {
-        sessionStorage.setItem('token', null);
-        sessionStorage.setItem('user', null);
+        localStorage.setItem('token', null);
+        localStorage.setItem('user', null);
     };
 
     const createSession = async (userEmail, userPassword, persistLogin) => {
@@ -39,8 +40,8 @@ export const SessionProvider = ({ children }) => {
                         localStorage.removeItem('login');
                     }
 
-                    sessionStorage.setItem('token', data.token);
-                    sessionStorage.setItem('user', JSON.stringify(data.usuario));
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.usuario));
                     return true;
                 } else {
                     console.error('Token inválido!');
@@ -71,7 +72,7 @@ export const SessionProvider = ({ children }) => {
     };
 
     const persistsLogin = (data) => {
-        const login = { persist: true, emailUsuario: data.email, senhaUsuario: data.senha };
+        const login = { persist: true, emailPessoa: data.email, senhaUsuario: data.senha };
         localStorage.setItem('login', JSON.stringify(login));
     };
 
@@ -81,11 +82,11 @@ export const SessionProvider = ({ children }) => {
     };
 
     const getToken = () => {
-        const token = sessionStorage.getItem('token');
+        const token = localStorage.getItem('token');
         return token;
     };
 
-    const isTokenValid = async (e) => {
+    const isTokenValid = async () => {
         const token = getToken();
         const user = getSession();
 
@@ -94,7 +95,7 @@ export const SessionProvider = ({ children }) => {
         } else {
             try {
                 const response = await axios.post(baseUrl + "Validation", {
-                    email: user.emailUsuario,
+                    email: user.emailPessoa,
                     token: token
                 });
 
@@ -117,7 +118,7 @@ export const SessionProvider = ({ children }) => {
     };
 
     const getSession = () => {
-        const session = sessionStorage.getItem('user');
+        const session = localStorage.getItem('user');
         return session ? JSON.parse(session) : null;
     };
 
@@ -126,13 +127,13 @@ export const SessionProvider = ({ children }) => {
 
         try {
             const response = await axios.post(baseUrl + "Autentication", {
-                email: session.emailUsuario,
+                email: session.emailPessoa,
                 senha: session.senhaUsuario
             });
 
             if (response.status === 200) {
                 const data = response.data;
-                sessionStorage.setItem('token', data.token);
+                localStorage.setItem('token', data.token);
                 return true;
 
             } else {
@@ -158,8 +159,8 @@ export const SessionProvider = ({ children }) => {
     };
 
     const closeSession = () => {
-        sessionStorage.removeItem('user');
-        sessionStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
         defaultSession();
     };
 
@@ -201,3 +202,7 @@ export const SessionProvider = ({ children }) => {
         </SessionContext.Provider>
     );
 };
+
+SessionProvider.propTypes = {
+    children: PropTypes.any
+  };

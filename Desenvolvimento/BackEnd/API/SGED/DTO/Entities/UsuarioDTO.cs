@@ -4,18 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace SGED.DTO.Entities
 {
-    public class UsuarioDTO
+    public class UsuarioDTO : PessoaDTO
     {
         public int Id { get; set; }
-
-        [Required(ErrorMessage = "O nome é requerido!")]
-        [MinLength(10)]
-        [MaxLength(70)]
-        public string NomeUsuario { get; set; }
-
-        [Required(ErrorMessage = "O e-mail é requerido!")]
-        [EmailAddress]
-        public string EmailUsuario { get; set; }
 
         [Required(ErrorMessage = "A senha é requerida!")]
         [MinLength(6)]

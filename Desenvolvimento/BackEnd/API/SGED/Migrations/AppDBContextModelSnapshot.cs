@@ -166,35 +166,35 @@ namespace SGED.Migrations
                         new
                         {
                             Id = 1,
-                            DescricaoTipoUsuario = "Este perfil é voltado ao time de desenvolvimento para uso da plataforma durante testes.",
+                            DescricaoTipoUsuario = "Entidade voltada ao time de desenvolvimento para uso da plataforma durante testes.",
                             NivelAcesso = "A",
                             NomeTipoUsuario = "Desenvolvedor"
                         },
                         new
                         {
                             Id = 2,
-                            DescricaoTipoUsuario = "Entidade administrativa do orgão.",
+                            DescricaoTipoUsuario = "Entidade administrativa do orgão da Secretária.",
                             NivelAcesso = "A",
-                            NomeTipoUsuario = "Secretário Geral"
+                            NomeTipoUsuario = "Administrador"
                         },
                         new
                         {
                             Id = 3,
-                            DescricaoTipoUsuario = "Entidade auxiliar para a comunidade local.",
+                            DescricaoTipoUsuario = "Entidade de suporte para a comunidade local.",
                             NivelAcesso = "B",
-                            NomeTipoUsuario = "Secretário"
+                            NomeTipoUsuario = "Funcionário"
                         },
                         new
                         {
                             Id = 4,
-                            DescricaoTipoUsuario = "Este perfil representa empresas, instituições ou qualquer entidade jurídica perante a lei.",
+                            DescricaoTipoUsuario = "Entidade que representa empresas, instituições ou qualquer entidade jurídica perante a lei.",
                             NivelAcesso = "C",
                             NomeTipoUsuario = "Jurídico"
                         },
                         new
                         {
                             Id = 5,
-                            DescricaoTipoUsuario = "Este perfil representa todos os munícipes da cidade.",
+                            DescricaoTipoUsuario = "Entidade que representa todos os munícipes da cidade.",
                             NivelAcesso = "D",
                             NomeTipoUsuario = "Físico"
                         });
@@ -215,19 +215,31 @@ namespace SGED.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("cargousuario");
 
-                    b.Property<string>("EmailUsuario")
+                    b.Property<string>("CpfCNPJPessoa")
+                        .IsRequired()
+                        .HasMaxLength(18)
+                        .HasColumnType("character varying(18)")
+                        .HasColumnName("cpfcnpjpessoa");
+
+                    b.Property<string>("EmailPessoa")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("emailusuario");
+                        .HasColumnName("emailpessoa");
 
                     b.Property<int>("IdTipoUsuario")
                         .HasColumnType("integer");
 
-                    b.Property<string>("NomeUsuario")
+                    b.Property<string>("NomePessoa")
                         .IsRequired()
                         .HasMaxLength(70)
                         .HasColumnType("character varying(70)")
-                        .HasColumnName("nomeusuario");
+                        .HasColumnName("nomepessoa");
+
+                    b.Property<string>("RgIEPessoa")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("rgiepessoa");
 
                     b.Property<string>("SenhaUsuario")
                         .IsRequired()
@@ -238,6 +250,12 @@ namespace SGED.Migrations
                     b.Property<bool>("StatusUsuario")
                         .HasColumnType("boolean")
                         .HasColumnName("statususuario");
+
+                    b.Property<string>("TelefonePessoa")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("telefonepessoa");
 
                     b.HasKey("Id");
 
@@ -250,11 +268,27 @@ namespace SGED.Migrations
                         {
                             Id = 1,
                             CargoUsuario = "Desenvolvimento",
-                            EmailUsuario = "devops@development.com",
+                            CpfCNPJPessoa = "000.000.000-00",
+                            EmailPessoa = "devops@development.com",
                             IdTipoUsuario = 1,
-                            NomeUsuario = "Dev",
+                            NomePessoa = "Dev",
+                            RgIEPessoa = "00.000.000-0",
                             SenhaUsuario = "123456",
-                            StatusUsuario = true
+                            StatusUsuario = true,
+                            TelefonePessoa = "(00) 00000-0000"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CargoUsuario = "Secretário Geral",
+                            CpfCNPJPessoa = "000.000.000-00",
+                            EmailPessoa = "admin@gmail.com",
+                            IdTipoUsuario = 2,
+                            NomePessoa = "Secretário Geral",
+                            RgIEPessoa = "00.000.000-0",
+                            SenhaUsuario = "987654",
+                            StatusUsuario = true,
+                            TelefonePessoa = "(00) 00000-0000"
                         });
                 });
 

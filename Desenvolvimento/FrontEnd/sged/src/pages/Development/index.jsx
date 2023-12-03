@@ -7,11 +7,11 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from "react";
 
 export default function Home() {
-  const { defaultSession, isTokenValid, newToken } = useSession();
+  const { defaultSession, verifySession, newToken } = useSession();
   const navigate = useNavigate();
 
   const VerifySession = async () => {
-    const status = await isTokenValid();
+    const status = await verifySession();
     //console.error(status);
     if (status === false) {
       //console.error('Entrou');

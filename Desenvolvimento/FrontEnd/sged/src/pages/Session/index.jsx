@@ -164,6 +164,12 @@ export const SessionProvider = ({ children }) => {
         defaultSession();
     };
 
+    const verifySession = async () => {
+        const response = await isTokenValid();
+        if (!response) { closeSession(); }
+        return response;
+    }
+
     const getAuthConfig = () => {
         const token = getToken();
 
@@ -193,6 +199,7 @@ export const SessionProvider = ({ children }) => {
         getSession,
         newToken,
         closeSession,
+        verifySession,
         getAuthConfig,
     };
 

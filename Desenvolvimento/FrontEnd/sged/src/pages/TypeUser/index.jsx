@@ -12,13 +12,13 @@ import { FaPlus } from "react-icons/fa6";
 export default function TypeUser() {
 
     const [verifyStatus, setVerifyStatus] = useState(false);
-    const { defaultSession, isTokenValid, getAuthConfig, newToken } = useSession();
+    const { defaultSession, verifySession, getAuthConfig, newToken } = useSession();
     const navigate = useNavigate();
 
     const VerifySession = async () => {
         if (!verifyStatus) {
             setVerifyStatus(true);
-            const status = await isTokenValid();
+            const status = await verifySession();
             //console.error(status);
             if (status === false) {
                 //console.error('Entrou');

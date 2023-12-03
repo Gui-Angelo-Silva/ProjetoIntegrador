@@ -19,17 +19,17 @@ const PasswordStrengthIndicator = ({ data }) => {
     const checkPasswordStrength = (password) => {
         let strength = 'Inválida';
 
-        if (password.length >= 7) {
+        if (password.length >= 6) {
             const hasUpperCase = /[A-Z]/.test(password);
             const hasLowerCase = /[a-z]/.test(password);
             const hasNumber = /\d/.test(password);
             const hasSpecialChar = /[!@#$%^&*]/.test(password);
 
-            if (hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar && password.length >= 15) {
+            if ((hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar) || password.length > 19) {
                 strength = 'Forte';
-            } else if ((hasUpperCase || hasLowerCase) && hasNumber && password.length >= 10) {
+            } else if (((hasUpperCase || hasLowerCase) && hasNumber) || password.length > 11) {
                 strength = 'Média';
-            } else if (password.length >= 6) {
+            } else if (password.length > 5) {
                 strength = 'Fraca';
             }
         }
@@ -43,7 +43,7 @@ const PasswordStrengthIndicator = ({ data }) => {
 
     return (
         <div>
-            Força da Senha: <span>{passwordStrength}</span>
+            Status: <span>{passwordStrength}</span>
         </div>
     );
 };
@@ -55,13 +55,13 @@ PasswordStrengthIndicator.propTypes = {
 export default function User() {
 
     const [verifyStatus, setVerifyStatus] = useState(false);
-    const { defaultSession, isTokenValid, getAuthConfig, newToken } = useSession();
+    const { defaultSession, verifySession, getAuthConfig, newToken } = useSession();
     const navigate = useNavigate();
 
     const VerifySession = async () => {
         if (!verifyStatus) {
             setVerifyStatus(true);
-            const status = await isTokenValid();
+            const status = await verifySession();
             //console.error(status);
             if (status === false) {
                 //console.error('Entrou');
@@ -156,10 +156,15 @@ export default function User() {
 
     const openCloseModalInsert = () => {
         setModalInsert(!modalInsert);
+        setPersonEmail('');
+        setUserPassword('');
+        setPasswordStrength('Inválida');
     };
 
     const openCloseModalEdit = () => {
         setModalEdit(!modalEdit);
+        implementMaskCpfCnpj(personCpfCnpj);
+        implementMaskRgIe(personRgIe);
     };
 
     const openCloseModalDelete = () => {
@@ -172,7 +177,7 @@ export default function User() {
         if (id === 0) {
             emailExists = data.some(usuario => usuario.emailPessoa === email);
         } else {
-            emailExists = data.some(usuario => usuario.Id !== id && usuario.emailPessoa === email);
+            emailExists = data.some(usuario => usuario.id !== id && usuario.emailPessoa === email);
         }
 
         if (!emailExists) {
@@ -406,7 +411,7 @@ export default function User() {
         }
 
         if (userPassword) {
-            if (userPassword.length <= 6) {
+            if (userPassword.length < 6) {
                 setErrorUserPassword('A senha precisa ter no mínimo 6 caracteres!');
                 status = false;
             }
@@ -568,18 +573,34 @@ export default function User() {
     const [maskRgIe, setMaskRgIe] = useState("99.999.999-9");
 
     const implementMaskCpfCnpj = (e) => {
-        if (e === "cpf") {
-            setMaskCpfCnpj("999.999.999-99");
-        } else if (e === "cnpj") {
-            setMaskCpfCnpj("99.999.999/9999-99");
+        if (personCpfCnpj) {
+            if (personCpfCnpj.length === 14) {
+                setMaskCpfCnpj("999.999.999-99");
+            } else {
+                setMaskCpfCnpj("99.999.999/9999-99");
+            }
+        } else {
+            if (e === "cpf") {
+                setMaskCpfCnpj("999.999.999-99");
+            } else if (e === "cnpj") {
+                setMaskCpfCnpj("99.999.999/9999-99");
+            }
         }
     };
 
     const implementMaskRgIe = (e) => {
-        if (e === "rg") {
-            setMaskRgIe("99.999.999-9");
-        } else if (e === "ie") {
-            setMaskRgIe("999.999.999.999");
+        if (personRgIe) {
+            if (personRgIe.length === 12) {
+                setMaskRgIe("99.999.999-9");
+            } else {
+                setMaskRgIe("999.999.999.999");
+            }
+        } else {
+            if (e === "rg") {
+                setMaskRgIe("99.999.999-9");
+            } else if (e === "ie") {
+                setMaskRgIe("999.999.999.999");
+            }
         }
     };
 
@@ -681,7 +702,7 @@ export default function User() {
                         <br />
                         <label>E-mail:</label>
                         <br />
-                        <input type="text" className="form-control rounded border" onChange={(e) => setPersonEmail(e.target.value)} />
+                        <input type="text" className="form-control rounded border" onChange={(e) => setPersonEmail(e.target.value.toLowerCase())} value={personEmail} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {erroPersonEmail}
                         </div>
@@ -745,9 +766,7 @@ export default function User() {
                         <br />
                         <label>Status:</label>
                         <br />
-                        <select className="form-control rounded border" onChange={(e) => setUserStatus(e.target.value === "true")}>
-                            <option key="option" value="">
-                            </option>
+                        <select className="form-control rounded border" onChange={(e) => setUserStatus(e.target.value === "true")} defaultValue="true">
                             <option key="true" value="true">
                                 Ativo
                             </option>
@@ -759,10 +778,8 @@ export default function User() {
                         <label>Tipo Usuário:</label>
                         <br />
                         <select className="form-control rounded border" onChange={(e) => setIdTypeUser(e.target.value)}>
-                            <option key="option" value="">
-                            </option>
-                            {dataTypeUser.map((typeuser) => (
-                                <option key={typeuser.id} value={typeuser.id}>
+                            {dataTypeUser.map((typeuser, index) => (
+                                <option key={typeuser.id} value={typeuser.id} selected={index === 0}>
                                     {typeuser.nomeTipoUsuario}
                                 </option>
                             ))}
@@ -789,7 +806,7 @@ export default function User() {
                         </div>
                         <label>E-mail:</label>
                         <br />
-                        <input type="text" className="form-control rounded border" name="emailPessoa" onChange={(e) => setPersonEmail(e.target.value)} value={personEmail} />
+                        <input type="text" className="form-control rounded border" name="emailPessoa" onChange={(e) => setPersonEmail(e.target.value.toLowerCase())} value={personEmail} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {erroPersonEmail}
                         </div>
@@ -817,7 +834,7 @@ export default function User() {
                         <br />
                         <label>CPF / CNPJ: </label>
                         <br />
-                        <select className="form-control rounded border" onChange={(e) => implementMaskCpfCnpj(e.target.value)}>
+                        <select className="form-control rounded border" onChange={(e) => implementMaskCpfCnpj(e.target.value)} value={personCpfCnpj.length === 14 ? 'cpf' : 'cnpj'}>
                             <option key="cpf" value="cpf">
                                 CPF
                             </option>
@@ -833,7 +850,7 @@ export default function User() {
                         <br />
                         <label>RG / IE: </label>
                         <br />
-                        <select className="form-control rounded border" onChange={(e) => implementMaskRgIe(e.target.value)}>
+                        <select className="form-control rounded border" onChange={(e) => implementMaskRgIe(e.target.value)} value={personRgIe.length === 12 ? 'rg' : 'ie'}>
                             <option key="rg" value="rg">
                                 RG
                             </option>

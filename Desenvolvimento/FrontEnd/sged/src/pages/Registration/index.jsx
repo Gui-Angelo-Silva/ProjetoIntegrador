@@ -13,13 +13,13 @@ import { useEffect, useState } from "react";
 export default function Registrations() {
 
     const [verifyStatus, setVerifyStatus] = useState(false);
-    const { defaultSession, isTokenValid, newToken } = useSession();
+    const { defaultSession, verifySession, newToken } = useSession();
     const navigate = useNavigate();
 
     const VerifySession = async () => {
         if (!verifyStatus) {
             setVerifyStatus(true);
-            const status = await isTokenValid();
+            const status = await verifySession();
             //console.error(status);
             if (status === false) {
                 //console.error('Entrou');

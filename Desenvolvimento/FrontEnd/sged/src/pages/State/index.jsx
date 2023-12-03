@@ -12,13 +12,13 @@ import { FaPlus } from "react-icons/fa6";
 export default function State() {
 
     const [verifyStatus, setVerifyStatus] = useState(false);
-    const { defaultSession, isTokenValid, getAuthConfig, newToken } = useSession();
+    const { defaultSession, verifySession, getAuthConfig, newToken } = useSession();
     const navigate = useNavigate();
 
     const VerifySession = async () => {
         if (!verifyStatus) {
             setVerifyStatus(true);
-            const status = await isTokenValid();
+            const status = await verifySession();
             //console.error(status);
             if (status === false) {
                 //console.error('Entrou');
@@ -181,10 +181,11 @@ export default function State() {
         if (searchTerm === '') {
             setStatesToRender(data); // Se o campo de pesquisa estiver vazio, exibe todos os estados
         } else {
-            const searchTermLower = searchTerm.toLocaleLowerCase('pt-BR');
-            const filtered = data.filter((state) =>
-                state.nomeEstado.toLocaleLowerCase('pt-BR').includes(searchTermLower)
-            );
+            const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            const filtered = data.filter((state) => {
+                const stateNameNormalized = state.nomeEstado.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                return stateNameNormalized.toLowerCase().includes(searchTermNormalized.toLowerCase());
+            });
             setStatesToRender(filtered);
         }
     };
@@ -278,7 +279,7 @@ export default function State() {
                         <br />
                         <label>Sigla:</label>
                         <br />
-                        <input type="text" className="form-control" onChange={(e) => setStateUf(e.target.value)} />
+                        <input type="text" className="form-control" onChange={(e) => setStateUf(e.target.value.toUpperCase())} value={stateUf}/>
                         <br />
                     </div>
                 </ModalBody>
@@ -295,12 +296,12 @@ export default function State() {
                         <input type="text" className="form-control" readOnly value={stateId} /> <br />
 
                         <label>Nome:</label>
-                        <input type="text" className="form-control" name="nomeEstado" onChange={(e) => setStateName(e.target.value)}
+                        <input type="text" className="form-control" name="nomeEstado" onChange={(e) => setStateName(e.target.value) }
                             value={stateName} />
                         <br />
                         <label>Sigla:</label>
                         <br />
-                        <input type="text" className="form-control" name="ufEstado" onChange={(e) => setStateUf(e.target.value)}
+                        <input type="text" className="form-control" name="ufEstado" onChange={(e) => setStateUf(e.target.value.toUpperCase())}
                             value={stateUf} />
                         <br />
                     </div>

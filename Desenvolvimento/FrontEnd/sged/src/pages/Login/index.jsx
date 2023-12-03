@@ -26,11 +26,11 @@ export default function SignInSide() {
   const [passwordError, setPasswordError] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  const { isTokenValid, createSession, getLogin } = useSession();
+  const { verifySession, createSession, getLogin } = useSession();
   const navigate = useNavigate();
 
   const VerifySession = async () => {
-    const status = await isTokenValid();
+    const status = await verifySession();
     //console.error(status);
     if (status === true) {
       //console.error('Entrou');

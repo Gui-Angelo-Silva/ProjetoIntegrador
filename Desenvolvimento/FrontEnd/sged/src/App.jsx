@@ -4,21 +4,14 @@ import { useEffect } from "react";
 
 function App() {
 
-  const { defaultSession, getSession } = useSession();
+  const { verifySession } = useSession();
 
   useEffect(() => {
-    const VerifySession = () => {
-      const user = getSession();
-      if (user === null) {
-        defaultSession();
-      }
-    };
-
-    window.addEventListener('beforeunload', VerifySession);
+    window.addEventListener('beforeunload', verifySession);
 
     return () => {
-      window.removeEventListener('beforeunload', VerifySession);
-      VerifySession(); // Executa ao desmontar o componente
+      window.removeEventListener('beforeunload', verifySession);
+      verifySession(); // Executa ao desmontar o componente
     };
   }, []);
 

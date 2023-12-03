@@ -12,13 +12,13 @@ import { useNavigate } from 'react-router-dom';
 export default function City() {
 
     const [verifyStatus, setVerifyStatus] = useState(false);
-    const { defaultSession, isTokenValid, getAuthConfig, newToken } = useSession();
+    const { defaultSession, verifySession, getAuthConfig, newToken } = useSession();
     const navigate = useNavigate();
 
     const VerifySession = async () => {
         if (!verifyStatus) {
             setVerifyStatus(true);
-            const status = await isTokenValid();
+            const status = await verifySession();
             //console.error(status);
             if (status === false) {
                 //console.error('Entrou');
@@ -138,12 +138,12 @@ export default function City() {
 
                 setData((prevData) => {
                     return prevData.map((city) => {
-                      if (city.id === cityId) {
-                        return updateCity;
-                      }
-                      return city;
+                        if (city.id === cityId) {
+                            return updateCity;
+                        }
+                        return city;
                     });
-                  });
+                });
 
                 openCloseModalEdit();
             })
@@ -214,7 +214,7 @@ export default function City() {
                         </div>
                     </div>
                     <table>
-                        <thead className="" style={{background: '#58AFAE'}}>
+                        <thead className="" style={{ background: '#58AFAE' }}>
                             <tr>
                                 <th>Cidade</th>
                                 <th>Estado</th>
@@ -265,8 +265,8 @@ export default function City() {
                         <label>Estado:</label>
                         <br />
                         <select className="form-control" onChange={(e) => setIdState(e.target.value)}>
-                            {dataState.map((state) => (
-                                <option key={state.id} value={state.id}>
+                            {dataState.map((state, index) => (
+                                <option key={state.id} value={state.id} selected={index === 0}>
                                     {state.nomeEstado}
                                 </option>
                             ))}

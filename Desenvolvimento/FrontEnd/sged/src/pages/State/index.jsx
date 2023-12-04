@@ -94,8 +94,9 @@ export default function State() {
         delete selectState.id
         await axios.post(baseUrl, { nomeEstado: stateName, ufEstado: stateUf }, getAuthConfig())
             .then(response => {
-                setData(data.concat(response.data));
+                setData(prevData => [...prevData, response.data]);
                 openCloseModalInsert();
+                setUpdateData(true);
             }).catch(error => {
                 console.log(error);
             })
@@ -135,6 +136,7 @@ export default function State() {
                 });
 
                 openCloseModalEdit();
+                setUpdateData(true);
             }).catch(error => {
                 console.log(error)
             })
@@ -144,8 +146,8 @@ export default function State() {
         await axios.delete(baseUrl + "/" + stateId, getAuthConfig())
             .then(response => {
                 setData(data.filter(state => state.id !== response.data));
-                PutState();
                 openCloseModalDelete();
+                setUpdateData(true);
             }).catch(error => {
                 console.log(error);
             })
@@ -231,10 +233,6 @@ export default function State() {
                             </button>
                         </div>
                     </div>
-                    <div style={{}}>
-                        <button className="btn btn-success" onClick={() => openCloseModalInsert()}>Adicionar</button>
-                    </div>
-
                     <table>
                         <thead className="" style={{ background: '#58AFAE' }}>
                             <tr>

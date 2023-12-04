@@ -479,6 +479,16 @@ export default function User() {
             });
     };
 
+    const PutOrderUser = async () => {
+        await axios.get(baseUrl, getAuthConfig())
+            .then(response => {
+                setData(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+
     const PostOrder = async () => {
 
         clearErrors();
@@ -501,6 +511,7 @@ export default function User() {
             await axios.post(baseUrl, postData, getAuthConfig())
                 .then(response => {
                     setData(data.concat(response.data));
+                    setUpdateData(true);
                     openCloseModalInsert();
                 })
                 .catch(error => {
@@ -534,6 +545,7 @@ export default function User() {
                     var answer = response.data;
                     setData(data.map(user => user.id === selectUser.id ? answer : user));
                     openCloseModalEdit();
+                    setUpdateData(true);
                 })
                 .catch(error => {
                     console.log(error);
@@ -547,6 +559,7 @@ export default function User() {
             .then(response => {
                 setData(data.filter(user => user.id !== response.data));
                 openCloseModalDelete();
+                setUpdateData(true);
             })
             .catch(error => {
                 console.log(error);

@@ -8,11 +8,14 @@ import { Link } from "react-router-dom";
 import { useSession } from '../Session/index';
 import { useNavigate } from 'react-router-dom';
 import { FaPlus } from "react-icons/fa6";
+import { PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
 export default function State() {
 
     const [verifyStatus, setVerifyStatus] = useState(false);
+
     const { defaultSession, verifySession, getAuthConfig, newToken } = useSession();
+
     const navigate = useNavigate();
 
     const VerifySession = async () => {
@@ -175,6 +178,7 @@ export default function State() {
 
 
     const [searchTerm, setSearchTerm] = useState('');
+
     const [statesToRender, setStatesToRender] = useState([]); // Inicialmente, exibe todos os estados
 
     const handleSearch = (searchTerm) => {
@@ -233,38 +237,35 @@ export default function State() {
                             </button>
                         </div>
                     </div>
-                    <table>
-                        <thead className="" style={{ background: '#58AFAE' }}>
-                            <tr>
-                                <th>Estado</th>
-                                <th>Sigla</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {/* Use statesToRender para renderizar os estados filtrados */}
+                    <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
+                        <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
+                            <span className="pl-5 text-white text-base font-semibold">Estado</span>
+                            <span className="flex justify-center items-center text-white text-base font-semibold">UF</span>
+                            <span className="text-white text-base font-semibold">Ações</span>
+                        </div>
+                        <ul className="w-full">
                             {statesToRender.map((state) => (
-                                <tr key={state.id}>
-                                    <td>{state.nomeEstado}</td>
-                                    <td>{state.ufEstado}</td>
-                                    <td>
+                                <li className="grid grid-cols-3 w-full" key={state.id}>
+                                    <span className="pl-5">{state.nomeEstado}</span>
+                                    <span className="flex justify-center items-center">{state.ufEstado}</span>
+                                    <span className=" items-center justify-center gap-3">
                                         <button
-                                            className="btn btn-primary"
+                                            className=""
                                             onClick={() => StateSelect(state, "Editar")}
                                         >
-                                            Editar
+                                            <PencilSimple size={20} className="hover:text-cyan-500" />
                                         </button>{" "}
                                         <button
-                                            className="btn btn-danger"
+                                            className=""
                                             onClick={() => StateSelect(state, "Excluir")}
                                         >
-                                            Remover
+                                            <TrashSimple size={20} className="hover:text-red-600" />
                                         </button>
-                                    </td>
-                                </tr>
+                                    </span>
+                                </li>
                             ))}
-                        </tbody>
-                    </table>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <Modal isOpen={modalInsert}>
@@ -277,7 +278,7 @@ export default function State() {
                         <br />
                         <label>Sigla:</label>
                         <br />
-                        <input type="text" className="form-control" onChange={(e) => setStateUf(e.target.value.toUpperCase())} value={stateUf}/>
+                        <input type="text" className="form-control" onChange={(e) => setStateUf(e.target.value.toUpperCase())} value={stateUf} />
                         <br />
                     </div>
                 </ModalBody>
@@ -294,7 +295,7 @@ export default function State() {
                         <input type="text" className="form-control" readOnly value={stateId} /> <br />
 
                         <label>Nome:</label>
-                        <input type="text" className="form-control" name="nomeEstado" onChange={(e) => setStateName(e.target.value) }
+                        <input type="text" className="form-control" name="nomeEstado" onChange={(e) => setStateName(e.target.value)}
                             value={stateName} />
                         <br />
                         <label>Sigla:</label>

@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useSession } from '../Session/index'
 import { useNavigate } from 'react-router-dom';
+import { PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
 export default function City() {
 
@@ -179,11 +180,11 @@ export default function City() {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <NavBar /> {/* NavBar no topo */}
-            <div style={{ display: 'flex', flex: 1 }}> {/* Container principal flexível */}
+            <div style={{ display: 'flex', flex: 1, height: '100%' }}> {/* Container principal flexível */}
                 <div className="overscroll-y-none" style={{ flex: 0, width: '200px' }}>
                     <SideBar /> {/* Sidebar à esquerda */}
                 </div>
-                <div style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
+                <div className="w-full h-full" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
                     <br />
                     <div className="flex flex-row">
                         <Link to="/registration">
@@ -213,41 +214,39 @@ export default function City() {
                             </button>
                         </div>
                     </div>
-                    <table>
-                        <thead className="" style={{ background: '#58AFAE' }}>
-                            <tr>
-                                <th>Cidade</th>
-                                <th>Estado</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                    <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
+                        <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
+                            <span className="ml-5 text-white text-lg font-semibold">Cidade</span>
+                            <span className="flex justify-center items-center text-white text-lg font-semibold">Estado</span>
+                            <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                        </div>
+                        <ul className="w-full">
                             {data.map((city) => {
                                 const estado = dataState.find((state) => state.id === city.idEstado);
 
                                 return (
-                                    <tr key={city.id}>
-                                        <td>{city.nomeCidade}</td>
-                                        <td>{estado ? estado.nomeEstado : "Estado não encontrado"}</td>
-                                        <td>
+                                    <li className="grid grid-cols-3 w-full" key={city.id}>
+                                        <span className="pl-5 border-r-[1px] border-b-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{city.nomeCidade}</span>
+                                        <span className="flex justify-center items-center border-b-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{estado ? estado.nomeEstado : "Estado não encontrado"}</span>
+                                        <span className="flex items-center justify-center border-b-[1px] gap-2 text-gray-700">
                                             <button
-                                                className="btn btn-primary"
+                                                className=""
                                                 onClick={() => CitySelect(city, "Editar")}
                                             >
-                                                Editar
+                                                <PencilSimple size={20} className="hover:text-cyan-500" />
                                             </button>{" "}
                                             <button
-                                                className="btn btn-danger"
+                                                className=""
                                                 onClick={() => CitySelect(city, "Excluir")}
                                             >
-                                                Remover
+                                                <TrashSimple size={20} className="hover:text-red-600" />
                                             </button>
-                                        </td>
-                                    </tr>
+                                        </span>
+                                    </li>
                                 );
                             })}
-                        </tbody>
-                    </table>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <Modal isOpen={modalInsert}>

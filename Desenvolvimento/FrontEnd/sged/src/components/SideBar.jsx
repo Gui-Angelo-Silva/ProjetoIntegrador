@@ -17,7 +17,7 @@ const sidebarStyle = {
 
 export default function SideBar() {
   return (
-    <div style={{ display: 'flex', height: '100%' }}>
+    <div style={{ display: 'flex', height: '93.5vh' }}>
       <Sidebar style={sidebarStyle}>
         <Menu
           menuItemStyles={{

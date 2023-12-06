@@ -41,7 +41,7 @@ export default function Registrations() {
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <NavBar /> {/* NavBar no topo */}
             <div style={{ display: 'flex', flex: 1 }}> {/* Container principal flexível */}
-                <div style={{ flex: 0, width: '200px' }}>
+                <div className="" style={{ flex: 0, width: '200px', height: '100%' }}>
                     <SideBar /> {/* Sidebar à esquerda */}
                 </div>
                 <div style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>

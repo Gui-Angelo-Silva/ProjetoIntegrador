@@ -211,7 +211,7 @@ export default function State() {
                             <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
                         </Link>
                         <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
-                        <h3 className="text-2xl font-semibold text-gray-800">Estado</h3>
+                        <h3 className="text-2xl font-semibold text-gray-700">Estado</h3>
 
                     </div>
                     {/* <div className="bg-slate-200 rounded-md mb-10" style={{ marginTop: 15 }}>
@@ -239,16 +239,16 @@ export default function State() {
                     </div>
                     <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                         <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                            <span className="pl-5 text-white text-base font-semibold">Estado</span>
-                            <span className="flex justify-center items-center text-white text-base font-semibold">UF</span>
-                            <span className="text-white text-base font-semibold">Ações</span>
+                            <span className="ml-5 text-white text-lg font-semibold">Estado</span>
+                            <span className="flex justify-center items-center text-white text-lg font-semibold">UF</span>
+                            <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                         </div>
                         <ul className="w-full">
                             {statesToRender.map((state) => (
                                 <li className="grid grid-cols-3 w-full" key={state.id}>
-                                    <span className="pl-5">{state.nomeEstado}</span>
-                                    <span className="flex justify-center items-center">{state.ufEstado}</span>
-                                    <span className=" items-center justify-center gap-3">
+                                    <span className="pl-5 border-r-[1px] border-b-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{state.nomeEstado}</span>
+                                    <span className="flex justify-center items-center border-b-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{state.ufEstado}</span>
+                                    <span className="flex items-center justify-center border-b-[1px] gap-2 text-gray-700">
                                         <button
                                             className=""
                                             onClick={() => StateSelect(state, "Editar")}

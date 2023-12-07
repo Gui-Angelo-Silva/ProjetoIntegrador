@@ -177,6 +177,25 @@ export default function City() {
         }
     }, [updateData]);
 
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const [cityToRender, setCityToRender] = useState([]); // Inicialmente, exibe todos os estados
+
+    const handleSearch = (searchTerm) => {
+        setSearchTerm(searchTerm);
+
+        if (searchTerm === '') {
+            setCityToRender(data); // Se o campo de pesquisa estiver vazio, exibe todos os estados
+        } else {
+            const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            const filtered = data.filter((city) => {
+                const cityNameNormalized = city.nomeCidade.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                return cityNameNormalized.toLowerCase().includes(searchTermNormalized.toLowerCase());
+            });
+            setCityToRender(filtered);
+        }
+    };
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <NavBar /> {/* NavBar no topo */}
@@ -203,8 +222,7 @@ export default function City() {
                                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                         </svg>
                                     </div>
-                                    <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar cidade" required />
-                                    <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-emerald-600 hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Pesquisar</button>
+                                    <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar cidade" required onChange={(e) => handleSearch(e.target.value)} />
                                 </div>
                             </div>
                         </div>

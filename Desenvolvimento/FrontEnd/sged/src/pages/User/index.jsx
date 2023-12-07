@@ -11,6 +11,7 @@ import { useSession } from '../Session/index'
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import InputMask from 'react-input-mask';
+import { PencilSimple, TrashSimple } from '@phosphor-icons/react';
 
 const PasswordStrengthIndicator = ({ data }) => {
 
@@ -669,37 +670,35 @@ export default function User() {
                             </button>
                         </div>
                     </div>
-                    <table>
-                        <thead className="" style={{ background: '#58AFAE' }}>
-                            <tr>
-                                <th>Nome</th>
-                                <th>E-mail</th>
-                                <th>Tipo Usuário</th>
-                                <th>Cargo</th>
-                                <th>Status</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                    <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
+                        <div className="grid grid-cols-6 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
+                            <span className="ml-5 text-white text-lg font-semibold">Nome</span>
+                            <span className="flex justify-center items-center text-white text-lg font-semibold">E-mail</span>
+                            <span className="flex justify-center items-center text-white text-lg font-semibold">Tipo Usuário</span>
+                            <span className="flex justify-center items-center text-white text-lg font-semibold">Cargo</span>
+                            <span className="flex justify-center items-center text-white text-lg font-semibold">Status</span>
+                            <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                        </div>
+                        <ul className="w-full">
                             {data.map(user => {
                                 const tipoUsuario = dataTypeUser.find(typeuser => typeuser.id === user.idTipoUsuario);
 
                                 return (
-                                    <tr key={user.id}>
-                                        <td>{user.nomePessoa}</td>
-                                        <td>{user.emailPessoa}</td>
-                                        <td>{tipoUsuario ? tipoUsuario.nomeTipoUsuario : 'Tipo de usuário não encontrado!'}</td>
-                                        <td>{user.cargoUsuario}</td>
-                                        <td>{user.statusUsuario ? 'Ativo' : 'Inativo'}</td>
-                                        <td>
-                                            <button className="btn btn-primary" onClick={() => SelectUser(user, "Editar")}>Editar</button>{"  "}
-                                            <button className="btn btn-danger" onClick={() => SelectUser(user, "Excluir")}>Remover</button>
-                                        </td>
-                                    </tr>
+                                    <li className="grid grid-cols-6 w-full" key={user.id}>
+                                        <span className="pl-5 border-r-[1px] border-b-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{user.nomePessoa}</span>
+                                        <span className="flex justify-center items-center border-b-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.emailPessoa}</span>
+                                        <span className="flex justify-center items-center border-b-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoUsuario ? tipoUsuario.nomeTipoUsuario : 'Tipo de usuário não encontrado!'}</span>
+                                        <span className="flex justify-center items-center border-b-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.cargoUsuario}</span>
+                                        <span className="flex justify-center items-center border-b-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.statusUsuario ? 'Ativo' : 'Inativo'}</span>
+                                        <span className="flex items-center justify-center border-b-[1px] gap-2 text-gray-700">
+                                            <button className="" onClick={() => SelectUser(user, "Editar")}><PencilSimple size={20} className="hover:text-cyan-500" /></button>{"  "}
+                                            <button className="" onClick={() => SelectUser(user, "Excluir")}><TrashSimple size={20} className="hover:text-red-600" /></button>
+                                        </span>
+                                    </li>
                                 );
                             })}
-                        </tbody>
-                    </table>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <Modal isOpen={modalInsert}>

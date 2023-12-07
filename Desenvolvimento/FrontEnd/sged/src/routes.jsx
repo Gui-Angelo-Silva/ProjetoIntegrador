@@ -9,6 +9,7 @@ import TypeUser from '../src/pages/TypeUser'
 import User from '../src/pages/User'
 import Registration from './pages/Registration'
 import Document from './pages/Document'
+import Test from './pages/Test'
 
 export default function AppRoutes(){
     return (
@@ -23,6 +24,7 @@ export default function AppRoutes(){
                 <Route path="/user" element={ <User /> }></Route>
                 <Route path="/registration" element={ <Registration /> }></Route>
                 <Route path="/document" element={ <Document /> }></Route>
+                <Route path="/test" element={ <Test /> }></Route>
             </Routes>
         </Router>
     )

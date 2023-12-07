@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { useSession } from '../Session/index'
 import { useNavigate } from 'react-router-dom';
 import { FaPlus } from "react-icons/fa6";
+import { PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
 export default function TypeUser() {
 
@@ -132,12 +133,12 @@ export default function TypeUser() {
 
                 setData((prevData) => {
                     return prevData.map((typeuser) => {
-                      if (typeuser.id === typeUserId) {
-                        return updateTypeUser;
-                      }
-                      return typeuser;
+                        if (typeuser.id === typeUserId) {
+                            return updateTypeUser;
+                        }
+                        return typeuser;
                     });
-                  });
+                });
 
                 openCloseModalEdit();
             }).catch(error => {
@@ -156,13 +157,45 @@ export default function TypeUser() {
             })
     }
 
-    useEffect(() => {
-        if (updateData) {
-            VerifySession();
-            GetOrder();
-            setUpdateData(false);
+    const [typeUserToRender, settypeUserToRender] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const fetchData = async () => {
+        try {
+            const response = await axios.get(baseUrl, getAuthConfig());
+            setData(response.data);
+            settypeUserToRender(response.data);
+        } catch (error) {
+            console.error(error);
         }
-    }, [updateData])
+    };
+
+    const handleSearch = (searchTerm) => {
+        setSearchTerm(searchTerm);
+    };
+
+    const filterTypeUser = () => {
+        const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+        if (searchTerm === '') {
+            settypeUserToRender(data);
+        } else {
+            const filtered = data.filter((typeuser) => {
+                const typeUserNameNormalized = typeuser.nomeTipoUsuario.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                return typeUserNameNormalized.toLowerCase().includes(searchTermNormalized.toLowerCase());
+            });
+            settypeUserToRender(filtered);
+        }
+    };
+
+    useEffect(() => {
+        VerifySession();
+        fetchData();
+    }, [updateData]);
+
+    useEffect(() => {
+        filterTypeUser();
+    }, [searchTerm, data]);
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -194,8 +227,7 @@ export default function TypeUser() {
                                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                         </svg>
                                     </div>
-                                    <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar tipo usuário" required />
-                                    <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-emerald-600 hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Pesquisar</button>
+                                    <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar tipo usuário" required onChange={(e) => handleSearch(e.target.value)}/>
                                 </div>
                             </div>
                         </div>
@@ -205,29 +237,37 @@ export default function TypeUser() {
                             </button>
                         </div>
                     </div>
-                    <table>
-                        <thead className="" style={{background: '#58AFAE'}}>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Nivel de Acesso</th>
-                                <th>Descrição</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data.map(typeuser => (
-                                <tr key={typeuser.id}>
-                                    <td>{typeuser.nomeTipoUsuario}</td>
-                                    <td>{typeuser.nivelAcesso}</td>
-                                    <td>{typeuser.descricaoTipoUsuario}</td>
-                                    <td>
-                                        <button className="btn btn-primary" onClick={() => SelectTypeUser(typeuser, "Editar")}>Editar</button>{"  "}
-                                        <button className="btn btn-danger" onClick={() => SelectTypeUser(typeuser, "Excluir")}>Remover</button>
-                                    </td>
-                                </tr>
+                    <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
+                        <div className="grid grid-cols-4 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
+                            <span className="ml-5 text-white text-lg font-semibold">Nome</span>
+                            <span className="flex justify-center items-center text-white text-lg font-semibold">Nivel de Acesso</span>
+                            <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
+                            <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                        </div>
+                        <ul className="w-full">
+                            {typeUserToRender.map((typeuser) => (
+                                <li className="grid grid-cols-4 w-full" key={typeuser.id}>
+                                    <span className="flex pl-5 items-center border-r-[1px] border-b-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{typeuser.nomeTipoUsuario}</span>
+                                    <span className="flex justify-center pl-2 pr-2 items-center border-b-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{typeuser.nivelAcesso}</span>
+                                    <span className="flex justify-center pl-2 pr-2 items-center border-b-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{typeuser.descricaoTipoUsuario}</span>
+                                    <span className="flex items-center justify-center border-b-[1px] gap-2 text-gray-700">
+                                        <button 
+                                            className="" 
+                                            onClick={() => SelectTypeUser(typeuser, "Editar")}
+                                        >
+                                            <PencilSimple size={20} className="hover:text-cyan-500" />
+                                        </button>{"  "}
+                                        <button 
+                                            className="" 
+                                            onClick={() => SelectTypeUser(typeuser, "Excluir")}
+                                        >
+                                            <TrashSimple size={20} className="hover:text-red-600" />
+                                        </button>
+                                    </span>
+                                </li>
                             ))}
-                        </tbody>
-                    </table>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <Modal isOpen={modalInsert}>

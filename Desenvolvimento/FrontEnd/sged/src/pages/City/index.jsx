@@ -168,26 +168,30 @@ export default function City() {
             });
     };
 
-    useEffect(() => {
-        if (updateData) {
-            VerifySession();
-            GetOrder();
-            GetOrderState();
-            setUpdateData(false);
-        }
-    }, [updateData]);
+    const [cityToRender, setCityToRender] = useState([]);
 
     const [searchTerm, setSearchTerm] = useState('');
 
-    const [cityToRender, setCityToRender] = useState([]); // Inicialmente, exibe todos os estados
+    const fetchData = async () => {
+        try {
+            const response = await axios.get(baseUrl, getAuthConfig());
+            setData(response.data);
+            setCityToRender(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const handleSearch = (searchTerm) => {
         setSearchTerm(searchTerm);
+    };
+
+    const filterCity = () => {
+        const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
         if (searchTerm === '') {
-            setCityToRender(data); // Se o campo de pesquisa estiver vazio, exibe todos os estados
+            setCityToRender(data);
         } else {
-            const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
             const filtered = data.filter((city) => {
                 const cityNameNormalized = city.nomeCidade.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                 return cityNameNormalized.toLowerCase().includes(searchTermNormalized.toLowerCase());
@@ -195,6 +199,16 @@ export default function City() {
             setCityToRender(filtered);
         }
     };
+
+    useEffect(() => {
+        VerifySession();
+        fetchData();
+        GetOrderState();
+    }, [updateData]);
+
+    useEffect(() => {
+        filterCity();
+    }, [searchTerm, data]);
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -239,7 +253,7 @@ export default function City() {
                             <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                         </div>
                         <ul className="w-full">
-                            {data.map((city) => {
+                            {cityToRender.map((city) => {
                                 const estado = dataState.find((state) => state.id === city.idEstado);
 
                                 return (

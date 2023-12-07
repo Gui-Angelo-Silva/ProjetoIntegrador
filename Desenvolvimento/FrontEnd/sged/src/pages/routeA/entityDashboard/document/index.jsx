@@ -1,36 +1,7 @@
 import NavBar from "../../components/NavBar";
 import SideBar from "../../components/SideBar";
 
-import { useSession } from '../Session/index';
-import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from "react";
-
 export default function Document() {
-
-    const [verifyStatus, setVerifyStatus] = useState(false);
-    const { defaultSession, verifySession, newToken } = useSession();
-    const navigate = useNavigate();
-
-    const VerifySession = async () => {
-        if (!verifyStatus) {
-            setVerifyStatus(true);
-            const status = await verifySession();
-            //console.error(status);
-            if (status === false) {
-                //console.error('Entrou');
-                navigate('/');
-            } else {
-                if (await newToken() === false) {
-                    defaultSession();
-                    navigate('/');
-                }
-            }
-        }
-    };
-
-    useEffect(() => {
-        VerifySession();
-      }, []);
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -48,5 +19,6 @@ export default function Document() {
                 </div>
             </div>
         </div>
-    )
+    );
+
 }

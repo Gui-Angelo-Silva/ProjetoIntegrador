@@ -5,54 +5,24 @@ import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
-import { useSession } from '../Session/index'
-import { useNavigate } from 'react-router-dom';
+import { useSession } from '../../../../services/session';
 import { FaPlus } from "react-icons/fa6";
 import { PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
 export default function TypeUser() {
 
-    const [verifyStatus, setVerifyStatus] = useState(false);
-    const { defaultSession, verifySession, getAuthConfig, newToken } = useSession();
-    const navigate = useNavigate();
-
-    const VerifySession = async () => {
-        if (!verifyStatus) {
-            setVerifyStatus(true);
-            const status = await verifySession();
-            //console.error(status);
-            if (status === false) {
-                //console.error('Entrou');
-                navigate('/');
-            } else {
-                if (await newToken() === false) {
-                    defaultSession();
-                    navigate('/');
-                }
-            }
-        }
-    };
-
+    const { getAuthConfig } = useSession();
     const baseUrl = "https://localhost:7096/api/TipoUsuario"
 
     const [data, setData] = useState([])
-
     const [modalInsert, setModalInsert] = useState(false)
-
     const [modalEdit, setModalEdit] = useState(false)
-
     const [modalDelete, setModalDelete] = useState(false)
-
     const [updateData, setUpdateData] = useState(true)
-
     const [typeUserName, setTypeUserName] = useState("");
-
     const [typeUserAcessLevel, setTypeUserAcessLevel] = useState("");
-
     const [typeUserDesc, setTypeUserDesc] = useState("");
-
     const [typeUserId, setTypeUserId] = useState("");
-
     const [selectTypeUser] = useState({
         id: "",
         nomeTipoUsuario: "",
@@ -84,15 +54,6 @@ export default function TypeUser() {
 
     const openCloseModalDelete = () => {
         setModalDelete(!modalDelete);
-    }
-
-    const GetOrder = async () => {
-        await axios.get(baseUrl, getAuthConfig())
-            .then(response => {
-                setData(response.data)
-            }).catch(error => {
-                console.log(error);
-            })
     }
 
     const PutTypeUser = async () => {
@@ -189,8 +150,8 @@ export default function TypeUser() {
     };
 
     useEffect(() => {
-        VerifySession();
         fetchData();
+        setTypeUserAcessLevel("A");
     }, [updateData]);
 
     useEffect(() => {
@@ -280,7 +241,20 @@ export default function TypeUser() {
                         <br />
                         <label>Nivel de acesso:</label>
                         <br />
-                        <input type="text" className="form-control" onChange={(e) => setTypeUserAcessLevel(e.target.value)} />
+                        <select className="form-control rounded border" onChange={(e) => setTypeUserAcessLevel(e.target.value)} value={typeUserAcessLevel}>
+                            <option key="A" value="A" title="Descrição: pode realizar todas funcionalides do sistema.">
+                                A
+                            </option>
+                            <option key="B" value="B" title="Descrição: pode realizar todas funcionalides do sistema, porém com auditoria de ações.">
+                                B
+                            </option>
+                            <option key="C" value="C" title="Descrição: pode vizualizar todos dados, com exceção de senhas.">
+                                C
+                            </option>
+                            <option key="D" value="D" title="Descrição: pode vizualizar somente dados relacionados a ele próprio.">
+                                D
+                            </option>
+                        </select>
                         <br />
                         <label>Descrição:</label>
                         <br />
@@ -306,8 +280,12 @@ export default function TypeUser() {
                         <br />
                         <label>Nivel de acesso:</label>
                         <br />
-                        <input type="text" className="form-control" name="nivelAcesso" onChange={(e) => setTypeUserAcessLevel(e.target.value)}
-                            value={typeUserAcessLevel} />
+                        <select className="form-control rounded border" onChange={(e) => setTypeUserAcessLevel(e.target.value)}>
+                            <option value="A" selected={typeUserAcessLevel === "A"} title="Descrição: pode realizar todas funcionalides do sistema.">A</option>
+                            <option value="B" selected={typeUserAcessLevel === "B"} title="Descrição: pode realizar todas funcionalides do sistema, porém com auditoria de ações.">B</option>
+                            <option value="C" selected={typeUserAcessLevel === "C"} title="Descrição: pode vizualizar todos dados, com exceção de senhas.">C</option>
+                            <option value="D" selected={typeUserAcessLevel === "D"} title="Descrição: pode vizualizar somente dados relacionados a ele próprio.">D</option>
+                        </select>
                         <br />
                         <label>Descrição:</label>
                         <br />

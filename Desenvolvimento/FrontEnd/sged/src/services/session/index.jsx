@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react';
 import axios from "axios";
 import PropTypes from 'prop-types';
+import { useApi } from '../api/apiContext';
 
 const SessionContext = createContext();
 
@@ -14,16 +15,18 @@ export const useSession = () => {
 
 export const SessionProvider = ({ children }) => {
 
-    const baseUrl = "https://localhost:7096/api/Login/";
+    const { appendRoute } = useApi();
+    const sessionURL = appendRoute('login/');
 
     const defaultSession = () => {
         localStorage.setItem('token', null);
         localStorage.setItem('user', null);
+        localStorage.setItem('permission', null);
     };
 
     const createSession = async (userEmail, userPassword, persistLogin) => {
         try {
-            const response = await axios.post(baseUrl + "Autentication", {
+            const response = await axios.post(sessionURL + "Autentication", {
                 email: userEmail,
                 senha: userPassword
             });
@@ -42,6 +45,7 @@ export const SessionProvider = ({ children }) => {
 
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.usuario));
+                    localStorage.setItem('permission', data.usuario.tipoUsuarioDTO.nivelAcesso);
                     return true;
                 } else {
                     console.error('Token inválido!');
@@ -94,7 +98,7 @@ export const SessionProvider = ({ children }) => {
             return false;
         } else {
             try {
-                const response = await axios.post(baseUrl + "Validation", {
+                const response = await axios.post(sessionURL + "Validation", {
                     email: user.emailPessoa,
                     token: token
                 });
@@ -125,35 +129,39 @@ export const SessionProvider = ({ children }) => {
     const newToken = async () => {
         const session = getSession();
 
-        try {
-            const response = await axios.post(baseUrl + "Autentication", {
-                email: session.emailPessoa,
-                senha: session.senhaUsuario
-            });
-
-            if (response.status === 200) {
-                const data = response.data;
-                localStorage.setItem('token', data.token);
-                return true;
-
-            } else {
-                console.error('Erro no login:', 'E-mail ou senha incorretos!');
+        if (session !== null) {
+            try {
+                const response = await axios.post(sessionURL + "Autentication", {
+                    email: session.emailPessoa,
+                    senha: session.senhaUsuario
+                });
+    
+                if (response.status === 200) {
+                    const data = response.data;
+                    localStorage.setItem('token', data.token);
+                    return true;
+    
+                } else {
+                    console.error('Erro no login:', 'E-mail ou senha incorretos!');
+                    return false;
+                }
+    
+            } catch (error) {
+                console.error('Erro na solicitação:', error.message);
+    
+                if (error.response) {
+                    console.error('Erro no login:', error.response.data.message);
+    
+                } else if (error.request) {
+                    console.error('Erro na solicitação: Sem resposta do servidor!');
+    
+                } else {
+                    console.error('Erro na solicitação: Configuração de solicitação inválida!');
+                }
+    
                 return false;
             }
-
-        } catch (error) {
-            console.error('Erro na solicitação:', error.message);
-
-            if (error.response) {
-                console.error('Erro no login:', error.response.data.message);
-
-            } else if (error.request) {
-                console.error('Erro na solicitação: Sem resposta do servidor!');
-
-            } else {
-                console.error('Erro na solicitação: Configuração de solicitação inválida!');
-            }
-
+        } else {
             return false;
         }
     };
@@ -161,12 +169,18 @@ export const SessionProvider = ({ children }) => {
     const closeSession = () => {
         localStorage.removeItem('user');
         localStorage.removeItem('token');
+        localStorage.removeItem('permission');
         defaultSession();
     };
 
     const verifySession = async () => {
-        const response = await isTokenValid();
+        var response = await isTokenValid();
+
         if (!response) { closeSession(); }
+        else { response = await newToken(); }
+
+        if (!response) { closeSession(); }
+
         return response;
     }
 

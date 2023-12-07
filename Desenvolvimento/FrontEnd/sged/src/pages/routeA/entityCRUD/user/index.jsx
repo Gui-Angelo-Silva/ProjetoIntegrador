@@ -7,8 +7,7 @@ import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
-import { useSession } from '../Session/index'
-import { useNavigate } from 'react-router-dom';
+import { useSession } from '../../../../services/session';
 import PropTypes from 'prop-types';
 import InputMask from 'react-input-mask';
 import { PencilSimple, TrashSimple } from '@phosphor-icons/react';
@@ -55,27 +54,7 @@ PasswordStrengthIndicator.propTypes = {
 
 export default function User() {
 
-    const [verifyStatus, setVerifyStatus] = useState(false);
-    const { defaultSession, verifySession, getAuthConfig, newToken } = useSession();
-    const navigate = useNavigate();
-
-    const VerifySession = async () => {
-        if (!verifyStatus) {
-            setVerifyStatus(true);
-            const status = await verifySession();
-            //console.error(status);
-            if (status === false) {
-                //console.error('Entrou');
-                navigate('/');
-            } else {
-                if (await newToken() === false) {
-                    defaultSession();
-                    navigate('/');
-                }
-            }
-        }
-    };
-
+    const { getAuthConfig } = useSession();
     const baseUrl = "https://localhost:7096/api/Usuario";
 
     const [data, setData] = useState([]);
@@ -159,13 +138,14 @@ export default function User() {
         setModalInsert(!modalInsert);
         setPersonEmail('');
         setUserPassword('');
-        setPasswordStrength('Inválida');
+        clearErrors();
     };
 
     const openCloseModalEdit = () => {
         setModalEdit(!modalEdit);
         implementMaskCpfCnpj(personCpfCnpj);
         implementMaskRgIe(personRgIe);
+        clearErrors();
     };
 
     const openCloseModalDelete = () => {
@@ -197,7 +177,7 @@ export default function User() {
     function CpfCnpj(cpfCnpj) {
         cpfCnpj = cpfCnpj.trim();
 
-        if (cpfCnpj.length === 14) {
+        if (cpfCnpj.length === 14 && identifyCpfCnpj === "cpf") {
             if (
                 cpfCnpj[3] === '.' &&
                 cpfCnpj[7] === '.' &&
@@ -212,7 +192,7 @@ export default function User() {
                     else return -1;
                 } else { return -1; }
             }
-        } else {
+        } else if (cpfCnpj.length === 18 && identifyCpfCnpj === "cnpj") {
             if (
                 cpfCnpj[2] === '.' &&
                 cpfCnpj[6] === '.' &&
@@ -229,6 +209,7 @@ export default function User() {
                 } else { return -2; }
             }
         }
+
         return 0;
     }
 
@@ -283,7 +264,7 @@ export default function User() {
     function RgIe(rgIe) {
         rgIe = rgIe.trim();
 
-        if (rgIe.length === 12) {
+        if (rgIe.length === 12 && identifyRgIe === "rg") {
             if (
                 rgIe[2] === '.' &&
                 rgIe[6] === '.' &&
@@ -298,7 +279,7 @@ export default function User() {
                     else return -1;
                 } else { return -1; }
             }
-        } else {
+        } else if (rgIe.length === 15 && identifyRgIe === "ie") {
             if (
                 rgIe[3] === '.' &&
                 rgIe[7] === '.' &&
@@ -314,6 +295,7 @@ export default function User() {
                 } else { return -2; }
             }
         }
+
         return 0;
     }
 
@@ -330,32 +312,29 @@ export default function User() {
     }
 
     function verificarIe(ie) {
-        let intSoma = 0;
-        let intPeso = 1;
+        const inscricaoEstadual = ie.replace(/\D/g, ''); // Remove caracteres não numéricos
 
-        for (let intPos = 0; intPos < 8; intPos++) {
-            let intValor = parseInt(ie[intPos]);
-            intValor *= intPeso;
-            intSoma += intValor;
-            intPeso++;
-
-            if (intPeso === 2) {
-                intPeso = 3;
-            }
-
-            if (intPeso === 9) {
-                intPeso = 10;
-            }
+        if (inscricaoEstadual.length !== 12) {
+            return false; // Retorna falso se a IE não tiver 12 dígitos
         }
 
-        let intResto = intSoma % 11;
-        let strDigito1 = intResto.toString().substring(intResto.toString().length - 1);
-        let strBase2 = ie.substring(0, 8) + strDigito1 + ie.substring(9, 3);
+        const peso = [1, 3, 4, 5, 6, 7, 8, 10];
+        let soma = 0;
 
-        return strBase2 === ie;
+        for (let i = 0; i < 8; i++) {
+            soma += parseInt(inscricaoEstadual.charAt(i)) * peso[i];
+        }
+
+        let digito = soma * 10 % 11;
+        if (digito === 10 || digito === 11) {
+            digito = 0;
+        }
+
+        return parseInt(inscricaoEstadual.charAt(8)) === digito;
     }
 
     const verificarDados = async () => {
+        clearErrors();
         var status = true;
 
         if (personName) {
@@ -437,7 +416,7 @@ export default function User() {
 
             if (response === -1) { setErrorPersonCpfCnpj('CPF inválido!'); status = false; }
             else if (response === -2) { setErrorPersonCpfCnpj('CNPJ inválido!'); status = false; }
-            else if (response === -3) { setErrorPersonCpfCnpj('Documento incorreto!'); status = false; }
+            else if (response === -3 || response === 0) { setErrorPersonCpfCnpj('Documento incorreto!'); status = false; }
 
         } else {
             setErrorPersonCpfCnpj('O CPF ou CNPJ é requerido!');
@@ -450,7 +429,7 @@ export default function User() {
 
             if (response === -1) { setErrorPersonRgIe('RG inválido!'); status = false; }
             else if (response === -2) { setErrorPersonRgIe('IE inválido!'); status = false; }
-            else if (response === -3) { setErrorPersonRgIe('Documento incorreto!'); status = false; }
+            else if (response === -3 || response === 0) { setErrorPersonRgIe('Documento incorreto!'); status = false; }
 
         } else {
             setErrorPersonRgIe('O RG ou IE é requerido!');
@@ -471,16 +450,6 @@ export default function User() {
     }
 
     const GetOrderUser = async () => {
-        await axios.get(baseUrl, getAuthConfig())
-            .then(response => {
-                setData(response.data);
-            })
-            .catch(error => {
-                console.log(error);
-            });
-    };
-
-    const PutOrderUser = async () => {
         await axios.get(baseUrl, getAuthConfig())
             .then(response => {
                 setData(response.data);
@@ -601,11 +570,11 @@ export default function User() {
 
     useEffect(() => {
         if (updateData) {
-            VerifySession();
             GetOrderUser();
             fetchData();
             GetOrderTypeUser();
             setUpdateData(false);
+            setUserStatus(true);
         }
     }, [updateData]);
 
@@ -622,9 +591,11 @@ export default function User() {
 
     const [maskCpfCnpj, setMaskCpfCnpj] = useState("999.999.999-99");
     const [maskRgIe, setMaskRgIe] = useState("99.999.999-9");
+    const [identifyCpfCnpj, setIdentifyCpfCnpj] = useState("");
+    const [identifyRgIe, setIdentifyRgIe] = useState("");
 
     const implementMaskCpfCnpj = (e) => {
-        if (personCpfCnpj) {
+        if (modalEdit && identifyCpfCnpj) {
             if (personCpfCnpj.length === 14) {
                 setMaskCpfCnpj("999.999.999-99");
             } else {
@@ -632,15 +603,17 @@ export default function User() {
             }
         } else {
             if (e === "cpf") {
+                setIdentifyCpfCnpj("cpf");
                 setMaskCpfCnpj("999.999.999-99");
             } else if (e === "cnpj") {
+                setIdentifyCpfCnpj("cnpj");
                 setMaskCpfCnpj("99.999.999/9999-99");
             }
         }
     };
 
     const implementMaskRgIe = (e) => {
-        if (personRgIe) {
+        if (modalEdit && personRgIe) {
             if (personRgIe.length === 12) {
                 setMaskRgIe("99.999.999-9");
             } else {
@@ -648,8 +621,10 @@ export default function User() {
             }
         } else {
             if (e === "rg") {
+                setIdentifyRgIe("rg");
                 setMaskRgIe("99.999.999-9");
             } else if (e === "ie") {
+                setIdentifyRgIe("ie");
                 setMaskRgIe("999.999.999.999");
             }
         }
@@ -815,7 +790,7 @@ export default function User() {
                         <br />
                         <label>Status:</label>
                         <br />
-                        <select className="form-control rounded border" onChange={(e) => setUserStatus(e.target.value === "true")} defaultValue="true">
+                        <select className="form-control rounded border" onChange={(e) => setUserStatus(e.target.value === "true")} value={userStatus}>
                             <option key="true" value="true">
                                 Ativo
                             </option>
@@ -883,7 +858,7 @@ export default function User() {
                         <br />
                         <label>CPF / CNPJ: </label>
                         <br />
-                        <select className="form-control rounded border" onChange={(e) => implementMaskCpfCnpj(e.target.value)} value={personCpfCnpj.length === 14 ? 'cpf' : 'cnpj'}>
+                        <select className="form-control rounded border" onChange={(e) => implementMaskCpfCnpj(e.target.value)} defaultValue={personCpfCnpj.length === 14 ? 'cpf' : 'cnpj'}>
                             <option key="cpf" value="cpf">
                                 CPF
                             </option>
@@ -899,7 +874,7 @@ export default function User() {
                         <br />
                         <label>RG / IE: </label>
                         <br />
-                        <select className="form-control rounded border" onChange={(e) => implementMaskRgIe(e.target.value)} value={personRgIe.length === 12 ? 'rg' : 'ie'}>
+                        <select className="form-control rounded border" onChange={(e) => implementMaskRgIe(e.target.value)} defaultValue={personRgIe.length === 12 ? 'rg' : 'ie'}>
                             <option key="rg" value="rg">
                                 RG
                             </option>

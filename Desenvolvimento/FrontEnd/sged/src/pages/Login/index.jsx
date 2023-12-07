@@ -11,8 +11,14 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 //import { red } from '@mui/material/colors';
 
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContentText from '@mui/material/DialogContentText';
+
 import { useEffect, useState } from "react";
-import { useSession } from '../Session/index';
+import { useSession } from '../../services/session';
 import { useNavigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
@@ -26,17 +32,8 @@ export default function SignInSide() {
   const [passwordError, setPasswordError] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  const { verifySession, createSession, getLogin } = useSession();
+  const { createSession, getLogin } = useSession();
   const navigate = useNavigate();
-
-  const VerifySession = async () => {
-    const status = await verifySession();
-    //console.error(status);
-    if (status === true) {
-      //console.error('Entrou');
-      navigate('/home');
-    }
-  };
 
   const getDataLogin = () => {
     const data = JSON.parse(getLogin());
@@ -88,14 +85,50 @@ export default function SignInSide() {
     }
   };
 
+  const [modalOpen, setModalOpen] = useState(!persistLogin);
+
+  const handleOpenModal = () => {
+    setModalOpen(true);
+  };
+
   useEffect(() => {
-    VerifySession();
     getDataLogin();
-    //window.location.reload();
   }, []);
 
   return (
     <ThemeProvider theme={defaultTheme}>
+      <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
+        <DialogTitle>Confirme o salvamento de dados:</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Lembre-se que se alguém tiver acesso ao seu computador, poderá entrar em sua conta. Ainda sim, deseja que estes dados sejam salvos no navegador?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Box width="100%" display="flex" justifyContent="center" alignItems="center">
+            <Button
+              onClick={() => {
+                setModalOpen(false);
+                setPersistLogin(true);
+              }}
+              className="hover:text-cyan-500"
+              style={{ marginRight: '30px' }}
+            >
+              Sim
+            </Button>
+            <Button
+              onClick={() => {
+                setModalOpen(false);
+                setPersistLogin(false);
+              }}
+              className="hover:text-red-600"
+            >
+              Não
+            </Button>
+          </Box>
+        </DialogActions>
+      </Dialog>
+
       <Grid container component="main" sx={{ height: '100vh' }}>
         <CssBaseline />
         <Grid
@@ -116,7 +149,7 @@ export default function SignInSide() {
           sx={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent:'center',
+            justifyContent: 'center',
           }}>
           <Box
             sx={{
@@ -134,7 +167,7 @@ export default function SignInSide() {
             <Typography component="h1" variant="h5" fontSize={40} paddingBottom={5} >
               Entrar
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }} style={{width:450}}>
+            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }} style={{ width: 450 }}>
               <TextField
                 margin="normal"
                 required
@@ -173,7 +206,12 @@ export default function SignInSide() {
               <br />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" checked={persistLogin} />}
-                onChange={handlePersistLoginChange}
+                onChange={(e) => {
+                  handlePersistLoginChange(e);
+                  if (e.target.checked === true) {
+                    setModalOpen(true);
+                  }
+                }}
                 label="Lembre de mim"
               />
               <Button

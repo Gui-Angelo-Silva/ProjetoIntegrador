@@ -6,32 +6,12 @@ import NavBar from "../../components/NavBar";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useSession } from '../Session/index'
-import { useNavigate } from 'react-router-dom';
+import { useSession } from '../../../../services/session';
 import { PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
 export default function City() {
 
-    const [verifyStatus, setVerifyStatus] = useState(false);
-    const { defaultSession, verifySession, getAuthConfig, newToken } = useSession();
-    const navigate = useNavigate();
-
-    const VerifySession = async () => {
-        if (!verifyStatus) {
-            setVerifyStatus(true);
-            const status = await verifySession();
-            //console.error(status);
-            if (status === false) {
-                //console.error('Entrou');
-                navigate('/');
-            } else {
-                if (await newToken() === false) {
-                    defaultSession();
-                    navigate('/');
-                }
-            }
-        }
-    };
+    const { getAuthConfig } = useSession();
 
     const baseUrl = "https://localhost:7096/api/Cidade";
 
@@ -201,10 +181,13 @@ export default function City() {
     };
 
     useEffect(() => {
-        VerifySession();
         fetchData();
         GetOrderState();
-    }, [updateData]);
+
+        if (dataState.length > 0) {
+            setIdState(dataState[0].id);
+        }
+    }, [updateData, dataState]);
 
     useEffect(() => {
         filterCity();
@@ -295,7 +278,7 @@ export default function City() {
                         <br />
                         <label>Estado:</label>
                         <br />
-                        <select className="form-control" onChange={(e) => setIdState(e.target.value)}>
+                        <select className="form-control" onChange={(e) => setIdState(e.target.value)} value={idState}>
                             {dataState.map((state, index) => (
                                 <option key={state.id} value={state.id} selected={index === 0}>
                                     {state.nomeEstado}

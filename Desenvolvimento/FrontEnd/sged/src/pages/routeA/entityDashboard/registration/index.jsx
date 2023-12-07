@@ -1,41 +1,12 @@
 import NavBar from "../../components/NavBar";
 import SideBar from "../../components/SideBar";
-import ImgEstado from "../../assets/imgEstado.png";
-import ImgCidade from "../../assets/ImgCidade2.png";
-import ImgUsuario from "../../assets/ImgUsuario.png";
-import ImgTipoUsuario from "../../assets/ImgTipoUsuario.png"
+import ImgEstado from "../../../../assets/imgEstado.png";
+import ImgCidade from "../../../../assets/ImgCidade2.png";
+import ImgUsuario from "../../../../assets/ImgUsuario.png";
+import ImgTipoUsuario from "../../../../assets/ImgTipoUsuario.png";
 import { Link } from "react-router-dom";
 
-import { useSession } from '../Session/index';
-import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from "react";
-
 export default function Registrations() {
-
-    const [verifyStatus, setVerifyStatus] = useState(false);
-    const { defaultSession, verifySession, newToken } = useSession();
-    const navigate = useNavigate();
-
-    const VerifySession = async () => {
-        if (!verifyStatus) {
-            setVerifyStatus(true);
-            const status = await verifySession();
-            //console.error(status);
-            if (status === false) {
-                //console.error('Entrou');
-                navigate('/');
-            } else {
-                if (await newToken() === false) {
-                    defaultSession();
-                    navigate('/');
-                }
-            }
-        }
-    };
-
-    useEffect(() => {
-        VerifySession();
-      }, []);
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -52,7 +23,7 @@ export default function Registrations() {
                     </div>
                     <div style={{ paddingTop: 40 }}>
                         <div className="flex flex-row">
-                            <Link to="/state">
+                            <Link to="/a/state">
                             <div className="flex flex-col ml-12 bg-[#DAEEEE] hover:bg-[#58AFAE] text-green-800 hover:scale-105" style={{ width: 229, border: '2px solid #58AFAE', height: 229, justifyContent: 'center', alignItems: 'center', borderRadius: 20 }}>
                                     <p className="text-2xl pb-2 font-medium" style={{ textAlign: 'center' }}>
                                         Estado
@@ -62,7 +33,7 @@ export default function Registrations() {
                                     </div>
                                 </div>
                             </Link>
-                            <Link to="/city">
+                            <Link to="/a/city">
                                 <div className="flex flex-col ml-12 bg-[#DAEEEE] hover:bg-[#58AFAE] text-green-800 hover:scale-105" style={{ width: 229, border: '2px solid #58AFAE', height: 229, justifyContent: 'center', alignItems: 'center', borderRadius: 20 }}>
                                     <p className="text-2xl pb-2 font-medium" style={{ textAlign: 'center' }}>
                                         Cidade
@@ -72,17 +43,7 @@ export default function Registrations() {
                                     </div>
                                 </div>
                             </Link>
-                            <Link to="/user">
-                                <div className="flex flex-col ml-12 bg-[#DAEEEE] hover:bg-[#58AFAE] text-green-800 hover:scale-105" style={{ width: 229, border: '2px solid #58AFAE', height: 229, justifyContent: 'center', alignItems: 'center', borderRadius: 20 }}>
-                                    <p className="text-2xl pb-2 font-medium" style={{ textAlign: 'center' }}>
-                                        Usuário
-                                    </p>
-                                    <div style={{ width: 104, height: 104, alignItems: 'center' }}>
-                                        <img src={ImgUsuario} alt="Abrir Cadastro de Estado" />
-                                    </div>
-                                </div>
-                            </Link>
-                            <Link to="/typeuser">
+                            <Link to="/a/typeuser">
                                 <div className="flex flex-col ml-12 bg-[#DAEEEE] hover:bg-[#58AFAE] text-green-800 hover:scale-105" style={{ width: 229, border: '2px solid #58AFAE', height: 229, justifyContent: 'center', alignItems: 'center', borderRadius: 20 }}>
                                     <p className="text-2xl pb-2 font-medium" style={{ textAlign: 'center' }}>
                                         Tipo Usuário
@@ -92,10 +53,21 @@ export default function Registrations() {
                                     </div>
                                 </div>
                             </Link>
+                            <Link to="/a/user">
+                                <div className="flex flex-col ml-12 bg-[#DAEEEE] hover:bg-[#58AFAE] text-green-800 hover:scale-105" style={{ width: 229, border: '2px solid #58AFAE', height: 229, justifyContent: 'center', alignItems: 'center', borderRadius: 20 }}>
+                                    <p className="text-2xl pb-2 font-medium" style={{ textAlign: 'center' }}>
+                                        Usuário
+                                    </p>
+                                    <div style={{ width: 104, height: 104, alignItems: 'center' }}>
+                                        <img src={ImgUsuario} alt="Abrir Cadastro de Estado" />
+                                    </div>
+                                </div>
+                            </Link>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    )
+    );
+
 }

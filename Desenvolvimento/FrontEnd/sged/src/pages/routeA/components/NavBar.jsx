@@ -12,7 +12,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 //import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import { useSession } from '../pages/Session/index';
+import { useSession } from '../../../services/session';
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
@@ -24,13 +24,15 @@ export default function NavBar() {
 
   const GetUser = () => {
     const user = getSession();
-    setUserName(user.nomePessoa);
+    if (user !== null) {
+      setUserName(user.nomePessoa);
+    }
   };
 
   const encerateSession = () => {
     closeSession();
     defaultSession();
-    navigate('/');
+    navigate('/login');
   };
 
   useEffect(() => {
@@ -146,7 +148,7 @@ export default function NavBar() {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' }, marginLeft: 5 }}
           >
-            <img className='' src='./src/assets/LogoJales.png' alt="Logo de Jales"></img>
+            <img className='' src='../src/assets/LogoJales.png' alt="Logo de Jales"></img>
           </Typography> 
           <Box sx={{ flexGrow: 1 }} />
           <Typography

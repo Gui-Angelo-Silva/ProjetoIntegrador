@@ -21,7 +21,7 @@ namespace SGED.DTO.Entities
         public Boolean StatusUsuario { get; set; }
 
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public TipoUsuarioDTO? TipoUsuarioDTO { get; set; }
 
         public int IdTipoUsuario { get; set; }

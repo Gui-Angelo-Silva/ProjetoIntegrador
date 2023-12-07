@@ -35,7 +35,7 @@ namespace SGED.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     nomepessoa = table.Column<string>(type: "character varying(70)", maxLength: 70, nullable: false),
                     emailpessoa = table.Column<string>(type: "text", nullable: false),
-                    telefonepessoa = table.Column<string>(type: "character varying(19)", maxLength: 19, nullable: false),
+                    telefonepessoa = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     cpfcnpjpessoa = table.Column<string>(type: "character varying(18)", maxLength: 18, nullable: false),
                     rgiepessoa = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false)
                 },

@@ -122,8 +122,8 @@ namespace SGED.Migrations
 
                     b.Property<string>("TelefonePessoa")
                         .IsRequired()
-                        .HasMaxLength(19)
-                        .HasColumnType("character varying(19)")
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
                         .HasColumnName("telefonepessoa");
 
                     b.HasKey("Id");

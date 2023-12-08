@@ -282,7 +282,7 @@ export default function City() {
                 <div className="w-full h-full" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
                     <br />
                     <div className="flex flex-row">
-                        <Link to="/registration">
+                        <Link to="/a/registration">
                             <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
                         </Link>
                         <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import axios from "axios";
@@ -559,7 +558,6 @@ export default function User() {
     };
 
     const [userToRender, setUserToRender] = useState([]);
-
     const [searchTerm, setSearchTerm] = useState('');
 
     const fetchData = async () => {
@@ -656,7 +654,7 @@ export default function User() {
         }
     };
 
-    function togglePasswordVisibility() {
+    const togglePasswordVisibility = () => {
         const passwordInput = document.getElementById('passwordInput');
         const passwordIcon = document.querySelector('.toggle-password');
 
@@ -718,7 +716,7 @@ export default function User() {
                             <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                         </div>
                         <ul className="w-full">
-                            {data.map(user => {
+                            {userToRender.map(user => {
                                 const tipoUsuario = dataTypeUser.find(typeuser => typeuser.id === user.idTipoUsuario);
 
                                 return (
@@ -759,9 +757,9 @@ export default function User() {
                         <br />
                         <label>Senha:</label>
                         <br />
-                        <div class="password-input">
+                        <div className="password-input">
                             <input type="password" className="form-control rounded border" onChange={(e) => setUserPassword(e.target.value)} id="passwordInput" />
-                            <i class="toggle-password fas fa-eye" onClick={() => togglePasswordVisibility()} ></i>
+                            <i className="toggle-password fas fa-eye" onClick={() => togglePasswordVisibility()} ></i>
                         </div>
                         <PasswordStrengthIndicator data={userPassword} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>

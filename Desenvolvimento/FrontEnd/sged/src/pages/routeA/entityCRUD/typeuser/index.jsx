@@ -71,6 +71,7 @@ export default function TypeUser() {
             .then(response => {
                 setData(data.concat(response.data));
                 openCloseModalInsert();
+                setUpdateData(true);
             }).catch(error => {
                 console.log(error);
             })
@@ -102,6 +103,7 @@ export default function TypeUser() {
                 });
 
                 openCloseModalEdit();
+                setUpdateData(true);
             }).catch(error => {
                 console.log(error)
             })
@@ -113,19 +115,20 @@ export default function TypeUser() {
                 setData(data.filter(typeuser => typeuser.id !== response.data));
                 PutTypeUser();
                 openCloseModalDelete();
+                setUpdateData(true);
             }).catch(error => {
                 console.log(error);
             })
     }
 
-    const [typeUserToRender, settypeUserToRender] = useState([]);
+    const [typeUserToRender, setTypeUserToRender] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
 
     const fetchData = async () => {
         try {
             const response = await axios.get(baseUrl, getAuthConfig());
             setData(response.data);
-            settypeUserToRender(response.data);
+            setTypeUserToRender(response.data);
         } catch (error) {
             console.error(error);
         }
@@ -139,19 +142,21 @@ export default function TypeUser() {
         const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
         if (searchTerm === '') {
-            settypeUserToRender(data);
+            setTypeUserToRender(data);
         } else {
             const filtered = data.filter((typeuser) => {
                 const typeUserNameNormalized = typeuser.nomeTipoUsuario.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                 return typeUserNameNormalized.toLowerCase().includes(searchTermNormalized.toLowerCase());
             });
-            settypeUserToRender(filtered);
+            setTypeUserToRender(filtered);
         }
     };
 
     useEffect(() => {
-        fetchData();
-        setTypeUserAcessLevel("A");
+        if (updateData) {
+            fetchData();
+            setTypeUserAcessLevel("A");
+        }
     }, [updateData]);
 
     useEffect(() => {
@@ -188,7 +193,7 @@ export default function TypeUser() {
                                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                         </svg>
                                     </div>
-                                    <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar tipo usuário" required onChange={(e) => handleSearch(e.target.value)}/>
+                                    <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar tipo usuário" required onChange={(e) => handleSearch(e.target.value)} />
                                 </div>
                             </div>
                         </div>
@@ -210,16 +215,16 @@ export default function TypeUser() {
                                 <li className="grid grid-cols-4 w-full" key={typeuser.id}>
                                     <span className="flex pl-5 items-center border-r-[1px] border-b-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{typeuser.nomeTipoUsuario}</span>
                                     <span className="flex justify-center pl-2 pr-2 items-center border-b-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{typeuser.nivelAcesso}</span>
-                                    <span className="flex justify-center pl-2 pr-2 items-center border-b-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{typeuser.descricaoTipoUsuario}</span>
+                                    <span className="flex justify-start pl-2 pr-2 items-center border-b-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{typeuser.descricaoTipoUsuario}</span>
                                     <span className="flex items-center justify-center border-b-[1px] gap-2 text-gray-700">
-                                        <button 
-                                            className="" 
+                                        <button
+                                            className=""
                                             onClick={() => SelectTypeUser(typeuser, "Editar")}
                                         >
                                             <PencilSimple size={20} className="hover:text-cyan-500" />
                                         </button>{"  "}
-                                        <button 
-                                            className="" 
+                                        <button
+                                            className=""
                                             onClick={() => SelectTypeUser(typeuser, "Excluir")}
                                         >
                                             <TrashSimple size={20} className="hover:text-red-600" />

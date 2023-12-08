@@ -37,7 +37,7 @@ export default function SignInSide() {
 
   const getDataLogin = () => {
     const data = JSON.parse(getLogin());
-    if (data && data.persist) {
+    if (data !== null && data.persist) {
       setUserEmail(data.emailPessoa);
       setUserPassword(data.senhaUsuario);
       setPersistLogin(true);
@@ -85,11 +85,7 @@ export default function SignInSide() {
     }
   };
 
-  const [modalOpen, setModalOpen] = useState(!persistLogin);
-
-  const handleOpenModal = () => {
-    setModalOpen(true);
-  };
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     getDataLogin();

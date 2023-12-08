@@ -114,46 +114,51 @@ export default function State() {
             }).catch(error => {
                 console.log(error);
             })
-    }
+    };
+
+    const [stateToRender, setStateToRender] = useState([]);
+
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const fetchData = async () => {
+        try {
+            const response = await axios.get(baseUrl, getAuthConfig());
+            setData(response.data);
+            setStateToRender(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleSearch = (searchTerm) => {
+        setSearchTerm(searchTerm);
+    };
+
+    const filterState = () => {
+        const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+        if (searchTerm === '') {
+            setStateToRender(data);
+        } else {
+            const filtered = data.filter((state) => {
+                const stateNameNormalized = state.nomeEstado.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                return stateNameNormalized.toLowerCase().includes(searchTermNormalized.toLowerCase());
+            });
+            setStateToRender(filtered);
+        }
+    };
 
     useEffect(() => {
         if (updateData) {
             GetOrder();
             setUpdateData(false);
+            fetchData();
         }
+    }, [updateData]);
 
-        const fetchData = async () => {
-            try {
-                const response = await axios.get(baseUrl, getAuthConfig());
-                setData(response.data);
-                setStatesToRender(response.data); // Define os estados a serem renderizados ao iniciar
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
-        fetchData();
-    }, [updateData])
-
-
-    const [searchTerm, setSearchTerm] = useState('');
-
-    const [statesToRender, setStatesToRender] = useState([]); // Inicialmente, exibe todos os estados
-
-    const handleSearch = (searchTerm) => {
-        setSearchTerm(searchTerm);
-
-        if (searchTerm === '') {
-            setStatesToRender(data); // Se o campo de pesquisa estiver vazio, exibe todos os estados
-        } else {
-            const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-            const filtered = data.filter((state) => {
-                const stateNameNormalized = state.nomeEstado.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                return stateNameNormalized.toLowerCase().includes(searchTermNormalized.toLowerCase());
-            });
-            setStatesToRender(filtered);
-        }
-    };
+    useEffect(() => {
+        filterState();
+    }, [searchTerm, data]);
 
 
     return (
@@ -203,7 +208,7 @@ export default function State() {
                             <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                         </div>
                         <ul className="w-full">
-                            {statesToRender.map((state) => (
+                            {stateToRender.map((state) => (
                                 <li className="grid grid-cols-3 w-full" key={state.id}>
                                     <span className="pl-5 border-r-[1px] border-b-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{state.nomeEstado}</span>
                                     <span className="flex justify-center items-center border-b-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{state.ufEstado}</span>

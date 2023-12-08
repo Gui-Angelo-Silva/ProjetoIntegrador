@@ -1,0 +1,5 @@
+/* Esconde a borda do texto quando o campo está focado */
+/* Substitua .seu-select pelo seletor CSS correto do seu componente Select */
+.style-select input[type="text"]:focus {
+    box-shadow: none; /* Remove a sombra do campo quando focado */
+  }

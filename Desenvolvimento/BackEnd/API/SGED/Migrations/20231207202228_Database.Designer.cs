@@ -11,7 +11,7 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20231202133000_Database")]
+    [Migration("20231207202228_Database")]
     partial class Database
     {
         /// <inheritdoc />
@@ -125,8 +125,8 @@ namespace SGED.Migrations
 
                     b.Property<string>("TelefonePessoa")
                         .IsRequired()
-                        .HasMaxLength(19)
-                        .HasColumnType("character varying(19)")
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
                         .HasColumnName("telefonepessoa");
 
                     b.HasKey("Id");

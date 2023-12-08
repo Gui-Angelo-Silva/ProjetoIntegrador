@@ -38,14 +38,14 @@ export default function SideBar() {
         >
           <MenuItem icon={ <HomeIcon />} component={<Link to="/home"/>}> Página Inicial </MenuItem>
           <SubMenu icon={<Person3Icon />} label="Atendente">
-          <MenuItem className='text-gray-600' icon={ <SaveAsIcon /> } component={<Link to="/registration" />}>Cadastros</MenuItem>
-            <MenuItem className='text-gray-600' icon={ <DescriptionIcon /> } component={<Link to="/document"/>}> Documentos</MenuItem>
+          <MenuItem className='text-gray-600' icon={ <SaveAsIcon /> } component={<Link to="/a/registration" />}>Cadastros</MenuItem>
+            <MenuItem className='text-gray-600' icon={ <DescriptionIcon /> } component={<Link to="/a/document"/>}> Documentos</MenuItem>
           </SubMenu>
           <SubMenu icon={<SwitchAccountIcon />} label="Perfil Público">
-            <MenuItem className='text-gray-600' icon={<GroupsIcon />} component={<Link to="/development" />}> Munícipe</MenuItem>
-            <MenuItem className='text-gray-600' icon={<SupervisedUserCircleIcon />} component={<Link to="/development" />}> Fiscal </MenuItem>
-            <MenuItem className='text-gray-600' icon={<EngineeringIcon />} component={<Link to="/development" />}> Engenheiro </MenuItem>
-            <MenuItem className='text-gray-600' icon={<AssignmentIndIcon />} component={<Link to="/development" />}> Estagiário </MenuItem>
+            <MenuItem className='text-gray-600' icon={<GroupsIcon />} component={<Link to="/a/development" />}> Munícipe</MenuItem>
+            <MenuItem className='text-gray-600' icon={<SupervisedUserCircleIcon />} component={<Link to="/a/development" />}> Fiscal </MenuItem>
+            <MenuItem className='text-gray-600' icon={<EngineeringIcon />} component={<Link to="/a/development" />}> Engenheiro </MenuItem>
+            <MenuItem className='text-gray-600' icon={<AssignmentIndIcon />} component={<Link to="/a/development" />}> Estagiário </MenuItem>
           </SubMenu>
         </Menu>
       </Sidebar>

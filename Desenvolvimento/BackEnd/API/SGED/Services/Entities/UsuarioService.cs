@@ -21,12 +21,30 @@ public class UsuarioService : IUsuarioService
     {
         var usuarios = await _usuarioRepository.GetAll();
         return _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
+
+        /*IEnumerable<UsuarioDTO> usuariosDTO = _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
+
+        foreach (var usuarioDTO in usuariosDTO)
+        {
+            var usuario = usuarios.FirstOrDefault(u => u.Id == usuarioDTO.Id);
+            if (usuario != null)
+            {
+                TipoUsuarioDTO tipoUsuarioDTO = _mapper.Map<TipoUsuarioDTO>(usuario.TipoUsuario);
+                usuarioDTO.TipoUsuarioDTO = tipoUsuarioDTO;
+            }
+        }
+
+        return usuariosDTO;*/
     }
 
     public async Task<UsuarioDTO> GetById(int id)
     {
         var usuario = await _usuarioRepository.GetById(id);
-        return _mapper.Map<UsuarioDTO>(usuario);
+
+        UsuarioDTO usuarioDTO = _mapper.Map<UsuarioDTO>(usuario);
+        usuarioDTO.TipoUsuarioDTO = _mapper.Map<TipoUsuarioDTO>(usuario.TipoUsuario);
+
+        return usuarioDTO;
     }
 
     public async Task<IEnumerable<string>> GetByEmail(int id, string email)
@@ -39,7 +57,11 @@ public class UsuarioService : IUsuarioService
     {
         var autentication = _mapper.Map<Autentication>(autenticationDTO);
         var usuario = await _usuarioRepository.Autentication(autentication);
-        return _mapper.Map<UsuarioDTO>(usuario);
+
+        UsuarioDTO usuarioDTO = _mapper.Map<UsuarioDTO>(usuario);
+        usuarioDTO.TipoUsuarioDTO = _mapper.Map<TipoUsuarioDTO>(usuario.TipoUsuario);
+
+        return usuarioDTO;
     }
 
     public async Task Create(UsuarioDTO usuarioDTO)

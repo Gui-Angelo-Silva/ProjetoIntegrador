@@ -5,54 +5,23 @@ import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
-import { useSession } from '../Session/index';
-import { useNavigate } from 'react-router-dom';
+import { useSession } from '../../../../services/session';
 import { FaPlus } from "react-icons/fa6";
 import { PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
 export default function State() {
 
-    const [verifyStatus, setVerifyStatus] = useState(false);
-
-    const { defaultSession, verifySession, getAuthConfig, newToken } = useSession();
-
-    const navigate = useNavigate();
-
-    const VerifySession = async () => {
-        if (!verifyStatus) {
-            setVerifyStatus(true);
-            const status = await verifySession();
-            //console.error(status);
-            if (status === false) {
-                //console.error('Entrou');
-                navigate('/');
-            } else {
-                if (await newToken() === false) {
-                    defaultSession();
-                    navigate('/');
-                }
-            }
-        }
-    };
-
+    const { getAuthConfig } = useSession();
     const baseUrl = "https://localhost:7096/api/Estado"
 
     const [data, setData] = useState([])
-
     const [modalInsert, setModalInsert] = useState(false)
-
     const [modalEdit, setModalEdit] = useState(false)
-
     const [modalDelete, setModalDelete] = useState(false)
-
     const [updateData, setUpdateData] = useState(true)
-
     const [stateName, setStateName] = useState("");
-
     const [stateUf, setStateUf] = useState("");
-
     const [stateId, setStateId] = useState("");
-
     const [selectState] = useState({
         id: "",
         nomeEstado: "",
@@ -105,15 +74,6 @@ export default function State() {
             })
     }
 
-    const PutState = async () => {
-        await axios.get(baseUrl, getAuthConfig())
-            .then(response => {
-                setData(response.data)
-            }).catch(error => {
-                console.log(error);
-            })
-    }
-
     async function PutOrder() {
         delete selectState.id
         await axios.put(baseUrl, { id: stateId, nomeEstado: stateName, ufEstado: stateUf }, getAuthConfig())
@@ -158,7 +118,6 @@ export default function State() {
 
     useEffect(() => {
         if (updateData) {
-            VerifySession();
             GetOrder();
             setUpdateData(false);
         }
@@ -278,7 +237,7 @@ export default function State() {
                         <br />
                         <label>Sigla:</label>
                         <br />
-                        <input type="text" className="form-control" onChange={(e) => setStateUf(e.target.value.toUpperCase())} value={stateUf} />
+                        <input type="text" className="form-control" onChange={(e) => setStateUf(e.target.value.toUpperCase())} value={stateUf} maxLength={2}/>
                         <br />
                     </div>
                 </ModalBody>
@@ -295,13 +254,11 @@ export default function State() {
                         <input type="text" className="form-control" readOnly value={stateId} /> <br />
 
                         <label>Nome:</label>
-                        <input type="text" className="form-control" name="nomeEstado" onChange={(e) => setStateName(e.target.value)}
-                            value={stateName} />
+                        <input type="text" className="form-control" name="nomeEstado" onChange={(e) => setStateName(e.target.value)} value={stateName} />
                         <br />
                         <label>Sigla:</label>
                         <br />
-                        <input type="text" className="form-control" name="ufEstado" onChange={(e) => setStateUf(e.target.value.toUpperCase())}
-                            value={stateUf} />
+                        <input type="text" className="form-control" name="ufEstado" onChange={(e) => setStateUf(e.target.value.toUpperCase())} value={stateUf} maxLength={2}/>
                         <br />
                     </div>
                 </ModalBody>

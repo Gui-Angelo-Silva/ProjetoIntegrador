@@ -237,14 +237,14 @@ export default function TypeUser() {
                 </div>
             </div>
             <Modal isOpen={modalInsert}>
-                <ModalHeader>Cadastrar Usuário</ModalHeader>
+                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Usuário</ModalHeader>
                 <ModalBody>
                     <div className="form-group">
-                        <label>Nome: </label>
+                        <label className="text-[#444444]">Nome: </label>
                         <br />
-                        <input type="text" className="form-control" onChange={(e) => setTypeUserName(e.target.value)} />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setTypeUserName(e.target.value)} />
                         <br />
-                        <label>Nivel de acesso:</label>
+                        <label className="text-[#444444]">Nivel de acesso:</label>
                         <br />
                         <select className="form-control rounded border" onChange={(e) => setTypeUserAcessLevel(e.target.value)} value={typeUserAcessLevel}>
                             <option key="A" value="A" title="Descrição: pode realizar todas funcionalides do sistema.">
@@ -263,55 +263,63 @@ export default function TypeUser() {
                         <br />
                         <label>Descrição:</label>
                         <br />
-                        <input type="text" className="form-control" onChange={(e) => setTypeUserDesc(e.target.value)} />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setTypeUserDesc(e.target.value)} />
                         <br />
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <button className="btn btn-primary" onClick={() => PostOrder()}>Cadastrar</button>{"  "}
-                    <button className="btn btn-danger" onClick={() => openCloseModalInsert()}>Cancelar</button>
+                    <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert()}>Fechar</button>
+                    <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostOrder()}>Salvar</button>{"  "}
                 </ModalFooter>
             </Modal>
             <Modal isOpen={modalEdit}>
-                <ModalHeader>Editar Usuário</ModalHeader>
+                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Usuário</ModalHeader>
                 <ModalBody>
                     <div className="form-group">
-                        <label>ID: </label><br />
-                        <input type="text" className="form-control" readOnly value={typeUserId} /> <br />
+                        <label className="text-[#444444]">ID: </label><br />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={typeUserId} /> <br />
 
-                        <label>Nome:</label>
-                        <input type="text" className="form-control" name="nomeTipoUsuario" onChange={(e) => setTypeUserName(e.target.value)}
+                        <label className="text-[#444444]">Nome:</label>
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomeTipoUsuario" onChange={(e) => setTypeUserName(e.target.value)}
                             value={typeUserName} />
                         <br />
-                        <label>Nivel de acesso:</label>
+                        <label className="text-[#444444]">Nivel de acesso:</label>
                         <br />
-                        <select className="form-control rounded border" onChange={(e) => setTypeUserAcessLevel(e.target.value)}>
+                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setTypeUserAcessLevel(e.target.value)}>
                             <option value="A" selected={typeUserAcessLevel === "A"} title="Descrição: pode realizar todas funcionalides do sistema.">A</option>
                             <option value="B" selected={typeUserAcessLevel === "B"} title="Descrição: pode realizar todas funcionalides do sistema, porém com auditoria de ações.">B</option>
                             <option value="C" selected={typeUserAcessLevel === "C"} title="Descrição: pode vizualizar todos dados, com exceção de senhas.">C</option>
                             <option value="D" selected={typeUserAcessLevel === "D"} title="Descrição: pode vizualizar somente dados relacionados a ele próprio.">D</option>
                         </select>
                         <br />
-                        <label>Descrição:</label>
+                        <label className="text-[#444444]">Descrição:</label>
                         <br />
-                        <input type="text" className="form-control" name="descricaoTipoUsuario" onChange={(e) => setTypeUserDesc(e.target.value)}
+                        <textarea type="text" className="form-control rounded-md border-[#BCBCBC]" name="descricaoTipoUsuario" onChange={(e) => setTypeUserDesc(e.target.value)}
                             value={typeUserDesc} />
                         <br />
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <button className="btn btn-primary" onClick={() => PutOrder()}>Cadastrar</button>{"  "}
-                    <button className="btn btn-danger" onClick={() => openCloseModalEdit()}>Cancelar</button>
+                    <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit()}>Cancelar</button>
+                    <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PutOrder()}>Atualizar</button>{"  "}
                 </ModalFooter>
             </Modal>
             <Modal isOpen={modalDelete}>
-                <ModalBody>
-                    Confirma a exclusão deste tipo de usuário: {typeUserName} ?
+                <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
+                <ModalBody className="justify-center">
+                    <div className="flex flex-row justify-center p-2">
+                        Confirmar a exclusão deste tipo de usuário:
+                        <div className="text-[#059669] ml-1">
+                            {typeUserName}
+                        </div> ?
+                    </div>
+                    <div className="flex justify-center gap-2 pt-3">
+                        <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete()}>Cancelar</button>
+                        <button className='btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' onClick={() => DeleteOrder()}>Confirmar</button>
+                    </div>
+                    {/* <ModalFooter>
+                </ModalFooter> */}
                 </ModalBody>
-                <ModalFooter>
-                    <button className='btn btn-primary' onClick={() => DeleteOrder()}>Sim</button>
-                    <button className='btn btn-danger' onClick={() => openCloseModalDelete()}>Não</button>
-                </ModalFooter>
             </Modal>
         </div>
     );

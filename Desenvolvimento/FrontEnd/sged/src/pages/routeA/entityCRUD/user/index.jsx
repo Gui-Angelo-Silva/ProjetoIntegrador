@@ -738,27 +738,27 @@ export default function User() {
                 </div>
             </div>
             <Modal isOpen={modalInsert}>
-                <ModalHeader style={{ justifyContent: 'center', textAlign: 'center', fontSize: 25, color: '#444444' }}>Cadastrar Usuário</ModalHeader>
+                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Usuário</ModalHeader>
                 <ModalBody>
                     <div className="form-group">
-                        <label style={{ color: '#444444' }}>Nome: </label>
+                        <label className="text-[#444444]">Nome: </label>
                         <br />
-                        <input type="text" className="form-control rounded border" onChange={(e) => setPersonName(e.target.value)} />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setPersonName(e.target.value)} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {errorPersonName}
                         </div>
                         <br />
-                        <label>E-mail:</label>
+                        <label className="text-[#444444]">E-mail:</label>
                         <br />
-                        <input type="text" className="form-control rounded border" onChange={(e) => setPersonEmail(e.target.value.toLowerCase())} value={personEmail} />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setPersonEmail(e.target.value.toLowerCase())} value={personEmail} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {erroPersonEmail}
                         </div>
                         <br />
-                        <label>Senha:</label>
+                        <label className="text-[#444444]">Senha:</label>
                         <br />
                         <div className="password-input">
-                            <input type="password" className="form-control rounded border" onChange={(e) => setUserPassword(e.target.value)} id="passwordInput" />
+                            <input type="password" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setUserPassword(e.target.value)} id="passwordInput" />
                             <i className="toggle-password fas fa-eye" onClick={() => togglePasswordVisibility()} ></i>
                         </div>
                         <PasswordStrengthIndicator data={userPassword} />
@@ -766,23 +766,23 @@ export default function User() {
                             {erroUserPassword}
                         </div>
                         <br />
-                        <label>Cargo: </label>
+                        <label className="text-[#444444]">Cargo: </label>
                         <br />
-                        <input type="text" className="form-control rounded border" onChange={(e) => setUserOffice(e.target.value)} />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setUserOffice(e.target.value)} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {erroUserOffice}
                         </div>
                         <br />
-                        <label>Telefone: </label>
+                        <label className="text-[#444444]">Telefone: </label>
                         <br />
-                        <InputMask mask="(99) 99999-9999" type="text" className="form-control rounded border" onKeyDown={handleKeyDown} onChange={(e) => setPersonTelephone(e.target.value)} />
+                        <InputMask mask="(99) 99999-9999" type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={handleKeyDown} onChange={(e) => setPersonTelephone(e.target.value)} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {erroPersonTelephone}
                         </div>
                         <br />
-                        <label>CPF / CNPJ: </label>
+                        <label className="text-[#444444]">CPF / CNPJ: </label>
                         <br />
-                        <select className="form-control rounded border" onChange={(e) => implementMaskCpfCnpj(e.target.value)}>
+                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => implementMaskCpfCnpj(e.target.value)}>
                             <option key="cpf" value="cpf">
                                 CPF
                             </option>
@@ -791,14 +791,14 @@ export default function User() {
                             </option>
                         </select>
                         <br />
-                        <InputMask mask={maskCpfCnpj} type="text" className="form-control rounded border" onKeyDown={handleKeyDown} onChange={(e) => setPersonCpfCnpj(e.target.value)} />
+                        <InputMask mask={maskCpfCnpj} type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={handleKeyDown} onChange={(e) => setPersonCpfCnpj(e.target.value)} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {erroPersonCpfCnpj}
                         </div>
                         <br />
-                        <label>RG / IE: </label>
+                        <label className="text-[#444444]">RG / IE: </label>
                         <br />
-                        <select className="form-control rounded border" onChange={(e) => implementMaskRgIe(e.target.value)}>
+                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => implementMaskRgIe(e.target.value)}>
                             <option key="rg" value="rg">
                                 RG
                             </option>
@@ -807,14 +807,14 @@ export default function User() {
                             </option>
                         </select>
                         <br />
-                        <InputMask mask={maskRgIe} type="text" className="form-control rounded border" onKeyDown={handleKeyDown} onChange={(e) => setPersonRgIe(e.target.value)} />
+                        <InputMask mask={maskRgIe} type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={handleKeyDown} onChange={(e) => setPersonRgIe(e.target.value)} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {erroPersonRgIe}
                         </div>
                         <br />
-                        <label>Status:</label>
+                        <label className="text-[#444444]">Status:</label>
                         <br />
-                        <select className="form-control rounded border" onChange={(e) => setUserStatus(e.target.value === "true")} value={userStatus}>
+                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setUserStatus(e.target.value === "true")} value={userStatus}>
                             <option key="true" value="true">
                                 Ativo
                             </option>
@@ -823,9 +823,9 @@ export default function User() {
                             </option>
                         </select>
                         <br />
-                        <label>Tipo Usuário:</label>
+                        <label className="text-[#444444]">Tipo Usuário:</label>
                         <br />
-                        <select className="form-control rounded border" onChange={(e) => setIdTypeUser(e.target.value)} defaultValue={idTypeUser}>
+                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setIdTypeUser(e.target.value)} defaultValue={idTypeUser}>
                             {dataTypeUser.map((typeuser) => (
                                 <option key={typeuser.id} value={typeuser.id}>
                                     {typeuser.nomeTipoUsuario}
@@ -835,54 +835,54 @@ export default function User() {
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <button className="btn btn-primary" onClick={() => PostOrder()}>Cadastrar</button>{"  "}
-                    <button className="btn btn-danger" onClick={() => openCloseModalInsert()}>Cancelar</button>
+                    <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert()}>Fechar</button>
+                    <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostOrder()}>Salvar</button>{"  "}
                 </ModalFooter>
             </Modal>
             <Modal isOpen={modalEdit}>
-                <ModalHeader style={{ justifyContent: 'center', textAlign: 'center', fontSize: 25, color: '#444444' }}>Editar Usuário</ModalHeader>
+                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Usuário</ModalHeader>
                 <ModalBody>
                     <div className="form-group">
                         <label>ID: </label><br />
-                        <input type="text" className="form-control rounded border" readOnly value={userId} /> <br />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={userId} /> <br />
 
                         <label>Nome:</label>
-                        <input type="text" className="form-control rounded border" name="nomePessoa" onChange={(e) => setPersonName(e.target.value)} value={personName} />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomePessoa" onChange={(e) => setPersonName(e.target.value)} value={personName} />
                         <br />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {errorPersonName}
                         </div>
                         <label>E-mail:</label>
                         <br />
-                        <input type="text" className="form-control rounded border" name="emailPessoa" onChange={(e) => setPersonEmail(e.target.value.toLowerCase())} value={personEmail} />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="emailPessoa" onChange={(e) => setPersonEmail(e.target.value.toLowerCase())} value={personEmail} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {erroPersonEmail}
                         </div>
                         <br />
                         <label>Senha:</label>
                         <br />
-                        <input type="password" className="form-control rounded border" name="senhaUsuario" onChange={(e) => setUserPassword(e.target.value)} value={userPassword} />
+                        <input type="password" className="form-control rounded-md border-[#BCBCBC]" name="senhaUsuario" onChange={(e) => setUserPassword(e.target.value)} value={userPassword} />
                         <PasswordStrengthIndicator data={userPassword} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {erroUserPassword}
                         </div>
                         <br />
                         <label>Cargo:</label>
-                        <input type="text" className="form-control rounded border" name="cargoUsuario" onChange={(e) => setUserOffice(e.target.value)} value={userOffice} />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="cargoUsuario" onChange={(e) => setUserOffice(e.target.value)} value={userOffice} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {erroUserOffice}
                         </div>
                         <br />
                         <label>Telefone: </label>
                         <br />
-                        <InputMask mask="(99) 99999-9999" type="text" className="form-control rounded border" onKeyDown={handleKeyDown} onChange={(e) => setPersonTelephone(e.target.value)} value={personTelephone} />
+                        <InputMask mask="(99) 99999-9999" type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={handleKeyDown} onChange={(e) => setPersonTelephone(e.target.value)} value={personTelephone} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {erroPersonTelephone}
                         </div>
                         <br />
                         <label>CPF / CNPJ: </label>
                         <br />
-                        <select className="form-control rounded border" onChange={(e) => implementMaskCpfCnpj(e.target.value)} defaultValue={personCpfCnpj.length === 14 ? 'cpf' : 'cnpj'}>
+                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => implementMaskCpfCnpj(e.target.value)} defaultValue={personCpfCnpj.length === 14 ? 'cpf' : 'cnpj'}>
                             <option key="cpf" value="cpf">
                                 CPF
                             </option>
@@ -891,7 +891,7 @@ export default function User() {
                             </option>
                         </select>
                         <br />
-                        <InputMask mask={maskCpfCnpj} type="text" className="form-control rounded border" onKeyDown={handleKeyDown} onChange={(e) => setPersonCpfCnpj(e.target.value)} value={personCpfCnpj} />
+                        <InputMask mask={maskCpfCnpj} type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={handleKeyDown} onChange={(e) => setPersonCpfCnpj(e.target.value)} value={personCpfCnpj} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                             {erroPersonCpfCnpj}
                         </div>
@@ -932,18 +932,26 @@ export default function User() {
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <button className="btn btn-primary" onClick={() => PutOrder()}>Cadastrar</button>{"  "}
-                    <button className="btn btn-danger" onClick={() => openCloseModalEdit()}>Cancelar</button>
+                    <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit()}>Cancelar</button>
+                    <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PutOrder()}>Atualizar</button>{"  "}
                 </ModalFooter>
             </Modal>
             <Modal isOpen={modalDelete}>
-                <ModalBody>
-                    Confirma a exclusão do(a) {personName} ?
+                <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
+                <ModalBody className="justify-center">
+                <div className="flex flex-row justify-center p-2">
+                        Confirmar a exclusão deste tipo de usuário:
+                        <div className="text-[#059669] ml-1">
+                            {personName}
+                        </div> ?
+                    </div>
+                    <div className="flex justify-center gap-2 pt-3">
+                        <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete()}>Cancelar</button>
+                        <button className='btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' onClick={() => DeleteOrder()}>Confirmar</button>
+                    </div>
+                    {/* <ModalFooter>
+                </ModalFooter> */}
                 </ModalBody>
-                <ModalFooter>
-                    <button className='btn btn-primary' onClick={() => DeleteOrder()}>Sim</button>
-                    <button className='btn btn-danger' onClick={() => openCloseModalDelete()}>Não</button>
-                </ModalFooter>
             </Modal>
         </div >
     );

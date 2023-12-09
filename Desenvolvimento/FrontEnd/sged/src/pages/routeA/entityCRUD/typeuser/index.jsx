@@ -246,7 +246,7 @@ export default function TypeUser() {
                         <br />
                         <label className="text-[#444444]">Nivel de acesso:</label>
                         <br />
-                        <select className="form-control rounded border" onChange={(e) => setTypeUserAcessLevel(e.target.value)} value={typeUserAcessLevel}>
+                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setTypeUserAcessLevel(e.target.value)} value={typeUserAcessLevel}>
                             <option key="A" value="A" title="Descrição: pode realizar todas funcionalides do sistema.">
                                 A
                             </option>
@@ -263,7 +263,7 @@ export default function TypeUser() {
                         <br />
                         <label>Descrição:</label>
                         <br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setTypeUserDesc(e.target.value)} />
+                        <textarea type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setTypeUserDesc(e.target.value)} />
                         <br />
                     </div>
                 </ModalBody>

@@ -270,7 +270,7 @@ export default function State() {
                 </ModalBody>
                 <ModalFooter>
                     <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit()}>Cancelar</button>
-                    <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PutOrder()}>Cadastrar</button>{"  "}
+                    <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PutOrder()}>Atualizar</button>{"  "}
                 </ModalFooter>
             </Modal>
             <Modal isOpen={modalDelete}>

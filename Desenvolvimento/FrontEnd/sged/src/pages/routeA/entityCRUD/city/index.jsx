@@ -345,7 +345,7 @@ export default function City() {
                                 className=""
                                 onClick={() => goToPage(currentPage - 1)}
                             >
-                                <CaretLeft size={22} className="text-[#58AFAE]"/>
+                                <CaretLeft size={22} className="text-[#58AFAE]" />
                             </button>
                             <select
                                 className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
@@ -362,7 +362,7 @@ export default function City() {
                                 className=""
                                 onClick={() => goToPage(currentPage + 1)}
                             >
-                                <CaretRight size={22} className="text-[#58AFAE]"/>
+                                <CaretRight size={22} className="text-[#58AFAE]" />
                             </button>
                         </div>
 
@@ -372,18 +372,18 @@ export default function City() {
                 </div>
             </div>
             <Modal isOpen={modalInsert}>
-                <ModalHeader>Cadastrar Cidade</ModalHeader>
+                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Cidade</ModalHeader>
                 <ModalBody>
                     <div className="form-group">
-                        <label>Nome: </label>
+                        <label className="text-[#444444]">Nome: </label>
                         <br />
                         <input
                             type="text"
-                            className="form-control"
+                            className="form-control rounded-md border-[#BCBCBC]"
                             onChange={(e) => setCityName(e.target.value)}
                         />
                         <br />
-                        <label>Estado:</label>
+                        <label className="text-[#444444]">Estado:</label>
                         <br />
                         <Select
                             value={selectedOption}
@@ -406,37 +406,37 @@ export default function City() {
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <button className="btn btn-primary" onClick={() => PostOrder()}>
-                        Cadastrar
-                    </button>{" "}
-                    <button className="btn btn-danger" onClick={() => openCloseModalInsert()}>
-                        Cancelar
+                    <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert()}>
+                        Fechar
                     </button>
+                    <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostOrder()}>
+                        Salvar
+                    </button>{" "}
                 </ModalFooter>
             </Modal>
             <Modal isOpen={modalEdit}>
-                <ModalHeader>Editar Cidade</ModalHeader>
+                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Cidade</ModalHeader>
                 <ModalBody>
                     <div className="form-group">
-                        <label>ID: </label>
+                        <label className="text-[#444444]">ID: </label>
                         <br />
                         <input
                             type="text"
-                            className="form-control"
+                            className="form-control rounded-md border-[#BCBCBC]"
                             readOnly
                             value={cityId}
                         />
                         <br />
-                        <label>Nome:</label>
+                        <label className="text-[#444444]">Nome:</label>
                         <input
                             type="text"
-                            className="form-control"
+                            className="form-control rounded-md border-[#BCBCBC]"
                             name="nomeCidade"
                             onChange={(e) => setCityName(e.target.value)}
                             value={cityName}
                         />
                         <br />
-                        <label>Estado:</label>
+                        <label className="text-[#444444]">Estado:</label>
                         <br />
                         <Select
                             value={initialOption}
@@ -459,26 +459,30 @@ export default function City() {
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <button className="btn btn-primary" onClick={() => PutOrder()}>
-                        Atualizar
-                    </button>{" "}
-                    <button className="btn btn-danger" onClick={() => openCloseModalEdit()}>
+                    <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit()}>
                         Cancelar
                     </button>
+                    <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PutOrder()}>
+                        Atualizar
+                    </button>{" "}
                 </ModalFooter>
             </Modal>
             <Modal isOpen={modalDelete}>
-                <ModalBody>
-                    Confirma a exclusão desta Cidade: {cityName} ?
+                <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
+                <ModalBody className="justify-center">
+                    <div className="flex flex-row justify-center p-2">
+                        Confirmar a exclusão desta(e) cidade:
+                        <div className="text-[#059669] ml-1">
+                            {cityName}
+                        </div> ?
+                    </div>
+                    <div className="flex justify-center gap-2 pt-3">
+                        <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete()}>Cancelar</button>
+                        <button className='btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' onClick={() => DeleteOrder()}>Confirmar</button>
+                    </div>
+                    {/* <ModalFooter>
+                </ModalFooter> */}
                 </ModalBody>
-                <ModalFooter>
-                    <button className="btn btn-primary" onClick={() => DeleteOrder()}>
-                        Sim
-                    </button>
-                    <button className="btn btn-danger" onClick={() => openCloseModalDelete()}>
-                        Não
-                    </button>
-                </ModalFooter>
             </Modal>
         </div>
     );

@@ -6,8 +6,7 @@ import NavBar from "../../components/NavBar";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { PencilSimple, TrashSimple } from "@phosphor-icons/react";
-
+import { ArrowLeft, CaretCircleLeft, CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 import "./styles.css"
 import { useSession } from '../../../../services/session';
 import Select from 'react-select';
@@ -341,29 +340,29 @@ export default function City() {
                             })}
                         </ul>
                         {/* Estilização dos botões de navegação */}
-                        <div className="mt-4 flex justify-center">
+                        <div className="mt-4 flex justify-center gap-2">
                             <button
-                                className="btn btn-danger mr-4 rounded-full py-2 px-4"
+                                className=""
                                 onClick={() => goToPage(currentPage - 1)}
                             >
-                                Anterior
+                                <CaretLeft size={22} className="text-[#58AFAE]"/>
                             </button>
                             <select
-                                className="border border-gray-300 p-2 rounded-full h-10 min-w-24 w-40"
+                                className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
                                 value={currentPage}
                                 onChange={(e) => goToPage(Number(e.target.value))}
                             >
                                 {[...Array(totalPages)].map((_, index) => (
                                     <option key={index + 1} value={index + 1}>
-                                        Página {index + 1}
+                                        {index + 1}
                                     </option>
                                 ))}
                             </select>
                             <button
-                                className="btn btn-primary ml-4 rounded-full py-2 px-4"
+                                className=""
                                 onClick={() => goToPage(currentPage + 1)}
                             >
-                                Próxima
+                                <CaretRight size={22} className="text-[#58AFAE]"/>
                             </button>
                         </div>
 

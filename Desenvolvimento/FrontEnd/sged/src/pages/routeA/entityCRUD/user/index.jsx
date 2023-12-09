@@ -1,4 +1,3 @@
-import React from 'react';
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import axios from "axios";
@@ -312,25 +311,47 @@ export default function User() {
     }
 
     function verificarIe(ie) {
-        const inscricaoEstadual = ie.replace(/\D/g, ''); // Remove caracteres não numéricos
+        let strBase = ie;
+        let intSoma = 0;
+        let intPeso = 1;
 
-        if (inscricaoEstadual.length !== 12) {
-            return false; // Retorna falso se a IE não tiver 12 dígitos
+        for (let intPos = 0; intPos < 8; intPos++) {
+            let intValor = parseInt(strBase[intPos]);
+            intValor *= intPeso;
+            intSoma += intValor;
+
+            intPeso++;
+            if (intPeso === 2) {
+                intPeso = 3;
+            }
+            if (intPeso === 9) {
+                intPeso = 10;
+            }
         }
 
-        const peso = [1, 3, 4, 5, 6, 7, 8, 10];
-        let soma = 0;
+        let intResto = intSoma % 11;
+        let strDigito1 = intResto.toString().slice(-1);
+        let strBase2 = strBase.slice(0, 8) + strDigito1 + strBase.slice(10, 12);
 
-        for (let i = 0; i < 8; i++) {
-            soma += parseInt(inscricaoEstadual.charAt(i)) * peso[i];
+        intSoma = 0;
+        intPeso = 2;
+
+        for (let intPos = 11; intPos > 0; intPos--) {
+            let intValor = parseInt(strBase[intPos]);
+            intValor *= intPeso;
+            intSoma += intValor;
+
+            intPeso++;
+            if (intPeso > 10) {
+                intPeso = 2;
+            }
         }
 
-        let digito = soma * 10 % 11;
-        if (digito === 10 || digito === 11) {
-            digito = 0;
-        }
+        intResto = intSoma % 11;
+        let strDigito2 = intResto.toString().slice(-1);
+        strBase2 += strDigito2;
 
-        return parseInt(inscricaoEstadual.charAt(8)) === digito;
+        return strBase2 === ie;
     }
 
     const verificarDados = async () => {
@@ -481,8 +502,8 @@ export default function User() {
             await axios.post(baseUrl, postData, getAuthConfig())
                 .then(response => {
                     setData(data.concat(response.data));
-                    setUpdateData(true);
                     openCloseModalInsert();
+                    setUpdateData(true);
                 })
                 .catch(error => {
                     console.log(error);
@@ -537,7 +558,6 @@ export default function User() {
     };
 
     const [userToRender, setUserToRender] = useState([]);
-
     const [searchTerm, setSearchTerm] = useState('');
 
     const fetchData = async () => {
@@ -575,6 +595,10 @@ export default function User() {
             GetOrderTypeUser();
             setUpdateData(false);
             setUserStatus(true);
+
+            if (!idTypeUser && dataTypeUser.length > 0) {
+                setIdTypeUser(dataTypeUser[0].id);
+            }
         }
     }, [updateData]);
 
@@ -630,7 +654,7 @@ export default function User() {
         }
     };
 
-    function togglePasswordVisibility() {
+    const togglePasswordVisibility = () => {
         const passwordInput = document.getElementById('passwordInput');
         const passwordIcon = document.querySelector('.toggle-password');
 
@@ -692,7 +716,7 @@ export default function User() {
                             <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                         </div>
                         <ul className="w-full">
-                            {data.map(user => {
+                            {userToRender.map(user => {
                                 const tipoUsuario = dataTypeUser.find(typeuser => typeuser.id === user.idTipoUsuario);
 
                                 return (
@@ -733,9 +757,9 @@ export default function User() {
                         <br />
                         <label>Senha:</label>
                         <br />
-                        <div class="password-input">
+                        <div className="password-input">
                             <input type="password" className="form-control rounded border" onChange={(e) => setUserPassword(e.target.value)} id="passwordInput" />
-                            <i class="toggle-password fas fa-eye" onClick={() => togglePasswordVisibility()} ></i>
+                            <i className="toggle-password fas fa-eye" onClick={() => togglePasswordVisibility()} ></i>
                         </div>
                         <PasswordStrengthIndicator data={userPassword} />
                         <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
@@ -801,9 +825,9 @@ export default function User() {
                         <br />
                         <label>Tipo Usuário:</label>
                         <br />
-                        <select className="form-control rounded border" onChange={(e) => setIdTypeUser(e.target.value)}>
-                            {dataTypeUser.map((typeuser, index) => (
-                                <option key={typeuser.id} value={typeuser.id} selected={index === 0}>
+                        <select className="form-control rounded border" onChange={(e) => setIdTypeUser(e.target.value)} defaultValue={idTypeUser}>
+                            {dataTypeUser.map((typeuser) => (
+                                <option key={typeuser.id} value={typeuser.id}>
                                     {typeuser.nomeTipoUsuario}
                                 </option>
                             ))}

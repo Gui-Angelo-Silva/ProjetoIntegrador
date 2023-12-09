@@ -6,8 +6,12 @@ import NavBar from "../../components/NavBar";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useSession } from '../../../../services/session';
 import { PencilSimple, TrashSimple } from "@phosphor-icons/react";
+
+import "./styles.css"
+import { useSession } from '../../../../services/session';
+import Select from 'react-select';
+import debounce from 'lodash.debounce';
 
 export default function City() {
 
@@ -30,12 +34,18 @@ export default function City() {
         idEstado: "",
     });
 
+    const [initialOption, setInitialOption] = useState("");
+
     const CitySelect = (city, option) => {
         setCityId(city.id);
         setCityName(city.nomeCidade);
         setIdState(city.idEstado);
 
         if (option === "Editar") {
+            const foundOption = options.find(option => option.value === city.idEstado);
+            if (foundOption) {
+                setInitialOption(foundOption);
+            }
             openCloseModalEdit();
         } else {
             openCloseModalDelete();
@@ -52,17 +62,6 @@ export default function City() {
 
     const openCloseModalDelete = () => {
         setModalDelete(!modalDelete);
-    };
-
-    const GetOrder = async () => {
-        await axios
-            .get(baseUrl)
-            .then((response) => {
-                setData(response.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
     };
 
     const GetOrderState = async () => {
@@ -93,6 +92,7 @@ export default function City() {
             .then((response) => {
                 setData([...data, response.data]);
                 openCloseModalInsert();
+                setUpdateData(true);
             })
             .catch((error) => {
                 console.log(error);
@@ -127,6 +127,7 @@ export default function City() {
                 });
 
                 openCloseModalEdit();
+                setUpdateData(true);
             })
             .catch((error) => {
                 console.log(error);
@@ -142,6 +143,7 @@ export default function City() {
                 );
                 PutCity();
                 openCloseModalDelete();
+                setUpdateData(true);
             })
             .catch((error) => {
                 console.log(error);
@@ -181,17 +183,94 @@ export default function City() {
     };
 
     useEffect(() => {
-        fetchData();
-        GetOrderState();
+        if (updateData) {
+            fetchData();
+            GetOrderState();
+            setUpdateData(false);
 
-        if (dataState.length > 0) {
-            setIdState(dataState[0].id);
+            if (!idState && dataState.length > 0) {
+                setIdState(dataState[0].id);
+            }
         }
     }, [updateData, dataState]);
 
     useEffect(() => {
         filterCity();
     }, [searchTerm, data]);
+
+    const [selectedOption, setSelectedOption] = useState(null);
+    //const [isFocused, setIsFocused] = useState(false);
+    /*
+        const handleFocus = () => {
+            setIsFocused(true);
+        };
+    
+        const handleBlur = () => {
+            setIsFocused(false);
+        };
+    */
+    const handleChange = (option) => {
+        setSelectedOption(option);
+        if (option) {
+            setIdState(option.value);
+        } else {
+            setIdState('');
+        }
+    };
+
+    const options = dataState.map(item => ({
+        value: item.id,
+        label: item.nomeEstado
+    }));
+
+    const allOptions = dataState.map(item => ({
+        value: item.id,
+        label: item.nomeEstado
+    }));
+
+    const filterOptions = (inputValue) => {
+        if (!inputValue) {
+            return allOptions; // Retorna todos os estados se não houver texto no campo
+        }
+
+        const searchTermNormalized = inputValue.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+        return allOptions.filter(option =>
+            option.label.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().includes(searchTermNormalized)
+        );
+    };
+
+    const delayedSearch = debounce((inputValue) => {
+        filterOptions(inputValue);
+    }, 300);
+
+    const loadOptions = (inputValue, callback) => {
+        callback(filterOptions(inputValue));
+    };
+
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 20;
+    const totalItems = cityToRender.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    // Função para pegar uma parte específica da lista
+    const getCurrentPageItems = (page) => {
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return cityToRender.slice(startIndex, endIndex);
+    };
+
+    // Renderiza a lista atual com base na página atual
+    const currentCities = getCurrentPageItems(currentPage);
+
+    // Funções para navegar entre as páginas
+    const goToPage = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -236,7 +315,7 @@ export default function City() {
                             <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                         </div>
                         <ul className="w-full">
-                            {cityToRender.map((city) => {
+                            {currentCities.map((city) => {
                                 const estado = dataState.find((state) => state.id === city.idEstado);
 
                                 return (
@@ -261,6 +340,35 @@ export default function City() {
                                 );
                             })}
                         </ul>
+                        {/* Estilização dos botões de navegação */}
+                        <div className="mt-4 flex justify-center">
+                            <button
+                                className="btn btn-danger mr-4 rounded-full py-2 px-4"
+                                onClick={() => goToPage(currentPage - 1)}
+                            >
+                                Anterior
+                            </button>
+                            <select
+                                className="border border-gray-300 p-2 rounded-full h-10 min-w-24 w-40"
+                                value={currentPage}
+                                onChange={(e) => goToPage(Number(e.target.value))}
+                            >
+                                {[...Array(totalPages)].map((_, index) => (
+                                    <option key={index + 1} value={index + 1}>
+                                        Página {index + 1}
+                                    </option>
+                                ))}
+                            </select>
+                            <button
+                                className="btn btn-primary ml-4 rounded-full py-2 px-4"
+                                onClick={() => goToPage(currentPage + 1)}
+                            >
+                                Próxima
+                            </button>
+                        </div>
+
+                        {/* Espaçamento abaixo dos botões */}
+                        <div className="mt-4"></div>
                     </div>
                 </div>
             </div>
@@ -278,13 +386,24 @@ export default function City() {
                         <br />
                         <label>Estado:</label>
                         <br />
-                        <select className="form-control" onChange={(e) => setIdState(e.target.value)} value={idState}>
-                            {dataState.map((state, index) => (
-                                <option key={state.id} value={state.id} selected={index === 0}>
-                                    {state.nomeEstado}
-                                </option>
-                            ))}
-                        </select>
+                        <Select
+                            value={selectedOption}
+                            onChange={handleChange}
+                            onInputChange={delayedSearch}
+                            loadOptions={loadOptions}
+                            options={options}
+                            placeholder="Pesquisar estado . . ."
+                            isClearable
+                            isSearchable
+                            noOptionsMessage={() => {
+                                if (dataState.length === 0) {
+                                    return "Nenhum estado cadastrado!";
+                                } else {
+                                    return "Nenhuma opção encontrada!";
+                                }
+                            }}
+                            className="style-select"
+                        />
                     </div>
                 </ModalBody>
                 <ModalFooter>
@@ -320,17 +439,23 @@ export default function City() {
                         <br />
                         <label>Estado:</label>
                         <br />
-                        <select className="form-control" onChange={(e) => setIdState(e.target.value)}>
-                            {dataState.map((state) => (
-                                <option
-                                    key={state.id}
-                                    value={state.id}
-                                    selected={state.id === idState}
-                                >
-                                    {state.nomeEstado}
-                                </option>
-                            ))}
-                        </select>
+                        <Select
+                            value={initialOption}
+                            onChange={handleChange}
+                            onInputChange={delayedSearch}
+                            loadOptions={loadOptions}
+                            options={options}
+                            placeholder="Pesquisar estado . . ."
+                            isClearable
+                            isSearchable
+                            noOptionsMessage={() => {
+                                if (dataState.length === 0) {
+                                    return "Nenhum estado cadastrado!";
+                                } else {
+                                    return "Nenhuma opção encontrada!";
+                                }
+                            }}
+                        />
                         <br />
                     </div>
                 </ModalBody>

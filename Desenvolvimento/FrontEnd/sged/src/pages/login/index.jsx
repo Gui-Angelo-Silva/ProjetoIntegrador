@@ -100,7 +100,7 @@ export default function SignInSide() {
             fontWeight: 'semi-bold'
           }}  
         >
-          Confirme o salvamento de dados:
+          Confirme o salvamento de dados
         </DialogTitle>
         <hr className='border-t-1'/>
         <DialogContent>

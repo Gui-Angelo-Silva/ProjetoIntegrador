@@ -232,54 +232,63 @@ export default function State() {
                     </div>
                 </div>
             </div>
-            <Modal isOpen={modalInsert}>
-                <ModalHeader>Cadastrar Estado</ModalHeader>
+            {/* Usar centered para centralizar o modal */}
+            <Modal isOpen={modalInsert} >
+                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Estado</ModalHeader>
                 <ModalBody>
                     <div className="form-group">
-                        <label>Nome: </label>
+                        <label className="text-[#444444]">Nome: </label>
                         <br />
-                        <input type="text" className="form-control" onChange={(e) => setStateName(e.target.value)} />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setStateName(e.target.value)} />
                         <br />
-                        <label>Sigla:</label>
+                        <label className="text-[#444444]">Sigla:</label>
                         <br />
-                        <input type="text" className="form-control" onChange={(e) => setStateUf(e.target.value.toUpperCase())} value={stateUf} maxLength={2}/>
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setStateUf(e.target.value.toUpperCase())} value={stateUf} maxLength={2} />
                         <br />
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <button className="btn btn-primary" onClick={() => PostOrder()}>Cadastrar</button>{"  "}
-                    <button className="btn btn-danger" onClick={() => openCloseModalInsert()}>Cancelar</button>
+                    <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert()}>Fechar</button>
+                    <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostOrder()}>Salvar</button>{"  "}
                 </ModalFooter>
             </Modal>
             <Modal isOpen={modalEdit}>
-                <ModalHeader>Editar Estado</ModalHeader>
+                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC]">Editar Estado</ModalHeader>
                 <ModalBody>
                     <div className="form-group">
-                        <label>ID: </label><br />
-                        <input type="text" className="form-control" readOnly value={stateId} /> <br />
+                        <label className="text-[#444444]">ID: </label><br />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={stateId} /> <br />
 
-                        <label>Nome:</label>
-                        <input type="text" className="form-control" name="nomeEstado" onChange={(e) => setStateName(e.target.value)} value={stateName} />
+                        <label className="text-[#444444]">Nome:</label>
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomeEstado" onChange={(e) => setStateName(e.target.value)} value={stateName} />
                         <br />
-                        <label>Sigla:</label>
+                        <label className="text-[#444444]">Sigla:</label>
                         <br />
-                        <input type="text" className="form-control" name="ufEstado" onChange={(e) => setStateUf(e.target.value.toUpperCase())} value={stateUf} maxLength={2}/>
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="ufEstado" onChange={(e) => setStateUf(e.target.value.toUpperCase())} value={stateUf} maxLength={2} />
                         <br />
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <button className="btn btn-primary" onClick={() => PutOrder()}>Cadastrar</button>{"  "}
-                    <button className="btn btn-danger" onClick={() => openCloseModalEdit()}>Cancelar</button>
+                    <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit()}>Cancelar</button>
+                    <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PutOrder()}>Cadastrar</button>{"  "}
                 </ModalFooter>
             </Modal>
             <Modal isOpen={modalDelete}>
-                <ModalBody>
-                    Confirma a exclusão deste estado: {stateName} ?
+                <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
+                <ModalBody className="justify-center">
+                    <div className="flex flex-row justify-center p-2">
+                        Confirmar a exclusão deste estado:
+                        <div className="text-[#059669] ml-1">
+                            {stateName}
+                        </div> ?
+                    </div>
+                    <div className="flex justify-center gap-2 pt-3">
+                        <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete()}>Cancelar</button>
+                        <button className='btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' onClick={() => DeleteOrder()}>Confirmar</button>
+                    </div>
+                    {/* <ModalFooter>
+                </ModalFooter> */}
                 </ModalBody>
-                <ModalFooter>
-                    <button className='btn btn-primary' onClick={() => DeleteOrder()}>Sim</button>
-                    <button className='btn btn-danger' onClick={() => openCloseModalDelete()}>Não</button>
-                </ModalFooter>
             </Modal>
         </div>
     );

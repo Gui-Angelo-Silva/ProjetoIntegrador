@@ -94,7 +94,15 @@ export default function SignInSide() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
-        <DialogTitle>Confirme o salvamento de dados:</DialogTitle>
+        <DialogTitle
+          sx={{
+            textAlign: 'center',
+            fontWeight: 'semi-bold'
+          }}  
+        >
+          Confirme o salvamento de dados:
+        </DialogTitle>
+        <hr className='border-t-1'/>
         <DialogContent>
           <DialogContentText>
             Lembre-se que se alguém tiver acesso ao seu computador, poderá entrar em sua conta. Ainda sim, deseja que estes dados sejam salvos no navegador?
@@ -107,8 +115,17 @@ export default function SignInSide() {
                 setModalOpen(false);
                 setPersistLogin(true);
               }}
-              className="hover:text-cyan-500"
-              style={{ marginRight: '30px' }}
+              sx={{
+                border: 1,  
+                borderColor: '#2AA646',
+                color: '#2AA646',
+                bgcolor: 'none',
+                marginRight: 2,
+                ":hover": {
+                  bgcolor: '#2AA646',
+                  color: '#F6F6F6'
+                }
+              }}
             >
               Sim
             </Button>
@@ -117,7 +134,16 @@ export default function SignInSide() {
                 setModalOpen(false);
                 setPersistLogin(false);
               }}
-              className="hover:text-red-600"
+              sx={{
+                border: 1,  
+                borderColor: '#D93442',
+                color: '#D93442',
+                bgcolor: 'none',
+                ":hover": {
+                  bgcolor: '#D93442',
+                  color: '#F6F6F6'
+                }
+              }}
             >
               Não
             </Button>

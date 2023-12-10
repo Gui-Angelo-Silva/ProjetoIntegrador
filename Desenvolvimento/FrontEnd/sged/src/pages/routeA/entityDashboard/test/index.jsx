@@ -4,11 +4,13 @@ import NavBar from "../../components/NavBar";
 
 export default function Test() {
     return (
-        <div className="flex flex-col min-h-full">
-            <NavBar />
-            <div className="h-full" >
+        <div className="h-screen">
+            <div className="w-full h-[6.7%]">
+                <NavBar />
+            </div>
+            <div className="w-1/6 h-full overflow-y-hidden">
                 <SideBar />
             </div>
         </div>
-    )
+    );
 }

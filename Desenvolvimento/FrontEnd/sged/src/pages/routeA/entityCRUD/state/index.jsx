@@ -210,7 +210,7 @@ export default function State() {
                                     <li className="grid grid-cols-3 w-full" key={state.id}>
                                         <span className="pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{state.nomeEstado}</span>
                                         <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{state.ufEstado}</span>
-                                        <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700">
+                                        <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                             <button
                                                 className=""
                                                 onClick={() => StateSelect(state, "Editar")}

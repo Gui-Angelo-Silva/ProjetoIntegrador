@@ -670,289 +670,287 @@ export default function User() {
     };
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <NavBar /> {/* NavBar no topo */}
-            <div style={{ display: 'flex', flex: 1 }}> {/* Container principal flexível */}
-                <div className="overscroll-y-none" style={{ flex: 0, width: '200px' }}>
-                    <SideBar /> {/* Sidebar à esquerda */}
-                </div>
-                <div style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
-                    <br />
-                    <div className="flex flex-row">
-                        <Link to="/a/registration">
-                            <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
-                        </Link>
-                        <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
-                        <h3 className="text-2xl font-semibold text-gray-800">Usuário</h3>
-                    </div>
-                    <div className="flex" style={{ alignItems: 'center' }}>
-                        <div className="flex justify-center items-center mx-auto">
-                            <div className="relative items-stretch self-center justify-center" style={{ width: 500 }}>
-                                <label htmlFor="default-search" className="mb-5 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                        <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                                        </svg>
+        <div className="flex flex-1 min-h-screen">
+            <div className="h-full w-full" style={{ display: 'flex', flexDirection: 'column' }}>
+                <NavBar /> {/* NavBar no topo */}
+                <div className="flex flex-1 min-h-full">
+                    <SideBar />
+                    <div className="min-h-screen"  style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
+                        <br />
+                        <div className="flex flex-row">
+                            <Link to="/a/registration">
+                                <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
+                            </Link>
+                            <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
+                            <h3 className="text-2xl font-semibold text-gray-800">Usuário</h3>
+                        </div>
+                        <div className="flex" style={{ alignItems: 'center' }}>
+                            <div className="flex justify-center items-center mx-auto">
+                                <div className="relative items-stretch self-center justify-center" style={{ width: 500 }}>
+                                    <label htmlFor="default-search" className="mb-5 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                            <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                            </svg>
+                                        </div>
+                                        <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar usuário" required onChange={(e) => handleSearch(e.target.value)} />
+                                        {/* <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-emerald-600 hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Pesquisar</button> */}
                                     </div>
-                                    <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar usuário" required onChange={(e) => handleSearch(e.target.value)} />
-                                    {/* <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-emerald-600 hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Pesquisar</button> */}
                                 </div>
                             </div>
+                            <div className="flex items-center">
+                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert()}>
+                                    Novo <FaPlus className="inline-block" style={{ alignItems: 'center' }} />
+                                </button>
+                            </div>
                         </div>
-                        <div className="flex items-center">
-                            <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert()}>
-                                Novo <FaPlus className="inline-block" style={{ alignItems: 'center' }} />
-                            </button>
+                        <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
+                            <div className="grid grid-cols-6 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
+                                <span className="ml-5 text-white text-lg font-semibold">Nome</span>
+                                <span className="flex justify-center items-center text-white text-lg font-semibold">E-mail</span>
+                                <span className="flex justify-center items-center text-white text-lg font-semibold">Tipo Usuário</span>
+                                <span className="flex justify-center items-center text-white text-lg font-semibold">Cargo</span>
+                                <span className="flex justify-center items-center text-white text-lg font-semibold">Status</span>
+                                <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                            </div>
+                            <ul className="w-full">
+                                {userToRender.map(user => {
+                                    const tipoUsuario = dataTypeUser.find(typeuser => typeuser.id === user.idTipoUsuario);
+                                    return (
+                                        <li className="grid grid-cols-6 w-full" key={user.id}>
+                                            <span className="pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{user.nomePessoa}</span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.emailPessoa}</span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoUsuario ? tipoUsuario.nomeTipoUsuario : 'Tipo de usuário não encontrado!'}</span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.cargoUsuario}</span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.statusUsuario ? 'Ativo' : 'Inativo'}</span>
+                                            <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700">
+                                                <button className="" onClick={() => SelectUser(user, "Editar")}><PencilSimple size={20} className="hover:text-cyan-500" /></button>{"  "}
+                                                <button className="" onClick={() => SelectUser(user, "Excluir")}><TrashSimple size={20} className="hover:text-red-600" /></button>
+                                            </span>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
                         </div>
-                    </div>
-                    <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
-                        <div className="grid grid-cols-6 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                            <span className="ml-5 text-white text-lg font-semibold">Nome</span>
-                            <span className="flex justify-center items-center text-white text-lg font-semibold">E-mail</span>
-                            <span className="flex justify-center items-center text-white text-lg font-semibold">Tipo Usuário</span>
-                            <span className="flex justify-center items-center text-white text-lg font-semibold">Cargo</span>
-                            <span className="flex justify-center items-center text-white text-lg font-semibold">Status</span>
-                            <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
-                        </div>
-                        <ul className="w-full">
-                            {userToRender.map(user => {
-                                const tipoUsuario = dataTypeUser.find(typeuser => typeuser.id === user.idTipoUsuario);
-
-                                return (
-                                    <li className="grid grid-cols-6 w-full" key={user.id}>
-                                        <span className="pl-5 border-r-[1px] border-b-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{user.nomePessoa}</span>
-                                        <span className="flex justify-center items-center border-b-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.emailPessoa}</span>
-                                        <span className="flex justify-center items-center border-b-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoUsuario ? tipoUsuario.nomeTipoUsuario : 'Tipo de usuário não encontrado!'}</span>
-                                        <span className="flex justify-center items-center border-b-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.cargoUsuario}</span>
-                                        <span className="flex justify-center items-center border-b-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.statusUsuario ? 'Ativo' : 'Inativo'}</span>
-                                        <span className="flex items-center justify-center border-b-[1px] gap-2 text-gray-700">
-                                            <button className="" onClick={() => SelectUser(user, "Editar")}><PencilSimple size={20} className="hover:text-cyan-500" /></button>{"  "}
-                                            <button className="" onClick={() => SelectUser(user, "Excluir")}><TrashSimple size={20} className="hover:text-red-600" /></button>
-                                        </span>
-                                    </li>
-                                );
-                            })}
-                        </ul>
                     </div>
                 </div>
-            </div>
-            <Modal isOpen={modalInsert}>
-                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Usuário</ModalHeader>
-                <ModalBody>
-                    <div className="form-group">
-                        <label className="text-[#444444]">Nome: </label>
-                        <br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setPersonName(e.target.value)} />
-                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                            {errorPersonName}
-                        </div>
-                        <br />
-                        <label className="text-[#444444]">E-mail:</label>
-                        <br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setPersonEmail(e.target.value.toLowerCase())} value={personEmail} />
-                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                            {erroPersonEmail}
-                        </div>
-                        <br />
-                        <label className="text-[#444444]">Senha:</label>
-                        <br />
-                        <div className="password-input">
-                            <input type="password" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setUserPassword(e.target.value)} id="passwordInput" />
-                            <i className="toggle-password fas fa-eye" onClick={() => togglePasswordVisibility()} ></i>
-                        </div>
-                        <PasswordStrengthIndicator data={userPassword} />
-                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                            {erroUserPassword}
-                        </div>
-                        <br />
-                        <label className="text-[#444444]">Cargo: </label>
-                        <br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setUserOffice(e.target.value)} />
-                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                            {erroUserOffice}
-                        </div>
-                        <br />
-                        <label className="text-[#444444]">Telefone: </label>
-                        <br />
-                        <InputMask mask="(99) 99999-9999" type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={handleKeyDown} onChange={(e) => setPersonTelephone(e.target.value)} />
-                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                            {erroPersonTelephone}
-                        </div>
-                        <br />
-                        <label className="text-[#444444]">CPF / CNPJ: </label>
-                        <br />
-                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => implementMaskCpfCnpj(e.target.value)}>
-                            <option key="cpf" value="cpf">
-                                CPF
-                            </option>
-                            <option key="cnpj" value="cnpj">
-                                CNPJ
-                            </option>
-                        </select>
-                        <br />
-                        <InputMask mask={maskCpfCnpj} type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={handleKeyDown} onChange={(e) => setPersonCpfCnpj(e.target.value)} />
-                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                            {erroPersonCpfCnpj}
-                        </div>
-                        <br />
-                        <label className="text-[#444444]">RG / IE: </label>
-                        <br />
-                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => implementMaskRgIe(e.target.value)}>
-                            <option key="rg" value="rg">
-                                RG
-                            </option>
-                            <option key="ie" value="ie">
-                                IE
-                            </option>
-                        </select>
-                        <br />
-                        <InputMask mask={maskRgIe} type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={handleKeyDown} onChange={(e) => setPersonRgIe(e.target.value)} />
-                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                            {erroPersonRgIe}
-                        </div>
-                        <br />
-                        <label className="text-[#444444]">Status:</label>
-                        <br />
-                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setUserStatus(e.target.value === "true")} value={userStatus}>
-                            <option key="true" value="true">
-                                Ativo
-                            </option>
-                            <option key="false" value="false">
-                                Inativo
-                            </option>
-                        </select>
-                        <br />
-                        <label className="text-[#444444]">Tipo Usuário:</label>
-                        <br />
-                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setIdTypeUser(e.target.value)} defaultValue={idTypeUser}>
-                            {dataTypeUser.map((typeuser) => (
-                                <option key={typeuser.id} value={typeuser.id}>
-                                    {typeuser.nomeTipoUsuario}
+                <Modal isOpen={modalInsert}>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Usuário</ModalHeader>
+                    <ModalBody>
+                        <div className="form-group">
+                            <label className="text-[#444444]">Nome: </label>
+                            <br />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setPersonName(e.target.value)} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {errorPersonName}
+                            </div>
+                            <br />
+                            <label className="text-[#444444]">E-mail:</label>
+                            <br />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setPersonEmail(e.target.value.toLowerCase())} value={personEmail} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {erroPersonEmail}
+                            </div>
+                            <br />
+                            <label className="text-[#444444]">Senha:</label>
+                            <br />
+                            <div className="password-input">
+                                <input type="password" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setUserPassword(e.target.value)} id="passwordInput" />
+                                <i className="toggle-password fas fa-eye" onClick={() => togglePasswordVisibility()} ></i>
+                            </div>
+                            <PasswordStrengthIndicator data={userPassword} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {erroUserPassword}
+                            </div>
+                            <br />
+                            <label className="text-[#444444]">Cargo: </label>
+                            <br />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setUserOffice(e.target.value)} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {erroUserOffice}
+                            </div>
+                            <br />
+                            <label className="text-[#444444]">Telefone: </label>
+                            <br />
+                            <InputMask mask="(99) 99999-9999" type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={handleKeyDown} onChange={(e) => setPersonTelephone(e.target.value)} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {erroPersonTelephone}
+                            </div>
+                            <br />
+                            <label className="text-[#444444]">CPF / CNPJ: </label>
+                            <br />
+                            <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => implementMaskCpfCnpj(e.target.value)}>
+                                <option key="cpf" value="cpf">
+                                    CPF
                                 </option>
-                            ))}
-                        </select>
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert()}>Fechar</button>
-                    <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostOrder()}>Salvar</button>{"  "}
-                </ModalFooter>
-            </Modal>
-            <Modal isOpen={modalEdit}>
-                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Usuário</ModalHeader>
-                <ModalBody>
-                    <div className="form-group">
-                        <label>ID: </label><br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={userId} /> <br />
-
-                        <label>Nome:</label>
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomePessoa" onChange={(e) => setPersonName(e.target.value)} value={personName} />
-                        <br />
-                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                            {errorPersonName}
-                        </div>
-                        <label>E-mail:</label>
-                        <br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="emailPessoa" onChange={(e) => setPersonEmail(e.target.value.toLowerCase())} value={personEmail} />
-                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                            {erroPersonEmail}
-                        </div>
-                        <br />
-                        <label>Senha:</label>
-                        <br />
-                        <input type="password" className="form-control rounded-md border-[#BCBCBC]" name="senhaUsuario" onChange={(e) => setUserPassword(e.target.value)} value={userPassword} />
-                        <PasswordStrengthIndicator data={userPassword} />
-                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                            {erroUserPassword}
-                        </div>
-                        <br />
-                        <label>Cargo:</label>
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="cargoUsuario" onChange={(e) => setUserOffice(e.target.value)} value={userOffice} />
-                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                            {erroUserOffice}
-                        </div>
-                        <br />
-                        <label>Telefone: </label>
-                        <br />
-                        <InputMask mask="(99) 99999-9999" type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={handleKeyDown} onChange={(e) => setPersonTelephone(e.target.value)} value={personTelephone} />
-                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                            {erroPersonTelephone}
-                        </div>
-                        <br />
-                        <label>CPF / CNPJ: </label>
-                        <br />
-                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => implementMaskCpfCnpj(e.target.value)} defaultValue={personCpfCnpj.length === 14 ? 'cpf' : 'cnpj'}>
-                            <option key="cpf" value="cpf">
-                                CPF
-                            </option>
-                            <option key="cnpj" value="cnpj">
-                                CNPJ
-                            </option>
-                        </select>
-                        <br />
-                        <InputMask mask={maskCpfCnpj} type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={handleKeyDown} onChange={(e) => setPersonCpfCnpj(e.target.value)} value={personCpfCnpj} />
-                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                            {erroPersonCpfCnpj}
-                        </div>
-                        <br />
-                        <label>RG / IE: </label>
-                        <br />
-                        <select className="form-control rounded border" onChange={(e) => implementMaskRgIe(e.target.value)} defaultValue={personRgIe.length === 12 ? 'rg' : 'ie'}>
-                            <option key="rg" value="rg">
-                                RG
-                            </option>
-                            <option key="ie" value="ie">
-                                IE
-                            </option>
-                        </select>
-                        <br />
-                        <InputMask mask={maskRgIe} type="text" className="form-control rounded border" onKeyDown={handleKeyDown} onChange={(e) => setPersonCpfCnpj(e.target.value)} value={personRgIe} />
-                        <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                            {erroPersonRgIe}
-                        </div>
-                        <br />
-                        <label>Status:</label>
-                        <br />
-                        <select className="form-control rounded border" onChange={(e) => setUserStatus(e.target.value === "true")}>
-                            <option value="true" selected={userStatus === true}>Ativo</option>
-                            <option value="false" selected={userStatus === false}>Inativo</option>
-                        </select>
-                        <br />
-                        <label>Tipo Usuário:</label>
-                        <br />
-                        <select className="form-control rounded border" onChange={(e) => setIdTypeUser(e.target.value)}>
-                            {dataTypeUser.map((typeuser) => (
-                                <option key={typeuser.id} value={typeuser.id} selected={typeuser.id === idTypeUser}>
-                                    {typeuser.nomeTipoUsuario}
+                                <option key="cnpj" value="cnpj">
+                                    CNPJ
                                 </option>
-                            ))}
-                        </select>
-                        <br />
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit()}>Cancelar</button>
-                    <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PutOrder()}>Atualizar</button>{"  "}
-                </ModalFooter>
-            </Modal>
-            <Modal isOpen={modalDelete}>
-                <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
-                <ModalBody className="justify-center">
-                <div className="flex flex-row justify-center p-2">
-                        Confirmar a exclusão deste tipo de usuário:
-                        <div className="text-[#059669] ml-1">
-                            {personName}
-                        </div> ?
-                    </div>
-                    <div className="flex justify-center gap-2 pt-3">
-                        <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete()}>Cancelar</button>
-                        <button className='btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' onClick={() => DeleteOrder()}>Confirmar</button>
-                    </div>
-                    {/* <ModalFooter>
-                </ModalFooter> */}
-                </ModalBody>
-            </Modal>
-        </div >
+                            </select>
+                            <br />
+                            <InputMask mask={maskCpfCnpj} type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={handleKeyDown} onChange={(e) => setPersonCpfCnpj(e.target.value)} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {erroPersonCpfCnpj}
+                            </div>
+                            <br />
+                            <label className="text-[#444444]">RG / IE: </label>
+                            <br />
+                            <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => implementMaskRgIe(e.target.value)}>
+                                <option key="rg" value="rg">
+                                    RG
+                                </option>
+                                <option key="ie" value="ie">
+                                    IE
+                                </option>
+                            </select>
+                            <br />
+                            <InputMask mask={maskRgIe} type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={handleKeyDown} onChange={(e) => setPersonRgIe(e.target.value)} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {erroPersonRgIe}
+                            </div>
+                            <br />
+                            <label className="text-[#444444]">Status:</label>
+                            <br />
+                            <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setUserStatus(e.target.value === "true")} value={userStatus}>
+                                <option key="true" value="true">
+                                    Ativo
+                                </option>
+                                <option key="false" value="false">
+                                    Inativo
+                                </option>
+                            </select>
+                            <br />
+                            <label className="text-[#444444]">Tipo Usuário:</label>
+                            <br />
+                            <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setIdTypeUser(e.target.value)} defaultValue={idTypeUser}>
+                                {dataTypeUser.map((typeuser) => (
+                                    <option key={typeuser.id} value={typeuser.id}>
+                                        {typeuser.nomeTipoUsuario}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert()}>Fechar</button>
+                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostOrder()}>Salvar</button>{"  "}
+                    </ModalFooter>
+                </Modal>
+                <Modal isOpen={modalEdit}>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Usuário</ModalHeader>
+                    <ModalBody>
+                        <div className="form-group">
+                            <label>ID: </label><br />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={userId} /> <br />
+                            <label>Nome:</label>
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomePessoa" onChange={(e) => setPersonName(e.target.value)} value={personName} />
+                            <br />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {errorPersonName}
+                            </div>
+                            <label>E-mail:</label>
+                            <br />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="emailPessoa" onChange={(e) => setPersonEmail(e.target.value.toLowerCase())} value={personEmail} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {erroPersonEmail}
+                            </div>
+                            <br />
+                            <label>Senha:</label>
+                            <br />
+                            <input type="password" className="form-control rounded-md border-[#BCBCBC]" name="senhaUsuario" onChange={(e) => setUserPassword(e.target.value)} value={userPassword} />
+                            <PasswordStrengthIndicator data={userPassword} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {erroUserPassword}
+                            </div>
+                            <br />
+                            <label>Cargo:</label>
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="cargoUsuario" onChange={(e) => setUserOffice(e.target.value)} value={userOffice} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {erroUserOffice}
+                            </div>
+                            <br />
+                            <label>Telefone: </label>
+                            <br />
+                            <InputMask mask="(99) 99999-9999" type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={handleKeyDown} onChange={(e) => setPersonTelephone(e.target.value)} value={personTelephone} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {erroPersonTelephone}
+                            </div>
+                            <br />
+                            <label>CPF / CNPJ: </label>
+                            <br />
+                            <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => implementMaskCpfCnpj(e.target.value)} defaultValue={personCpfCnpj.length === 14 ? 'cpf' : 'cnpj'}>
+                                <option key="cpf" value="cpf">
+                                    CPF
+                                </option>
+                                <option key="cnpj" value="cnpj">
+                                    CNPJ
+                                </option>
+                            </select>
+                            <br />
+                            <InputMask mask={maskCpfCnpj} type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={handleKeyDown} onChange={(e) => setPersonCpfCnpj(e.target.value)} value={personCpfCnpj} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {erroPersonCpfCnpj}
+                            </div>
+                            <br />
+                            <label>RG / IE: </label>
+                            <br />
+                            <select className="form-control rounded border" onChange={(e) => implementMaskRgIe(e.target.value)} defaultValue={personRgIe.length === 12 ? 'rg' : 'ie'}>
+                                <option key="rg" value="rg">
+                                    RG
+                                </option>
+                                <option key="ie" value="ie">
+                                    IE
+                                </option>
+                            </select>
+                            <br />
+                            <InputMask mask={maskRgIe} type="text" className="form-control rounded border" onKeyDown={handleKeyDown} onChange={(e) => setPersonCpfCnpj(e.target.value)} value={personRgIe} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {erroPersonRgIe}
+                            </div>
+                            <br />
+                            <label>Status:</label>
+                            <br />
+                            <select className="form-control rounded border" onChange={(e) => setUserStatus(e.target.value === "true")}>
+                                <option value="true" selected={userStatus === true}>Ativo</option>
+                                <option value="false" selected={userStatus === false}>Inativo</option>
+                            </select>
+                            <br />
+                            <label>Tipo Usuário:</label>
+                            <br />
+                            <select className="form-control rounded border" onChange={(e) => setIdTypeUser(e.target.value)}>
+                                {dataTypeUser.map((typeuser) => (
+                                    <option key={typeuser.id} value={typeuser.id} selected={typeuser.id === idTypeUser}>
+                                        {typeuser.nomeTipoUsuario}
+                                    </option>
+                                ))}
+                            </select>
+                            <br />
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit()}>Cancelar</button>
+                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PutOrder()}>Atualizar</button>{"  "}
+                    </ModalFooter>
+                </Modal>
+                <Modal isOpen={modalDelete}>
+                    <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
+                    <ModalBody className="justify-center">
+                        <div className="flex flex-row justify-center p-2">
+                            Confirmar a exclusão deste tipo de usuário:
+                            <div className="text-[#059669] ml-1">
+                                {personName}
+                            </div> ?
+                        </div>
+                        <div className="flex justify-center gap-2 pt-3">
+                            <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete()}>Cancelar</button>
+                            <button className='btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' onClick={() => DeleteOrder()}>Confirmar</button>
+                        </div>
+                        {/* <ModalFooter>
+                    </ModalFooter> */}
+                    </ModalBody>
+                </Modal>
+            </div >
+        </div>
     );
 }

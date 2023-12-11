@@ -17,7 +17,7 @@ const sidebarStyle = {
 
 export default function SideBar() {
   return (
-    <div style={{ display: 'flex', width: '200px', height: '100%' }}>
+    <div className='min-h-full' style={{ display: 'flex', width: '200px' }}>
       <Sidebar style={sidebarStyle}>
         <Menu
           menuItemStyles={{

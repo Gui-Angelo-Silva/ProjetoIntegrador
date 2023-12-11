@@ -1,5 +1,5 @@
-import AppRoutes from './routes';
-import { useSession } from './pages/Session/index.jsx';
+import AppRoutes from './routes/routes';
+import { useSession } from './services/session';
 import { useEffect } from "react";
 
 function App() {

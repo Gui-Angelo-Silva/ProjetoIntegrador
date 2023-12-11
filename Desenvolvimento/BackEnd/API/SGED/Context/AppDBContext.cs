@@ -55,7 +55,7 @@ public class AppDBContext : DbContext
         modelBuilder.Entity<Municipe>().HasKey(b => b.Id);
         modelBuilder.Entity<Municipe>().Property(b => b.NomePessoa).HasMaxLength(70).IsRequired();
         modelBuilder.Entity<Municipe>().Property(b => b.EmailPessoa).IsRequired();
-        modelBuilder.Entity<Municipe>().Property(b => b.TelefonePessoa).HasMaxLength(19).IsRequired();
+        modelBuilder.Entity<Municipe>().Property(b => b.TelefonePessoa).HasMaxLength(15).IsRequired();
         modelBuilder.Entity<Municipe>().Property(b => b.CpfCNPJPessoa).HasMaxLength(18).IsRequired();
         modelBuilder.Entity<Municipe>().Property(b => b.RgIEPessoa).HasMaxLength(15).IsRequired();
 

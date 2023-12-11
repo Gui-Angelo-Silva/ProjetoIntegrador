@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
 table {
     width: 100%;
     margin-top: 45px;
@@ -10,12 +16,12 @@ table {
     border-collapse: separate;
     border-spacing: 0;
     padding: 0;
-    border-radius: 20px; /* Adicione o border-radius à tabela */
+    border-radius: 20px; 
     border: 1px solid #C8E5E5;
 }
 
 thead {
-    border: 1px solid #C8E5E5; /* Manter o border-radius do cabeçalho como 10px, se desejar */
+    border: 1px solid #C8E5E5;
     background-color: #58AFAE;
     color: white;
     height: 49px;
@@ -23,7 +29,6 @@ thead {
 
 th, td {
     border: none;
-    /* border-bottom: 1px solid #C8E5E5; */
 }
 
 th {

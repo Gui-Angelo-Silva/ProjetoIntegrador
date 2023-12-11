@@ -21,7 +21,7 @@ public class MunicipeRepository : IMunicipeRepository
 
     public async Task<Municipe> GetById(int id)
     {
-        return await _dbContext.Municipe.Where(p => p.Id == id).FirstOrDefaultAsync();
+        return await _dbContext.Municipe.Where(objeto => objeto.Id == id).FirstOrDefaultAsync();
     }
 
 

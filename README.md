@@ -14,6 +14,8 @@
 ✔️ Sprint 4 - Completa.
 <br />
 ✔️ Sprint 5 - Completa.
+<br />
+🚧 Sprint Férias - Em andamento...
 
 <br />
 

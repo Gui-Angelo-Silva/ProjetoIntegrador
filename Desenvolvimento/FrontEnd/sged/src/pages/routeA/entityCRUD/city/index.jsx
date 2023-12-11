@@ -338,7 +338,7 @@ export default function City() {
                                 })}
                             </ul>
                             {/* Estilização dos botões de navegação */}
-                            <div className="pt-4 flex justify-center gap-2 border-t-[1px]">
+                            <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
                                 <button
                                     className=""
                                     onClick={() => goToPage(currentPage - 1)}

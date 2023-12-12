@@ -6,10 +6,12 @@ import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
+
 import { useSession } from '../../../../services/session';
+import { useApi } from '../../../../services/api';
 import PropTypes from 'prop-types';
 import InputMask from 'react-input-mask';
-import { PencilSimple, TrashSimple } from '@phosphor-icons/react';
 
 const PasswordStrengthIndicator = ({ data }) => {
 
@@ -54,7 +56,9 @@ PasswordStrengthIndicator.propTypes = {
 export default function User() {
 
     const { getAuthConfig } = useSession();
-    const baseUrl = "https://localhost:7096/api/Usuario";
+    const { appendRoute } = useApi();
+    const typeuserURL = appendRoute('TipoUsuario/');
+    const userURL = appendRoute('Usuario/');
 
     const [data, setData] = useState([]);
     const [dataTypeUser, setDataTypeUser] = useState([]);
@@ -124,7 +128,7 @@ export default function User() {
     };
 
     const GetOrderTypeUser = async () => {
-        await axios.get("https://localhost:7096/api/TipoUsuario", getAuthConfig())
+        await axios.get(typeuserURL, getAuthConfig())
             .then(response => {
                 setDataTypeUser(response.data);
             })
@@ -471,7 +475,7 @@ export default function User() {
     }
 
     const GetOrderUser = async () => {
-        await axios.get(baseUrl, getAuthConfig())
+        await axios.get(userURL, getAuthConfig())
             .then(response => {
                 setData(response.data);
             })
@@ -499,7 +503,7 @@ export default function User() {
                 statusUsuario: Boolean(userStatus),
                 idTipoUsuario: idTypeUser
             };
-            await axios.post(baseUrl, postData, getAuthConfig())
+            await axios.post(userURL, postData, getAuthConfig())
                 .then(response => {
                     setData(data.concat(response.data));
                     openCloseModalInsert();
@@ -520,7 +524,7 @@ export default function User() {
         if (response) {
 
             delete selectUser.id;
-            await axios.put(baseUrl, {
+            await axios.put(userURL, {
                 id: userId,
                 nomePessoa: personName,
                 emailPessoa: personEmail,
@@ -546,7 +550,7 @@ export default function User() {
     };
 
     const DeleteOrder = async () => {
-        await axios.delete(baseUrl + "/" + userId, getAuthConfig())
+        await axios.delete(userURL + "/" + userId, getAuthConfig())
             .then(response => {
                 setData(data.filter(user => user.id !== response.data));
                 openCloseModalDelete();
@@ -562,7 +566,7 @@ export default function User() {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get(baseUrl, getAuthConfig());
+            const response = await axios.get(userURL, getAuthConfig());
             setData(response.data);
             setUserToRender(response.data);
         } catch (error) {
@@ -669,6 +673,29 @@ export default function User() {
         }
     };
 
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 20;
+    const totalItems = userToRender.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    // Função para pegar uma parte específica da lista
+    const getCurrentPageItems = (page) => {
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return userToRender.slice(startIndex, endIndex);
+    };
+
+    // Renderiza a lista atual com base na página atual
+    const currentUsers = getCurrentPageItems(currentPage);
+
+    // Funções para navegar entre as páginas
+    const goToPage = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
     return (
         <div className="flex flex-1 min-h-screen">
             <div className="h-full w-full" style={{ display: 'flex', flexDirection: 'column' }}>
@@ -707,7 +734,7 @@ export default function User() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-6 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="ml-5 text-white text-lg font-semibold">Nome</span>
+                                <span className="flex ml-5 text-white text-lg font-semibold">Nome</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">E-mail</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">Tipo Usuário</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">Cargo</span>
@@ -715,11 +742,11 @@ export default function User() {
                                 <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                             </div>
                             <ul className="w-full">
-                                {userToRender.map(user => {
+                                {currentUsers.map(user => {
                                     const tipoUsuario = dataTypeUser.find(typeuser => typeuser.id === user.idTipoUsuario);
                                     return (
                                         <li className="grid grid-cols-6 w-full" key={user.id}>
-                                            <span className="pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{user.nomePessoa}</span>
+                                            <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{user.nomePessoa}</span>
                                             <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.emailPessoa}</span>
                                             <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoUsuario ? tipoUsuario.nomeTipoUsuario : 'Tipo de usuário não encontrado!'}</span>
                                             <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.cargoUsuario}</span>
@@ -732,6 +759,34 @@ export default function User() {
                                     );
                                 })}
                             </ul>
+                            {/* Estilização dos botões de navegação */}
+                            <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
+                                <button
+                                    className=""
+                                    onClick={() => goToPage(currentPage - 1)}
+                                >
+                                    <CaretLeft size={22} className="text-[#58AFAE]" />
+                                </button>
+                                <select
+                                    className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
+                                    value={currentPage}
+                                    onChange={(e) => goToPage(Number(e.target.value))}
+                                >
+                                    {[...Array(totalPages)].map((_, index) => (
+                                        <option key={index + 1} value={index + 1}>
+                                            {index + 1}
+                                        </option>
+                                    ))}
+                                </select>
+                                <button
+                                    className=""
+                                    onClick={() => goToPage(currentPage + 1)}
+                                >
+                                    <CaretRight size={22} className="text-[#58AFAE]" />
+                                </button>
+                            </div>
+                            {/* Espaçamento abaixo dos botões */}
+                            <div className="mt-4"></div>
                         </div>
                     </div>
                 </div>

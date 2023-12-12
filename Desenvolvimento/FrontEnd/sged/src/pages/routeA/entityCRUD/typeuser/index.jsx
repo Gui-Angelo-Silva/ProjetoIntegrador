@@ -5,14 +5,17 @@ import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
-import { useSession } from '../../../../services/session';
 import { FaPlus } from "react-icons/fa6";
-import { PencilSimple, TrashSimple } from "@phosphor-icons/react";
+import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
+
+import { useSession } from '../../../../services/session';
+import { useApi } from '../../../../services/api';
 
 export default function TypeUser() {
 
     const { getAuthConfig } = useSession();
-    const baseUrl = "https://localhost:7096/api/TipoUsuario"
+    const { appendRoute } = useApi();
+    const typeuserURL = appendRoute('TipoUsuario/');
 
     const [data, setData] = useState([])
     const [modalInsert, setModalInsert] = useState(false)
@@ -57,7 +60,7 @@ export default function TypeUser() {
     }
 
     const PutTypeUser = async () => {
-        await axios.get(baseUrl, getAuthConfig())
+        await axios.get(typeuserURL, getAuthConfig())
             .then(response => {
                 setData(response.data)
             }).catch(error => {
@@ -67,7 +70,7 @@ export default function TypeUser() {
 
     const PostOrder = async () => {
         delete selectTypeUser.id
-        await axios.post(baseUrl, { nomeTipoUsuario: typeUserName, nivelAcesso: typeUserAcessLevel, descricaoTipoUsuario: typeUserDesc }, getAuthConfig())
+        await axios.post(typeuserURL, { nomeTipoUsuario: typeUserName, nivelAcesso: typeUserAcessLevel, descricaoTipoUsuario: typeUserDesc }, getAuthConfig())
             .then(response => {
                 setData(data.concat(response.data));
                 openCloseModalInsert();
@@ -79,7 +82,7 @@ export default function TypeUser() {
 
     async function PutOrder() {
         delete selectTypeUser.id
-        await axios.put(baseUrl, { id: typeUserId, nomeTipoUsuario: typeUserName, nivelAcesso: typeUserAcessLevel, descricaoTipoUsuario: typeUserDesc }, getAuthConfig())
+        await axios.put(typeuserURL, { id: typeUserId, nomeTipoUsuario: typeUserName, nivelAcesso: typeUserAcessLevel, descricaoTipoUsuario: typeUserDesc }, getAuthConfig())
             .then(response => {
                 var answer = response.data
                 var aux = data
@@ -110,7 +113,7 @@ export default function TypeUser() {
     }
 
     const DeleteOrder = async () => {
-        await axios.delete(baseUrl + "/" + typeUserId, getAuthConfig())
+        await axios.delete(typeuserURL + "/" + typeUserId, getAuthConfig())
             .then(response => {
                 setData(data.filter(typeuser => typeuser.id !== response.data));
                 PutTypeUser();
@@ -126,7 +129,7 @@ export default function TypeUser() {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get(baseUrl, getAuthConfig());
+            const response = await axios.get(typeuserURL, getAuthConfig());
             setData(response.data);
             setTypeUserToRender(response.data);
         } catch (error) {
@@ -162,6 +165,29 @@ export default function TypeUser() {
     useEffect(() => {
         filterTypeUser();
     }, [searchTerm, data]);
+
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 20;
+    const totalItems = typeUserToRender.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    // Função para pegar uma parte específica da lista
+    const getCurrentPageItems = (page) => {
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return typeUserToRender.slice(startIndex, endIndex);
+    };
+
+    // Renderiza a lista atual com base na página atual
+    const currentTypeUsers = getCurrentPageItems(currentPage);
+
+    // Funções para navegar entre as páginas
+    const goToPage = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
 
     return (
         <div className="flex flex-1 min-h-screen">
@@ -203,15 +229,15 @@ export default function TypeUser() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-4 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="ml-5 text-white text-lg font-semibold">Nome</span>
+                                <span className="flex ml-5 text-white text-lg font-semibold">Nome</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">Nivel de Acesso</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
                                 <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                             </div>
                             <ul className="w-full">
-                                {typeUserToRender.map((typeuser) => (
+                                {currentTypeUsers.map((typeuser) => (
                                     <li className="grid grid-cols-4 w-full" key={typeuser.id}>
-                                        <span className="flex pl-5 items-center border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{typeuser.nomeTipoUsuario}</span>
+                                        <span className="flex pl-5 items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{typeuser.nomeTipoUsuario}</span>
                                         <span className="flex justify-center pl-2 pr-2 items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{typeuser.nivelAcesso}</span>
                                         <span className="flex justify-start pl-2 pr-2 items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{typeuser.descricaoTipoUsuario}</span>
                                         <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
@@ -231,6 +257,34 @@ export default function TypeUser() {
                                     </li>
                                 ))}
                             </ul>
+                            {/* Estilização dos botões de navegação */}
+                            <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
+                                <button
+                                    className=""
+                                    onClick={() => goToPage(currentPage - 1)}
+                                >
+                                    <CaretLeft size={22} className="text-[#58AFAE]" />
+                                </button>
+                                <select
+                                    className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
+                                    value={currentPage}
+                                    onChange={(e) => goToPage(Number(e.target.value))}
+                                >
+                                    {[...Array(totalPages)].map((_, index) => (
+                                        <option key={index + 1} value={index + 1}>
+                                            {index + 1}
+                                        </option>
+                                    ))}
+                                </select>
+                                <button
+                                    className=""
+                                    onClick={() => goToPage(currentPage + 1)}
+                                >
+                                    <CaretRight size={22} className="text-[#58AFAE]" />
+                                </button>
+                            </div>
+                            {/* Espaçamento abaixo dos botões */}
+                            <div className="mt-4"></div>
                         </div>
                     </div>
                 </div>

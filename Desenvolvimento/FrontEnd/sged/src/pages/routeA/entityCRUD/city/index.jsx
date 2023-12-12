@@ -7,16 +7,18 @@ import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
-import "./styles.css"
+
 import { useSession } from '../../../../services/session';
+import { useApi } from '../../../../services/api';
 import Select from 'react-select';
 import debounce from 'lodash.debounce';
 
 export default function City() {
 
     const { getAuthConfig } = useSession();
-
-    const baseUrl = "https://localhost:7096/api/Cidade";
+    const { appendRoute } = useApi();
+    const stateURL = appendRoute('Estado/');
+    const cityURL = appendRoute('Cidade/');
 
     const [data, setData] = useState([]);
     const [dataState, setDataState] = useState([]);
@@ -65,7 +67,7 @@ export default function City() {
 
     const GetOrderState = async () => {
         await axios
-            .get("https://localhost:7096/api/Estado", getAuthConfig())
+            .get(stateURL, getAuthConfig())
             .then((response) => {
                 setDataState(response.data);
             })
@@ -76,7 +78,7 @@ export default function City() {
 
     const PutCity = async () => {
         await axios
-            .get("https://localhost:7096/api/Estado", getAuthConfig())
+            .get(stateURL, getAuthConfig())
             .then((response) => {
                 setDataState(response.data);
             })
@@ -87,7 +89,7 @@ export default function City() {
 
     const PostOrder = async () => {
         await axios
-            .post(baseUrl, { nomeCidade: cityName, idEstado: idState }, getAuthConfig())
+            .post(cityURL, { nomeCidade: cityName, idEstado: idState }, getAuthConfig())
             .then((response) => {
                 setData([...data, response.data]);
                 openCloseModalInsert();
@@ -100,7 +102,7 @@ export default function City() {
 
     const PutOrder = async () => {
         await axios
-            .put(baseUrl, {
+            .put(cityURL, {
                 id: cityId,
                 nomeCidade: cityName,
                 idEstado: idState,
@@ -135,7 +137,7 @@ export default function City() {
 
     const DeleteOrder = async () => {
         await axios
-            .delete(baseUrl + "/" + cityId, getAuthConfig())
+            .delete(cityURL + "/" + cityId, getAuthConfig())
             .then(() => {
                 setData((previousData) =>
                     previousData.filter((city) => city.id !== cityId)
@@ -150,12 +152,11 @@ export default function City() {
     };
 
     const [cityToRender, setCityToRender] = useState([]);
-
     const [searchTerm, setSearchTerm] = useState('');
 
     const fetchData = async () => {
         try {
-            const response = await axios.get(baseUrl, getAuthConfig());
+            const response = await axios.get(cityURL, getAuthConfig());
             setData(response.data);
             setCityToRender(response.data);
         } catch (error) {
@@ -308,7 +309,7 @@ export default function City() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="ml-5 text-white text-lg font-semibold">Cidade</span>
+                                <span className="flex ml-5 text-white text-lg font-semibold">Cidade</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">Estado</span>
                                 <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                             </div>
@@ -317,7 +318,7 @@ export default function City() {
                                     const estado = dataState.find((state) => state.id === city.idEstado);
                                     return (
                                         <li className="grid grid-cols-3 w-full" key={city.id}>
-                                            <span className="pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{city.nomeCidade}</span>
+                                            <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{city.nomeCidade}</span>
                                             <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{estado ? estado.nomeEstado : "Estado não encontrado"}</span>
                                             <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                                 <button

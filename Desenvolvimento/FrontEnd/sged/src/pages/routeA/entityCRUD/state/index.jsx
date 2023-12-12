@@ -5,14 +5,17 @@ import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
-import { useSession } from '../../../../services/session';
 import { FaPlus } from "react-icons/fa6";
-import { PencilSimple, TrashSimple } from "@phosphor-icons/react";
+import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
+
+import { useSession } from '../../../../services/session';
+import { useApi } from '../../../../services/api';
 
 export default function State() {
 
     const { getAuthConfig } = useSession();
-    const baseUrl = "https://localhost:7096/api/Estado"
+    const { appendRoute } = useApi();
+    const stateURL = appendRoute('Estado/');
 
     const [data, setData] = useState([])
     const [modalInsert, setModalInsert] = useState(false)
@@ -54,7 +57,7 @@ export default function State() {
     }
 
     const GetOrder = async () => {
-        await axios.get(baseUrl, getAuthConfig())
+        await axios.get(stateURL, getAuthConfig())
             .then(response => {
                 setData(response.data)
             }).catch(error => {
@@ -64,7 +67,7 @@ export default function State() {
 
     const PostOrder = async () => {
         delete selectState.id
-        await axios.post(baseUrl, { nomeEstado: stateName, ufEstado: stateUf }, getAuthConfig())
+        await axios.post(stateURL, { nomeEstado: stateName, ufEstado: stateUf }, getAuthConfig())
             .then(response => {
                 setData(prevData => [...prevData, response.data]);
                 openCloseModalInsert();
@@ -76,7 +79,7 @@ export default function State() {
 
     async function PutOrder() {
         delete selectState.id
-        await axios.put(baseUrl, { id: stateId, nomeEstado: stateName, ufEstado: stateUf }, getAuthConfig())
+        await axios.put(stateURL, { id: stateId, nomeEstado: stateName, ufEstado: stateUf }, getAuthConfig())
             .then(response => {
                 var answer = response.data
                 var aux = data
@@ -106,7 +109,7 @@ export default function State() {
     }
 
     const DeleteOrder = async () => {
-        await axios.delete(baseUrl + "/" + stateId, getAuthConfig())
+        await axios.delete(stateURL + "/" + stateId, getAuthConfig())
             .then(response => {
                 setData(data.filter(state => state.id !== response.data));
                 openCloseModalDelete();
@@ -117,12 +120,11 @@ export default function State() {
     };
 
     const [stateToRender, setStateToRender] = useState([]);
-
     const [searchTerm, setSearchTerm] = useState('');
 
     const fetchData = async () => {
         try {
-            const response = await axios.get(baseUrl, getAuthConfig());
+            const response = await axios.get(stateURL, getAuthConfig());
             setData(response.data);
             setStateToRender(response.data);
         } catch (error) {
@@ -160,6 +162,28 @@ export default function State() {
         filterState();
     }, [searchTerm, data]);
 
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 20;
+    const totalItems = stateToRender.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    // Função para pegar uma parte específica da lista
+    const getCurrentPageItems = (page) => {
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return stateToRender.slice(startIndex, endIndex);
+    };
+
+    // Renderiza a lista atual com base na página atual
+    const currentStates = getCurrentPageItems(currentPage);
+
+    // Funções para navegar entre as páginas
+    const goToPage = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
 
     return (
         <div className="flex flex-1 min-h-screen">
@@ -201,14 +225,14 @@ export default function State() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="ml-5 text-white text-lg font-semibold">Estado</span>
+                                <span className="flex ml-5 text-white text-lg font-semibold">Estado</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">UF</span>
                                 <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                             </div>
                             <ul className="w-full">
-                                {stateToRender.map((state) => (
+                                {currentStates.map((state) => (
                                     <li className="grid grid-cols-3 w-full" key={state.id}>
-                                        <span className="pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{state.nomeEstado}</span>
+                                        <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{state.nomeEstado}</span>
                                         <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{state.ufEstado}</span>
                                         <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                             <button
@@ -227,6 +251,34 @@ export default function State() {
                                     </li>
                                 ))}
                             </ul>
+                            {/* Estilização dos botões de navegação */}
+                            <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
+                                <button
+                                    className=""
+                                    onClick={() => goToPage(currentPage - 1)}
+                                >
+                                    <CaretLeft size={22} className="text-[#58AFAE]" />
+                                </button>
+                                <select
+                                    className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
+                                    value={currentPage}
+                                    onChange={(e) => goToPage(Number(e.target.value))}
+                                >
+                                    {[...Array(totalPages)].map((_, index) => (
+                                        <option key={index + 1} value={index + 1}>
+                                            {index + 1}
+                                        </option>
+                                    ))}
+                                </select>
+                                <button
+                                    className=""
+                                    onClick={() => goToPage(currentPage + 1)}
+                                >
+                                    <CaretRight size={22} className="text-[#58AFAE]" />
+                                </button>
+                            </div>
+                            {/* Espaçamento abaixo dos botões */}
+                            <div className="mt-4"></div>
                         </div>
                     </div>
                 </div>

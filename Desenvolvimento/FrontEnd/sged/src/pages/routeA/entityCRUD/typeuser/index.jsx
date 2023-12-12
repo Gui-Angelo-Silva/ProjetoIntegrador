@@ -23,7 +23,7 @@ export default function TypeUser() {
     const [modalDelete, setModalDelete] = useState(false)
     const [updateData, setUpdateData] = useState(true)
     const [typeUserName, setTypeUserName] = useState("");
-    const [typeUserAcessLevel, setTypeUserAcessLevel] = useState("");
+    const [typeUserAcessLevel, setTypeUserAcessLevel] = useState("A");
     const [typeUserDesc, setTypeUserDesc] = useState("");
     const [typeUserId, setTypeUserId] = useState("");
     const [selectTypeUser] = useState({
@@ -31,7 +31,22 @@ export default function TypeUser() {
         nomeTipoUsuario: "",
         nivelAcesso: "",
         descricaoTipoUsuario: ""
-    })
+    });
+
+    const [errorTypeUserName, setErrorTypeUserName] = useState("");
+    const [errorTypeUserDescrition, setErrorTypeUserDescrition] = useState("");
+
+    const clearErrors = () => {
+        setErrorTypeUserName('');
+        setErrorTypeUserDescrition('');
+    };
+
+    const clearDatas = () => {
+        setTypeUserName('');
+        setTypeUserAcessLevel('A');
+        setTypeUserDesc('');
+        setTypeUserId('');
+    };
 
     const SelectTypeUser = (typeuser, option) => {
         setTypeUserId(typeuser.id)
@@ -49,15 +64,57 @@ export default function TypeUser() {
 
     const openCloseModalInsert = () => {
         setModalInsert(!modalInsert);
+        clearErrors();
+
+        if (modalInsert) {
+            clearDatas();
+        }
     }
 
     const openCloseModalEdit = () => {
         setModalEdit(!modalEdit);
+        clearErrors();
+
+        if (modalEdit) {
+            clearDatas();
+        }
     }
 
     const openCloseModalDelete = () => {
         setModalDelete(!modalDelete);
+        clearErrors();
+
+        if (modalDelete) {
+            clearDatas();
+        }
     }
+
+    const verificarDados = async () => {
+        clearErrors();
+        var status = true;
+
+        if (typeUserName) {
+            if (typeUserName.length < 3) {
+                setErrorTypeUserName('O nome precisa ter no mínimo 3 letras!');
+                status = false;
+            }
+        } else {
+            setErrorTypeUserName('O nome é requerido!');
+            status = false;
+        }
+
+        if (typeUserDesc) {
+            if (typeUserDesc.length < 5) {
+                setErrorTypeUserDescrition('A descrição precisa ter no mínimo 5 letras!');
+                status = false;
+            }
+        } else {
+            setErrorTypeUserDescrition('A descrição é requerida!');
+            status = false;
+        }
+
+        return status;
+    };
 
     const PutTypeUser = async () => {
         await axios.get(typeuserURL, getAuthConfig())
@@ -69,51 +126,61 @@ export default function TypeUser() {
     }
 
     const PostOrder = async () => {
-        delete selectTypeUser.id
-        await axios.post(typeuserURL, { nomeTipoUsuario: typeUserName, nivelAcesso: typeUserAcessLevel, descricaoTipoUsuario: typeUserDesc }, getAuthConfig())
-            .then(response => {
-                setData(data.concat(response.data));
-                openCloseModalInsert();
-                setUpdateData(true);
-            }).catch(error => {
-                console.log(error);
-            })
+        var response = await verificarDados();
+        if (response) {
+
+            delete selectTypeUser.id
+            await axios.post(typeuserURL, { nomeTipoUsuario: typeUserName, nivelAcesso: typeUserAcessLevel, descricaoTipoUsuario: typeUserDesc }, getAuthConfig())
+                .then(response => {
+                    setData(data.concat(response.data));
+                    openCloseModalInsert();
+                    setUpdateData(true);
+                }).catch(error => {
+                    console.log(error);
+                })
+
+        }
     }
 
     async function PutOrder() {
-        delete selectTypeUser.id
-        await axios.put(typeuserURL, { id: typeUserId, nomeTipoUsuario: typeUserName, nivelAcesso: typeUserAcessLevel, descricaoTipoUsuario: typeUserDesc }, getAuthConfig())
-            .then(response => {
-                var answer = response.data
-                var aux = data
-                aux.map(typeuser => {
-                    if (typeuser.id === selectTypeUser.id) {
-                        typeuser.nomeTipoUsuario = answer.nomeTipoUsuario
-                        typeuser.nivelAcesso = answer.nivelAcesso
-                        typeuser.descricaoTipoUsuario = answer.descricaoTipoUsuario
-                    }
+        var response = await verificarDados();
+        if (response) {
+
+            delete selectTypeUser.id
+            await axios.put(typeuserURL, { id: typeUserId, nomeTipoUsuario: typeUserName, nivelAcesso: typeUserAcessLevel, descricaoTipoUsuario: typeUserDesc }, getAuthConfig())
+                .then(response => {
+                    var answer = response.data
+                    var aux = data
+                    aux.map(typeuser => {
+                        if (typeuser.id === selectTypeUser.id) {
+                            typeuser.nomeTipoUsuario = answer.nomeTipoUsuario
+                            typeuser.nivelAcesso = answer.nivelAcesso
+                            typeuser.descricaoTipoUsuario = answer.descricaoTipoUsuario
+                        }
+                    })
+
+                    const updateTypeUser = response.data;
+
+                    setData((prevData) => {
+                        return prevData.map((typeuser) => {
+                            if (typeuser.id === typeUserId) {
+                                return updateTypeUser;
+                            }
+                            return typeuser;
+                        });
+                    });
+
+                    openCloseModalEdit();
+                    setUpdateData(true);
+                }).catch(error => {
+                    console.log(error)
                 })
 
-                const updateTypeUser = response.data;
-
-                setData((prevData) => {
-                    return prevData.map((typeuser) => {
-                        if (typeuser.id === typeUserId) {
-                            return updateTypeUser;
-                        }
-                        return typeuser;
-                    });
-                });
-
-                openCloseModalEdit();
-                setUpdateData(true);
-            }).catch(error => {
-                console.log(error)
-            })
+        }
     }
 
     const DeleteOrder = async () => {
-        await axios.delete(typeuserURL + "/" + typeUserId, getAuthConfig())
+        await axios.delete(typeuserURL + typeUserId, getAuthConfig())
             .then(response => {
                 setData(data.filter(typeuser => typeuser.id !== response.data));
                 PutTypeUser();
@@ -126,6 +193,7 @@ export default function TypeUser() {
 
     const [typeUserToRender, setTypeUserToRender] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [searchBy, setSearchBy] = useState('nomeTipoUsuario');
 
     const fetchData = async () => {
         try {
@@ -141,6 +209,10 @@ export default function TypeUser() {
         setSearchTerm(searchTerm);
     };
 
+    const handleSearchBy = (value) => {
+        setSearchBy(value);
+    };
+
     const filterTypeUser = () => {
         const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
@@ -148,7 +220,7 @@ export default function TypeUser() {
             setTypeUserToRender(data);
         } else {
             const filtered = data.filter((typeuser) => {
-                const typeUserNameNormalized = typeuser.nomeTipoUsuario.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                const typeUserNameNormalized = typeuser[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                 return typeUserNameNormalized.toLowerCase().includes(searchTermNormalized.toLowerCase());
             });
             setTypeUserToRender(filtered);
@@ -158,7 +230,6 @@ export default function TypeUser() {
     useEffect(() => {
         if (updateData) {
             fetchData();
-            setTypeUserAcessLevel("A");
         }
     }, [updateData]);
 
@@ -217,6 +288,17 @@ export default function TypeUser() {
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                             </svg>
                                         </div>
+                                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => handleSearchBy(e.target.value)}>
+                                            <option key="nomeTipoUsuario" value="nomeTipoUsuario">
+                                                Nome
+                                            </option>
+                                            <option key="nivelAcesso" value="nivelAcesso">
+                                                Nível de Acesso
+                                            </option>
+                                            <option key="descricaoTipoUsuario" value="descricaoTipoUsuario">
+                                                Descrição
+                                            </option>
+                                        </select>
                                         <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar tipo usuário" required onChange={(e) => handleSearch(e.target.value)} />
                                     </div>
                                 </div>
@@ -230,7 +312,7 @@ export default function TypeUser() {
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-4 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
                                 <span className="flex ml-5 text-white text-lg font-semibold">Nome</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Nivel de Acesso</span>
+                                <span className="flex justify-center items-center text-white text-lg font-semibold">Nível de Acesso</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
                                 <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                             </div>
@@ -295,8 +377,11 @@ export default function TypeUser() {
                             <label className="text-[#444444]">Nome: </label>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setTypeUserName(e.target.value)} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {errorTypeUserName}
+                            </div>
                             <br />
-                            <label className="text-[#444444]">Nivel de acesso:</label>
+                            <label className="text-[#444444]">Nível de acesso:</label>
                             <br />
                             <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setTypeUserAcessLevel(e.target.value)} value={typeUserAcessLevel}>
                                 <option key="A" value="A" title="Descrição: pode realizar todas funcionalides do sistema.">
@@ -316,12 +401,15 @@ export default function TypeUser() {
                             <label>Descrição:</label>
                             <br />
                             <textarea type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setTypeUserDesc(e.target.value)} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {errorTypeUserDescrition}
+                            </div>
                             <br />
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert()}>Fechar</button>
-                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostOrder()}>Salvar</button>{"  "}
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert()}>Cancelar</button>
+                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostOrder()}>Cadastrar</button>{"  "}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalEdit}>
@@ -331,10 +419,12 @@ export default function TypeUser() {
                             <label className="text-[#444444]">ID: </label><br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={typeUserId} /> <br />
                             <label className="text-[#444444]">Nome:</label>
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomeTipoUsuario" onChange={(e) => setTypeUserName(e.target.value)}
-                                value={typeUserName} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomeTipoUsuario" onChange={(e) => setTypeUserName(e.target.value)} value={typeUserName} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {errorTypeUserName}
+                            </div>
                             <br />
-                            <label className="text-[#444444]">Nivel de acesso:</label>
+                            <label className="text-[#444444]">Nível de acesso:</label>
                             <br />
                             <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setTypeUserAcessLevel(e.target.value)}>
                                 <option value="A" selected={typeUserAcessLevel === "A"} title="Descrição: pode realizar todas funcionalides do sistema.">A</option>
@@ -345,8 +435,10 @@ export default function TypeUser() {
                             <br />
                             <label className="text-[#444444]">Descrição:</label>
                             <br />
-                            <textarea type="text" className="form-control rounded-md border-[#BCBCBC]" name="descricaoTipoUsuario" onChange={(e) => setTypeUserDesc(e.target.value)}
-                                value={typeUserDesc} />
+                            <textarea type="text" className="form-control rounded-md border-[#BCBCBC]" name="descricaoTipoUsuario" onChange={(e) => setTypeUserDesc(e.target.value)} value={typeUserDesc} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {errorTypeUserDescrition}
+                            </div>
                             <br />
                         </div>
                     </ModalBody>

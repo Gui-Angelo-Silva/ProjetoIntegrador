@@ -27,7 +27,7 @@ export default function City() {
     const [modalDelete, setModalDelete] = useState(false);
     const [updateData, setUpdateData] = useState(true);
     const [cityName, setCityName] = useState("");
-    const [idState, setIdState] = useState("");
+    const [idState, setIdState] = useState(dataState.length > 0 ? dataState[0].id : null);
     const [cityId, setCityId] = useState("");
     const [selectCity] = useState({
         id: "",
@@ -35,7 +35,17 @@ export default function City() {
         idEstado: "",
     });
 
-    const [initialOption, setInitialOption] = useState("");
+    const [errorCityName, setErrorCityName] = useState("");
+
+    const clearErrors = () => {
+        setErrorCityName('');
+    };
+
+    const clearDatas = () => {
+        setCityId('');
+        setCityName('');
+        setIdState(dataState.length > 0 ? dataState[0].id : null);
+    }
 
     const CitySelect = (city, option) => {
         setCityId(city.id);
@@ -43,10 +53,11 @@ export default function City() {
         setIdState(city.idEstado);
 
         if (option === "Editar") {
-            const foundOption = options.find(option => option.value === city.idEstado);
+            const foundOption = allOptions.find(option => option.value === city.idEstado);
             if (foundOption) {
-                setInitialOption(foundOption);
+                setSelectedOption(foundOption);
             }
+
             openCloseModalEdit();
         } else {
             openCloseModalDelete();
@@ -55,14 +66,45 @@ export default function City() {
 
     const openCloseModalInsert = () => {
         setModalInsert(!modalInsert);
+        clearErrors();
+
+        if (modalInsert) {
+            clearDatas();
+        }
     };
 
     const openCloseModalEdit = () => {
         setModalEdit(!modalEdit);
+        clearErrors();
+
+        if (modalEdit) {
+            clearDatas();
+        }
     };
 
     const openCloseModalDelete = () => {
         setModalDelete(!modalDelete);
+
+        if (!modalDelete === false) {
+            clearDatas();
+        }
+    };
+
+    const verificarDados = async () => {
+        clearErrors();
+        var status = true;
+
+        if (cityName) {
+            if (cityName.length < 3) {
+                setErrorCityName('O nome precisa ter no mínimo 3 letras!');
+                status = false;
+            }
+        } else {
+            setErrorCityName('O nome é requerido!');
+            status = false;
+        }
+
+        return status;
     };
 
     const GetOrderState = async () => {
@@ -88,56 +130,66 @@ export default function City() {
     }
 
     const PostOrder = async () => {
-        await axios
-            .post(cityURL, { nomeCidade: cityName, idEstado: idState }, getAuthConfig())
-            .then((response) => {
-                setData([...data, response.data]);
-                openCloseModalInsert();
-                setUpdateData(true);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        var response = await verificarDados();
+        if (response) {
+
+            await axios
+                .post(cityURL, { nomeCidade: cityName, idEstado: idState }, getAuthConfig())
+                .then((response) => {
+                    setData([...data, response.data]);
+                    openCloseModalInsert();
+                    setUpdateData(true);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
+        }
     };
 
     const PutOrder = async () => {
-        await axios
-            .put(cityURL, {
-                id: cityId,
-                nomeCidade: cityName,
-                idEstado: idState,
-            }, getAuthConfig())
-            .then((response) => {
-                setData((previousData) =>
-                    previousData.map((city) =>
-                        city.id === selectCity.id
-                            ? { ...city, nomeCidade: response.data.nomeCidade }
-                            : city
-                    )
-                );
+        var response = await verificarDados();
+        if (response) {
 
-                const updateCity = response.data;
+            await axios
+                .put(cityURL, {
+                    id: cityId,
+                    nomeCidade: cityName,
+                    idEstado: idState,
+                }, getAuthConfig())
+                .then((response) => {
+                    setData((previousData) =>
+                        previousData.map((city) =>
+                            city.id === selectCity.id
+                                ? { ...city, nomeCidade: response.data.nomeCidade }
+                                : city
+                        )
+                    );
 
-                setData((prevData) => {
-                    return prevData.map((city) => {
-                        if (city.id === cityId) {
-                            return updateCity;
-                        }
-                        return city;
+                    const updateCity = response.data;
+
+                    setData((prevData) => {
+                        return prevData.map((city) => {
+                            if (city.id === cityId) {
+                                return updateCity;
+                            }
+                            return city;
+                        });
                     });
+
+                    openCloseModalEdit();
+                    setUpdateData(true);
+                })
+                .catch((error) => {
+                    console.log(error);
                 });
 
-                openCloseModalEdit();
-                setUpdateData(true);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        }
     };
 
     const DeleteOrder = async () => {
         await axios
-            .delete(cityURL + "/" + cityId, getAuthConfig())
+            .delete(cityURL + cityId, getAuthConfig())
             .then(() => {
                 setData((previousData) =>
                     previousData.filter((city) => city.id !== cityId)
@@ -153,6 +205,7 @@ export default function City() {
 
     const [cityToRender, setCityToRender] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [searchBy, setSearchBy] = useState('nomeCidade');
 
     const fetchData = async () => {
         try {
@@ -168,17 +221,41 @@ export default function City() {
         setSearchTerm(searchTerm);
     };
 
+    const handleSearchBy = (value) => {
+        setSearchBy(value);
+    };
+
     const filterCity = () => {
         const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
         if (searchTerm === '') {
             setCityToRender(data);
         } else {
-            const filtered = data.filter((city) => {
-                const cityNameNormalized = city.nomeCidade.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                return cityNameNormalized.toLowerCase().includes(searchTermNormalized.toLowerCase());
-            });
-            setCityToRender(filtered);
+
+            if (searchBy === 'nomeEstado') {
+
+                const filteredState = dataState.filter((state) => {
+                    const stateFilter = state[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    return stateFilter.toLowerCase().includes(searchTermNormalized.toLowerCase());
+                });
+
+                const filteredIds = filteredState.map((state) => state.id);
+
+                const filtered = data.filter((city) => {
+                    return filteredIds.includes(city.idEstado);
+                });
+
+                setCityToRender(filtered);
+
+            } else {
+
+                const filtered = data.filter((city) => {
+                    const cityNameNormalized = city.nomeCidade.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    return cityNameNormalized.toLowerCase().includes(searchTermNormalized.toLowerCase());
+                });
+                setCityToRender(filtered);
+
+            }
         }
     };
 
@@ -186,29 +263,27 @@ export default function City() {
         if (updateData) {
             fetchData();
             GetOrderState();
+            clearDatas();
             setUpdateData(false);
 
             if (!idState && dataState.length > 0) {
                 setIdState(dataState[0].id);
             }
         }
-    }, [updateData, dataState]);
+
+        const foundOption = allOptions.find(option => option.value === dataState[0].id);
+        if (foundOption && !modalEdit) {
+            setSelectedOption(foundOption);
+        }
+    }, [updateData, dataState, idState]);
 
     useEffect(() => {
         filterCity();
     }, [searchTerm, data]);
 
+
     const [selectedOption, setSelectedOption] = useState(null);
-    //const [isFocused, setIsFocused] = useState(false);
-    /*
-        const handleFocus = () => {
-            setIsFocused(true);
-        };
-    
-        const handleBlur = () => {
-            setIsFocused(false);
-        };
-    */
+
     const handleChange = (option) => {
         setSelectedOption(option);
         if (option) {
@@ -297,6 +372,14 @@ export default function City() {
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                             </svg>
                                         </div>
+                                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => handleSearchBy(e.target.value)}>
+                                            <option key="nomeCidade" value="nomeCidade">
+                                                Nome
+                                            </option>
+                                            <option key="nomeEstado" value="nomeEstado">
+                                                Estado
+                                            </option>
+                                        </select>
                                         <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar cidade" required onChange={(e) => handleSearch(e.target.value)} />
                                     </div>
                                 </div>
@@ -380,6 +463,9 @@ export default function City() {
                                 className="form-control rounded-md border-[#BCBCBC]"
                                 onChange={(e) => setCityName(e.target.value)}
                             />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {errorCityName}
+                            </div>
                             <br />
                             <label className="text-[#444444]">Estado:</label>
                             <br />
@@ -405,10 +491,10 @@ export default function City() {
                     </ModalBody>
                     <ModalFooter>
                         <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert()}>
-                            Fechar
+                            Cancelar
                         </button>
                         <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostOrder()}>
-                            Salvar
+                            Cadastrar
                         </button>{" "}
                     </ModalFooter>
                 </Modal>
@@ -433,11 +519,14 @@ export default function City() {
                                 onChange={(e) => setCityName(e.target.value)}
                                 value={cityName}
                             />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {errorCityName}
+                            </div>
                             <br />
                             <label className="text-[#444444]">Estado:</label>
                             <br />
                             <Select
-                                value={initialOption}
+                                value={selectedOption}
                                 onChange={handleChange}
                                 onInputChange={delayedSearch}
                                 loadOptions={loadOptions}

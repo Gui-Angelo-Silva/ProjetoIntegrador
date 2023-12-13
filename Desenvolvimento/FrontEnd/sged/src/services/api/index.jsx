@@ -3,6 +3,14 @@ import PropTypes from 'prop-types';
 
 const ApiContext = createContext();
 
+export const useApi = () => {
+  const context = useContext(ApiContext);
+  if (!context) {
+    throw new Error('useApi deve ser usado dentro de um ApiProvider');
+  }
+  return context;
+};
+
 export const ApiProvider = ({ children }) => {
 
   const baseURL = "https://localhost:7096/api/";
@@ -17,14 +25,6 @@ export const ApiProvider = ({ children }) => {
     </ApiContext.Provider>
   );
 
-};
-
-export const useApi = () => {
-  const context = useContext(ApiContext);
-  if (!context) {
-    throw new Error('useApi deve ser usado dentro de um ApiProvider');
-  }
-  return context;
 };
 
 ApiProvider.propTypes = {

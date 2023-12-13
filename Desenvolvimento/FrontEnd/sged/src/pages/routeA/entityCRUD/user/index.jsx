@@ -6,10 +6,14 @@ import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
+
 import { useSession } from '../../../../services/session';
+import { useApi } from '../../../../services/api';
 import PropTypes from 'prop-types';
 import InputMask from 'react-input-mask';
-import { PencilSimple, TrashSimple } from '@phosphor-icons/react';
+import Select from 'react-select';
+import debounce from 'lodash.debounce';
 
 const PasswordStrengthIndicator = ({ data }) => {
 
@@ -54,7 +58,9 @@ PasswordStrengthIndicator.propTypes = {
 export default function User() {
 
     const { getAuthConfig } = useSession();
-    const baseUrl = "https://localhost:7096/api/Usuario";
+    const { appendRoute } = useApi();
+    const typeuserURL = appendRoute('TipoUsuario/');
+    const userURL = appendRoute('Usuario/');
 
     const [data, setData] = useState([]);
     const [dataTypeUser, setDataTypeUser] = useState([]);
@@ -69,8 +75,8 @@ export default function User() {
     const [personCpfCnpj, setPersonCpfCnpj] = useState("");
     const [personRgIe, setPersonRgIe] = useState("");
     const [userOffice, setUserOffice] = useState("");
-    const [userStatus, setUserStatus] = useState("");
-    const [idTypeUser, setIdTypeUser] = useState("");
+    const [userStatus, setUserStatus] = useState(true);
+    const [idTypeUser, setIdTypeUser] = useState(dataTypeUser.length > 0 ? dataTypeUser[0].id : null);
     const [userId, setUserId] = useState("");
 
     const [errorPersonName, setErrorPersonName] = useState("");
@@ -89,6 +95,19 @@ export default function User() {
         setErrorPersonCpfCnpj('');
         setErrorPersonRgIe('');
         setErrorUserOffice('');
+    };
+
+    const clearDatas = () => {
+        setPersonName('');
+        setPersonEmail('');
+        setUserPassword('');
+        setPersonTelephone('');
+        setPersonCpfCnpj('');
+        setPersonRgIe('');
+        setUserOffice('');
+        setUserStatus(true);
+        setIdTypeUser(dataTypeUser.length > 0 ? dataTypeUser[0].id : null);
+        setUserId('');
     };
 
     const [selectUser] = useState({
@@ -117,6 +136,11 @@ export default function User() {
         setIdTypeUser(user.idTipoUsuario);
 
         if (option === "Editar") {
+            const foundOption = allOptions.find(option => option.value === user.idTipoUsuario);
+            if (foundOption) {
+                setSelectedOption(foundOption);
+            }
+
             openCloseModalEdit();
         } else {
             openCloseModalDelete();
@@ -124,7 +148,7 @@ export default function User() {
     };
 
     const GetOrderTypeUser = async () => {
-        await axios.get("https://localhost:7096/api/TipoUsuario", getAuthConfig())
+        await axios.get(typeuserURL, getAuthConfig())
             .then(response => {
                 setDataTypeUser(response.data);
             })
@@ -138,6 +162,10 @@ export default function User() {
         setPersonEmail('');
         setUserPassword('');
         clearErrors();
+
+        if (modalInsert) {
+            clearDatas();
+        }
     };
 
     const openCloseModalEdit = () => {
@@ -145,10 +173,18 @@ export default function User() {
         implementMaskCpfCnpj(personCpfCnpj);
         implementMaskRgIe(personRgIe);
         clearErrors();
+
+        if (modalEdit) {
+            clearDatas();
+        }
     };
 
     const openCloseModalDelete = () => {
         setModalDelete(!modalDelete);
+
+        if (modalDelete) {
+            clearDatas();
+        }
     };
 
     const checkEmailExists = (id, email) => {
@@ -471,7 +507,7 @@ export default function User() {
     }
 
     const GetOrderUser = async () => {
-        await axios.get(baseUrl, getAuthConfig())
+        await axios.get(userURL, getAuthConfig())
             .then(response => {
                 setData(response.data);
             })
@@ -499,7 +535,7 @@ export default function User() {
                 statusUsuario: Boolean(userStatus),
                 idTipoUsuario: idTypeUser
             };
-            await axios.post(baseUrl, postData, getAuthConfig())
+            await axios.post(userURL, postData, getAuthConfig())
                 .then(response => {
                     setData(data.concat(response.data));
                     openCloseModalInsert();
@@ -520,7 +556,7 @@ export default function User() {
         if (response) {
 
             delete selectUser.id;
-            await axios.put(baseUrl, {
+            await axios.put(userURL, {
                 id: userId,
                 nomePessoa: personName,
                 emailPessoa: personEmail,
@@ -546,7 +582,7 @@ export default function User() {
     };
 
     const DeleteOrder = async () => {
-        await axios.delete(baseUrl + "/" + userId, getAuthConfig())
+        await axios.delete(userURL + userId, getAuthConfig())
             .then(response => {
                 setData(data.filter(user => user.id !== response.data));
                 openCloseModalDelete();
@@ -559,10 +595,11 @@ export default function User() {
 
     const [userToRender, setUserToRender] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [searchBy, setSearchBy] = useState('nomePessoa');
 
     const fetchData = async () => {
         try {
-            const response = await axios.get(baseUrl, getAuthConfig());
+            const response = await axios.get(userURL, getAuthConfig());
             setData(response.data);
             setUserToRender(response.data);
         } catch (error) {
@@ -574,17 +611,50 @@ export default function User() {
         setSearchTerm(searchTerm);
     };
 
+    const handleSearchBy = (value) => {
+        setSearchBy(value);
+    };
+
     const filterUser = () => {
         const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
         if (searchTerm === '') {
             setUserToRender(data);
         } else {
-            const filtered = data.filter((user) => {
-                const userNameNormalized = user.nomePessoa.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                return userNameNormalized.toLowerCase().includes(searchTermNormalized.toLowerCase());
-            });
-            setUserToRender(filtered);
+
+            if (searchBy === 'nomeTipoUsuario') {
+
+                const filteredTypeUser = dataTypeUser.filter((typeuser) => {
+                    const typeuserFilter = typeuser[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    return typeuserFilter.toLowerCase().includes(searchTermNormalized.toLowerCase());
+                });
+
+                const filteredIds = filteredTypeUser.map((typeuser) => typeuser.id);
+
+                const filtered = data.filter((user) => {
+                    return filteredIds.includes(user.idTipoUsuario);
+                });
+
+                setUserToRender(filtered);
+
+            } else if (searchBy === 'statusUsuario') {
+
+                const filtered = data.filter((user) => {
+                    const userStatus = user[searchBy];
+                    const statusText = userStatus ? 'Ativo' : 'Inativo';
+                    return statusText.toLowerCase().includes(searchTermNormalized.toLowerCase());
+                });
+                setUserToRender(filtered);
+
+            } else {
+
+                const filtered = data.filter((user) => {
+                    const userFilter = user[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    return userFilter.toLowerCase().includes(searchTermNormalized.toLowerCase());
+                });
+                setUserToRender(filtered);
+
+            }
         }
     };
 
@@ -594,17 +664,63 @@ export default function User() {
             fetchData();
             GetOrderTypeUser();
             setUpdateData(false);
-            setUserStatus(true);
 
             if (!idTypeUser && dataTypeUser.length > 0) {
                 setIdTypeUser(dataTypeUser[0].id);
             }
+        }
+
+        const foundOption = allOptions.find(option => option.value === dataTypeUser[0].id);
+        if (foundOption && !modalEdit) {
+            setSelectedOption(foundOption);
         }
     }, [updateData]);
 
     useEffect(() => {
         filterUser();
     }, [searchTerm, data]);
+
+
+    const [selectedOption, setSelectedOption] = useState(null);
+
+    const handleChange = (option) => {
+        setSelectedOption(option);
+        if (option) {
+            setIdTypeUser(option.value);
+        } else {
+            setIdTypeUser('');
+        }
+    };
+
+    const options = dataTypeUser.map(item => ({
+        value: item.id,
+        label: item.nomeTipoUsuario
+    }));
+
+    const allOptions = dataTypeUser.map(item => ({
+        value: item.id,
+        label: item.nomeTipoUsuario
+    }));
+
+    const filterOptions = (inputValue) => {
+        if (!inputValue) {
+            return allOptions;
+        }
+
+        const searchTermNormalized = inputValue.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+        return allOptions.filter(option =>
+            option.label.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().includes(searchTermNormalized)
+        );
+    };
+
+    const delayedSearch = debounce((inputValue) => {
+        filterOptions(inputValue);
+    }, 300);
+
+    const loadOptions = (inputValue, callback) => {
+        callback(filterOptions(inputValue));
+    };
 
     const handleKeyDown = (e) => {
         const charCode = e.which ? e.which : e.keyCode;
@@ -669,13 +785,36 @@ export default function User() {
         }
     };
 
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 20;
+    const totalItems = userToRender.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    // Função para pegar uma parte específica da lista
+    const getCurrentPageItems = (page) => {
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return userToRender.slice(startIndex, endIndex);
+    };
+
+    // Renderiza a lista atual com base na página atual
+    const currentUsers = getCurrentPageItems(currentPage);
+
+    // Funções para navegar entre as páginas
+    const goToPage = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
     return (
         <div className="flex flex-1 min-h-screen">
             <div className="h-full w-full" style={{ display: 'flex', flexDirection: 'column' }}>
                 <NavBar /> {/* NavBar no topo */}
                 <div className="flex flex-1 min-h-full">
                     <SideBar />
-                    <div className="min-h-screen"  style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
+                    <div className="min-h-screen" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
                         <br />
                         <div className="flex flex-row">
                             <Link to="/a/registration">
@@ -694,6 +833,23 @@ export default function User() {
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                             </svg>
                                         </div>
+                                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => handleSearchBy(e.target.value)}>
+                                            <option key="nomePessoa" value="nomePessoa">
+                                                Nome
+                                            </option>
+                                            <option key="emailPessoa" value="emailPessoa">
+                                                E-mail
+                                            </option>
+                                            <option key="nomeTipoUsuario" value="nomeTipoUsuario">
+                                                Tipo Usuário
+                                            </option>
+                                            <option key="cargoUsuario" value="cargoUsuario">
+                                                Cargo
+                                            </option>
+                                            <option key="statusUsuario" value="statusUsuario">
+                                                Status
+                                            </option>
+                                        </select>
                                         <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar usuário" required onChange={(e) => handleSearch(e.target.value)} />
                                         {/* <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-emerald-600 hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Pesquisar</button> */}
                                     </div>
@@ -707,7 +863,7 @@ export default function User() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-6 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="ml-5 text-white text-lg font-semibold">Nome</span>
+                                <span className="flex ml-5 text-white text-lg font-semibold">Nome</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">E-mail</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">Tipo Usuário</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">Cargo</span>
@@ -715,11 +871,11 @@ export default function User() {
                                 <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                             </div>
                             <ul className="w-full">
-                                {userToRender.map(user => {
+                                {currentUsers.map(user => {
                                     const tipoUsuario = dataTypeUser.find(typeuser => typeuser.id === user.idTipoUsuario);
                                     return (
                                         <li className="grid grid-cols-6 w-full" key={user.id}>
-                                            <span className="pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{user.nomePessoa}</span>
+                                            <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{user.nomePessoa}</span>
                                             <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.emailPessoa}</span>
                                             <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoUsuario ? tipoUsuario.nomeTipoUsuario : 'Tipo de usuário não encontrado!'}</span>
                                             <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.cargoUsuario}</span>
@@ -732,6 +888,34 @@ export default function User() {
                                     );
                                 })}
                             </ul>
+                            {/* Estilização dos botões de navegação */}
+                            <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
+                                <button
+                                    className=""
+                                    onClick={() => goToPage(currentPage - 1)}
+                                >
+                                    <CaretLeft size={22} className="text-[#58AFAE]" />
+                                </button>
+                                <select
+                                    className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
+                                    value={currentPage}
+                                    onChange={(e) => goToPage(Number(e.target.value))}
+                                >
+                                    {[...Array(totalPages)].map((_, index) => (
+                                        <option key={index + 1} value={index + 1}>
+                                            {index + 1}
+                                        </option>
+                                    ))}
+                                </select>
+                                <button
+                                    className=""
+                                    onClick={() => goToPage(currentPage + 1)}
+                                >
+                                    <CaretRight size={22} className="text-[#58AFAE]" />
+                                </button>
+                            </div>
+                            {/* Espaçamento abaixo dos botões */}
+                            <div className="mt-4"></div>
                         </div>
                     </div>
                 </div>
@@ -823,18 +1007,29 @@ export default function User() {
                             <br />
                             <label className="text-[#444444]">Tipo Usuário:</label>
                             <br />
-                            <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setIdTypeUser(e.target.value)} defaultValue={idTypeUser}>
-                                {dataTypeUser.map((typeuser) => (
-                                    <option key={typeuser.id} value={typeuser.id}>
-                                        {typeuser.nomeTipoUsuario}
-                                    </option>
-                                ))}
-                            </select>
+                            <Select
+                                value={selectedOption}
+                                onChange={handleChange}
+                                onInputChange={delayedSearch}
+                                loadOptions={loadOptions}
+                                options={options}
+                                placeholder="Pesquisar tipo usuário . . ."
+                                isClearable
+                                isSearchable
+                                noOptionsMessage={() => {
+                                    if (dataTypeUser.length === 0) {
+                                        return "Nenhum estado cadastrado!";
+                                    } else {
+                                        return "Nenhuma opção encontrada!";
+                                    }
+                                }}
+                                className="style-select"
+                            />
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert()}>Fechar</button>
-                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostOrder()}>Salvar</button>{"  "}
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert()}>Cancelar</button>
+                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostOrder()}>Cadastrar</button>{"  "}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalEdit}>
@@ -918,13 +1113,23 @@ export default function User() {
                             <br />
                             <label>Tipo Usuário:</label>
                             <br />
-                            <select className="form-control rounded border" onChange={(e) => setIdTypeUser(e.target.value)}>
-                                {dataTypeUser.map((typeuser) => (
-                                    <option key={typeuser.id} value={typeuser.id} selected={typeuser.id === idTypeUser}>
-                                        {typeuser.nomeTipoUsuario}
-                                    </option>
-                                ))}
-                            </select>
+                            <Select
+                                value={selectedOption}
+                                onChange={handleChange}
+                                onInputChange={delayedSearch}
+                                loadOptions={loadOptions}
+                                options={options}
+                                placeholder="Pesquisar estado . . ."
+                                isClearable
+                                isSearchable
+                                noOptionsMessage={() => {
+                                    if (dataTypeUser.length === 0) {
+                                        return "Nenhum estado cadastrado!";
+                                    } else {
+                                        return "Nenhuma opção encontrada!";
+                                    }
+                                }}
+                            />
                             <br />
                         </div>
                     </ModalBody>

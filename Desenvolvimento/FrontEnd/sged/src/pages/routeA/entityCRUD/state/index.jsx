@@ -5,14 +5,17 @@ import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
-import { useSession } from '../../../../services/session';
 import { FaPlus } from "react-icons/fa6";
-import { PencilSimple, TrashSimple } from "@phosphor-icons/react";
+import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
+
+import { useSession } from '../../../../services/session';
+import { useApi } from '../../../../services/api';
 
 export default function State() {
 
     const { getAuthConfig } = useSession();
-    const baseUrl = "https://localhost:7096/api/Estado"
+    const { appendRoute } = useApi();
+    const stateURL = appendRoute('Estado/');
 
     const [data, setData] = useState([])
     const [modalInsert, setModalInsert] = useState(false)
@@ -26,7 +29,21 @@ export default function State() {
         id: "",
         nomeEstado: "",
         ufEstado: ""
-    })
+    });
+
+    const [errorStateName, setErrorStateName] = useState("");
+    const [errorStateUf, setErrorStateUf] = useState("");
+
+    const clearErrors = () => {
+        setErrorStateName('');
+        setErrorStateUf('');
+    };
+
+    const clearDatas = () => {
+        setStateName('');
+        setStateUf('');
+        setStateId('');
+    };
 
     const StateSelect = (state, option) => {
         setStateId(state.id)
@@ -39,22 +56,63 @@ export default function State() {
         else {
             openCloseModalDelete();
         }
-    }
+    };
 
     const openCloseModalInsert = () => {
         setModalInsert(!modalInsert);
-    }
+        clearErrors();
+
+        if (modalInsert) {
+            clearDatas();
+        }
+    };
 
     const openCloseModalEdit = () => {
         setModalEdit(!modalEdit);
-    }
+        clearErrors();
+
+        if (modalEdit) {
+            clearDatas();
+        }
+    };
 
     const openCloseModalDelete = () => {
         setModalDelete(!modalDelete);
-    }
+
+        if (modalDelete) {
+            clearDatas();
+        }
+    };
+
+    const verificarDados = async () => {
+        clearErrors();
+        var status = true;
+
+        if (stateName) {
+            if (stateName.length < 3) {
+                setErrorStateName('O nome precisa ter no mínimo 3 letras!');
+                status = false;
+            }
+        } else {
+            setErrorStateName('O nome é requerido!');
+            status = false;
+        }
+
+        if (stateUf) {
+            if (stateUf.length < 2) {
+                setErrorStateUf('A sigla precisa ter 2 letras!');
+                status = false;
+            }
+        } else {
+            setErrorStateUf('A sigla é requerida!');
+            status = false;
+        }
+
+        return status;
+    };
 
     const GetOrder = async () => {
-        await axios.get(baseUrl, getAuthConfig())
+        await axios.get(stateURL, getAuthConfig())
             .then(response => {
                 setData(response.data)
             }).catch(error => {
@@ -63,50 +121,60 @@ export default function State() {
     }
 
     const PostOrder = async () => {
-        delete selectState.id
-        await axios.post(baseUrl, { nomeEstado: stateName, ufEstado: stateUf }, getAuthConfig())
-            .then(response => {
-                setData(prevData => [...prevData, response.data]);
-                openCloseModalInsert();
-                setUpdateData(true);
-            }).catch(error => {
-                console.log(error);
-            })
-    }
+        var response = await verificarDados();
+        if (response) {
 
-    async function PutOrder() {
-        delete selectState.id
-        await axios.put(baseUrl, { id: stateId, nomeEstado: stateName, ufEstado: stateUf }, getAuthConfig())
-            .then(response => {
-                var answer = response.data
-                var aux = data
-                aux.map(state => {
-                    if (state.id === selectState.id) {
-                        state.nomeEstado = answer.nomeEstado
-                        state.ufEstado = answer.ufEstado
-                    }
+            delete selectState.id
+            await axios.post(stateURL, { nomeEstado: stateName, ufEstado: stateUf }, getAuthConfig())
+                .then(response => {
+                    setData(prevData => [...prevData, response.data]);
+                    openCloseModalInsert();
+                    setUpdateData(true);
+                }).catch(error => {
+                    console.log(error);
                 })
 
-                const updatedState = response.data;
+        }
+    };
 
-                setData((prevData) => {
-                    return prevData.map((state) => {
-                        if (state.id === stateId) {
-                            return updatedState;
+    const PutOrder = async () => {
+        var response = await verificarDados();
+        if (response) {
+
+            delete selectState.id
+            await axios.put(stateURL, { id: stateId, nomeEstado: stateName, ufEstado: stateUf }, getAuthConfig())
+                .then(response => {
+                    var answer = response.data
+                    var aux = data
+                    aux.map(state => {
+                        if (state.id === selectState.id) {
+                            state.nomeEstado = answer.nomeEstado
+                            state.ufEstado = answer.ufEstado
                         }
-                        return state;
-                    });
-                });
+                    })
 
-                openCloseModalEdit();
-                setUpdateData(true);
-            }).catch(error => {
-                console.log(error)
-            })
-    }
+                    const updatedState = response.data;
+
+                    setData((prevData) => {
+                        return prevData.map((state) => {
+                            if (state.id === stateId) {
+                                return updatedState;
+                            }
+                            return state;
+                        });
+                    });
+
+                    openCloseModalEdit();
+                    setUpdateData(true);
+                }).catch(error => {
+                    console.log(error)
+                })
+
+        }
+    };
 
     const DeleteOrder = async () => {
-        await axios.delete(baseUrl + "/" + stateId, getAuthConfig())
+        await axios.delete(stateURL + stateId, getAuthConfig())
             .then(response => {
                 setData(data.filter(state => state.id !== response.data));
                 openCloseModalDelete();
@@ -117,12 +185,12 @@ export default function State() {
     };
 
     const [stateToRender, setStateToRender] = useState([]);
-
     const [searchTerm, setSearchTerm] = useState('');
+    const [searchBy, setSearchBy] = useState('nomeEstado');
 
     const fetchData = async () => {
         try {
-            const response = await axios.get(baseUrl, getAuthConfig());
+            const response = await axios.get(stateURL, getAuthConfig());
             setData(response.data);
             setStateToRender(response.data);
         } catch (error) {
@@ -134,6 +202,10 @@ export default function State() {
         setSearchTerm(searchTerm);
     };
 
+    const handleSearchBy = (value) => {
+        setSearchBy(value);
+    };
+
     const filterState = () => {
         const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
@@ -141,7 +213,7 @@ export default function State() {
             setStateToRender(data);
         } else {
             const filtered = data.filter((state) => {
-                const stateNameNormalized = state.nomeEstado.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                const stateNameNormalized = state[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                 return stateNameNormalized.toLowerCase().includes(searchTermNormalized.toLowerCase());
             });
             setStateToRender(filtered);
@@ -161,13 +233,35 @@ export default function State() {
     }, [searchTerm, data]);
 
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 20;
+    const totalItems = stateToRender.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    // Função para pegar uma parte específica da lista
+    const getCurrentPageItems = (page) => {
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return stateToRender.slice(startIndex, endIndex);
+    };
+
+    // Renderiza a lista atual com base na página atual
+    const currentStates = getCurrentPageItems(currentPage);
+
+    // Funções para navegar entre as páginas
+    const goToPage = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
     return (
         <div className="flex flex-1 min-h-screen">
             <div className="h-full w-full" style={{ display: 'flex', flexDirection: 'column' }}>
                 <NavBar />
                 <div className="flex flex-1 min-h-full">
                     <SideBar />
-                    <div className="min-h-screen"  style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
+                    <div className="min-h-screen" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
                         <br />
                         <div className="flex flex-row">
                             <Link to="/a/registration">
@@ -189,6 +283,14 @@ export default function State() {
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                             </svg>
                                         </div>
+                                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => handleSearchBy(e.target.value)}>
+                                            <option key="nomeEstado" value="nomeEstado">
+                                                Nome
+                                            </option>
+                                            <option key="ufEstado" value="ufEstado">
+                                                Sigla
+                                            </option>
+                                        </select>
                                         <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar estado" required onChange={(e) => handleSearch(e.target.value)} />
                                     </div>
                                 </div>
@@ -201,14 +303,14 @@ export default function State() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="ml-5 text-white text-lg font-semibold">Estado</span>
+                                <span className="flex ml-5 text-white text-lg font-semibold">Estado</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">UF</span>
                                 <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                             </div>
                             <ul className="w-full">
-                                {stateToRender.map((state) => (
+                                {currentStates.map((state) => (
                                     <li className="grid grid-cols-3 w-full" key={state.id}>
-                                        <span className="pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{state.nomeEstado}</span>
+                                        <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{state.nomeEstado}</span>
                                         <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{state.ufEstado}</span>
                                         <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                             <button
@@ -227,6 +329,34 @@ export default function State() {
                                     </li>
                                 ))}
                             </ul>
+                            {/* Estilização dos botões de navegação */}
+                            <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
+                                <button
+                                    className=""
+                                    onClick={() => goToPage(currentPage - 1)}
+                                >
+                                    <CaretLeft size={22} className="text-[#58AFAE]" />
+                                </button>
+                                <select
+                                    className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
+                                    value={currentPage}
+                                    onChange={(e) => goToPage(Number(e.target.value))}
+                                >
+                                    {[...Array(totalPages)].map((_, index) => (
+                                        <option key={index + 1} value={index + 1}>
+                                            {index + 1}
+                                        </option>
+                                    ))}
+                                </select>
+                                <button
+                                    className=""
+                                    onClick={() => goToPage(currentPage + 1)}
+                                >
+                                    <CaretRight size={22} className="text-[#58AFAE]" />
+                                </button>
+                            </div>
+                            {/* Espaçamento abaixo dos botões */}
+                            <div className="mt-4"></div>
                         </div>
                     </div>
                 </div>
@@ -238,16 +368,22 @@ export default function State() {
                             <label className="text-[#444444]">Nome: </label>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setStateName(e.target.value)} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {errorStateName}
+                            </div>
                             <br />
                             <label className="text-[#444444]">Sigla:</label>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setStateUf(e.target.value.toUpperCase())} value={stateUf} maxLength={2} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {errorStateUf}
+                            </div>
                             <br />
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert()}>Fechar</button>
-                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostOrder()}>Salvar</button>{"  "}
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert()}>Cancelar</button>
+                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostOrder()}>Cadastrar</button>{"  "}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalEdit}>
@@ -258,10 +394,16 @@ export default function State() {
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={stateId} /> <br />
                             <label className="text-[#444444]">Nome:</label>
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomeEstado" onChange={(e) => setStateName(e.target.value)} value={stateName} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {errorStateName}
+                            </div>
                             <br />
                             <label className="text-[#444444]">Sigla:</label>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="ufEstado" onChange={(e) => setStateUf(e.target.value.toUpperCase())} value={stateUf} maxLength={2} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {errorStateUf}
+                            </div>
                             <br />
                         </div>
                     </ModalBody>

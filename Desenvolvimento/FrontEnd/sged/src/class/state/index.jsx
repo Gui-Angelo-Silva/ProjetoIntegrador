@@ -1,4 +1,4 @@
-class State {
+class StateClass {
 
     constructor() {
         this.stateName = '';
@@ -6,47 +6,51 @@ class State {
         this.stateId = '';
         this.errorStateName = '';
         this.errorStateUf = '';
-    };
+    }
 
     setStateName(name) {
         this.stateName = name;
-    };
+    }
 
     setStateUf(uf) {
         this.stateUf = uf;
-    };
+    }
 
     setStateId(id) {
         this.stateId = id;
-    };
+    }
 
-    getDatas(object) {
+    propertyName() {
+        return this.stateName;
+    }
+
+    getData(object) {
         this.stateName = object.nomeEstado;
         this.stateUf = object.ufEstado;
         this.stateId = object.id;
-    };
+    }
 
-    setDatas() {
+    setData() {
         return {
             id: this.stateId,
             nomeEstado: this.stateName,
             ufEstado: this.stateUf
         };
-    };
+    }
 
     clearData() {
         this.stateName = '';
         this.stateUf = '';
         this.stateId = '';
-    };
+    }
 
-    clearErrors() {
+    clearError() {
         this.errorStateName = '';
         this.errorStateUf = '';
-    };
+    }
 
     verifyData() {
-        this.clearErrors();
+        this.clearError();
         let status = true;
 
         if (this.stateName) {
@@ -70,6 +74,12 @@ class State {
         }
 
         return status;
-    };
+    }
 
 }
+
+const useStateClass = () => {
+    return new StateClass();
+};
+
+export default useStateClass;

@@ -282,15 +282,16 @@ export default function TypeUser() {
                             <div className="flex justify-center items-center mx-auto">
                                 <div className="relative items-stretch self-center justify-center" style={{ width: 500 }}>
                                     <label htmlFor="default-search" className="mb-5 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-                                    <div className="relative">
+                                    <div className="flex relative border rounded-lg border-[#BCBCBC]">
                                         <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                             <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                             </svg>
                                         </div>
-                                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => handleSearchBy(e.target.value)}>
+                                        <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar tipo usuário" required onChange={(e) => handleSearch(e.target.value)} />
+                                        <select className="form-control rounded-md w-44 text-gray-800" onChange={(e) => handleSearchBy(e.target.value)}>
                                             <option key="nomeTipoUsuario" value="nomeTipoUsuario">
-                                                Nome
+                                                Tipo de Usuário
                                             </option>
                                             <option key="nivelAcesso" value="nivelAcesso">
                                                 Nível de Acesso
@@ -299,7 +300,6 @@ export default function TypeUser() {
                                                 Descrição
                                             </option>
                                         </select>
-                                        <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar tipo usuário" required onChange={(e) => handleSearch(e.target.value)} />
                                     </div>
                                 </div>
                             </div>
@@ -311,7 +311,7 @@ export default function TypeUser() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-4 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="flex ml-5 text-white text-lg font-semibold">Nome</span>
+                                <span className="flex ml-5 text-white text-lg font-semibold">Tipo de Usuário</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">Nível de Acesso</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
                                 <span className="flex justify-center text-white text-lg font-semibold">Ações</span>

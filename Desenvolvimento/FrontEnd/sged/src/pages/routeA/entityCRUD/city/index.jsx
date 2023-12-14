@@ -323,9 +323,8 @@ export default function City() {
         callback(filterOptions(inputValue));
     };
 
-
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 20;
+    const itemsPerPage = 10;
     const totalItems = cityToRender.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 

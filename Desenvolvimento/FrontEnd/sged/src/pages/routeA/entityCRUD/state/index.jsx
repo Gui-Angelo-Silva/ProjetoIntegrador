@@ -7,7 +7,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
-
 import { useSession } from '../../../../services/session';
 import { useApi } from '../../../../services/api';
 
@@ -255,6 +254,11 @@ export default function State() {
         }
     };
 
+    const options = [
+        { value: "nomeEstado", label: "Estado", key: "nomeEstado"},
+        { value: "ufEstado", label: "Sigla", key: "ufEstado"}
+    ];
+
     return (
         <div className="flex flex-1 min-h-screen">
             <div className="h-full w-full" style={{ display: 'flex', flexDirection: 'column' }}>
@@ -284,18 +288,17 @@ export default function State() {
                                             </svg>
                                         </div>
                                         <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar estado" required onChange={(e) => handleSearch(e.target.value)} />
-                                        <select className="form-control rounded-md w-28 text-gray-800" onChange={(e) => handleSearchBy(e.target.value)}>
-                                            <option className="focus:" key="nomeEstado" value="nomeEstado">
+                                        <select className="form-control rounded-md w-28 text-gray-800" onChange={(e) => handleSearchBy(e.target.value)} >
+                                            <option className="" key="nomeEstado" value="nomeEstado">
                                                 Estado
                                             </option>
-                                            <option key="ufEstado" value="ufEstado">
+                                            <option className="" key="ufEstado" value="ufEstado">
                                                 Sigla
                                             </option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
-
                             <div className="flex items-center">
                                 <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert()}>
                                     Novo <FaPlus className="inline-block" style={{ alignItems: 'center' }} />

@@ -49,8 +49,62 @@ namespace SGED.Migrations
                         new
                         {
                             Id = 1,
-                            IdEstado = 1,
+                            IdEstado = 25,
                             NomeCidade = "Jales"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IdEstado = 25,
+                            NomeCidade = "Santa Fé do Sul"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IdEstado = 25,
+                            NomeCidade = "Aparecida d'Oeste"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            IdEstado = 25,
+                            NomeCidade = "São Francisco"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            IdEstado = 25,
+                            NomeCidade = "Urânia"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            IdEstado = 25,
+                            NomeCidade = "Palmeira d'Oeste"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            IdEstado = 25,
+                            NomeCidade = "Santa Clara d'Oeste"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            IdEstado = 25,
+                            NomeCidade = "Paranapuã"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            IdEstado = 25,
+                            NomeCidade = "Rubineia"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            IdEstado = 25,
+                            NomeCidade = "São João das Duas Pontes"
                         });
                 });
 
@@ -83,8 +137,164 @@ namespace SGED.Migrations
                         new
                         {
                             Id = 1,
+                            NomeEstado = "Acre",
+                            UfEstado = "AC"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            NomeEstado = "Alagoas",
+                            UfEstado = "AL"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            NomeEstado = "Amapá",
+                            UfEstado = "AP"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            NomeEstado = "Amazonas",
+                            UfEstado = "AM"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            NomeEstado = "Bahia",
+                            UfEstado = "BA"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            NomeEstado = "Ceará",
+                            UfEstado = "CE"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            NomeEstado = "Distrito Federal",
+                            UfEstado = "DF"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            NomeEstado = "Espírito Santo",
+                            UfEstado = "ES"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            NomeEstado = "Goiás",
+                            UfEstado = "GO"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            NomeEstado = "Maranhão",
+                            UfEstado = "MA"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            NomeEstado = "Mato Grosso",
+                            UfEstado = "MT"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            NomeEstado = "Mato Grosso do Sul",
+                            UfEstado = "MS"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            NomeEstado = "Minas Gerais",
+                            UfEstado = "MG"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            NomeEstado = "Pará",
+                            UfEstado = "PA"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            NomeEstado = "Paraíba",
+                            UfEstado = "PB"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            NomeEstado = "Paraná",
+                            UfEstado = "PR"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            NomeEstado = "Pernambuco",
+                            UfEstado = "PE"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            NomeEstado = "Piauí",
+                            UfEstado = "PI"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            NomeEstado = "Rio de Janeiro",
+                            UfEstado = "RJ"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            NomeEstado = "Rio Grande do Norte",
+                            UfEstado = "RN"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            NomeEstado = "Rio Grande do Sul",
+                            UfEstado = "RS"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            NomeEstado = "Rondônia",
+                            UfEstado = "RO"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            NomeEstado = "Roraima",
+                            UfEstado = "RR"
+                        },
+                        new
+                        {
+                            Id = 24,
+                            NomeEstado = "Santa Catarina",
+                            UfEstado = "SC"
+                        },
+                        new
+                        {
+                            Id = 25,
                             NomeEstado = "São Paulo",
                             UfEstado = "SP"
+                        },
+                        new
+                        {
+                            Id = 26,
+                            NomeEstado = "Sergipe",
+                            UfEstado = "SE"
+                        },
+                        new
+                        {
+                            Id = 27,
+                            NomeEstado = "Tocantins",
+                            UfEstado = "TO"
                         });
                 });
 

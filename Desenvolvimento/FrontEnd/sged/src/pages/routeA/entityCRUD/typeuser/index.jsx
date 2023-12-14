@@ -239,7 +239,7 @@ export default function TypeUser() {
 
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 20;
+    const itemsPerPage = 10;
     const totalItems = typeUserToRender.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 

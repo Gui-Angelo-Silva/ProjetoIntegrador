@@ -1,85 +1,91 @@
-class StateClass {
+import { useState } from 'react';
 
-    constructor() {
-        this.stateName = '';
-        this.stateUf = '';
-        this.stateId = '';
-        this.errorStateName = '';
-        this.errorStateUf = '';
+function StateClass() {
+  const [stateName, setStateName] = useState('');
+  const [stateUf, setStateUf] = useState('');
+  const [stateId, setStateId] = useState('');
+  const [errorStateName, setErrorStateName] = useState('');
+  const [errorStateUf, setErrorStateUf] = useState('');
+
+  function propertyName() {
+    return stateName;
+  }
+
+  function getData(object) {
+    setStateName(object.nomeEstado);
+    setStateUf(object.ufEstado);
+    setStateId(object.id);
+  }
+
+  function setData() {
+    return {
+      id: stateId,
+      nomeEstado: stateName,
+      ufEstado: stateUf
+    };
+  }
+
+  function clearData() {
+    setStateName('');
+    setStateUf('');
+    setStateId('');
+  }
+
+  function clearError() {
+    setErrorStateName('');
+    setErrorStateUf('');
+  }
+
+  function verifyData() {
+    clearError();
+    let status = true;
+
+    if (stateName) {
+      if (stateName.length < 3) {
+        setErrorStateName('O nome precisa ter no mínimo 3 letras!');
+        status = false;
+      }
+    } else {
+      setErrorStateName('O nome é requerido!');
+      status = false;
     }
 
-    setStateName(name) {
-        this.stateName = name;
+    if (stateUf) {
+      if (stateUf.length < 2) {
+        setErrorStateUf('A sigla precisa ter 2 letras!');
+        status = false;
+      }
+    } else {
+      setErrorStateUf('A sigla é requerida!');
+      status = false;
     }
 
-    setStateUf(uf) {
-        this.stateUf = uf;
+    return status;
+  }
+
+  function verifyUf(uf) {
+    const regex = /^[a-zA-Z]*$/;
+    if (regex.test(uf) || uf === '') {
+      setStateUf(uf);
     }
+  }
 
-    setStateId(id) {
-        this.stateId = id;
-    }
-
-    propertyName() {
-        return this.stateName;
-    }
-
-    getData(object) {
-        this.stateName = object.nomeEstado;
-        this.stateUf = object.ufEstado;
-        this.stateId = object.id;
-    }
-
-    setData() {
-        return {
-            id: this.stateId,
-            nomeEstado: this.stateName,
-            ufEstado: this.stateUf
-        };
-    }
-
-    clearData() {
-        this.stateName = '';
-        this.stateUf = '';
-        this.stateId = '';
-    }
-
-    clearError() {
-        this.errorStateName = '';
-        this.errorStateUf = '';
-    }
-
-    verifyData() {
-        this.clearError();
-        let status = true;
-
-        if (this.stateName) {
-            if (this.stateName.length < 3) {
-                this.errorStateName = 'O nome precisa ter no mínimo 3 letras!';
-                status = false;
-            }
-        } else {
-            this.errorStateName = 'O nome é requerido!';
-            status = false;
-        }
-
-        if (this.stateUf) {
-            if (this.stateUf.length < 2) {
-                this.errorStateUf = 'A sigla precisa ter 2 letras!';
-                status = false;
-            }
-        } else {
-            this.errorStateUf = 'A sigla é requerida!';
-            status = false;
-        }
-
-        return status;
-    }
-
+  return {
+    stateName,
+    setStateName,
+    stateUf,
+    setStateUf,
+    stateId,
+    errorStateName,
+    errorStateUf,
+    propertyName,
+    getData,
+    setData,
+    clearData,
+    clearError,
+    verifyData,
+    verifyUf
+  };
 }
 
-const useStateClass = () => {
-    return new StateClass();
-};
-
-export default useStateClass;
+export default StateClass;

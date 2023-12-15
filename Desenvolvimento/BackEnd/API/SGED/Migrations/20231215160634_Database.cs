@@ -109,7 +109,36 @@ namespace SGED.Migrations
             migrationBuilder.InsertData(
                 table: "estado",
                 columns: new[] { "idestado", "nomeestado", "ufestado" },
-                values: new object[] { 1, "São Paulo", "SP" });
+                values: new object[,]
+                {
+                    { 1, "Acre", "AC" },
+                    { 2, "Alagoas", "AL" },
+                    { 3, "Amapá", "AP" },
+                    { 4, "Amazonas", "AM" },
+                    { 5, "Bahia", "BA" },
+                    { 6, "Ceará", "CE" },
+                    { 7, "Distrito Federal", "DF" },
+                    { 8, "Espírito Santo", "ES" },
+                    { 9, "Goiás", "GO" },
+                    { 10, "Maranhão", "MA" },
+                    { 11, "Mato Grosso", "MT" },
+                    { 12, "Mato Grosso do Sul", "MS" },
+                    { 13, "Minas Gerais", "MG" },
+                    { 14, "Pará", "PA" },
+                    { 15, "Paraíba", "PB" },
+                    { 16, "Paraná", "PR" },
+                    { 17, "Pernambuco", "PE" },
+                    { 18, "Piauí", "PI" },
+                    { 19, "Rio de Janeiro", "RJ" },
+                    { 20, "Rio Grande do Norte", "RN" },
+                    { 21, "Rio Grande do Sul", "RS" },
+                    { 22, "Rondônia", "RO" },
+                    { 23, "Roraima", "RR" },
+                    { 24, "Santa Catarina", "SC" },
+                    { 25, "São Paulo", "SP" },
+                    { 26, "Sergipe", "SE" },
+                    { 27, "Tocantins", "TO" }
+                });
 
             migrationBuilder.InsertData(
                 table: "tipousuario",
@@ -126,7 +155,19 @@ namespace SGED.Migrations
             migrationBuilder.InsertData(
                 table: "cidade",
                 columns: new[] { "idcidade", "IdEstado", "nomecidade" },
-                values: new object[] { 1, 1, "Jales" });
+                values: new object[,]
+                {
+                    { 1, 25, "Aparecida d'Oeste" },
+                    { 2, 25, "Jales" },
+                    { 3, 25, "Palmeira d'Oeste" },
+                    { 4, 25, "Paranapuã" },
+                    { 5, 25, "Rubineia" },
+                    { 6, 25, "Santa Clara d'Oeste" },
+                    { 7, 25, "Santa Fé do Sul" },
+                    { 8, 25, "São Francisco" },
+                    { 9, 25, "São João das Duas Pontes" },
+                    { 10, 25, "Urânia" }
+                });
 
             migrationBuilder.InsertData(
                 table: "usuario",

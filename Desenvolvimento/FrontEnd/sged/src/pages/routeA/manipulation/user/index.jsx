@@ -787,7 +787,7 @@ export default function User() {
 
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 20;
+    const itemsPerPage = 10;
     const totalItems = userToRender.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 

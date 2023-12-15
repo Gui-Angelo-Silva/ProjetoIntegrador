@@ -7,13 +7,13 @@ import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
-import useConnectionClass from '../../../../class/entity/connection';
-import useStateClass from '../../../../class/state';
+import ConnectionEntity from '../../../../class/entity/connection';
+import StateClass from '../../../../class/state';
 
 export default function State() {
 
-    const state = useStateClass();
-    const connection = useConnectionClass('Estado/');
+    const state = StateClass();
+    const connection = ConnectionEntity('Estado/');
 
     const [data, setData] = useState([]);
     const [modalInsert, setModalInsert] = useState(false);
@@ -70,10 +70,9 @@ export default function State() {
     const PostState = async () => {
         const response = await connection.postOrder(state);
         if (response.status) {
-            setData(response.message);
             openCloseModalInsert();
             setUpdateData(true);
-
+            console.log(response.message);
         } else {
             console.error(response.message);
         }
@@ -82,10 +81,9 @@ export default function State() {
     const PutState = async () => {
         const response = await connection.putOrder(state);
         if (response.status) {
-            setData(response.message);
             openCloseModalEdit();
             setUpdateData(true);
-            
+            console.log(response.message);
         } else {
             console.error(response.message);
         }
@@ -94,10 +92,9 @@ export default function State() {
     const DeleteState = async () => {
         const response = await connection.deleteOrder(state);
         if (response.status) {
-            setData(response.message);
             openCloseModalInsert();
             setUpdateData(true);
-            
+            console.log(response.message);
         } else {
             console.error(response.message);
         }
@@ -201,8 +198,8 @@ export default function State() {
                                             </svg>
                                         </div>
                                         <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar estado" required onChange={(e) => handleSearch(e.target.value)} />
-                                        <select className="form-control rounded-md w-28 text-gray-800" onChange={(e) => handleSearchBy(e.target.value)}>
-                                            <option className="focus:" key="nomeEstado" value="nomeEstado">
+                                        <select className="form-control rounded-md w-28 text-gray-800" onChange={(e) => handleSearchBy(e.target.value)} >
+                                            <option key="nomeEstado" value="nomeEstado">
                                                 Estado
                                             </option>
                                             <option key="ufEstado" value="ufEstado">
@@ -212,7 +209,6 @@ export default function State() {
                                     </div>
                                 </div>
                             </div>
-
                             <div className="flex items-center">
                                 <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert()}>
                                     Novo <FaPlus className="inline-block" style={{ alignItems: 'center' }} />
@@ -292,7 +288,7 @@ export default function State() {
                             <br />
                             <label className="text-[#444444]">Sigla:</label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => state.setStateUf(e.target.value.toUpperCase())} value={state.stateUf} maxLength={2} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => state.verifyUf(e.target.value.toUpperCase())} value={state.stateUf} maxLength={2} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                                 {state.errorStateUf}
                             </div>
@@ -318,7 +314,7 @@ export default function State() {
                             <br />
                             <label className="text-[#444444]">Sigla:</label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="ufEstado" onChange={(e) => state.setStateUf(e.target.value.toUpperCase())} value={state.stateUf} maxLength={2} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="ufEstado" onChange={(e) => state.verifyUf(e.target.value.toUpperCase())} value={state.stateUf} maxLength={2} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                                 {state.errorStateUf}
                             </div>

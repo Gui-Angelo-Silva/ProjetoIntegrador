@@ -1,53 +1,28 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
-import axios from "axios";
 import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
-import { useSession } from '../../../../services/session';
-import { useApi } from '../../../../services/api';
+
+import ConnectionEntity from '../../../../class/entity/connection';
+import StateClass from '../../../../class/state';
 
 export default function State() {
 
-    const { getAuthConfig } = useSession();
-    const { appendRoute } = useApi();
-    const stateURL = appendRoute('Estado/');
+    const state = StateClass();
+    const connection = ConnectionEntity('Estado/');
 
-    const [data, setData] = useState([])
-    const [modalInsert, setModalInsert] = useState(false)
-    const [modalEdit, setModalEdit] = useState(false)
-    const [modalDelete, setModalDelete] = useState(false)
-    const [updateData, setUpdateData] = useState(true)
-    const [stateName, setStateName] = useState("");
-    const [stateUf, setStateUf] = useState("");
-    const [stateId, setStateId] = useState("");
-    const [selectState] = useState({
-        id: "",
-        nomeEstado: "",
-        ufEstado: ""
-    });
+    const [data, setData] = useState([]);
+    const [modalInsert, setModalInsert] = useState(false);
+    const [modalEdit, setModalEdit] = useState(false);
+    const [modalDelete, setModalDelete] = useState(false);
+    const [updateData, setUpdateData] = useState(true);
 
-    const [errorStateName, setErrorStateName] = useState("");
-    const [errorStateUf, setErrorStateUf] = useState("");
-
-    const clearErrors = () => {
-        setErrorStateName('');
-        setErrorStateUf('');
-    };
-
-    const clearDatas = () => {
-        setStateName('');
-        setStateUf('');
-        setStateId('');
-    };
-
-    const StateSelect = (state, option) => {
-        setStateId(state.id)
-        setStateName(state.nomeEstado)
-        setStateUf(state.ufEstado)
+    const Select = (object, option) => {
+        state.getData(object);
 
         if (option === "Editar") {
             openCloseModalEdit();
@@ -59,19 +34,19 @@ export default function State() {
 
     const openCloseModalInsert = () => {
         setModalInsert(!modalInsert);
-        clearErrors();
+        state.clearError();
 
         if (modalInsert) {
-            clearDatas();
+            state.clearData();
         }
     };
 
     const openCloseModalEdit = () => {
         setModalEdit(!modalEdit);
-        clearErrors();
+        state.clearError();
 
         if (modalEdit) {
-            clearDatas();
+            state.clearData();
         }
     };
 
@@ -79,108 +54,50 @@ export default function State() {
         setModalDelete(!modalDelete);
 
         if (modalDelete) {
-            clearDatas();
+            state.clearData();
         }
     };
 
-    const verificarDados = async () => {
-        clearErrors();
-        var status = true;
-
-        if (stateName) {
-            if (stateName.length < 3) {
-                setErrorStateName('O nome precisa ter no mínimo 3 letras!');
-                status = false;
-            }
+    const GetState = async () => {
+        const response = await connection.getOrder();
+        if (response.status) {
+            setData(response.message);
         } else {
-            setErrorStateName('O nome é requerido!');
-            status = false;
+            console.error(response.message);
         }
+    };
 
-        if (stateUf) {
-            if (stateUf.length < 2) {
-                setErrorStateUf('A sigla precisa ter 2 letras!');
-                status = false;
-            }
+    const PostState = async () => {
+        const response = await connection.postOrder(state);
+        if (response.status) {
+            openCloseModalInsert();
+            setUpdateData(true);
+            console.log(response.message);
         } else {
-            setErrorStateUf('A sigla é requerida!');
-            status = false;
-        }
-
-        return status;
-    };
-
-    const GetOrder = async () => {
-        await axios.get(stateURL, getAuthConfig())
-            .then(response => {
-                setData(response.data)
-            }).catch(error => {
-                console.log(error);
-            })
-    }
-
-    const PostOrder = async () => {
-        var response = await verificarDados();
-        if (response) {
-
-            delete selectState.id
-            await axios.post(stateURL, { nomeEstado: stateName, ufEstado: stateUf }, getAuthConfig())
-                .then(response => {
-                    setData(prevData => [...prevData, response.data]);
-                    openCloseModalInsert();
-                    setUpdateData(true);
-                }).catch(error => {
-                    console.log(error);
-                })
-
+            console.error(response.message);
         }
     };
 
-    const PutOrder = async () => {
-        var response = await verificarDados();
-        if (response) {
-
-            delete selectState.id
-            await axios.put(stateURL, { id: stateId, nomeEstado: stateName, ufEstado: stateUf }, getAuthConfig())
-                .then(response => {
-                    var answer = response.data
-                    var aux = data
-                    aux.map(state => {
-                        if (state.id === selectState.id) {
-                            state.nomeEstado = answer.nomeEstado
-                            state.ufEstado = answer.ufEstado
-                        }
-                    })
-
-                    const updatedState = response.data;
-
-                    setData((prevData) => {
-                        return prevData.map((state) => {
-                            if (state.id === stateId) {
-                                return updatedState;
-                            }
-                            return state;
-                        });
-                    });
-
-                    openCloseModalEdit();
-                    setUpdateData(true);
-                }).catch(error => {
-                    console.log(error)
-                })
-
+    const PutState = async () => {
+        const response = await connection.putOrder(state);
+        if (response.status) {
+            openCloseModalEdit();
+            setUpdateData(true);
+            console.log(response.message);
+        } else {
+            console.error(response.message);
         }
     };
 
-    const DeleteOrder = async () => {
-        await axios.delete(stateURL + stateId, getAuthConfig())
-            .then(response => {
-                setData(data.filter(state => state.id !== response.data));
-                openCloseModalDelete();
-                setUpdateData(true);
-            }).catch(error => {
-                console.log(error);
-            })
+    const DeleteState = async () => {
+        const response = await connection.deleteOrder(state);
+        if (response.status) {
+            openCloseModalInsert();
+            setUpdateData(true);
+            console.log(response.message);
+        } else {
+            console.error(response.message);
+        }
     };
 
     const [stateToRender, setStateToRender] = useState([]);
@@ -189,9 +106,7 @@ export default function State() {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get(stateURL, getAuthConfig());
-            setData(response.data);
-            setStateToRender(response.data);
+            setStateToRender(data);
         } catch (error) {
             console.error(error);
         }
@@ -221,7 +136,7 @@ export default function State() {
 
     useEffect(() => {
         if (updateData) {
-            GetOrder();
+            GetState();
             setUpdateData(false);
             fetchData();
         }
@@ -254,11 +169,6 @@ export default function State() {
         }
     };
 
-    const options = [
-        { value: "nomeEstado", label: "Estado", key: "nomeEstado"},
-        { value: "ufEstado", label: "Sigla", key: "ufEstado"}
-    ];
-
     return (
         <div className="flex flex-1 min-h-screen">
             <div className="h-full w-full" style={{ display: 'flex', flexDirection: 'column' }}>
@@ -289,10 +199,10 @@ export default function State() {
                                         </div>
                                         <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar estado" required onChange={(e) => handleSearch(e.target.value)} />
                                         <select className="form-control rounded-md w-28 text-gray-800" onChange={(e) => handleSearchBy(e.target.value)} >
-                                            <option className="" key="nomeEstado" value="nomeEstado">
+                                            <option key="nomeEstado" value="nomeEstado">
                                                 Estado
                                             </option>
-                                            <option className="" key="ufEstado" value="ufEstado">
+                                            <option key="ufEstado" value="ufEstado">
                                                 Sigla
                                             </option>
                                         </select>
@@ -312,20 +222,20 @@ export default function State() {
                                 <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                             </div>
                             <ul className="w-full">
-                                {currentStates.map((state) => (
-                                    <li className="grid grid-cols-3 w-full" key={state.id}>
-                                        <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{state.nomeEstado}</span>
-                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{state.ufEstado}</span>
+                                {currentStates.map((object) => (
+                                    <li className="grid grid-cols-3 w-full" key={object.id}>
+                                        <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeEstado}</span>
+                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.ufEstado}</span>
                                         <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                             <button
                                                 className=""
-                                                onClick={() => StateSelect(state, "Editar")}
+                                                onClick={() => Select(object, "Editar")}
                                             >
                                                 <PencilSimple size={20} className="hover:text-cyan-500" />
                                             </button>{" "}
                                             <button
                                                 className=""
-                                                onClick={() => StateSelect(state, "Excluir")}
+                                                onClick={() => Select(object, "Excluir")}
                                             >
                                                 <TrashSimple size={20} className="hover:text-red-600" />
                                             </button>
@@ -371,23 +281,23 @@ export default function State() {
                         <div className="form-group">
                             <label className="text-[#444444]">Nome: </label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setStateName(e.target.value)} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => state.setStateName(e.target.value)} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {errorStateName}
+                                {state.errorStateName}
                             </div>
                             <br />
                             <label className="text-[#444444]">Sigla:</label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setStateUf(e.target.value.toUpperCase())} value={stateUf} maxLength={2} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => state.verifyUf(e.target.value.toUpperCase())} value={state.stateUf} maxLength={2} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {errorStateUf}
+                                {state.errorStateUf}
                             </div>
                             <br />
                         </div>
                     </ModalBody>
                     <ModalFooter>
                         <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert()}>Cancelar</button>
-                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostOrder()}>Cadastrar</button>{"  "}
+                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostState()}>Cadastrar</button>{"  "}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalEdit}>
@@ -395,25 +305,25 @@ export default function State() {
                     <ModalBody>
                         <div className="form-group">
                             <label className="text-[#444444]">ID: </label><br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={stateId} /> <br />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={state.stateId} /> <br />
                             <label className="text-[#444444]">Nome:</label>
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomeEstado" onChange={(e) => setStateName(e.target.value)} value={stateName} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomeEstado" onChange={(e) => state.setStateName(e.target.value)} value={state.stateName} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {errorStateName}
+                                {state.errorStateName}
                             </div>
                             <br />
                             <label className="text-[#444444]">Sigla:</label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="ufEstado" onChange={(e) => setStateUf(e.target.value.toUpperCase())} value={stateUf} maxLength={2} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="ufEstado" onChange={(e) => state.verifyUf(e.target.value.toUpperCase())} value={state.stateUf} maxLength={2} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {errorStateUf}
+                                {state.errorStateUf}
                             </div>
                             <br />
                         </div>
                     </ModalBody>
                     <ModalFooter>
                         <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit()}>Cancelar</button>
-                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PutOrder()}>Atualizar</button>{"  "}
+                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PutState()}>Atualizar</button>{"  "}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalDelete}>
@@ -422,12 +332,12 @@ export default function State() {
                         <div className="flex flex-row justify-center p-2">
                             Confirmar a exclusão deste estado:
                             <div className="text-[#059669] ml-1">
-                                {stateName}
+                                {state.stateName}
                             </div> ?
                         </div>
                         <div className="flex justify-center gap-2 pt-3">
                             <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete()}>Cancelar</button>
-                            <button className='btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' onClick={() => DeleteOrder()}>Confirmar</button>
+                            <button className='btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' onClick={() => DeleteState()}>Confirmar</button>
                         </div>
                         {/* <ModalFooter>
                     </ModalFooter> */}

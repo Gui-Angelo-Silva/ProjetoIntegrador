@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class BancoAtualizado : Migration
+    public partial class criarBanco : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -42,6 +42,19 @@ namespace SGED.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_municipe", x => x.idmunicipe);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tipologradouro",
+                columns: table => new
+                {
+                    idtipologradouro = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    rua = table.Column<string>(type: "character varying(58)", maxLength: 58, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tipologradouro", x => x.idtipologradouro);
                 });
 
             migrationBuilder.CreateTable(
@@ -197,6 +210,9 @@ namespace SGED.Migrations
 
             migrationBuilder.DropTable(
                 name: "municipe");
+
+            migrationBuilder.DropTable(
+                name: "tipologradouro");
 
             migrationBuilder.DropTable(
                 name: "usuario");

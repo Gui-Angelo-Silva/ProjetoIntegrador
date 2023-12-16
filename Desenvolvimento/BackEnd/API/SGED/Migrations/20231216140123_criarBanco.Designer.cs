@@ -11,8 +11,8 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20231216133019_BancoAtualizado")]
-    partial class BancoAtualizado
+    [Migration("20231216140123_criarBanco")]
+    partial class criarBanco
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -342,6 +342,26 @@ namespace SGED.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("municipe");
+                });
+
+            modelBuilder.Entity("SGED.Models.Entities.TipoLogradouro", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("idtipologradouro");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Rua")
+                        .IsRequired()
+                        .HasMaxLength(58)
+                        .HasColumnType("character varying(58)")
+                        .HasColumnName("rua");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tipologradouro");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.TipoUsuario", b =>

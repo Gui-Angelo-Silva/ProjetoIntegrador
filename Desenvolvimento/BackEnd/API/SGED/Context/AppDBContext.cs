@@ -12,6 +12,7 @@ public class AppDBContext : DbContext
     public DbSet<Cidade> Cidade { get; set; }
     public DbSet<Usuario> Usuario { get; set; }
     public DbSet<Municipe> Municipe { get; set; }
+    public DbSet<TipoLogradouro> TipoLogradouro { get; set; }
 
     // Fluent API
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -58,6 +59,10 @@ public class AppDBContext : DbContext
         modelBuilder.Entity<Municipe>().Property(b => b.TelefonePessoa).HasMaxLength(15).IsRequired();
         modelBuilder.Entity<Municipe>().Property(b => b.CpfCNPJPessoa).HasMaxLength(18).IsRequired();
         modelBuilder.Entity<Municipe>().Property(b => b.RgIEPessoa).HasMaxLength(15).IsRequired();
+
+        // Builder: TipoLogradouro
+        modelBuilder.Entity<TipoLogradouro>().HasKey(b => b.Id);
+        modelBuilder.Entity<TipoLogradouro>().Property(b => b.Rua).HasMaxLength(58).IsRequired();
 
         // Inserções:
         modelBuilder.Entity<Estado>().HasData(

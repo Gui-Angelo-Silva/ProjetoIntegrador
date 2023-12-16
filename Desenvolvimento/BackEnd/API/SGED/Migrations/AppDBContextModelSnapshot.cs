@@ -341,6 +341,26 @@ namespace SGED.Migrations
                     b.ToTable("municipe");
                 });
 
+            modelBuilder.Entity("SGED.Models.Entities.TipoLogradouro", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("idtipologradouro");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Rua")
+                        .IsRequired()
+                        .HasMaxLength(58)
+                        .HasColumnType("character varying(58)")
+                        .HasColumnName("rua");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tipologradouro");
+                });
+
             modelBuilder.Entity("SGED.Models.Entities.TipoUsuario", b =>
                 {
                     b.Property<int>("Id")

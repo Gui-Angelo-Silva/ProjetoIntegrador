@@ -15,7 +15,6 @@ namespace SGED.Models.Entities
         [Column("nomecidade")]
         public string NomeCidade { get; set; }
 
-
         public Estado? Estado { get; set; }
 
         [ForeignKey("idestado")]

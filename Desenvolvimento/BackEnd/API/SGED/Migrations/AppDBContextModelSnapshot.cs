@@ -49,61 +49,61 @@ namespace SGED.Migrations
                         new
                         {
                             Id = 1,
-                            IdEstado = 25,
+                            IdEstado = 1,
                             NomeCidade = "Aparecida d'Oeste"
                         },
                         new
                         {
                             Id = 2,
-                            IdEstado = 25,
+                            IdEstado = 1,
                             NomeCidade = "Jales"
                         },
                         new
                         {
                             Id = 3,
-                            IdEstado = 25,
+                            IdEstado = 1,
                             NomeCidade = "Palmeira d'Oeste"
                         },
                         new
                         {
                             Id = 4,
-                            IdEstado = 25,
+                            IdEstado = 1,
                             NomeCidade = "Paranapuã"
                         },
                         new
                         {
                             Id = 5,
-                            IdEstado = 25,
+                            IdEstado = 1,
                             NomeCidade = "Rubineia"
                         },
                         new
                         {
                             Id = 6,
-                            IdEstado = 25,
+                            IdEstado = 1,
                             NomeCidade = "Santa Clara d'Oeste"
                         },
                         new
                         {
                             Id = 7,
-                            IdEstado = 25,
+                            IdEstado = 1,
                             NomeCidade = "Santa Fé do Sul"
                         },
                         new
                         {
                             Id = 8,
-                            IdEstado = 25,
+                            IdEstado = 1,
                             NomeCidade = "São Francisco"
                         },
                         new
                         {
                             Id = 9,
-                            IdEstado = 25,
+                            IdEstado = 1,
                             NomeCidade = "São João das Duas Pontes"
                         },
                         new
                         {
                             Id = 10,
-                            IdEstado = 25,
+                            IdEstado = 1,
                             NomeCidade = "Urânia"
                         });
                 });
@@ -137,8 +137,8 @@ namespace SGED.Migrations
                         new
                         {
                             Id = 1,
-                            NomeEstado = "Acre",
-                            UfEstado = "AC"
+                            NomeEstado = "São Paulo",
+                            UfEstado = "SP"
                         },
                         new
                         {
@@ -281,8 +281,8 @@ namespace SGED.Migrations
                         new
                         {
                             Id = 25,
-                            NomeEstado = "São Paulo",
-                            UfEstado = "SP"
+                            NomeEstado = "Acre",
+                            UfEstado = "AC"
                         },
                         new
                         {
@@ -350,15 +350,551 @@ namespace SGED.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Rua")
+                    b.Property<string>("CodigoInformativo")
                         .IsRequired()
-                        .HasMaxLength(58)
-                        .HasColumnType("character varying(58)")
-                        .HasColumnName("rua");
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("codigoinformativo");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(35)
+                        .HasColumnType("character varying(35)")
+                        .HasColumnName("descricaotipologradouro");
 
                     b.HasKey("Id");
 
                     b.ToTable("tipologradouro");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CodigoInformativo = "A",
+                            Descricao = "Área"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CodigoInformativo = "AC",
+                            Descricao = "Acesso"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CodigoInformativo = "ACA",
+                            Descricao = "Acampamento"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CodigoInformativo = "ACL",
+                            Descricao = "Acesso Local"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CodigoInformativo = "AD",
+                            Descricao = "Adro"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CodigoInformativo = "AE",
+                            Descricao = "Área Especial"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CodigoInformativo = "AER",
+                            Descricao = "Aeroporto"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CodigoInformativo = "AL",
+                            Descricao = "Alameda"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CodigoInformativo = "AMD",
+                            Descricao = "Avenida Marginal Direita"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CodigoInformativo = "AME",
+                            Descricao = "Avenida Marginal Esquerda"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CodigoInformativo = "AN",
+                            Descricao = "Anel Viário"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CodigoInformativo = "ANT",
+                            Descricao = "Antiga Estrada"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CodigoInformativo = "ART",
+                            Descricao = "Artéria"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CodigoInformativo = "AT",
+                            Descricao = "Alto"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CodigoInformativo = "ATL",
+                            Descricao = "Atalho"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            CodigoInformativo = "A V",
+                            Descricao = "Área Verde"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            CodigoInformativo = "AV",
+                            Descricao = "Avenida"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            CodigoInformativo = "AV",
+                            Descricao = "Avenida"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            CodigoInformativo = "AVC",
+                            Descricao = "Avenida do Contorno"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            CodigoInformativo = "AVM",
+                            Descricao = "Avenida Marginal"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            CodigoInformativo = "AVV",
+                            Descricao = "Avenida Velha"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            CodigoInformativo = "BAL",
+                            Descricao = "Balneário"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            CodigoInformativo = "BC",
+                            Descricao = "Beco"
+                        },
+                        new
+                        {
+                            Id = 24,
+                            CodigoInformativo = "BCO",
+                            Descricao = "Buraco"
+                        },
+                        new
+                        {
+                            Id = 25,
+                            CodigoInformativo = "BEL",
+                            Descricao = "Belvedere"
+                        },
+                        new
+                        {
+                            Id = 26,
+                            CodigoInformativo = "BL",
+                            Descricao = "Bloco"
+                        },
+                        new
+                        {
+                            Id = 27,
+                            CodigoInformativo = "BLO",
+                            Descricao = "Balão"
+                        },
+                        new
+                        {
+                            Id = 28,
+                            CodigoInformativo = "BLS",
+                            Descricao = "Blocos"
+                        },
+                        new
+                        {
+                            Id = 29,
+                            CodigoInformativo = "BLV",
+                            Descricao = "Bulevar"
+                        },
+                        new
+                        {
+                            Id = 30,
+                            CodigoInformativo = "BSQ",
+                            Descricao = "Bosque"
+                        },
+                        new
+                        {
+                            Id = 31,
+                            CodigoInformativo = "BVD",
+                            Descricao = "Boulevard"
+                        },
+                        new
+                        {
+                            Id = 32,
+                            CodigoInformativo = "BX",
+                            Descricao = "Baixa"
+                        },
+                        new
+                        {
+                            Id = 33,
+                            CodigoInformativo = "C",
+                            Descricao = "Cais"
+                        },
+                        new
+                        {
+                            Id = 34,
+                            CodigoInformativo = "CAL",
+                            Descricao = "Calçada"
+                        },
+                        new
+                        {
+                            Id = 35,
+                            CodigoInformativo = "CAM",
+                            Descricao = "Caminho"
+                        },
+                        new
+                        {
+                            Id = 36,
+                            CodigoInformativo = "CAN",
+                            Descricao = "Canal"
+                        },
+                        new
+                        {
+                            Id = 37,
+                            CodigoInformativo = "CH",
+                            Descricao = "Chácara"
+                        },
+                        new
+                        {
+                            Id = 38,
+                            CodigoInformativo = "CHA",
+                            Descricao = "Chapadão"
+                        },
+                        new
+                        {
+                            Id = 39,
+                            CodigoInformativo = "CIC",
+                            Descricao = "Ciclovia"
+                        },
+                        new
+                        {
+                            Id = 40,
+                            CodigoInformativo = "CIR",
+                            Descricao = "Circular"
+                        },
+                        new
+                        {
+                            Id = 41,
+                            CodigoInformativo = "CJ",
+                            Descricao = "Conjunto"
+                        },
+                        new
+                        {
+                            Id = 42,
+                            CodigoInformativo = "CJM",
+                            Descricao = "Conjunto Multirão"
+                        },
+                        new
+                        {
+                            Id = 43,
+                            CodigoInformativo = "CMP",
+                            Descricao = "Complexo Viário"
+                        },
+                        new
+                        {
+                            Id = 44,
+                            CodigoInformativo = "COL",
+                            Descricao = "Colônia"
+                        },
+                        new
+                        {
+                            Id = 45,
+                            CodigoInformativo = "COM",
+                            Descricao = "Comunidade"
+                        },
+                        new
+                        {
+                            Id = 46,
+                            CodigoInformativo = "CON",
+                            Descricao = "Condomínio"
+                        },
+                        new
+                        {
+                            Id = 47,
+                            CodigoInformativo = "COR",
+                            Descricao = "Corredor"
+                        },
+                        new
+                        {
+                            Id = 48,
+                            CodigoInformativo = "CPO",
+                            Descricao = "Campo"
+                        },
+                        new
+                        {
+                            Id = 49,
+                            CodigoInformativo = "CRG",
+                            Descricao = "Córrego"
+                        },
+                        new
+                        {
+                            Id = 50,
+                            CodigoInformativo = "CTN",
+                            Descricao = "Contorno"
+                        },
+                        new
+                        {
+                            Id = 51,
+                            CodigoInformativo = "DSC",
+                            Descricao = "Descida"
+                        },
+                        new
+                        {
+                            Id = 52,
+                            CodigoInformativo = "DSV",
+                            Descricao = "Desvio"
+                        },
+                        new
+                        {
+                            Id = 53,
+                            CodigoInformativo = "DT",
+                            Descricao = "Distrito"
+                        },
+                        new
+                        {
+                            Id = 54,
+                            CodigoInformativo = "EB",
+                            Descricao = "Entre Bloco"
+                        },
+                        new
+                        {
+                            Id = 55,
+                            CodigoInformativo = "EIM",
+                            Descricao = "Estrada Intermunicipal"
+                        },
+                        new
+                        {
+                            Id = 56,
+                            CodigoInformativo = "ENS",
+                            Descricao = "Enseada"
+                        },
+                        new
+                        {
+                            Id = 57,
+                            CodigoInformativo = "ENT",
+                            Descricao = "Entrada Particular"
+                        },
+                        new
+                        {
+                            Id = 58,
+                            CodigoInformativo = "EQ",
+                            Descricao = "Entre Quadra"
+                        },
+                        new
+                        {
+                            Id = 59,
+                            CodigoInformativo = "ESC",
+                            Descricao = "Escada"
+                        },
+                        new
+                        {
+                            Id = 60,
+                            CodigoInformativo = "ESD",
+                            Descricao = "Escadaria"
+                        },
+                        new
+                        {
+                            Id = 61,
+                            CodigoInformativo = "ESE",
+                            Descricao = "Estrada Estadual"
+                        },
+                        new
+                        {
+                            Id = 62,
+                            CodigoInformativo = "ESI",
+                            Descricao = "Estrada Vicinal"
+                        },
+                        new
+                        {
+                            Id = 63,
+                            CodigoInformativo = "ESL",
+                            Descricao = "Estrada de Ligação"
+                        },
+                        new
+                        {
+                            Id = 64,
+                            CodigoInformativo = "ESM",
+                            Descricao = "Estrada Municipal"
+                        },
+                        new
+                        {
+                            Id = 65,
+                            CodigoInformativo = "ESP",
+                            Descricao = "Esplanada"
+                        },
+                        new
+                        {
+                            Id = 66,
+                            CodigoInformativo = "ESS",
+                            Descricao = "Estrada de Servidão"
+                        },
+                        new
+                        {
+                            Id = 67,
+                            CodigoInformativo = "EST",
+                            Descricao = "Estrada"
+                        },
+                        new
+                        {
+                            Id = 68,
+                            CodigoInformativo = "ESV",
+                            Descricao = "Estrada Velha"
+                        },
+                        new
+                        {
+                            Id = 69,
+                            CodigoInformativo = "ETA",
+                            Descricao = "Estrada Antiga"
+                        },
+                        new
+                        {
+                            Id = 70,
+                            CodigoInformativo = "ETC",
+                            Descricao = "Estação"
+                        },
+                        new
+                        {
+                            Id = 71,
+                            CodigoInformativo = "ETD",
+                            Descricao = "Estádio"
+                        },
+                        new
+                        {
+                            Id = 72,
+                            CodigoInformativo = "ETN",
+                            Descricao = "Estância"
+                        },
+                        new
+                        {
+                            Id = 73,
+                            CodigoInformativo = "ETP",
+                            Descricao = "Estrada Particular"
+                        },
+                        new
+                        {
+                            Id = 74,
+                            CodigoInformativo = "ETT",
+                            Descricao = "Estacionamento"
+                        },
+                        new
+                        {
+                            Id = 75,
+                            CodigoInformativo = "EVA",
+                            Descricao = "Evangélica"
+                        },
+                        new
+                        {
+                            Id = 76,
+                            CodigoInformativo = "EVD",
+                            Descricao = "Elevada"
+                        },
+                        new
+                        {
+                            Id = 77,
+                            CodigoInformativo = "EX",
+                            Descricao = "Eixo Industrial"
+                        },
+                        new
+                        {
+                            Id = 78,
+                            CodigoInformativo = "FAV",
+                            Descricao = "Favela"
+                        },
+                        new
+                        {
+                            Id = 79,
+                            CodigoInformativo = "FAZ",
+                            Descricao = "Fazenda"
+                        },
+                        new
+                        {
+                            Id = 80,
+                            CodigoInformativo = "FER",
+                            Descricao = "Ferrovia"
+                        },
+                        new
+                        {
+                            Id = 81,
+                            CodigoInformativo = "FNT",
+                            Descricao = "Fonte"
+                        },
+                        new
+                        {
+                            Id = 82,
+                            CodigoInformativo = "FRA",
+                            Descricao = "Feira"
+                        },
+                        new
+                        {
+                            Id = 83,
+                            CodigoInformativo = "FTE",
+                            Descricao = "Forte"
+                        },
+                        new
+                        {
+                            Id = 84,
+                            CodigoInformativo = "GAL",
+                            Descricao = "Galeria"
+                        },
+                        new
+                        {
+                            Id = 85,
+                            CodigoInformativo = "GJA",
+                            Descricao = "Granja"
+                        },
+                        new
+                        {
+                            Id = 86,
+                            CodigoInformativo = "HAB",
+                            Descricao = "Núcleo Habitacional"
+                        },
+                        new
+                        {
+                            Id = 87,
+                            CodigoInformativo = "IA",
+                            Descricao = "Ilha"
+                        },
+                        new
+                        {
+                            Id = 88,
+                            CodigoInformativo = "IND",
+                            Descricao = "Indeterminado"
+                        });
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.TipoUsuario", b =>

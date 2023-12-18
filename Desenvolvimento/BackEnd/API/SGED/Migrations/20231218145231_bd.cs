@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class criarBanco : Migration
+    public partial class bd : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -50,7 +50,8 @@ namespace SGED.Migrations
                 {
                     idtipologradouro = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    rua = table.Column<string>(type: "character varying(58)", maxLength: 58, nullable: false)
+                    codigoinformativo = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false),
+                    descricaotipologradouro = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -124,7 +125,7 @@ namespace SGED.Migrations
                 columns: new[] { "idestado", "nomeestado", "ufestado" },
                 values: new object[,]
                 {
-                    { 1, "Acre", "AC" },
+                    { 1, "São Paulo", "SP" },
                     { 2, "Alagoas", "AL" },
                     { 3, "Amapá", "AP" },
                     { 4, "Amazonas", "AM" },
@@ -148,9 +149,104 @@ namespace SGED.Migrations
                     { 22, "Rondônia", "RO" },
                     { 23, "Roraima", "RR" },
                     { 24, "Santa Catarina", "SC" },
-                    { 25, "São Paulo", "SP" },
+                    { 25, "Acre", "AC" },
                     { 26, "Sergipe", "SE" },
                     { 27, "Tocantins", "TO" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "tipologradouro",
+                columns: new[] { "idtipologradouro", "codigoinformativo", "descricaotipologradouro" },
+                values: new object[,]
+                {
+                    { 1, "A", "Área" },
+                    { 2, "AC", "Acesso" },
+                    { 3, "ACA", "Acampamento" },
+                    { 4, "ACL", "Acesso Local" },
+                    { 5, "AD", "Adro" },
+                    { 6, "AE", "Área Especial" },
+                    { 7, "AER", "Aeroporto" },
+                    { 8, "AL", "Alameda" },
+                    { 9, "AMD", "Avenida Marginal Direita" },
+                    { 10, "AME", "Avenida Marginal Esquerda" },
+                    { 11, "AN", "Anel Viário" },
+                    { 12, "ANT", "Antiga Estrada" },
+                    { 13, "ART", "Artéria" },
+                    { 14, "AT", "Alto" },
+                    { 15, "ATL", "Atalho" },
+                    { 16, "A V", "Área Verde" },
+                    { 17, "AV", "Avenida" },
+                    { 18, "AV", "Avenida" },
+                    { 19, "AVC", "Avenida do Contorno" },
+                    { 20, "AVM", "Avenida Marginal" },
+                    { 21, "AVV", "Avenida Velha" },
+                    { 22, "BAL", "Balneário" },
+                    { 23, "BC", "Beco" },
+                    { 24, "BCO", "Buraco" },
+                    { 25, "BEL", "Belvedere" },
+                    { 26, "BL", "Bloco" },
+                    { 27, "BLO", "Balão" },
+                    { 28, "BLS", "Blocos" },
+                    { 29, "BLV", "Bulevar" },
+                    { 30, "BSQ", "Bosque" },
+                    { 31, "BVD", "Boulevard" },
+                    { 32, "BX", "Baixa" },
+                    { 33, "C", "Cais" },
+                    { 34, "CAL", "Calçada" },
+                    { 35, "CAM", "Caminho" },
+                    { 36, "CAN", "Canal" },
+                    { 37, "CH", "Chácara" },
+                    { 38, "CHA", "Chapadão" },
+                    { 39, "CIC", "Ciclovia" },
+                    { 40, "CIR", "Circular" },
+                    { 41, "CJ", "Conjunto" },
+                    { 42, "CJM", "Conjunto Multirão" },
+                    { 43, "CMP", "Complexo Viário" },
+                    { 44, "COL", "Colônia" },
+                    { 45, "COM", "Comunidade" },
+                    { 46, "CON", "Condomínio" },
+                    { 47, "COR", "Corredor" },
+                    { 48, "CPO", "Campo" },
+                    { 49, "CRG", "Córrego" },
+                    { 50, "CTN", "Contorno" },
+                    { 51, "DSC", "Descida" },
+                    { 52, "DSV", "Desvio" },
+                    { 53, "DT", "Distrito" },
+                    { 54, "EB", "Entre Bloco" },
+                    { 55, "EIM", "Estrada Intermunicipal" },
+                    { 56, "ENS", "Enseada" },
+                    { 57, "ENT", "Entrada Particular" },
+                    { 58, "EQ", "Entre Quadra" },
+                    { 59, "ESC", "Escada" },
+                    { 60, "ESD", "Escadaria" },
+                    { 61, "ESE", "Estrada Estadual" },
+                    { 62, "ESI", "Estrada Vicinal" },
+                    { 63, "ESL", "Estrada de Ligação" },
+                    { 64, "ESM", "Estrada Municipal" },
+                    { 65, "ESP", "Esplanada" },
+                    { 66, "ESS", "Estrada de Servidão" },
+                    { 67, "EST", "Estrada" },
+                    { 68, "ESV", "Estrada Velha" },
+                    { 69, "ETA", "Estrada Antiga" },
+                    { 70, "ETC", "Estação" },
+                    { 71, "ETD", "Estádio" },
+                    { 72, "ETN", "Estância" },
+                    { 73, "ETP", "Estrada Particular" },
+                    { 74, "ETT", "Estacionamento" },
+                    { 75, "EVA", "Evangélica" },
+                    { 76, "EVD", "Elevada" },
+                    { 77, "EX", "Eixo Industrial" },
+                    { 78, "FAV", "Favela" },
+                    { 79, "FAZ", "Fazenda" },
+                    { 80, "FER", "Ferrovia" },
+                    { 81, "FNT", "Fonte" },
+                    { 82, "FRA", "Feira" },
+                    { 83, "FTE", "Forte" },
+                    { 84, "GAL", "Galeria" },
+                    { 85, "GJA", "Granja" },
+                    { 86, "HAB", "Núcleo Habitacional" },
+                    { 87, "IA", "Ilha" },
+                    { 88, "IND", "Indeterminado" }
                 });
 
             migrationBuilder.InsertData(
@@ -170,16 +266,16 @@ namespace SGED.Migrations
                 columns: new[] { "idcidade", "IdEstado", "nomecidade" },
                 values: new object[,]
                 {
-                    { 1, 25, "Aparecida d'Oeste" },
-                    { 2, 25, "Jales" },
-                    { 3, 25, "Palmeira d'Oeste" },
-                    { 4, 25, "Paranapuã" },
-                    { 5, 25, "Rubineia" },
-                    { 6, 25, "Santa Clara d'Oeste" },
-                    { 7, 25, "Santa Fé do Sul" },
-                    { 8, 25, "São Francisco" },
-                    { 9, 25, "São João das Duas Pontes" },
-                    { 10, 25, "Urânia" }
+                    { 1, 1, "Aparecida d'Oeste" },
+                    { 2, 1, "Jales" },
+                    { 3, 1, "Palmeira d'Oeste" },
+                    { 4, 1, "Paranapuã" },
+                    { 5, 1, "Rubineia" },
+                    { 6, 1, "Santa Clara d'Oeste" },
+                    { 7, 1, "Santa Fé do Sul" },
+                    { 8, 1, "São Francisco" },
+                    { 9, 1, "São João das Duas Pontes" },
+                    { 10, 1, "Urânia" }
                 });
 
             migrationBuilder.InsertData(

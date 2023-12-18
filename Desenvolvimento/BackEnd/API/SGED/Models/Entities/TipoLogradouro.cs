@@ -8,7 +8,10 @@ namespace SGED.Models.Entities
 		[Column("idtipologradouro")]
 		public int Id { get; set; }
 
-		[Column("rua")]
-		public string Rua { get; set; }
+		[Column("codigoinformativo")]
+		public string CodigoInformativo { get; set; }
+
+		[Column("descricaotipologradouro")]
+		public string Descricao { get; set; }
 	}
 }

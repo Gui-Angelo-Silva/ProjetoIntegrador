@@ -7,9 +7,14 @@ namespace SGED.DTO.Entities
 	{
 		public int Id { get; set; }
 		
-		[Required(ErrorMessage = "O nome da rua é requerido!")]
-		[MinLength(4)]
-		[MaxLength(58)] //Coloquei este valor pois o maior nome de rua existente no mundo, possui essa quantidade de letras
-		public string Rua { get; set; }
+		[Required(ErrorMessage = "O código do tipo de logradouro é requerido!")]
+		[MinLength(1)]
+		[MaxLength(3)] 
+		public string CodigoInformativo { get; set; }
+
+		[Required(ErrorMessage = "A descrição do tipo de logradouro é requerida!")]
+		[MinLength(3)]
+		[MaxLength(35)]
+		public string Descricao { get; set; }
 	}
 }

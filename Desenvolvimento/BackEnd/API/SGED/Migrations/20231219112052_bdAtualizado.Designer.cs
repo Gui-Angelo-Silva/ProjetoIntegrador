@@ -11,8 +11,8 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20231218145231_bd")]
-    partial class bd
+    [Migration("20231219112052_bdAtualizado")]
+    partial class bdAtualizado
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -897,6 +897,546 @@ namespace SGED.Migrations
                             Id = 88,
                             CodigoInformativo = "IND",
                             Descricao = "Indeterminado"
+                        },
+                        new
+                        {
+                            Id = 89,
+                            CodigoInformativo = "IOA",
+                            Descricao = "Ilhota"
+                        },
+                        new
+                        {
+                            Id = 90,
+                            CodigoInformativo = "JD",
+                            Descricao = "Jardim"
+                        },
+                        new
+                        {
+                            Id = 91,
+                            CodigoInformativo = "JDE",
+                            Descricao = "Jardinete"
+                        },
+                        new
+                        {
+                            Id = 92,
+                            CodigoInformativo = "LD",
+                            Descricao = "Ladeira"
+                        },
+                        new
+                        {
+                            Id = 93,
+                            CodigoInformativo = "LGA",
+                            Descricao = "Lagoa"
+                        },
+                        new
+                        {
+                            Id = 94,
+                            CodigoInformativo = "LGO",
+                            Descricao = "Lago"
+                        },
+                        new
+                        {
+                            Id = 95,
+                            CodigoInformativo = "LOT",
+                            Descricao = "Loteamento"
+                        },
+                        new
+                        {
+                            Id = 96,
+                            CodigoInformativo = "LRG",
+                            Descricao = "Largo"
+                        },
+                        new
+                        {
+                            Id = 97,
+                            CodigoInformativo = "LT",
+                            Descricao = "Lote"
+                        },
+                        new
+                        {
+                            Id = 98,
+                            CodigoInformativo = "MER",
+                            Descricao = "Mercado"
+                        },
+                        new
+                        {
+                            Id = 99,
+                            CodigoInformativo = "MNA",
+                            Descricao = "Marina"
+                        },
+                        new
+                        {
+                            Id = 100,
+                            CodigoInformativo = "MOD",
+                            Descricao = "Modulo"
+                        },
+                        new
+                        {
+                            Id = 101,
+                            CodigoInformativo = "MRG",
+                            Descricao = "Projeção"
+                        },
+                        new
+                        {
+                            Id = 102,
+                            CodigoInformativo = "MRO",
+                            Descricao = "Morro"
+                        },
+                        new
+                        {
+                            Id = 103,
+                            CodigoInformativo = "MTE",
+                            Descricao = "Monte"
+                        },
+                        new
+                        {
+                            Id = 104,
+                            CodigoInformativo = "NUC",
+                            Descricao = "Núcleo"
+                        },
+                        new
+                        {
+                            Id = 105,
+                            CodigoInformativo = "NUR",
+                            Descricao = "Núcleo Rural"
+                        },
+                        new
+                        {
+                            Id = 106,
+                            CodigoInformativo = "OUT",
+                            Descricao = "Outeiro"
+                        },
+                        new
+                        {
+                            Id = 107,
+                            CodigoInformativo = "PAR",
+                            Descricao = "Paralela"
+                        },
+                        new
+                        {
+                            Id = 108,
+                            CodigoInformativo = "PAS",
+                            Descricao = "Passeio"
+                        },
+                        new
+                        {
+                            Id = 109,
+                            CodigoInformativo = "PAT",
+                            Descricao = "Pátio"
+                        },
+                        new
+                        {
+                            Id = 110,
+                            CodigoInformativo = "PC",
+                            Descricao = "Praça"
+                        },
+                        new
+                        {
+                            Id = 111,
+                            CodigoInformativo = "PCE",
+                            Descricao = "Praça de Esportes"
+                        },
+                        new
+                        {
+                            Id = 112,
+                            CodigoInformativo = "PDA",
+                            Descricao = "Parada"
+                        },
+                        new
+                        {
+                            Id = 113,
+                            CodigoInformativo = "PDO",
+                            Descricao = "Paradouro"
+                        },
+                        new
+                        {
+                            Id = 114,
+                            CodigoInformativo = "PNT",
+                            Descricao = "Ponta"
+                        },
+                        new
+                        {
+                            Id = 115,
+                            CodigoInformativo = "PR",
+                            Descricao = "Praia"
+                        },
+                        new
+                        {
+                            Id = 116,
+                            CodigoInformativo = "PRL",
+                            Descricao = "Prolongamento"
+                        },
+                        new
+                        {
+                            Id = 117,
+                            CodigoInformativo = "PRM",
+                            Descricao = "Parque Municipal"
+                        },
+                        new
+                        {
+                            Id = 118,
+                            CodigoInformativo = "PRQ",
+                            Descricao = "Parque"
+                        },
+                        new
+                        {
+                            Id = 119,
+                            CodigoInformativo = "PRR",
+                            Descricao = "Parque Residencial"
+                        },
+                        new
+                        {
+                            Id = 120,
+                            CodigoInformativo = "PSA",
+                            Descricao = "Passarela"
+                        },
+                        new
+                        {
+                            Id = 121,
+                            CodigoInformativo = "PSG",
+                            Descricao = "Passagem"
+                        },
+                        new
+                        {
+                            Id = 122,
+                            CodigoInformativo = "PSP",
+                            Descricao = "Passagem de Pedestre"
+                        },
+                        new
+                        {
+                            Id = 123,
+                            CodigoInformativo = "PSS",
+                            Descricao = "Passagem Subterrânea"
+                        },
+                        new
+                        {
+                            Id = 124,
+                            CodigoInformativo = "PTE",
+                            Descricao = "Ponte"
+                        },
+                        new
+                        {
+                            Id = 125,
+                            CodigoInformativo = "PTO",
+                            Descricao = "Porto"
+                        },
+                        new
+                        {
+                            Id = 126,
+                            CodigoInformativo = "Q",
+                            Descricao = "Quadra"
+                        },
+                        new
+                        {
+                            Id = 127,
+                            CodigoInformativo = "QTA",
+                            Descricao = "Quinta"
+                        },
+                        new
+                        {
+                            Id = 128,
+                            CodigoInformativo = "QTS",
+                            Descricao = "Quintas"
+                        },
+                        new
+                        {
+                            Id = 129,
+                            CodigoInformativo = "R",
+                            Descricao = "Rua"
+                        },
+                        new
+                        {
+                            Id = 130,
+                            CodigoInformativo = "R I",
+                            Descricao = "Rua Integração"
+                        },
+                        new
+                        {
+                            Id = 131,
+                            CodigoInformativo = "R L",
+                            Descricao = "Rua de Ligação"
+                        },
+                        new
+                        {
+                            Id = 132,
+                            CodigoInformativo = "R P",
+                            Descricao = "Rua Particular"
+                        },
+                        new
+                        {
+                            Id = 133,
+                            CodigoInformativo = "R V",
+                            Descricao = "Rua Velha"
+                        },
+                        new
+                        {
+                            Id = 134,
+                            CodigoInformativo = "RAM",
+                            Descricao = "Ramal"
+                        },
+                        new
+                        {
+                            Id = 135,
+                            CodigoInformativo = "RCR",
+                            Descricao = "Recreio"
+                        },
+                        new
+                        {
+                            Id = 136,
+                            CodigoInformativo = "REC",
+                            Descricao = "Recanto"
+                        },
+                        new
+                        {
+                            Id = 137,
+                            CodigoInformativo = "RER",
+                            Descricao = "Retiro"
+                        },
+                        new
+                        {
+                            Id = 138,
+                            CodigoInformativo = "RES",
+                            Descricao = "Residencial"
+                        },
+                        new
+                        {
+                            Id = 139,
+                            CodigoInformativo = "RET",
+                            Descricao = "Reta"
+                        },
+                        new
+                        {
+                            Id = 140,
+                            CodigoInformativo = "RLA",
+                            Descricao = "Ruela"
+                        },
+                        new
+                        {
+                            Id = 141,
+                            CodigoInformativo = "RMP",
+                            Descricao = "Rampa"
+                        },
+                        new
+                        {
+                            Id = 142,
+                            CodigoInformativo = "ROA",
+                            Descricao = "Rodo Anel"
+                        },
+                        new
+                        {
+                            Id = 143,
+                            CodigoInformativo = "ROD",
+                            Descricao = "Rodovia"
+                        },
+                        new
+                        {
+                            Id = 144,
+                            CodigoInformativo = "ROT",
+                            Descricao = "Rotula"
+                        },
+                        new
+                        {
+                            Id = 145,
+                            CodigoInformativo = "RPE",
+                            Descricao = "Rua de Pedestre"
+                        },
+                        new
+                        {
+                            Id = 146,
+                            CodigoInformativo = "RPR",
+                            Descricao = "Margem"
+                        },
+                        new
+                        {
+                            Id = 147,
+                            CodigoInformativo = "RTN",
+                            Descricao = "Retorno"
+                        },
+                        new
+                        {
+                            Id = 148,
+                            CodigoInformativo = "RTT",
+                            Descricao = "Rotatória"
+                        },
+                        new
+                        {
+                            Id = 149,
+                            CodigoInformativo = "SEG",
+                            Descricao = "Segunda Avenida"
+                        },
+                        new
+                        {
+                            Id = 150,
+                            CodigoInformativo = "SIT",
+                            Descricao = "Sitío"
+                        },
+                        new
+                        {
+                            Id = 151,
+                            CodigoInformativo = "SRV",
+                            Descricao = "Servidão"
+                        },
+                        new
+                        {
+                            Id = 152,
+                            CodigoInformativo = "ST",
+                            Descricao = "Setor"
+                        },
+                        new
+                        {
+                            Id = 153,
+                            CodigoInformativo = "SUB",
+                            Descricao = "Subida"
+                        },
+                        new
+                        {
+                            Id = 154,
+                            CodigoInformativo = "TCH",
+                            Descricao = "Trincheira"
+                        },
+                        new
+                        {
+                            Id = 155,
+                            CodigoInformativo = "TER",
+                            Descricao = "Terminal"
+                        },
+                        new
+                        {
+                            Id = 156,
+                            CodigoInformativo = "TR",
+                            Descricao = "Trecho"
+                        },
+                        new
+                        {
+                            Id = 157,
+                            CodigoInformativo = "TRV",
+                            Descricao = "Trevo"
+                        },
+                        new
+                        {
+                            Id = 158,
+                            CodigoInformativo = "TUN",
+                            Descricao = "Túnel"
+                        },
+                        new
+                        {
+                            Id = 159,
+                            CodigoInformativo = "TV",
+                            Descricao = "Travessa"
+                        },
+                        new
+                        {
+                            Id = 160,
+                            CodigoInformativo = "TVP",
+                            Descricao = "Travessa Particular"
+                        },
+                        new
+                        {
+                            Id = 161,
+                            CodigoInformativo = "TVV",
+                            Descricao = "Travessa Velha"
+                        },
+                        new
+                        {
+                            Id = 162,
+                            CodigoInformativo = "UNI",
+                            Descricao = "Unidade"
+                        },
+                        new
+                        {
+                            Id = 163,
+                            CodigoInformativo = "V",
+                            Descricao = "Via"
+                        },
+                        new
+                        {
+                            Id = 164,
+                            CodigoInformativo = "V C",
+                            Descricao = "Via Coletora"
+                        },
+                        new
+                        {
+                            Id = 165,
+                            CodigoInformativo = "V L",
+                            Descricao = "Via Local"
+                        },
+                        new
+                        {
+                            Id = 166,
+                            CodigoInformativo = "VAC",
+                            Descricao = "Via de Acesso"
+                        },
+                        new
+                        {
+                            Id = 167,
+                            CodigoInformativo = "VAL",
+                            Descricao = "Vala"
+                        },
+                        new
+                        {
+                            Id = 168,
+                            CodigoInformativo = "VCO",
+                            Descricao = "Vila Costeira"
+                        },
+                        new
+                        {
+                            Id = 169,
+                            CodigoInformativo = "VD",
+                            Descricao = "Viaduto"
+                        },
+                        new
+                        {
+                            Id = 170,
+                            CodigoInformativo = "V-E",
+                            Descricao = "Via Expressa"
+                        },
+                        new
+                        {
+                            Id = 171,
+                            CodigoInformativo = "VEV",
+                            Descricao = "Via Elevado"
+                        },
+                        new
+                        {
+                            Id = 173,
+                            CodigoInformativo = "VL",
+                            Descricao = "Vila"
+                        },
+                        new
+                        {
+                            Id = 174,
+                            CodigoInformativo = "VLA",
+                            Descricao = "Viela"
+                        },
+                        new
+                        {
+                            Id = 175,
+                            CodigoInformativo = "VLE",
+                            Descricao = "Vale"
+                        },
+                        new
+                        {
+                            Id = 176,
+                            CodigoInformativo = "VLT",
+                            Descricao = "Vila Litorânea"
+                        },
+                        new
+                        {
+                            Id = 177,
+                            CodigoInformativo = "VPE",
+                            Descricao = "Via de Pedestre"
+                        },
+                        new
+                        {
+                            Id = 178,
+                            CodigoInformativo = "VRT",
+                            Descricao = "Variante"
+                        },
+                        new
+                        {
+                            Id = 179,
+                            CodigoInformativo = "ZIG",
+                            Descricao = "Zigue-zague"
                         });
                 });
 

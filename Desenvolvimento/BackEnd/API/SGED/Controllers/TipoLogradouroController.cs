@@ -38,6 +38,7 @@ namespace SGED.Controllers
 			if (tipoLogradouroDTO is null) return BadRequest("Dado inválido!");
 
 			await _tipologradouroservice.Create(tipoLogradouroDTO);
+
 			return new CreatedAtRouteResult("GetById", new { id = tipoLogradouroDTO.Id }, tipoLogradouroDTO);
 		}
 

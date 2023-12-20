@@ -7,8 +7,8 @@ function TypePublicPlaceClass() {
     const [errorTypePublicPlaceIc, setErrorTypePublicPlaceIc] = useState('');
     const [errorTypePublicPlaceDescription, setErrorTypePublicPlaceDescription] = useState('');
 
-    function propertyIc() {
-        return typePublicPlaceIc;
+    function propertyName() {
+        return typePublicPlaceDescription;
     }
 
     function getData(object) {
@@ -75,7 +75,7 @@ function TypePublicPlaceClass() {
         clearData,
         clearError,
         verifyData,
-        propertyIc
+        propertyName
     }
 }
 

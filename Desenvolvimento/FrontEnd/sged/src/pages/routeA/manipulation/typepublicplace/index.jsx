@@ -7,12 +7,12 @@ import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 import ConnectionEntity from '../../../../class/entity/connection';
-import StateClass from '../../../../class/state';
+import TypePublicPlaceClass from "../../../../class/typepublicplace";
 
-export default function State() {
+export default function TypePublicPlace() {
 
-    const state = StateClass();
-    const connection = ConnectionEntity('Estado/');
+    const typepublicplace = TypePublicPlaceClass();
+    const connection = ConnectionEntity('TipoLogradouro/');
 
     const [data, setData] = useState([]);
     const [modalInsert, setModalInsert] = useState(false);
@@ -20,44 +20,48 @@ export default function State() {
     const [modalDelete, setModalDelete] = useState(false);
     const [updateData, setUpdateData] = useState(true);
 
+    const [typePublicPlaceToRender, setTypePublicPlaceToRender] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchBy, setSearchBy] = useState('codigoInformativo');
+
     const Select = (object, option) => {
-        state.getData(object);
+        typepublicplace.getData(object);
 
         if (option === "Editar") {
             openCloseModalEdit();
-        }
-        else {
+        } else {
             openCloseModalDelete();
         }
     };
 
     const openCloseModalInsert = () => {
         setModalInsert(!modalInsert);
-        state.clearError();
+        typepublicplace.clearError();
 
         if (modalInsert) {
-            state.clearData();
+            typepublicplace.clearData();
         }
     };
 
     const openCloseModalEdit = () => {
         setModalEdit(!modalEdit);
-        state.clearError();
+        typepublicplace.clearError();
 
         if (modalEdit) {
-            state.clearData();
+            typepublicplace.clearData();
         }
     };
 
     const openCloseModalDelete = () => {
         setModalDelete(!modalDelete);
+        typepublicplace.clearError();
 
         if (modalDelete) {
-            state.clearData();
+            typepublicplace.clearData();
         }
     };
 
-    const GetState = async () => {
+    const GetTypePublicPlace = async () => {
         const response = await connection.getOrder();
         if (response.status) {
             setData(response.message);
@@ -66,8 +70,8 @@ export default function State() {
         }
     };
 
-    const PostState = async () => {
-        const response = await connection.postOrder(state);
+    const PostTypePublicPlace = async () => {
+        const response = await connection.postOrder(typepublicplace);
         if (response.status) {
             openCloseModalInsert();
             setUpdateData(true);
@@ -77,8 +81,8 @@ export default function State() {
         }
     };
 
-    const PutState = async () => {
-        const response = await connection.putOrder(state);
+    const PutTypePublicPlace = async () => {
+        const response = await connection.putOrder(typepublicplace);
         if (response.status) {
             openCloseModalEdit();
             setUpdateData(true);
@@ -88,10 +92,10 @@ export default function State() {
         }
     };
 
-    const DeleteState = async () => {
-        const response = await connection.deleteOrder(state);
+    const DeleteTypePublicPlace = async () => {
+        const response = await connection.deleteOrder(typepublicplace);
         if (response.status) {
-            openCloseModalInsert();
+            openCloseModalDelete();
             setUpdateData(true);
             console.log(response.message);
         } else {
@@ -99,13 +103,9 @@ export default function State() {
         }
     };
 
-    const [stateToRender, setStateToRender] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [searchBy, setSearchBy] = useState('nomeEstado');
-
-    const fetchData = async () => {
+    const fechData = async () => {
         try {
-            setStateToRender(data);
+            setTypePublicPlaceToRender(data);
         } catch (error) {
             console.error(error);
         }
@@ -119,46 +119,46 @@ export default function State() {
         setSearchBy(value);
     };
 
-    const filterState = () => {
+    const filterTypePublicPlace = () => {
         const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
         if (searchTerm === '') {
-            setStateToRender(data);
+            setTypePublicPlaceToRender(data);
         } else {
-            const filtered = data.filter((state) => {
-                const stateNameNormalized = state[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                return stateNameNormalized.toLowerCase().includes(searchTermNormalized.toLowerCase());
+            const filtered = data.filter((typepublicplace) => {
+                const typePublicPlaceIcNormalized = typepublicplace[searchBy].replace(/[\u0300-\u036f]/g, '');
+                return typePublicPlaceIcNormalized.toLowerCase().includes(searchTermNormalized.toLowerCase());
             });
-            setStateToRender(filtered);
+            setTypePublicPlaceToRender(filtered);
         }
     };
 
     useEffect(() => {
         if (updateData) {
-            GetState();
+            GetTypePublicPlace();
             setUpdateData(false);
-            fetchData();
+            fechData();
         }
     }, [updateData]);
 
     useEffect(() => {
-        filterState();
+        filterTypePublicPlace();
     }, [searchTerm, data]);
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
-    const totalItems = stateToRender.length;
+    const totalItems = typePublicPlaceToRender.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
     // Função para pegar uma parte específica da lista
     const getCurrentPageItems = (page) => {
         const startIndex = (page - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
-        return stateToRender.slice(startIndex, endIndex);
+        return typePublicPlaceToRender.slice(startIndex, endIndex);
     };
 
     // Renderiza a lista atual com base na página atual
-    const currentStates = getCurrentPageItems(currentPage);
+    const currentTypePublicPlace = getCurrentPageItems(currentPage);
 
     // Funções para navegar entre as páginas
     const goToPage = (page) => {
@@ -180,11 +180,8 @@ export default function State() {
                                 <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
                             </Link>
                             <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
-                            <h3 className="text-2xl font-semibold text-gray-700">Estado</h3>
+                            <h3 className="text-2xl font-semibold text-gray-700">Tipo Logradouro</h3>
                         </div>
-                        {/* <div className="bg-slate-200 rounded-md mb-10" style={{ marginTop: 15 }}>
-                                <h4 className="pl-4 pt-2 pb-2 text-gray-500">Funções</h4>
-                            </div> */}
                         <div className="flex" style={{ alignItems: 'center' }}>
                             <div className="flex justify-center items-center mx-auto">
                                 <div className="relative items-stretch self-center justify-center" style={{ width: 500 }}>
@@ -195,13 +192,13 @@ export default function State() {
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                             </svg>
                                         </div>
-                                        <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar estado" required onChange={(e) => handleSearch(e.target.value)} />
+                                        <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar tipo logradouro" required onChange={(e) => handleSearch(e.target.value)} />
                                         <select className="form-control rounded-md w-28 text-gray-800" onChange={(e) => handleSearchBy(e.target.value)} >
-                                            <option key="nomeEstado" value="nomeEstado">
-                                                Estado
+                                            <option key="codigoInformativo" value="codigoInformativo">
+                                                Código
                                             </option>
-                                            <option key="ufEstado" value="ufEstado">
-                                                Sigla
+                                            <option key="descricao" value="descricao">
+                                                Descrição
                                             </option>
                                         </select>
                                     </div>
@@ -215,15 +212,15 @@ export default function State() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="flex ml-5 text-white text-lg font-semibold">Estado</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">UF</span>
+                                <span className="flex ml-5 text-white text-lg font-semibold">Código Informativo</span>
+                                <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
                                 <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                             </div>
                             <ul className="w-full">
-                                {currentStates.map((object) => (
+                                {currentTypePublicPlace.map((object) => (
                                     <li className="grid grid-cols-3 w-full" key={object.id}>
-                                        <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeEstado}</span>
-                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.ufEstado}</span>
+                                        <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.codigoInformativo}</span>
+                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricao}</span>
                                         <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                             <button
                                                 className=""
@@ -272,70 +269,69 @@ export default function State() {
                         </div>
                     </div>
                 </div>
-                {/* Usar centered para centralizar o modal */}
                 <Modal isOpen={modalInsert} >
-                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Estado</ModalHeader>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Tipo de Logradouro</ModalHeader>
                     <ModalBody>
                         <div className="form-group">
-                            <label className="text-[#444444]">Nome: </label>
+                            <label className="text-[#444444]">Código Informativo: </label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => state.setStateName(e.target.value)} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typepublicplace.setTypePublicPlaceIc(e.target.value)} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {state.errorStateName}
+                                {typepublicplace.errorTypePublicPlaceIc}
                             </div>
                             <br />
-                            <label className="text-[#444444]">Sigla:</label>
+                            <label className="text-[#444444]">Descrição:</label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => state.verifyUf(e.target.value.toUpperCase())} value={state.stateUf} maxLength={2} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typepublicplace.setTypePublicPlaceDescription(e.target.value)} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {state.errorStateUf}
+                                {typepublicplace.errorTypePublicPlaceDescription}
                             </div>
                             <br />
                         </div>
                     </ModalBody>
                     <ModalFooter>
                         <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert()}>Cancelar</button>
-                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostState()}>Cadastrar</button>{"  "}
+                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostTypePublicPlace()}>Cadastrar</button>{"  "}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalEdit}>
-                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC]">Editar Estado</ModalHeader>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC]">Editar Tipo Logradouro</ModalHeader>
                     <ModalBody>
                         <div className="form-group">
                             <label className="text-[#444444]">ID: </label><br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={state.stateId} /> <br />
-                            <label className="text-[#444444]">Nome:</label>
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomeEstado" onChange={(e) => state.setStateName(e.target.value)} value={state.stateName} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={typepublicplace.typePublicPlaceId} /> <br />
+                            <label className="text-[#444444]">Código Informativo:</label>
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="codigoInformativo" onChange={(e) => typepublicplace.setTypePublicPlaceIc(e.target.value)} value={typepublicplace.typePublicPlaceIc} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {state.errorStateName}
+                                {typepublicplace.errorTypePublicPlaceIc}
                             </div>
                             <br />
                             <label className="text-[#444444]">Sigla:</label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="ufEstado" onChange={(e) => state.verifyUf(e.target.value.toUpperCase())} value={state.stateUf} maxLength={2} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="descricao" onChange={(e) => typepublicplace.setTypePublicPlaceDescription(e.target.value)} value={typepublicplace.typePublicPlaceDescription} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {state.errorStateUf}
+                                {typepublicplace.errorTypePublicPlaceDescription}
                             </div>
                             <br />
                         </div>
                     </ModalBody>
                     <ModalFooter>
                         <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit()}>Cancelar</button>
-                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PutState()}>Atualizar</button>{"  "}
+                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PutTypePublicPlace()}>Atualizar</button>{"  "}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalDelete}>
                     <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
                     <ModalBody className="justify-center">
                         <div className="flex flex-row justify-center p-2">
-                            Confirmar a exclusão deste estado:
+                            Confirmar a exclusão deste tipo de logradouro:
                             <div className="text-[#059669] ml-1">
-                                {state.stateName}
+                                {typepublicplace.typePublicPlaceDescription}
                             </div> ?
                         </div>
                         <div className="flex justify-center gap-2 pt-3">
                             <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete()}>Cancelar</button>
-                            <button className='btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' onClick={() => DeleteState()}>Confirmar</button>
+                            <button className='btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' onClick={() => DeleteTypePublicPlace()}>Confirmar</button>
                         </div>
                         {/* <ModalFooter>
                     </ModalFooter> */}
@@ -343,5 +339,5 @@ export default function State() {
                 </Modal>
             </div>
         </div>
-    );
+    )
 }

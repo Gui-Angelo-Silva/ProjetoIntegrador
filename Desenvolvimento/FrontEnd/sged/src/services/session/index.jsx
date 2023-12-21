@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
 import axios from "axios";
 import PropTypes from 'prop-types';
-import { useApi } from '../api/apiContext';
+import { useApi } from '../api';
 
 const SessionContext = createContext();
 
@@ -16,7 +16,7 @@ export const useSession = () => {
 export const SessionProvider = ({ children }) => {
 
     const { appendRoute } = useApi();
-    const sessionURL = appendRoute('login/');
+    const sessionURL = appendRoute('Login/');
 
     const defaultSession = () => {
         localStorage.setItem('token', null);

@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import Home from '../../pages/routeA/entityDashboard/home';
+import Home from '../../pages/routeA/dashboard/home';
 
 export default function RouteD() {
     return (

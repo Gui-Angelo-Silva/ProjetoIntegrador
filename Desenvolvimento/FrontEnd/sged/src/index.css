@@ -7,36 +7,3 @@ html {
     width: 100%;
     overflow: hidden;
 }
-
-table {
-    width: 100%;
-    margin-top: 45px;
-    margin-left: 0;
-    margin-right: 0;
-    border-collapse: separate;
-    border-spacing: 0;
-    padding: 0;
-    border-radius: 20px; 
-    border: 1px solid #C8E5E5;
-}
-
-thead {
-    border: 1px solid #C8E5E5;
-    background-color: #58AFAE;
-    color: white;
-    height: 49px;
-}
-
-th, td {
-    border: none;
-}
-
-th {
-    text-align: center;
-}
-
-td {
-    text-align: center;
-    padding-top: 7.5px;
-    padding-bottom: 7.5px;
-}

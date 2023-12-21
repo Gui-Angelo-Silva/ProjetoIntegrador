@@ -110,25 +110,29 @@ namespace SGED
 
             // Injeção de dependências
 
-            // Depedência: Estado
+            // Dependência: Estado
             services.AddScoped<IEstadoRepository, EstadoRepository>();
             services.AddScoped<IEstadoService, EstadoService>();
 
-            // Depedência: TipoUsuario
+            // Dependência: TipoUsuario
             services.AddScoped<ITipoUsuarioRepository, TipoUsuarioRepository>();
             services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
 
-            // Depedência: Cidade
+            // Dependência: Cidade
             services.AddScoped<ICidadeRepository, CidadeRepository>();
             services.AddScoped<ICidadeService, CidadeService>();
 
-            // Depedência: Usuario
+            // Dependência: Usuario
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped<IUsuarioService, UsuarioService>();
 
-            // Depedência: Municipe
+            // Dependência: Municipe
             services.AddScoped<IMunicipeRepository, MunicipeRepository>();
             services.AddScoped<IMunicipeService, MunicipeService>();
+
+            // Dependência: TipoLogradouro
+            services.AddScoped<ITipoLogradouroRepository, TipoLogradouroRepository>();
+            services.AddScoped<ITipoLogradouroService, TipoLogradouroService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

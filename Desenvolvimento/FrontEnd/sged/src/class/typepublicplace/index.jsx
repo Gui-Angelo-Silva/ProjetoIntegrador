@@ -59,23 +59,24 @@ function TypePublicPlaceClass() {
             setErrorTypePublicPlaceDescription('A descrição é requerida!');
             status = false;
         }
+
+        return status;
     }
 
     return {
-        typePublicPlaceId,
-        typePublicPlaceIc,
-        setErrorTypePublicPlaceIc,
         typePublicPlaceDescription,
         setTypePublicPlaceDescription,
+        typePublicPlaceIc,
+        setTypePublicPlaceIc,
+        typePublicPlaceId,
         errorTypePublicPlaceIc,
         errorTypePublicPlaceDescription,
-        setTypePublicPlaceIc,
+        propertyName,
         getData,
         setData,
         clearData,
         clearError,
         verifyData,
-        propertyName
     }
 }
 

@@ -282,7 +282,7 @@ export default function TypePublicPlace() {
                             <br />
                             <label className="text-[#444444]">Descrição:</label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typepublicplace.setTypePublicPlaceDescription(e.target.value)} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typepublicplace.setTypePublicPlaceDescription(e.target.value)} value={typepublicplace.typePublicPlaceDescription}/>
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                                 {typepublicplace.errorTypePublicPlaceDescription}
                             </div>

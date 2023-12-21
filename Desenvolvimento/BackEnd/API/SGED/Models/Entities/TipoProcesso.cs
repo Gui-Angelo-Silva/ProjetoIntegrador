@@ -17,10 +17,5 @@ namespace SGED.Models.Entities
 
         [Column("descricaoTipoProcesso")]
         public string DescricaoTipoProcesso { get; set; }
-
-        public Cidade? Cidade { get; set; }
-
-        [ForeignKey("idCidade")]
-        public int IdCidade { get; set; }
     }
 }

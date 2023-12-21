@@ -2,12 +2,12 @@
 
 namespace SGED.Services.Interfaces
 {
-    public interface ITipoBairroService
+    public interface ITipoProcessoService
     {
-        Task<IEnumerable<TipoBairroDTO>> GetAll();
-        Task<TipoBairroDTO> GetById(int id);
-        Task Create(TipoBairroDTO TipoBairroDTO);
-        Task Update(TipoBairroDTO TipoBairroDTO);
+        Task<IEnumerable<TipoProcessoDTO>> GetAll();
+        Task<TipoProcessoDTO> GetById(int id);
+        Task Create(TipoProcessoDTO TipoProcessoDTO);
+        Task Update(TipoProcessoDTO TipoProcessoDTO);
         Task Remove(int id);
     }
 }

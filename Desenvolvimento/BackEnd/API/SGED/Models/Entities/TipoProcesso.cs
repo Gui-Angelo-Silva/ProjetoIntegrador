@@ -6,14 +6,17 @@ using System.Runtime.CompilerServices;
 
 namespace SGED.Models.Entities
 {
-    [Table("Bairro")]
-    public class Bairro
+    [Table("TipoProcesso")]
+    public class TipoProcesso
     {
-        [Column("idBairro")]
+        [Column("idTipoProcesso")]
         public int Id { get; set; }
 
-        [Column("nomeBairro")]
-        public string NomeBairro { get; set; }
+        [Column("nomeTipoProcesso")]
+        public string NomeTipoProcesso { get; set; }
+
+        [Column("descricaoTipoProcesso")]
+        public string DescricaoTipoProcesso { get; set; }
 
         public Cidade? Cidade { get; set; }
 

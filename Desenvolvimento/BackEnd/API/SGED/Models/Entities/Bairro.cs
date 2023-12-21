@@ -15,5 +15,9 @@ namespace SGED.Models.Entities
         [Column("nomeBairro")]
         public String NomeBairro { get; set; }
 
+        public Cidade? Cidade { get; set; }
+
+        [ForeignKey("idCidade")]
+        public int IdCidade { get; set; }
     }
 }

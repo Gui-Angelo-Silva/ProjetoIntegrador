@@ -12,7 +12,7 @@ namespace SGED.Models.Entities
         [Column("idcidade")]
         public int Id { get; set; }
 
-        [Column("nomecidade")]
+        [Column("cidade")]
         public string NomeCidade { get; set; }
 
         public Estado? Estado { get; set; }
@@ -20,5 +20,6 @@ namespace SGED.Models.Entities
         [ForeignKey("idestado")]
         public int IdEstado { get; set; }
 
+        public ICollection<Bairro>? Bairros { get; set; }
     }
 }

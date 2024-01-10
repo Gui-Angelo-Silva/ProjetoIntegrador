@@ -20,5 +20,6 @@ namespace SGED.Models.Entities
         [ForeignKey("idestado")]
         public int IdEstado { get; set; }
 
+        public ICollection<Bairro>? Bairros { get; set; }
     }
 }

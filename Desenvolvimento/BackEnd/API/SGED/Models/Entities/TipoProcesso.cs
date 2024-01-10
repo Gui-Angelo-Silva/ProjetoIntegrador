@@ -12,7 +12,7 @@ namespace SGED.Models.Entities
         [Column("idTipoProcesso")]
         public int Id { get; set; }
 
-        [Column("nomeTipoProcesso")]
+        [Column("tipoProcesso")]
         public string NomeTipoProcesso { get; set; }
 
         [Column("descricaoTipoProcesso")]

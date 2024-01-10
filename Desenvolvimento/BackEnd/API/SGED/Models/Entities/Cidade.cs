@@ -12,7 +12,7 @@ namespace SGED.Models.Entities
         [Column("idcidade")]
         public int Id { get; set; }
 
-        [Column("nomecidade")]
+        [Column("cidade")]
         public string NomeCidade { get; set; }
 
         public Estado? Estado { get; set; }

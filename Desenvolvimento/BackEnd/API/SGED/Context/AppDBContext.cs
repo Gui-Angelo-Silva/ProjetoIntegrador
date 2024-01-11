@@ -11,7 +11,7 @@ public class AppDBContext : DbContext
 	public DbSet<TipoUsuario> TipoUsuario { get; set; }
 	public DbSet<Cidade> Cidade { get; set; }
     public DbSet<Bairro> Bairro { get; set; }
-    public DbSet<TipoProcesso> TipoProcesso { get; set; }
+    //public DbSet<TipoProcesso> TipoProcesso { get; set; }
     public DbSet<Usuario> Usuario { get; set; }
 	public DbSet<Municipe> Municipe { get; set; }
 	public DbSet<TipoLogradouro> TipoLogradouro { get; set; }

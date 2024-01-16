@@ -95,10 +95,10 @@ export default function State() {
             setUpdateData(true);
             console.log(response.message);
         } else {
-            console.error(response.message);
+            console.error(response.message);   
         }
     };
-
+    
     const [stateToRender, setStateToRender] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchBy, setSearchBy] = useState('nomeEstado');

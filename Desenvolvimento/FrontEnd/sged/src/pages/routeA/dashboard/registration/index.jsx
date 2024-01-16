@@ -35,6 +35,12 @@ export default function Registrations() {
     const [isHoveredFiscal, setIsHoveredFiscal] = useState(false); 
     const [isHoveredAuditoria, setIsHoveredAuditoria] = useState(false); 
 
+    const [isHoveredProcesso, setIsHoveredProcesso] = useState(false); 
+    const [isHoveredTipoProcesso, setIsHoveredTipoProcesso] = useState(false); 
+    const [isHoveredEtapa, setIsHoveredEtapa] = useState(false); 
+    const [isHoveredTipoDocumento, setIsHoveredTipoDocumento] = useState(false); 
+    const [isHoveredDocumentoProcesso, setIsHoveredDocumentoProcesso] = useState(false); 
+
     return (
         <div className="flex flex-1 min-h-screen">
             <div className="h-full w-full" style={{ display: 'flex', flexDirection: 'column' }}>
@@ -170,33 +176,48 @@ export default function Registrations() {
                                 <div className="pt-4 text-xl font-semibold text-gray-600 pb-2">Processo</div>
                                 <div className="grid grid-cols-2">
                                     <Link to="/a/development">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#d1eaee] hover:bg-[#c0d5d9] hover:scale-105 shadow-xl mb-3 rounded-xl mr-4">
-                                            <div className="text-lg font-semibold text-[#59C3D3]">Processo</div>
-                                            <img src={ImgProcesso} alt="" />
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-3 rounded-xl mr-4 text-lg font-semibold text-[#59C3D3] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredProcesso(true)}
+                                            onMouseLeave={() => setIsHoveredProcesso(false)}
+                                        >
+                                            Processo
+                                            <img src={ImgProcesso} alt="Abrir tela de cadastro de processos" style={{ filter: isHoveredProcesso ? 'brightness(0) invert(1)' : 'none' }}/>
                                         </div>
                                     </Link>
                                     <Link to="/a/development">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#d1eaee] hover:bg-[#c0d5d9] hover:scale-105 shadow-xl mb-2 rounded-xl">
-                                            <div className="text-lg font-semibold text-[#59C3D3]">Tipo Processo</div>
-                                            <img src={ImgTipoProcesso} alt="" />
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredTipoProcesso(true)}
+                                            onMouseLeave={() => setIsHoveredTipoProcesso(false)}
+                                        >
+                                            Tipo Processo
+                                            <img src={ImgTipoProcesso} alt="Abrir tela de cadastro de tipo de processos" style={{ filter: isHoveredTipoProcesso ? 'brightness(0) invert(1)' : 'none' }}/>
                                         </div>
                                     </Link>
                                     <Link to="/a/development">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#d1eaee] hover:bg-[#c0d5d9] hover:scale-105 shadow-xl mb-3 rounded-xl">
-                                            <div className="text-lg font-semibold text-[#59C3D3]">Etapa</div>
-                                            <img src={ImgEtapa} alt="" />
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-3 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredEtapa(true)}
+                                            onMouseLeave={() => setIsHoveredEtapa(false)}
+                                        >
+                                            Etapa
+                                            <img src={ImgEtapa} alt="Abrir tela de cadastro de etapa" style={{ filter: isHoveredEtapa ? 'brightness(0) invert(1)' : 'none' }}/>
                                         </div>
                                     </Link>
                                     <Link to="/a/development">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#d1eaee] hover:bg-[#c0d5d9] hover:scale-105 shadow-xl mb-2 rounded-xl">
-                                            <div className="text-lg font-semibold text-[#59C3D3]">Tipo Documento</div>
-                                            <img src={ImgTipoDocumento} alt="" />
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredTipoDocumento(true)}
+                                            onMouseLeave={() => setIsHoveredTipoDocumento(false)}
+                                        >
+                                            Tipo Documento
+                                            <img src={ImgTipoDocumento} alt="Abrir tela de cadastro de tipo de documento" style={{ filter: isHoveredTipoDocumento ? 'brightness(0) invert(1)' : 'none' }}/>
                                         </div>
                                     </Link>
                                     <Link to="/a/development">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#d1eaee] hover:bg-[#c0d5d9] hover:scale-105 shadow-xl mb-2 rounded-xl">
-                                            <div className="text-lg font-semibold text-[#59C3D3]">Doc. Processo</div>
-                                            <img src={ImgDocumentoProcesso} alt="" />
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredDocumentoProcesso(true)}
+                                            onMouseLeave={() => setIsHoveredDocumentoProcesso(false)}
+                                        >
+                                            Doc. Processo
+                                            <img src={ImgDocumentoProcesso} alt="Abrir tela de cadastro de documento do processo" style={{ filter: isHoveredDocumentoProcesso ? 'brightness(0) invert(1)' : 'none' }}/>
                                         </div>
                                     </Link>
                                 </div>

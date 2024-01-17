@@ -196,7 +196,7 @@ export default function State() {
                                             </svg>
                                         </div>
                                         <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar estado" required onChange={(e) => handleSearch(e.target.value)} />
-                                        <select className="form-control rounded-md w-28 text-gray-800" onChange={(e) => handleSearchBy(e.target.value)} >
+                                        <select className="appearance-none form-control rounded-md w-28 text-gray-800" onChange={(e) => handleSearchBy(e.target.value)} >
                                             <option key="nomeEstado" value="nomeEstado">
                                                 Estado
                                             </option>

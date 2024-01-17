@@ -58,7 +58,7 @@ export default function Registrations() {
                                 <div className="pt-4 text-xl font-semibold text-gray-600 pb-2">Imóvel</div>
                                 <div className="grid grid-cols-2">
                                     <Link to="/a/development">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-3 rounded-xl mr-4 text-lg font-semibold text-[#005A66] hover:text-white"
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-3 rounded-xl mr-4 text-lg font-semibold text-[#005A66] hover:text-white"
                                             onMouseEnter={() => setIsHoveredImovel(true)}
                                             onMouseLeave={() => setIsHoveredImovel(false)}
                                         >
@@ -67,7 +67,7 @@ export default function Registrations() {
                                         </div>
                                     </Link>
                                     <Link to="/a/state">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
                                             onMouseEnter={() => setIsHoveredEstado(true)}
                                             onMouseLeave={() => setIsHoveredEstado(false)}
                                         >
@@ -76,7 +76,7 @@ export default function Registrations() {
                                         </div>
                                     </Link>
                                     <Link to="/a/city">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-3 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-3 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
                                             onMouseEnter={() => setIsHoveredCidade(true)}
                                             onMouseLeave={() => setIsHoveredCidade(false)}
                                         >
@@ -85,7 +85,7 @@ export default function Registrations() {
                                         </div>
                                     </Link>
                                     <Link to="/a/development">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
                                             onMouseEnter={() => setIsHoveredBairro(true)}
                                             onMouseLeave={() => setIsHoveredBairro(false)}
                                         >
@@ -94,7 +94,7 @@ export default function Registrations() {
                                         </div>
                                     </Link>
                                     <Link to="/a/development">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
                                             onMouseEnter={() => setIsHoveredLogradouro(true)}
                                             onMouseLeave={() => setIsHoveredLogradouro(false)}
                                         >
@@ -103,7 +103,7 @@ export default function Registrations() {
                                         </div>
                                     </Link>
                                     <Link to="/a/typepublicplace">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
                                             onMouseEnter={() => setIsHoveredTipoLogradouro(true)}
                                             onMouseLeave={() => setIsHoveredTipoLogradouro(false)}
                                         >
@@ -117,7 +117,7 @@ export default function Registrations() {
                                 <div className="pt-4 text-xl font-semibold text-gray-600 pb-2">Usuário</div>
                                 <div className="grid grid-cols-2">
                                     <Link to="/a/user">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-3 rounded-xl mr-4 text-lg font-semibold text-[#4DA8B6] hover:text-white"
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-3 rounded-xl mr-4 text-lg font-semibold text-[#4DA8B6] hover:text-white"
                                             onMouseEnter={() => setIsHoveredUsuário(true)}
                                             onMouseLeave={() => setIsHoveredUsuário(false)}
                                         >
@@ -126,7 +126,7 @@ export default function Registrations() {
                                         </div>
                                     </Link>
                                     <Link to="/a/typeuser">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
                                             onMouseEnter={() => setIsHoveredTipoUsuário(true)}
                                             onMouseLeave={() => setIsHoveredTipoUsuário(false)}
                                         >
@@ -135,7 +135,7 @@ export default function Registrations() {
                                         </div>
                                     </Link>
                                     <Link to="/a/development">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-3 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-3 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
                                             onMouseEnter={() => setIsHoveredMunicipe(true)}
                                             onMouseLeave={() => setIsHoveredMunicipe(false)}
                                         >
@@ -144,7 +144,7 @@ export default function Registrations() {
                                         </div>
                                     </Link>
                                     <Link to="/a/development">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
                                             onMouseEnter={() => setIsHoveredEngenheiro(true)}
                                             onMouseLeave={() => setIsHoveredEngenheiro(false)}
                                         >
@@ -153,7 +153,7 @@ export default function Registrations() {
                                         </div>
                                     </Link>
                                     <Link to="/a/development">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
                                             onMouseEnter={() => setIsHoveredFiscal(true)}
                                             onMouseLeave={() => setIsHoveredFiscal(false)}
                                         >
@@ -162,7 +162,7 @@ export default function Registrations() {
                                         </div>
                                     </Link>
                                     <Link to="/a/development">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
                                             onMouseEnter={() => setIsHoveredAuditoria(true)}
                                             onMouseLeave={() => setIsHoveredAuditoria(false)}
                                         >
@@ -176,7 +176,7 @@ export default function Registrations() {
                                 <div className="pt-4 text-xl font-semibold text-gray-600 pb-2">Processo</div>
                                 <div className="grid grid-cols-2">
                                     <Link to="/a/development">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-3 rounded-xl mr-4 text-lg font-semibold text-[#59C3D3] hover:text-white"
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-3 rounded-xl mr-4 text-lg font-semibold text-[#59C3D3] hover:text-white"
                                             onMouseEnter={() => setIsHoveredProcesso(true)}
                                             onMouseLeave={() => setIsHoveredProcesso(false)}
                                         >
@@ -185,7 +185,7 @@ export default function Registrations() {
                                         </div>
                                     </Link>
                                     <Link to="/a/development">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
                                             onMouseEnter={() => setIsHoveredTipoProcesso(true)}
                                             onMouseLeave={() => setIsHoveredTipoProcesso(false)}
                                         >
@@ -194,7 +194,7 @@ export default function Registrations() {
                                         </div>
                                     </Link>
                                     <Link to="/a/development">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-3 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-3 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
                                             onMouseEnter={() => setIsHoveredEtapa(true)}
                                             onMouseLeave={() => setIsHoveredEtapa(false)}
                                         >
@@ -203,7 +203,7 @@ export default function Registrations() {
                                         </div>
                                     </Link>
                                     <Link to="/a/development">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
                                             onMouseEnter={() => setIsHoveredTipoDocumento(true)}
                                             onMouseLeave={() => setIsHoveredTipoDocumento(false)}
                                         >
@@ -212,7 +212,7 @@ export default function Registrations() {
                                         </div>
                                     </Link>
                                     <Link to="/a/development">
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
                                             onMouseEnter={() => setIsHoveredDocumentoProcesso(true)}
                                             onMouseLeave={() => setIsHoveredDocumentoProcesso(false)}
                                         >

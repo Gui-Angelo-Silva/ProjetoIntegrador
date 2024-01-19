@@ -19,7 +19,16 @@ import ImgTipoDocumento from "../../../../assets/ImgTipoDocumento.png";
 import ImgDocumentoProcesso from "../../../../assets/ImgDocumentoProcesso.png";
 import { Link } from "react-router-dom";
 
+import { useMontage } from '../../../../object/modules/montage';
+import { useEffect } from "react";
+
 export default function Registrations() {
+
+    const { componentMounted } = useMontage();
+
+    useEffect(() => {
+        componentMounted();
+    }, [componentMounted]);
 
     return (
         <div className="flex flex-1 min-h-screen">

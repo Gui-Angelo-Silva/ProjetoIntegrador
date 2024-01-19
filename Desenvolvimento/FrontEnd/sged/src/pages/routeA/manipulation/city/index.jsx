@@ -6,13 +6,21 @@ import NavBar from "../../components/NavBar";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
-import { useSession } from '../../../../services/session';
-import { useApi } from '../../../../services/api';
 import Select from 'react-select';
 import debounce from 'lodash.debounce';
+import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
+
+import { useMontage } from '../../../../object/modules/montage';
+import { useSession } from '../../../../object/service/session';
+import { useApi } from '../../../../object/service/api';
 
 export default function City() {
+
+    const { componentMounted } = useMontage();
+
+    useEffect(() => {
+        componentMounted();
+    }, [componentMounted]);
 
     const { getAuthConfig } = useSession();
     const { appendRoute } = useApi();

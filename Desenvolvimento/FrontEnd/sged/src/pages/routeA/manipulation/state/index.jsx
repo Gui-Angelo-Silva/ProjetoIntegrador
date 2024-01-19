@@ -6,10 +6,18 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
-import ConnectionEntity from '../../../../class/entity/connection';
-import StateClass from '../../../../class/state';
+
+import { useMontage } from '../../../../object/modules/montage';
+import ConnectionEntity from '../../../../object/service/connection';
+import StateClass from '../../../../object/class/state';
 
 export default function State() {
+
+    const { componentMounted } = useMontage();
+
+    useEffect(() => {
+        componentMounted();
+    }, [componentMounted]);
 
     const state = StateClass();
     const connection = ConnectionEntity('Estado/');
@@ -95,10 +103,10 @@ export default function State() {
             setUpdateData(true);
             console.log(response.message);
         } else {
-            console.error(response.message);   
+            console.error(response.message);
         }
     };
-    
+
     const [stateToRender, setStateToRender] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchBy, setSearchBy] = useState('nomeEstado');

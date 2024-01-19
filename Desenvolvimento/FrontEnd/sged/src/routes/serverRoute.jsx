@@ -78,6 +78,8 @@ export const ServerProvider = ({ children }) => {
         const initialPages = ["login", "register", "development"];
 
         if (callFunctionRoute) {
+            clearStateMontage();
+            
             const validationRoute = async () => {
                 const permission = await updateAuthentication();
 

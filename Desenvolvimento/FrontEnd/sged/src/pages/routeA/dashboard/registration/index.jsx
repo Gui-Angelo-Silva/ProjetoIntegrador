@@ -1,26 +1,9 @@
 import NavBar from "../../components/NavBar";
 import SideBar from "../../components/SideBar";
-import ImgImovel from "../../../../assets/imgImovel.png"
-import ImgEstado from "../../../../assets/imgEstado.png";
-import ImgCidade from "../../../../assets/ImgCidade.png";
-import ImgLogradouro from "../../../../assets/ImgLogradouro.png";
-import ImgTipoLogradouro from "../../../../assets/ImgTipoLogradouro.png";
-import ImgUsuario from "../../../../assets/ImgUsuarioAtualizada.png";
-import ImgBairro from "../../../../assets/ImgBairro.png";
-import ImgTipoUsuario from "../../../../assets/ImgTipoUsuarioAtualizada.png";
-import ImgMunicipe from "../../../../assets/ImgMunicipeAtualizada.png";
-import ImgEngenheiro from "../../../../assets/ImgEngenheiroAtualizada.png";
-import ImgFiscal from "../../../../assets/ImgFiscalAtualizada.png";
-import ImgAuditoria from "../../../../assets/ImgAuditoriaAtualizada.png";
-import ImgProcesso from "../../../../assets/ImgProcessoAtualizada.png";
-import ImgTipoProcesso from "../../../../assets/ImgTipoProcessoAtualizada.png";
-import ImgEtapa from "../../../../assets/ImgEtapaAtualizada.png";
-import ImgTipoDocumento from "../../../../assets/ImgTipoDocumentoAtualizada.png";
-import ImgDocumentoProcesso from "../../../../assets/ImgDocumentoProcessoAtualizada.png";
 //import { Link } from "react-router-dom";
 
 import { useMontage } from '../../../../object/modules/montage';
-import { useServer } from "../../../../routes/serverRoute";
+import Cards from '../../components/Cards';
 import React, { useState, useEffect } from "react";
 
 export default function Registrations() {
@@ -31,27 +14,21 @@ export default function Registrations() {
         componentMounted();
     }, [componentMounted]);
 
-    const [isHoveredImovel, setIsHoveredImovel] = useState(false);
-    const [isHoveredEstado, setIsHoveredEstado] = useState(false);
-    const [isHoveredCidade, setIsHoveredCidade] = useState(false);
-    const [isHoveredBairro, setIsHoveredBairro] = useState(false);
-    const [isHoveredLogradouro, setIsHoveredLogradouro] = useState(false);
-    const [isHoveredTipoLogradouro, setIsHoveredTipoLogradouro] = useState(false);
+    const { titles, titleColors, cards, dataCards } = Cards();
+    const [searchFilter, setSearchFilter] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("Todos");
 
-    const [isHoveredUsuário, setIsHoveredUsuário] = useState(false);
-    const [isHoveredTipoUsuário, setIsHoveredTipoUsuário] = useState(false);
-    const [isHoveredMunicipe, setIsHoveredMunicipe] = useState(false);
-    const [isHoveredEngenheiro, setIsHoveredEngenheiro] = useState(false);
-    const [isHoveredFiscal, setIsHoveredFiscal] = useState(false);
-    const [isHoveredAuditoria, setIsHoveredAuditoria] = useState(false);
+    const normalizeString = (str) => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-    const [isHoveredProcesso, setIsHoveredProcesso] = useState(false);
-    const [isHoveredTipoProcesso, setIsHoveredTipoProcesso] = useState(false);
-    const [isHoveredEtapa, setIsHoveredEtapa] = useState(false);
-    const [isHoveredTipoDocumento, setIsHoveredTipoDocumento] = useState(false);
-    const [isHoveredDocumentoProcesso, setIsHoveredDocumentoProcesso] = useState(false);
+    const handleSearch = (value) => {
+        setSearchFilter(value);
+    };
 
-    const { addSegment, inDevelopment } = useServer();
+    const handleSearchBy = (value) => {
+        setSelectedCategory(value);
+    };
+
+    const filteredTitles = selectedCategory === "Todos" ? titles : [selectedCategory];
 
     return (
         <div className="flex flex-1 min-h-screen">
@@ -63,177 +40,52 @@ export default function Registrations() {
                         <br />
                         <h3 className="text-2xl font-semibold text-gray-600">Cadastros</h3>
                         <div className="bg-slate-200 rounded-md" style={{ marginTop: 15 }}>
-                            <h4 className="pl-4 pt-2 pb-2 text-gray-500">Funções</h4>
+                            <div className="flex relative border rounded-lg border-[#BCBCBC]">
+                                <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                    <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                    </svg>
+                                </div>
+                                <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar cartões" required onChange={(e) => handleSearch(e.target.value)} />
+                                <select className="appearance-none form-control rounded-md w-40 text-gray-800" onChange={(e) => handleSearchBy(e.target.value)} >
+                                    <option key="Todos" value="Todos">
+                                        Todos
+                                    </option>
+                                    <option key="Imóvel" value="Imóvel">
+                                        Imóvel
+                                    </option>
+                                    <option key="Usuário" value="Usuário">
+                                        Usuário
+                                    </option>
+                                    <option key="Processo" value="Processo">
+                                        Processo
+                                    </option>
+                                </select>
+                            </div>
                         </div>
                         <div className="flex">
-                            <div className="pr-[50px]">
-                                <div className="pt-4 text-xl font-semibold text-gray-600 pb-2">Imóvel</div>
-                                <div className="grid grid-cols-2">
-                                    <button onClick={() => inDevelopment("Controle de Imóvel")}>
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-3 rounded-xl mr-4 text-lg font-semibold text-[#005A66] hover:text-white"
-                                            onMouseEnter={() => setIsHoveredImovel(true)}
-                                            onMouseLeave={() => setIsHoveredImovel(false)}
-                                        >
-                                            Imóvel
-                                            <img src={ImgImovel} alt="Abrir tela de cadastro de imóvel" style={{ filter: isHoveredImovel ? 'brightness(0) invert(1)' : 'none' }} />
-                                        </div>
-                                    </button>
-                                    <button onClick={() => addSegment("state")}>
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
-                                            onMouseEnter={() => setIsHoveredEstado(true)}
-                                            onMouseLeave={() => setIsHoveredEstado(false)}
-                                        >
-                                            Estado
-                                            <img src={ImgEstado} alt="Abrir tela de cadastro de estado" style={{ filter: isHoveredEstado ? 'brightness(0) invert(1)' : 'none' }} />
-                                        </div>
-                                    </button>
-                                    <button onClick={() => addSegment("city")}>
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-3 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
-                                            onMouseEnter={() => setIsHoveredCidade(true)}
-                                            onMouseLeave={() => setIsHoveredCidade(false)}
-                                        >
-                                            Cidade
-                                            <img src={ImgCidade} alt="Abrir tela de cadastro de cidade" style={{ filter: isHoveredCidade ? 'brightness(0) invert(1)' : 'none' }} />
-                                        </div>
-                                    </button>
-                                    <button onClick={() => inDevelopment("Controle de Bairro")}>
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
-                                            onMouseEnter={() => setIsHoveredBairro(true)}
-                                            onMouseLeave={() => setIsHoveredBairro(false)}
-                                        >
-                                            Bairro
-                                            <img src={ImgBairro} alt="Abrir tela de cadastro de bairro" style={{ filter: isHoveredBairro ? 'brightness(0) invert(1)' : 'none' }} />
-                                        </div>
-                                    </button>
-                                    <button onClick={() => inDevelopment("Controle de Logradouro")}>
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
-                                            onMouseEnter={() => setIsHoveredLogradouro(true)}
-                                            onMouseLeave={() => setIsHoveredLogradouro(false)}
-                                        >
-                                            Logradouro
-                                            <img src={ImgLogradouro} alt="Abrir tela de cadastro de logradouro" style={{ filter: isHoveredLogradouro ? 'brightness(0) invert(1)' : 'none' }} />
-                                        </div>
-                                    </button>
-                                    <button onClick={() => addSegment("typepublicplace")}>
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
-                                            onMouseEnter={() => setIsHoveredTipoLogradouro(true)}
-                                            onMouseLeave={() => setIsHoveredTipoLogradouro(false)}
-                                        >
-                                            Tipo Logradouro
-                                            <img src={ImgTipoLogradouro} alt="Abrir tela de cadastro de tipo logradouro" style={{ filter: isHoveredTipoLogradouro ? 'brightness(0) invert(1)' : 'none' }} />
-                                        </div>
-                                    </button>
+                            {filteredTitles.map((title, indexTitle) => (
+                                <div key={indexTitle} className="pr-[50px]">
+                                    <div className="pt-4 text-xl font-semibold text-gray-600 pb-2">{title}</div>
+                                    <div className="grid grid-cols-2">
+                                        {cards[title].filter(card => searchFilter !== "" ? normalizeString(card.toLowerCase()).includes(normalizeString(searchFilter.toLowerCase())) : card).length > 0 ? (
+                                            cards[title].filter(card => searchFilter !== "" ? normalizeString(card.toLowerCase()).includes(normalizeString(searchFilter.toLowerCase())) : card).map((card, indexCard) => (
+                                                <button key={indexCard} onClick={dataCards[card]?.[0]?.onClick}>
+                                                    <div className={`flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[${titleColors[title].bg}] hover:bg-[${titleColors[title].hover}] hover:scale-105 shadow-xl mb-3 mr-4 rounded-xl text-lg font-semibold text-[${titleColors[title].text}] hover:text-white`}
+                                                        onMouseEnter={dataCards[card]?.[0]?.mouseEnter}
+                                                        onMouseLeave={dataCards[card]?.[0]?.mouseLeave}
+                                                    >
+                                                        {card}
+                                                        <img src={dataCards[card]?.[0]?.image} title={dataCards[card]?.[0]?.title} style={{ filter: dataCards[card]?.[0]?.filter }} />
+                                                    </div>
+                                                </button>
+                                            ))
+                                        ) : (
+                                            <div className="w-[148px] mr-4"></div>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="pr-[50px]">
-                                <div className="pt-4 text-xl font-semibold text-gray-600 pb-2">Usuário</div>
-                                <div className="grid grid-cols-2">
-                                    <button onClick={() => addSegment("user")}>
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-3 rounded-xl mr-4 text-lg font-semibold text-[#4DA8B6] hover:text-white"
-                                            onMouseEnter={() => setIsHoveredUsuário(true)}
-                                            onMouseLeave={() => setIsHoveredUsuário(false)}
-                                        >
-                                            Usuário
-                                            <img src={ImgUsuario} alt="Abrir tela de cadastro de usuário" style={{ filter: isHoveredUsuário ? 'brightness(0) invert(1)' : 'none' }} />
-                                        </div>
-                                    </button>
-                                    <button onClick={() => addSegment("typeuser")}>
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
-                                            onMouseEnter={() => setIsHoveredTipoUsuário(true)}
-                                            onMouseLeave={() => setIsHoveredTipoUsuário(false)}
-                                        >
-                                            Tipo Usuário
-                                            <img src={ImgTipoUsuario} alt="Abrir tela de cadastro de tipo usuário" style={{ filter: isHoveredTipoUsuário ? 'brightness(0) invert(1)' : 'none' }} />
-                                        </div>
-                                    </button>
-                                    <button onClick={() => inDevelopment("Controle de Munícipe")}>
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-3 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
-                                            onMouseEnter={() => setIsHoveredMunicipe(true)}
-                                            onMouseLeave={() => setIsHoveredMunicipe(false)}
-                                        >
-                                            Munícipe
-                                            <img src={ImgMunicipe} alt="Abrir tela de cadastro de municipe" style={{ filter: isHoveredMunicipe ? 'brightness(0) invert(1)' : 'none' }} />
-                                        </div>
-                                    </button>
-                                    <button onClick={() => inDevelopment("Controle de Engenheiro")}>
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
-                                            onMouseEnter={() => setIsHoveredEngenheiro(true)}
-                                            onMouseLeave={() => setIsHoveredEngenheiro(false)}
-                                        >
-                                            Engenheiro
-                                            <img src={ImgEngenheiro} alt="Abrir tela de cadastro de engenheiro" style={{ filter: isHoveredEngenheiro ? 'brightness(0) invert(1)' : 'none' }} />
-                                        </div>
-                                    </button>
-                                    <button onClick={() => inDevelopment("Controle de Fiscal")}>
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
-                                            onMouseEnter={() => setIsHoveredFiscal(true)}
-                                            onMouseLeave={() => setIsHoveredFiscal(false)}
-                                        >
-                                            Fiscal
-                                            <img src={ImgFiscal} alt="Abrir tela de cadastro de fiscal" style={{ filter: isHoveredFiscal ? 'brightness(0) invert(1)' : 'none' }} />
-                                        </div>
-                                    </button>
-                                    <button onClick={() => inDevelopment("Controle de Auditoria")}>
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
-                                            onMouseEnter={() => setIsHoveredAuditoria(true)}
-                                            onMouseLeave={() => setIsHoveredAuditoria(false)}
-                                        >
-                                            <div className="">Auditoria</div>
-                                            <img src={ImgAuditoria} alt="abrir tela de cadastro de auditoria" style={{ filter: isHoveredAuditoria ? 'brightness(0) invert(1)' : 'none' }} />
-                                        </div>
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="">
-                                <div className="pt-4 text-xl font-semibold text-gray-600 pb-2">Processo</div>
-                                <div className="grid grid-cols-2">
-                                    <button onClick={() => inDevelopment("Controle de Processo")}>
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-3 rounded-xl mr-4 text-lg font-semibold text-[#59C3D3] hover:text-white"
-                                            onMouseEnter={() => setIsHoveredProcesso(true)}
-                                            onMouseLeave={() => setIsHoveredProcesso(false)}
-                                        >
-                                            Processo
-                                            <img src={ImgProcesso} alt="Abrir tela de cadastro de processos" style={{ filter: isHoveredProcesso ? 'brightness(0) invert(1)' : 'none' }} />
-                                        </div>
-                                    </button>
-                                    <button onClick={() => inDevelopment("Controle de Tipo de Processo")}>
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
-                                            onMouseEnter={() => setIsHoveredTipoProcesso(true)}
-                                            onMouseLeave={() => setIsHoveredTipoProcesso(false)}
-                                        >
-                                            Tipo Processo
-                                            <img src={ImgTipoProcesso} alt="Abrir tela de cadastro de tipo de processos" style={{ filter: isHoveredTipoProcesso ? 'brightness(0) invert(1)' : 'none' }} />
-                                        </div>
-                                    </button>
-                                    <button onClick={() => inDevelopment("Controle de Etapa")}>
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-3 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
-                                            onMouseEnter={() => setIsHoveredEtapa(true)}
-                                            onMouseLeave={() => setIsHoveredEtapa(false)}
-                                        >
-                                            Etapa
-                                            <img src={ImgEtapa} alt="Abrir tela de cadastro de etapa" style={{ filter: isHoveredEtapa ? 'brightness(0) invert(1)' : 'none' }} />
-                                        </div>
-                                    </button>
-                                    <button onClick={() => inDevelopment("Controle de Tipo de Documento")}>
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
-                                            onMouseEnter={() => setIsHoveredTipoDocumento(true)}
-                                            onMouseLeave={() => setIsHoveredTipoDocumento(false)}
-                                        >
-                                            Tipo Documento
-                                            <img src={ImgTipoDocumento} alt="Abrir tela de cadastro de tipo de documento" style={{ filter: isHoveredTipoDocumento ? 'brightness(0) invert(1)' : 'none' }} />
-                                        </div>
-                                    </button>
-                                    <button onClick={() => inDevelopment("Controle de Documento de Processo")}>
-                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
-                                            onMouseEnter={() => setIsHoveredDocumentoProcesso(true)}
-                                            onMouseLeave={() => setIsHoveredDocumentoProcesso(false)}
-                                        >
-                                            Doc. Processo
-                                            <img src={ImgDocumentoProcesso} alt="Abrir tela de cadastro de documento do processo" style={{ filter: isHoveredDocumentoProcesso ? 'brightness(0) invert(1)' : 'none' }} />
-                                        </div>
-                                    </button>
-                                </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
                 </div>

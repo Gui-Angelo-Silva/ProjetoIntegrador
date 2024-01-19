@@ -6,7 +6,7 @@ import Checkbox from '@mui/material/Checkbox';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import background from '../../assets/imgTelaDeLogin.png';
+import background from '../../../../assets/imgTelaDeLogin.png';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 //import { red } from '@mui/material/colors';
@@ -18,22 +18,29 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContentText from '@mui/material/DialogContentText';
 
 import { useEffect, useState } from "react";
-import { useSession } from '../../services/session';
-import { useNavigate } from 'react-router-dom';
+import { useSession } from '../../../../object/service/session';
+import { useMontage } from '../../../../object/modules/montage';
+import { useServer } from '../../../../routes/serverRoute';
 
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
 
-  const [userEmail, setUserEmail] = useState("");
-  const [userPassword, setUserPassword] = useState("");
+  const { componentMounted } = useMontage();
+
+  useEffect(() => {
+    componentMounted();
+  }, [componentMounted]);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
+  const [userPassword, setUserPassword] = useState('');
   const [persistLogin, setPersistLogin] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [loginError, setLoginError] = useState('');
-
+  const { clearSegment, inDevelopment } = useServer();
   const { createSession, getLogin } = useSession();
-  const navigate = useNavigate();
 
   const getDataLogin = () => {
     const data = JSON.parse(getLogin());
@@ -50,39 +57,47 @@ export default function SignInSide() {
   };
 
   const handleSubmit = async (e) => {
+    setIsLoading(true);
+
     e.preventDefault();
     setEmailError('');
     setPasswordError('');
     setLoginError('');
+    var email = '';
+    var password = '';
 
     if (!userEmail) {
-      setEmailError('Informe o e-mail!');
+      email = 'Informe o e-mail!';
     }
 
     if (!userPassword) {
-      setPasswordError('Informe a senha!');
+      password = 'Informe a senha!';
     }
 
-    if (!emailError && (!userEmail.includes('@') || !userEmail.includes('.') || userEmail.indexOf('.') < userEmail.indexOf('@'))) {
-      setEmailError('Insira um email válido!');
+    if (!email && (!userEmail.includes('@') || !userEmail.includes('.') || userEmail.lastIndexOf('.') < userEmail.indexOf('@'))) {
+      email = 'Insira um email válido!';
     }
 
-    if (!passwordError && userPassword.length < 6) {
-      setPasswordError('A senha deve ter pelo menos 6 caracteres!');
+    if (!password && userPassword.length < 6) {
+      password = 'Insira uma senha válida!';
     }
 
-    if (!emailError && !passwordError) {
+    if (!email && !password) {
       try {
         const loginResult = await createSession(userEmail, userPassword, persistLogin);
-        if (loginResult) {
-          navigate('/home');
+        if (loginResult.validation) {
+          clearSegment("home");
         } else {
-          setLoginError('Erro ao fazer login: dados inválidos!');
+          setLoginError(loginResult.message);
         }
       } catch (error) {
-        console.error('Erro ao fazer login:', error);
+        setLoginError('Erro ao fazer login:', error);
       }
     }
+
+    setEmailError(email);
+    setPasswordError(password);
+    setIsLoading(false);
   };
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -98,14 +113,14 @@ export default function SignInSide() {
           sx={{
             textAlign: 'center',
             fontWeight: 'semi-bold'
-          }}  
+          }}
         >
           Confirme o salvamento de dados
         </DialogTitle>
-        <hr className='border-t-1'/>
+        <hr className='border-t-1' />
         <DialogContent>
           <DialogContentText>
-            Lembre-se que se alguém tiver acesso ao seu computador, poderá entrar em sua conta. Ainda sim, deseja que estes dados sejam salvos no navegador?
+            Lembre-se que se alguém tiver acesso ao seu computador, poderá entrar em sua conta. Ainda sim, deseja que seus dados para entrar no site sejam salvos no navegador?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -116,7 +131,7 @@ export default function SignInSide() {
                 setPersistLogin(true);
               }}
               sx={{
-                border: 1,  
+                border: 1,
                 borderColor: '#2AA646',
                 color: '#2AA646',
                 bgcolor: 'none',
@@ -135,7 +150,7 @@ export default function SignInSide() {
                 setPersistLogin(false);
               }}
               sx={{
-                border: 1,  
+                border: 1,
                 borderColor: '#D93442',
                 color: '#D93442',
                 bgcolor: 'none',
@@ -236,6 +251,12 @@ export default function SignInSide() {
                 }}
                 label="Lembre de mim"
               />
+              <button
+                onClick={() => inDevelopment("Registro")}
+                style={{ color: 'blue', marginLeft: '150px' }}
+              >
+                Não possuo conta
+              </button>
               <Button
                 type="submit"
                 fullWidth
@@ -246,8 +267,9 @@ export default function SignInSide() {
                   }
                 }}
                 style={{}}
+                disabled={isLoading}
               >
-                Entrar
+                {isLoading ? 'Aguarde...' : 'Entrar'}
               </Button>
             </Box>
           </Box>

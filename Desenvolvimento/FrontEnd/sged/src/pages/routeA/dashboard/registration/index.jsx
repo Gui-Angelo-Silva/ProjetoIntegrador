@@ -5,8 +5,11 @@ import ImgCidade from "../../../../assets/ImgCidade2.png";
 import ImgUsuario from "../../../../assets/ImgUsuario.png";
 import ImgTipoUsuario from "../../../../assets/ImgTipoUsuario.png";
 import { Link } from "react-router-dom";
+import { useServer } from "../../../../routes/serverRoute";
 
 export default function Registrations() {
+
+    const { addSegment } = useServer();
 
     return (
         <div className="flex flex-1 min-h-screen">
@@ -22,7 +25,7 @@ export default function Registrations() {
                         </div>
                         <div style={{ paddingTop: 40 }}>
                             <div className="flex flex-row">
-                                <Link to="/a/state">
+                                <button onClick={() => addSegment("state")}>
                                 <div className="flex flex-col ml-12 bg-[#DAEEEE] hover:bg-[#58AFAE] text-green-800 hover:scale-105" style={{ width: 229, border: '2px solid #58AFAE', height: 229, justifyContent: 'center', alignItems: 'center', borderRadius: 20 }}>
                                         <p className="text-2xl pb-2 font-medium" style={{ textAlign: 'center' }}>
                                             Estado
@@ -31,8 +34,8 @@ export default function Registrations() {
                                             <img src={ImgEstado} alt="Abrir Cadastro de Estado" />
                                         </div>
                                     </div>
-                                </Link>
-                                <Link to="/a/city">
+                                </button>
+                                <button onClick={() => addSegment("city")}>
                                     <div className="flex flex-col ml-12 bg-[#DAEEEE] hover:bg-[#58AFAE] text-green-800 hover:scale-105" style={{ width: 229, border: '2px solid #58AFAE', height: 229, justifyContent: 'center', alignItems: 'center', borderRadius: 20 }}>
                                         <p className="text-2xl pb-2 font-medium" style={{ textAlign: 'center' }}>
                                             Cidade
@@ -41,8 +44,8 @@ export default function Registrations() {
                                             <img src={ImgCidade} alt="Abrir Cadastro de Estado" />
                                         </div>
                                     </div>
-                                </Link>
-                                <Link to="/a/typeuser">
+                                </button>
+                                <button onClick={() => addSegment("typeuser")}>
                                     <div className="flex flex-col ml-12 bg-[#DAEEEE] hover:bg-[#58AFAE] text-green-800 hover:scale-105" style={{ width: 229, border: '2px solid #58AFAE', height: 229, justifyContent: 'center', alignItems: 'center', borderRadius: 20 }}>
                                         <p className="text-2xl pb-2 font-medium" style={{ textAlign: 'center' }}>
                                             Tipo Usuário
@@ -51,8 +54,8 @@ export default function Registrations() {
                                             <img src={ImgTipoUsuario} alt="Abrir Cadastro de Estado" />
                                         </div>
                                     </div>
-                                </Link>
-                                <Link to="/a/user">
+                                </button>
+                                <button onClick={() => addSegment("user")}>
                                     <div className="flex flex-col ml-12 bg-[#DAEEEE] hover:bg-[#58AFAE] text-green-800 hover:scale-105" style={{ width: 229, border: '2px solid #58AFAE', height: 229, justifyContent: 'center', alignItems: 'center', borderRadius: 20 }}>
                                         <p className="text-2xl pb-2 font-medium" style={{ textAlign: 'center' }}>
                                             Usuário
@@ -61,7 +64,7 @@ export default function Registrations() {
                                             <img src={ImgUsuario} alt="Abrir Cadastro de Estado" />
                                         </div>
                                     </div>
-                                </Link>
+                                </button>
                             </div>
                         </div>
                     </div>

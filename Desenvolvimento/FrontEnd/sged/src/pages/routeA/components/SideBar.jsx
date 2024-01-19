@@ -8,7 +8,8 @@ import Person3Icon from '@mui/icons-material/Person3';
 import SwitchAccountIcon from '@mui/icons-material/SwitchAccount';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import DescriptionIcon from '@mui/icons-material/Description';
-import { Link} from "react-router-dom";
+//import { Link } from "react-router-dom";
+import { useServer } from "../../../routes/serverRoute";
 
 const sidebarStyle = {
   display: 'flex',
@@ -16,6 +17,9 @@ const sidebarStyle = {
 };
 
 export default function SideBar() {
+
+  const { clearSegment, inDevelopment } = useServer();
+
   return (
     <div className='min-h-full' style={{ display: 'flex', width: '200px' }}>
       <Sidebar style={sidebarStyle}>
@@ -36,16 +40,16 @@ export default function SideBar() {
             },
           }}
         >
-          <MenuItem icon={ <HomeIcon />} component={<Link to="/home"/>}> Página Inicial </MenuItem>
+          <MenuItem icon={<HomeIcon />} onClick={() => clearSegment("home")}> Página Inicial </MenuItem>
           <SubMenu icon={<Person3Icon />} label="Atendente">
-          <MenuItem className='text-gray-600' icon={ <SaveAsIcon /> } component={<Link to="/a/registration" />}>Cadastros</MenuItem>
-            <MenuItem className='text-gray-600' icon={ <DescriptionIcon /> } component={<Link to="/a/document"/>}> Documentos</MenuItem>
+            <MenuItem className='text-gray-600' icon={<SaveAsIcon />} onClick={() => clearSegment("registration")}>Cadastros</MenuItem>
+            <MenuItem className='text-gray-600' icon={<DescriptionIcon />} onClick={() => clearSegment("document")}> Documentos</MenuItem>
           </SubMenu>
           <SubMenu icon={<SwitchAccountIcon />} label="Perfil Público">
-            <MenuItem className='text-gray-600' icon={<GroupsIcon />} component={<Link to="/a/development" />}> Munícipe</MenuItem>
-            <MenuItem className='text-gray-600' icon={<SupervisedUserCircleIcon />} component={<Link to="/a/development" />}> Fiscal </MenuItem>
-            <MenuItem className='text-gray-600' icon={<EngineeringIcon />} component={<Link to="/a/development" />}> Engenheiro </MenuItem>
-            <MenuItem className='text-gray-600' icon={<AssignmentIndIcon />} component={<Link to="/a/development" />}> Estagiário </MenuItem>
+            <MenuItem className='text-gray-600' icon={<GroupsIcon />} onClick={() => inDevelopment("Controle de Munícipe")}> Munícipe</MenuItem>
+            <MenuItem className='text-gray-600' icon={<SupervisedUserCircleIcon />} onClick={() => inDevelopment("Controle de Fiscal")}> Fiscal </MenuItem>
+            <MenuItem className='text-gray-600' icon={<EngineeringIcon />} onClick={() => inDevelopment("Controle de Engenheiro")}> Engenheiro </MenuItem>
+            <MenuItem className='text-gray-600' icon={<AssignmentIndIcon />} onClick={() => inDevelopment("Controle de Estagiário")}> Estagiário </MenuItem>
           </SubMenu>
         </Menu>
       </Sidebar>

@@ -1,8 +1,16 @@
 import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import { FaAngleRight, FaTableCellsLarge, FaFile } from "react-icons/fa6";
+import { useEffect } from "react";
+import { useMontage } from '../../../../object/modules/montage';
 
 export default function Home() {
+
+  const { componentMounted } = useMontage();
+
+  useEffect(() => {
+    componentMounted();
+  }, []);
 
   return (
     <div className="flex flex-1 min-h-screen">

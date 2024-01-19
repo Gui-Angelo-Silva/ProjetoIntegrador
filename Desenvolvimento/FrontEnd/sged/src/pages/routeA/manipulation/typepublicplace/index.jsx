@@ -6,8 +6,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
-import ConnectionEntity from '../../../../class/entity/connection';
-import TypePublicPlaceClass from "../../../../class/typepublicplace";
+import ConnectionEntity from '../../../../object/service/connection';
+import TypePublicPlaceClass from "../../../../object/class/typepublicplace";
 
 export default function TypePublicPlace() {
 

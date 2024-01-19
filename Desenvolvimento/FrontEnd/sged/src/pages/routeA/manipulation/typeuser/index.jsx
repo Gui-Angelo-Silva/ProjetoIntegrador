@@ -8,8 +8,8 @@ import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
-import { useSession } from '../../../../services/session';
-import { useApi } from '../../../../services/api';
+import { useSession } from '../../../../object/service/session';
+import { useApi } from '../../../../object/service/api';
 
 export default function TypeUser() {
 

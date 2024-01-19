@@ -6,7 +6,7 @@ const ApiContext = createContext();
 export const useApi = () => {
   const context = useContext(ApiContext);
   if (!context) {
-    throw new Error('useApi deve ser usado dentro de um ApiProvider');
+    throw new Error('useApi deve ser usado dentro de um ApiProvider!');
   }
   return context;
 };

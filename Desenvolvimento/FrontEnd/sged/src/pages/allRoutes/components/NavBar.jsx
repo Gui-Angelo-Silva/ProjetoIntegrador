@@ -14,31 +14,13 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import LogoJales from '../../../assets/LogoJales.png'
 
-import { useSession } from '../../../object/service/session';
 import { useServer } from '../../../routes/serverRoute';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function NavBar() {
 
-  const { getSession, defaultSession } = useSession();
-  const { clearSegment, inDevelopment } = useServer();
+  const { clearSegment } = useServer();
   const [userName, setUserName] = useState("");
-
-  const GetUser = () => {
-    const user = getSession();
-    if (user !== null) {
-      setUserName(user.nomePessoa);
-    }
-  };
-
-  const encerateSession = () => {
-    defaultSession();
-    clearSegment("login");
-  };
-
-  useEffect(() => {
-    GetUser();
-  }, []);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -80,8 +62,7 @@ export default function NavBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={() => inDevelopment("Perfil")}>Perfil</MenuItem>
-      <MenuItem onClick={() => encerateSession()}>Sair</MenuItem>
+      <MenuItem onClick={() => clearSegment("login")}>Entrar</MenuItem>
     </Menu>
   );
 

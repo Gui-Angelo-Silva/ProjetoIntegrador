@@ -25,6 +25,9 @@ export const SessionProvider = ({ children }) => {
     };
 
     const createSession = async (userEmail, userPassword, persistLogin) => {
+       
+        var autentication = false;
+
         try {
             const response = await axios.post(sessionURL + "Autentication", {
                 email: userEmail,
@@ -35,6 +38,7 @@ export const SessionProvider = ({ children }) => {
                 const data = response.data;
 
                 if (isTokenValid()) {
+                    autentication = true;
 
                     if (persistLogin) {
                         const login = { email: userEmail, senha: userPassword };
@@ -45,33 +49,30 @@ export const SessionProvider = ({ children }) => {
 
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.usuario));
-                    localStorage.setItem('permission', data.usuario.tipoUsuarioDTO.nivelAcesso);
-                    return true;
+
+                    const acessLevel = String(data.usuario.tipoUsuarioDTO.nivelAcesso).toLowerCase();
+                    localStorage.setItem('permission', acessLevel);
+                    return { validation: autentication, message: 'Entrada liberada.' };
                 } else {
-                    console.error('Token inválido!');
-                    return false;
+                    return { validation: autentication, message: 'Token inválido!' };
                 }
 
             } else {
-                console.error('Erro no login:', 'E-mail ou senha incorretos!');
-                return false;
+                return { validation: autentication, message: 'Servidor offline!' };
             }
 
         } catch (error) {
-            console.error('Erro na solicitação:', error.message);
 
             if (error.response) {
-                console.error('Erro no login:', error.response.data.message);
-                return error.response.data.message;
+                return { validation: autentication, message: error.response.data.message };
 
             } else if (error.request) {
-                console.error('Erro na solicitação: Sem resposta do servidor!');
+                return { validation: autentication, message: 'Erro na solicitação: Sem resposta do servidor!' };
 
             } else {
-                console.error('Erro na solicitação: Configuração de solicitação inválida!');
+                return { validation: autentication, message: 'Erro na solicitação: Configuração de solicitação inválida!' };
             }
 
-            return false;
         }
     };
 
@@ -82,12 +83,22 @@ export const SessionProvider = ({ children }) => {
 
     const getLogin = () => {
         const login = localStorage.getItem('login');
-        return login;
+        return login !== "null"? login : null;
     };
 
     const getToken = () => {
         const token = localStorage.getItem('token');
-        return token;
+        return token !== "null"? token : null;
+    };
+
+    const getSession = () => {
+        const session = localStorage.getItem('user');
+        return session ? JSON.parse(session) : null;
+    };
+
+    const getPermission = () => {
+        const permission = localStorage.getItem('permission');
+        return permission !== "null"? permission : null;
     };
 
     const isTokenValid = async () => {
@@ -108,22 +119,11 @@ export const SessionProvider = ({ children }) => {
                 } else {
                     return false;
                 }
-            } catch (error) {
-                console.error('Erro na solicitação: ', error.message);
-                if (error.request) {
-                    console.error('Erro na solicitação: Sem resposta do servidor!');
-                } else {
-                    console.error('Erro na solicitação: Configuração de solicitação inválida!');
-                }
 
+            } catch (error) {
                 return false;
             }
         }
-    };
-
-    const getSession = () => {
-        const session = localStorage.getItem('user');
-        return session ? JSON.parse(session) : null;
     };
 
     const newToken = async () => {
@@ -138,27 +138,18 @@ export const SessionProvider = ({ children }) => {
     
                 if (response.status === 200) {
                     const data = response.data;
+                    const acessLevel = String(data.usuario.tipoUsuarioDTO.nivelAcesso).toLowerCase();
+                    
                     localStorage.setItem('token', data.token);
+                    localStorage.setItem('permission', acessLevel);
+
                     return true;
     
                 } else {
-                    console.error('Erro no login:', 'E-mail ou senha incorretos!');
                     return false;
                 }
     
             } catch (error) {
-                console.error('Erro na solicitação:', error.message);
-    
-                if (error.response) {
-                    console.error('Erro no login:', error.response.data.message);
-    
-                } else if (error.request) {
-                    console.error('Erro na solicitação: Sem resposta do servidor!');
-    
-                } else {
-                    console.error('Erro na solicitação: Configuração de solicitação inválida!');
-                }
-    
                 return false;
             }
         } else {
@@ -166,20 +157,13 @@ export const SessionProvider = ({ children }) => {
         }
     };
 
-    const closeSession = () => {
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
-        localStorage.removeItem('permission');
-        defaultSession();
-    };
-
     const verifySession = async () => {
         var response = await isTokenValid();
 
-        if (!response) { closeSession(); }
+        if (!response) { defaultSession(); }
         else { response = await newToken(); }
 
-        if (!response) { closeSession(); }
+        if (!response) { defaultSession(); }
 
         return response;
     }
@@ -209,10 +193,10 @@ export const SessionProvider = ({ children }) => {
         persistsLogin,
         getLogin,
         getToken,
-        isTokenValid,
         getSession,
+        getPermission,
+        isTokenValid,
         newToken,
-        closeSession,
         verifySession,
         getAuthConfig,
     };

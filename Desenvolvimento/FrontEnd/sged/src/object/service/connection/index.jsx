@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useSession } from '../../../services/session';
-import { useApi } from '../../../services/api';
+import { useSession } from '../../../object/service/session';
+import { useApi } from '../../../object/service/api';
 
 function ConnectionEntity(url) {
     const { getAuthConfig } = useSession();

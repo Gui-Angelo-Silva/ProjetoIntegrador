@@ -7,8 +7,8 @@ import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
-import { useSession } from '../../../../services/session';
-import { useApi } from '../../../../services/api';
+import { useSession } from '../../../../object/service/session';
+import { useApi } from '../../../../object/service/api';
 import Select from 'react-select';
 import debounce from 'lodash.debounce';
 

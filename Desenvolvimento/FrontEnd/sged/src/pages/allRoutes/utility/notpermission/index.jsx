@@ -13,8 +13,15 @@ import Button from '@mui/material/Button';
 //import { FaAngleRight, FaTableCellsLarge, FaFile } from "react-icons/fa6";
 
 import { useServer } from "../../../../routes/serverRoute";
+import { useEffect } from "react";
 
 export default function Development() {
+
+  const { componentMounted } = useMontage();
+
+  useEffect(() => {
+    componentMounted();
+  }, [componentMounted]);
 
   const { clearSegment } = useServer();
   const acessLevel = sessionStorage.getItem("page: not permission");
@@ -32,7 +39,7 @@ export default function Development() {
 
     const componentsNav = { NavBar, NavBarA, NavBarB, NavBarC, NavBarD };
     const componentsSide = { SideBarA, SideBarB, SideBarC, SideBarD };
-    const ComponentToRender = componentName[0] === "N"? componentsNav[componentName] : componentsSide[componentName];
+    const ComponentToRender = componentName[0] === "N" ? componentsNav[componentName] : componentsSide[componentName];
 
     return ComponentToRender ? <ComponentToRender /> : null;
   }

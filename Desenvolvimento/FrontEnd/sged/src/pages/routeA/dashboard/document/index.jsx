@@ -1,7 +1,16 @@
 import NavBar from "../../components/NavBar";
 import SideBar from "../../components/SideBar";
 
+import { useMontage } from '../../../../object/modules/montage';
+import { useEffect } from "react";
+
 export default function Document() {
+
+    const { componentMounted } = useMontage();
+
+    useEffect(() => {
+        componentMounted();
+    }, [componentMounted]);
 
     return (
         <div className="flex flex-1 min-h-screen">
@@ -9,7 +18,7 @@ export default function Document() {
                 <NavBar />
                 <div className="flex flex-1 min-h-full">
                     <SideBar />
-                    <div className="min-h-screen"  style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
+                    <div className="min-h-screen" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
                         <br />
                         <h3 className="text-2xl font-semibold text-gray-600">Documentos</h3>
                         <div className="bg-slate-200 rounded-md" style={{ marginTop: 15 }}>

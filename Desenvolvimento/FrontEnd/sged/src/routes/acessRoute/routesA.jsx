@@ -15,18 +15,21 @@ import TypePublicPlace from '../../pages/routeA/manipulation/typepublicplace';
 export default function RouteA() {
     return (
         <Routes>
-            <Route path="/a/home" element={<Home />}></Route>
             <Route path="/a/development" element={<Development />}></Route>
             <Route path="/a/notfound" element={<NotFound />} />
             <Route path="/a/notpermission" element={<NotPermission />} />
+
+            <Route path="/a/home" element={<Home />}></Route>
+
             <Route path="/a/registration" element={<Registration />}></Route>
             <Route path="/a/registration/state" element={<State />}></Route>
             <Route path="/a/registration/city" element={<City />}></Route>
             <Route path="/a/registration/typeuser" element={<TypeUser />}></Route>
             <Route path="/a/registration/user" element={<User />}></Route>
+            <Route path="/a/registration/typepublicplace" element={<TypePublicPlace />}></Route>
+
             <Route path="/a/document" element={<Document />}></Route>
             <Route path="/a/test" element={<Test />}></Route>
-            <Route path="/a/typepublicplace" element={<TypePublicPlace />}></Route>
         </Routes>
     );
 }

@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class bdAtualizado : Migration
+    public partial class criarBanco : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -79,7 +79,7 @@ namespace SGED.Migrations
                 {
                     idcidade = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    nomecidade = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    cidade = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     IdEstado = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -117,6 +117,27 @@ namespace SGED.Migrations
                         column: x => x.IdTipoUsuario,
                         principalTable: "tipousuario",
                         principalColumn: "idtipousuario",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Bairro",
+                columns: table => new
+                {
+                    idBairro = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Bairro = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    CidadeId = table.Column<int>(type: "integer", nullable: false),
+                    IdCidade = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bairro", x => x.idBairro);
+                    table.ForeignKey(
+                        name: "FK_Bairro_cidade_CidadeId",
+                        column: x => x.CidadeId,
+                        principalTable: "cidade",
+                        principalColumn: "idcidade",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -353,7 +374,7 @@ namespace SGED.Migrations
 
             migrationBuilder.InsertData(
                 table: "cidade",
-                columns: new[] { "idcidade", "IdEstado", "nomecidade" },
+                columns: new[] { "idcidade", "IdEstado", "cidade" },
                 values: new object[,]
                 {
                     { 1, 1, "Aparecida d'Oeste" },
@@ -378,6 +399,11 @@ namespace SGED.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Bairro_CidadeId",
+                table: "Bairro",
+                column: "CidadeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_cidade_IdEstado",
                 table: "cidade",
                 column: "IdEstado");
@@ -392,7 +418,7 @@ namespace SGED.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "cidade");
+                name: "Bairro");
 
             migrationBuilder.DropTable(
                 name: "municipe");
@@ -404,10 +430,13 @@ namespace SGED.Migrations
                 name: "usuario");
 
             migrationBuilder.DropTable(
-                name: "estado");
+                name: "cidade");
 
             migrationBuilder.DropTable(
                 name: "tipousuario");
+
+            migrationBuilder.DropTable(
+                name: "estado");
         }
     }
 }

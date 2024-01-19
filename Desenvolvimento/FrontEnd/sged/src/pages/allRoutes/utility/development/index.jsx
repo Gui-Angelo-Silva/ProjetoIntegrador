@@ -12,9 +12,17 @@ import NavBarD from "../../../routeA/components/NavBar";
 import Button from '@mui/material/Button';
 //import { FaAngleRight, FaTableCellsLarge, FaFile } from "react-icons/fa6";
 
+import { useMontage } from '../../../../object/modules/montage';
+import { useEffect } from "react";
 import { useServer } from "../../../../routes/serverRoute";
 
 export default function Development() {
+
+  const { componentMounted } = useMontage();
+
+  useEffect(() => {
+    componentMounted();
+  }, [componentMounted]);
 
   const { clearSegment } = useServer();
   const pageInDevelopment = sessionStorage.getItem("page: in development");
@@ -32,7 +40,7 @@ export default function Development() {
 
     const componentsNav = { NavBar, NavBarA, NavBarB, NavBarC, NavBarD };
     const componentsSide = { SideBarA, SideBarB, SideBarC, SideBarD };
-    const ComponentToRender = componentName[0] === "N"? componentsNav[componentName] : componentsSide[componentName];
+    const ComponentToRender = componentName[0] === "N" ? componentsNav[componentName] : componentsSide[componentName];
 
     return ComponentToRender ? <ComponentToRender /> : null;
   }
@@ -48,7 +56,7 @@ export default function Development() {
           <br />
           <h3 className="text-3xl font-semibold text-gray-600">Em Desenvolvimento</h3>
           <p className="pl-4" style={{ marginTop: '40px', textAlign: 'center' }}>
-            A página de <span style={{ color: 'blue' }}>{pageInDevelopment}</span> está em desenvolvimento.
+            A página de <span style={{ color: '#4DA8B6' }}>{pageInDevelopment}</span> está em desenvolvimento.
             <br />
             Clique no botão abaixo para retornar para a página {permission !== null ? "principal" : "de autenticação"}.
           </p>

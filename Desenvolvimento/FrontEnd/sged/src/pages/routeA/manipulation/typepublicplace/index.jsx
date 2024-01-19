@@ -6,10 +6,18 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
+
+import { useMontage } from '../../../../object/modules/montage';
 import ConnectionEntity from '../../../../object/service/connection';
 import TypePublicPlaceClass from "../../../../object/class/typepublicplace";
 
 export default function TypePublicPlace() {
+
+    const { componentMounted } = useMontage();
+
+    useEffect(() => {
+        componentMounted();
+    }, [componentMounted]);
 
     const typepublicplace = TypePublicPlaceClass();
     const connection = ConnectionEntity('TipoLogradouro/');
@@ -282,7 +290,7 @@ export default function TypePublicPlace() {
                             <br />
                             <label className="text-[#444444]">Descrição:</label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typepublicplace.setTypePublicPlaceDescription(e.target.value)} value={typepublicplace.typePublicPlaceDescription}/>
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typepublicplace.setTypePublicPlaceDescription(e.target.value)} value={typepublicplace.typePublicPlaceDescription} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                                 {typepublicplace.errorTypePublicPlaceDescription}
                             </div>

@@ -1,15 +1,57 @@
 import NavBar from "../../components/NavBar";
 import SideBar from "../../components/SideBar";
+import ImgImovel from "../../../../assets/imgImovel.png"
 import ImgEstado from "../../../../assets/imgEstado.png";
-import ImgCidade from "../../../../assets/ImgCidade2.png";
-import ImgUsuario from "../../../../assets/ImgUsuario.png";
-import ImgTipoUsuario from "../../../../assets/ImgTipoUsuario.png";
-import { Link } from "react-router-dom";
+import ImgCidade from "../../../../assets/ImgCidade.png";
+import ImgLogradouro from "../../../../assets/ImgLogradouro.png";
+import ImgTipoLogradouro from "../../../../assets/ImgTipoLogradouro.png";
+import ImgUsuario from "../../../../assets/ImgUsuarioAtualizada.png";
+import ImgBairro from "../../../../assets/ImgBairro.png";
+import ImgTipoUsuario from "../../../../assets/ImgTipoUsuarioAtualizada.png";
+import ImgMunicipe from "../../../../assets/ImgMunicipeAtualizada.png";
+import ImgEngenheiro from "../../../../assets/ImgEngenheiroAtualizada.png";
+import ImgFiscal from "../../../../assets/ImgFiscalAtualizada.png";
+import ImgAuditoria from "../../../../assets/ImgAuditoriaAtualizada.png";
+import ImgProcesso from "../../../../assets/ImgProcessoAtualizada.png";
+import ImgTipoProcesso from "../../../../assets/ImgTipoProcessoAtualizada.png";
+import ImgEtapa from "../../../../assets/ImgEtapaAtualizada.png";
+import ImgTipoDocumento from "../../../../assets/ImgTipoDocumentoAtualizada.png";
+import ImgDocumentoProcesso from "../../../../assets/ImgDocumentoProcessoAtualizada.png";
+//import { Link } from "react-router-dom";
+
+import { useMontage } from '../../../../object/modules/montage';
 import { useServer } from "../../../../routes/serverRoute";
+import React, { useState, useEffect } from "react";
 
 export default function Registrations() {
 
-    const { addSegment } = useServer();
+    const { componentMounted } = useMontage();
+
+    useEffect(() => {
+        componentMounted();
+    }, [componentMounted]);
+
+    const [isHoveredImovel, setIsHoveredImovel] = useState(false);
+    const [isHoveredEstado, setIsHoveredEstado] = useState(false);
+    const [isHoveredCidade, setIsHoveredCidade] = useState(false);
+    const [isHoveredBairro, setIsHoveredBairro] = useState(false);
+    const [isHoveredLogradouro, setIsHoveredLogradouro] = useState(false);
+    const [isHoveredTipoLogradouro, setIsHoveredTipoLogradouro] = useState(false);
+
+    const [isHoveredUsuário, setIsHoveredUsuário] = useState(false);
+    const [isHoveredTipoUsuário, setIsHoveredTipoUsuário] = useState(false);
+    const [isHoveredMunicipe, setIsHoveredMunicipe] = useState(false);
+    const [isHoveredEngenheiro, setIsHoveredEngenheiro] = useState(false);
+    const [isHoveredFiscal, setIsHoveredFiscal] = useState(false);
+    const [isHoveredAuditoria, setIsHoveredAuditoria] = useState(false);
+
+    const [isHoveredProcesso, setIsHoveredProcesso] = useState(false);
+    const [isHoveredTipoProcesso, setIsHoveredTipoProcesso] = useState(false);
+    const [isHoveredEtapa, setIsHoveredEtapa] = useState(false);
+    const [isHoveredTipoDocumento, setIsHoveredTipoDocumento] = useState(false);
+    const [isHoveredDocumentoProcesso, setIsHoveredDocumentoProcesso] = useState(false);
+
+    const { addSegment, inDevelopment } = useServer();
 
     return (
         <div className="flex flex-1 min-h-screen">
@@ -23,48 +65,174 @@ export default function Registrations() {
                         <div className="bg-slate-200 rounded-md" style={{ marginTop: 15 }}>
                             <h4 className="pl-4 pt-2 pb-2 text-gray-500">Funções</h4>
                         </div>
-                        <div style={{ paddingTop: 40 }}>
-                            <div className="flex flex-row">
-                                <button onClick={() => addSegment("state")}>
-                                <div className="flex flex-col ml-12 bg-[#DAEEEE] hover:bg-[#58AFAE] text-green-800 hover:scale-105" style={{ width: 229, border: '2px solid #58AFAE', height: 229, justifyContent: 'center', alignItems: 'center', borderRadius: 20 }}>
-                                        <p className="text-2xl pb-2 font-medium" style={{ textAlign: 'center' }}>
+                        <div className="flex">
+                            <div className="pr-[50px]">
+                                <div className="pt-4 text-xl font-semibold text-gray-600 pb-2">Imóvel</div>
+                                <div className="grid grid-cols-2">
+                                    <button onClick={() => inDevelopment("Controle de Imóvel")}>
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-3 rounded-xl mr-4 text-lg font-semibold text-[#005A66] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredImovel(true)}
+                                            onMouseLeave={() => setIsHoveredImovel(false)}
+                                        >
+                                            Imóvel
+                                            <img src={ImgImovel} alt="Abrir tela de cadastro de imóvel" style={{ filter: isHoveredImovel ? 'brightness(0) invert(1)' : 'none' }} />
+                                        </div>
+                                    </button>
+                                    <button onClick={() => addSegment("state")}>
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredEstado(true)}
+                                            onMouseLeave={() => setIsHoveredEstado(false)}
+                                        >
                                             Estado
-                                        </p>
-                                        <div style={{ width: 165, height: 104, alignItems: 'center' }}>
-                                            <img src={ImgEstado} alt="Abrir Cadastro de Estado" />
+                                            <img src={ImgEstado} alt="Abrir tela de cadastro de estado" style={{ filter: isHoveredEstado ? 'brightness(0) invert(1)' : 'none' }} />
                                         </div>
-                                    </div>
-                                </button>
-                                <button onClick={() => addSegment("city")}>
-                                    <div className="flex flex-col ml-12 bg-[#DAEEEE] hover:bg-[#58AFAE] text-green-800 hover:scale-105" style={{ width: 229, border: '2px solid #58AFAE', height: 229, justifyContent: 'center', alignItems: 'center', borderRadius: 20 }}>
-                                        <p className="text-2xl pb-2 font-medium" style={{ textAlign: 'center' }}>
+                                    </button>
+                                    <button onClick={() => addSegment("city")}>
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-3 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredCidade(true)}
+                                            onMouseLeave={() => setIsHoveredCidade(false)}
+                                        >
                                             Cidade
-                                        </p>
-                                        <div style={{ width: 165, height: 104, alignItems: 'center' }}>
-                                            <img src={ImgCidade} alt="Abrir Cadastro de Estado" />
+                                            <img src={ImgCidade} alt="Abrir tela de cadastro de cidade" style={{ filter: isHoveredCidade ? 'brightness(0) invert(1)' : 'none' }} />
                                         </div>
-                                    </div>
-                                </button>
-                                <button onClick={() => addSegment("typeuser")}>
-                                    <div className="flex flex-col ml-12 bg-[#DAEEEE] hover:bg-[#58AFAE] text-green-800 hover:scale-105" style={{ width: 229, border: '2px solid #58AFAE', height: 229, justifyContent: 'center', alignItems: 'center', borderRadius: 20 }}>
-                                        <p className="text-2xl pb-2 font-medium" style={{ textAlign: 'center' }}>
-                                            Tipo Usuário
-                                        </p>
-                                        <div style={{ width: 95, height: 104, alignItems: 'center' }}>
-                                            <img src={ImgTipoUsuario} alt="Abrir Cadastro de Estado" />
+                                    </button>
+                                    <button onClick={() => inDevelopment("Controle de Bairro")}>
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredBairro(true)}
+                                            onMouseLeave={() => setIsHoveredBairro(false)}
+                                        >
+                                            Bairro
+                                            <img src={ImgBairro} alt="Abrir tela de cadastro de bairro" style={{ filter: isHoveredBairro ? 'brightness(0) invert(1)' : 'none' }} />
                                         </div>
-                                    </div>
-                                </button>
-                                <button onClick={() => addSegment("user")}>
-                                    <div className="flex flex-col ml-12 bg-[#DAEEEE] hover:bg-[#58AFAE] text-green-800 hover:scale-105" style={{ width: 229, border: '2px solid #58AFAE', height: 229, justifyContent: 'center', alignItems: 'center', borderRadius: 20 }}>
-                                        <p className="text-2xl pb-2 font-medium" style={{ textAlign: 'center' }}>
+                                    </button>
+                                    <button onClick={() => inDevelopment("Controle de Logradouro")}>
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredLogradouro(true)}
+                                            onMouseLeave={() => setIsHoveredLogradouro(false)}
+                                        >
+                                            Logradouro
+                                            <img src={ImgLogradouro} alt="Abrir tela de cadastro de logradouro" style={{ filter: isHoveredLogradouro ? 'brightness(0) invert(1)' : 'none' }} />
+                                        </div>
+                                    </button>
+                                    <button onClick={() => addSegment("typepublicplace")}>
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#c8d9db] hover:bg-[#005A66] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#005A66] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredTipoLogradouro(true)}
+                                            onMouseLeave={() => setIsHoveredTipoLogradouro(false)}
+                                        >
+                                            Tipo Logradouro
+                                            <img src={ImgTipoLogradouro} alt="Abrir tela de cadastro de tipo logradouro" style={{ filter: isHoveredTipoLogradouro ? 'brightness(0) invert(1)' : 'none' }} />
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="pr-[50px]">
+                                <div className="pt-4 text-xl font-semibold text-gray-600 pb-2">Usuário</div>
+                                <div className="grid grid-cols-2">
+                                    <button onClick={() => addSegment("user")}>
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-3 rounded-xl mr-4 text-lg font-semibold text-[#4DA8B6] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredUsuário(true)}
+                                            onMouseLeave={() => setIsHoveredUsuário(false)}
+                                        >
                                             Usuário
-                                        </p>
-                                        <div style={{ width: 104, height: 104, alignItems: 'center' }}>
-                                            <img src={ImgUsuario} alt="Abrir Cadastro de Estado" />
+                                            <img src={ImgUsuario} alt="Abrir tela de cadastro de usuário" style={{ filter: isHoveredUsuário ? 'brightness(0) invert(1)' : 'none' }} />
                                         </div>
-                                    </div>
-                                </button>
+                                    </button>
+                                    <button onClick={() => addSegment("typeuser")}>
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredTipoUsuário(true)}
+                                            onMouseLeave={() => setIsHoveredTipoUsuário(false)}
+                                        >
+                                            Tipo Usuário
+                                            <img src={ImgTipoUsuario} alt="Abrir tela de cadastro de tipo usuário" style={{ filter: isHoveredTipoUsuário ? 'brightness(0) invert(1)' : 'none' }} />
+                                        </div>
+                                    </button>
+                                    <button onClick={() => inDevelopment("Controle de Munícipe")}>
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-3 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredMunicipe(true)}
+                                            onMouseLeave={() => setIsHoveredMunicipe(false)}
+                                        >
+                                            Munícipe
+                                            <img src={ImgMunicipe} alt="Abrir tela de cadastro de municipe" style={{ filter: isHoveredMunicipe ? 'brightness(0) invert(1)' : 'none' }} />
+                                        </div>
+                                    </button>
+                                    <button onClick={() => inDevelopment("Controle de Engenheiro")}>
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredEngenheiro(true)}
+                                            onMouseLeave={() => setIsHoveredEngenheiro(false)}
+                                        >
+                                            Engenheiro
+                                            <img src={ImgEngenheiro} alt="Abrir tela de cadastro de engenheiro" style={{ filter: isHoveredEngenheiro ? 'brightness(0) invert(1)' : 'none' }} />
+                                        </div>
+                                    </button>
+                                    <button onClick={() => inDevelopment("Controle de Fiscal")}>
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredFiscal(true)}
+                                            onMouseLeave={() => setIsHoveredFiscal(false)}
+                                        >
+                                            Fiscal
+                                            <img src={ImgFiscal} alt="Abrir tela de cadastro de fiscal" style={{ filter: isHoveredFiscal ? 'brightness(0) invert(1)' : 'none' }} />
+                                        </div>
+                                    </button>
+                                    <button onClick={() => inDevelopment("Controle de Auditoria")}>
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#cde3e7] hover:bg-[#4DA8B6] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#4DA8B6] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredAuditoria(true)}
+                                            onMouseLeave={() => setIsHoveredAuditoria(false)}
+                                        >
+                                            <div className="">Auditoria</div>
+                                            <img src={ImgAuditoria} alt="abrir tela de cadastro de auditoria" style={{ filter: isHoveredAuditoria ? 'brightness(0) invert(1)' : 'none' }} />
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="">
+                                <div className="pt-4 text-xl font-semibold text-gray-600 pb-2">Processo</div>
+                                <div className="grid grid-cols-2">
+                                    <button onClick={() => inDevelopment("Controle de Processo")}>
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-3 rounded-xl mr-4 text-lg font-semibold text-[#59C3D3] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredProcesso(true)}
+                                            onMouseLeave={() => setIsHoveredProcesso(false)}
+                                        >
+                                            Processo
+                                            <img src={ImgProcesso} alt="Abrir tela de cadastro de processos" style={{ filter: isHoveredProcesso ? 'brightness(0) invert(1)' : 'none' }} />
+                                        </div>
+                                    </button>
+                                    <button onClick={() => inDevelopment("Controle de Tipo de Processo")}>
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredTipoProcesso(true)}
+                                            onMouseLeave={() => setIsHoveredTipoProcesso(false)}
+                                        >
+                                            Tipo Processo
+                                            <img src={ImgTipoProcesso} alt="Abrir tela de cadastro de tipo de processos" style={{ filter: isHoveredTipoProcesso ? 'brightness(0) invert(1)' : 'none' }} />
+                                        </div>
+                                    </button>
+                                    <button onClick={() => inDevelopment("Controle de Etapa")}>
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-3 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredEtapa(true)}
+                                            onMouseLeave={() => setIsHoveredEtapa(false)}
+                                        >
+                                            Etapa
+                                            <img src={ImgEtapa} alt="Abrir tela de cadastro de etapa" style={{ filter: isHoveredEtapa ? 'brightness(0) invert(1)' : 'none' }} />
+                                        </div>
+                                    </button>
+                                    <button onClick={() => inDevelopment("Controle de Tipo de Documento")}>
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredTipoDocumento(true)}
+                                            onMouseLeave={() => setIsHoveredTipoDocumento(false)}
+                                        >
+                                            Tipo Documento
+                                            <img src={ImgTipoDocumento} alt="Abrir tela de cadastro de tipo de documento" style={{ filter: isHoveredTipoDocumento ? 'brightness(0) invert(1)' : 'none' }} />
+                                        </div>
+                                    </button>
+                                    <button onClick={() => inDevelopment("Controle de Documento de Processo")}>
+                                        <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[#d1eaee] hover:bg-[#59C3D3] hover:scale-105 shadow-xl mb-2 rounded-xl text-lg font-semibold text-[#59C3D3] hover:text-white"
+                                            onMouseEnter={() => setIsHoveredDocumentoProcesso(true)}
+                                            onMouseLeave={() => setIsHoveredDocumentoProcesso(false)}
+                                        >
+                                            Doc. Processo
+                                            <img src={ImgDocumentoProcesso} alt="Abrir tela de cadastro de documento do processo" style={{ filter: isHoveredDocumentoProcesso ? 'brightness(0) invert(1)' : 'none' }} />
+                                        </div>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -72,5 +240,4 @@ export default function Registrations() {
             </div>
         </div>
     );
-
 }

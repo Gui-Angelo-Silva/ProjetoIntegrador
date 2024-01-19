@@ -8,6 +8,7 @@ import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
+import { useMontage } from '../../../../object/modules/montage';
 import { useSession } from '../../../../object/service/session';
 import { useApi } from '../../../../object/service/api';
 import PropTypes from 'prop-types';
@@ -56,6 +57,12 @@ PasswordStrengthIndicator.propTypes = {
 };
 
 export default function User() {
+
+    const { componentMounted } = useMontage();
+
+    useEffect(() => {
+        componentMounted();
+    }, [componentMounted]);
 
     const { getAuthConfig } = useSession();
     const { appendRoute } = useApi();

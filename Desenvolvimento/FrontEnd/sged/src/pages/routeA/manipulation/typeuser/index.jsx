@@ -8,10 +8,17 @@ import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
+import { useMontage } from '../../../../object/modules/montage';
 import { useSession } from '../../../../object/service/session';
 import { useApi } from '../../../../object/service/api';
 
 export default function TypeUser() {
+
+    const { componentMounted } = useMontage();
+
+    useEffect(() => {
+        componentMounted();
+    }, [componentMounted]);
 
     const { getAuthConfig } = useSession();
     const { appendRoute } = useApi();

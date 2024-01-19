@@ -12,9 +12,17 @@ import NavBarD from "../../../routeA/components/NavBar";
 import Button from '@mui/material/Button';
 //import { FaAngleRight, FaTableCellsLarge, FaFile } from "react-icons/fa6";
 
+import { useMontage } from '../../../../object/modules/montage';
+import { useEffect } from "react";
 import { useServer } from "../../../../routes/serverRoute";
 
 export default function Development() {
+
+  const { componentMounted } = useMontage();
+
+  useEffect(() => {
+    componentMounted();
+  }, [componentMounted]);
 
   const { clearSegment } = useServer();
   const pagePrevious = sessionStorage.getItem("page: non-existent");
@@ -32,7 +40,7 @@ export default function Development() {
 
     const componentsNav = { NavBar, NavBarA, NavBarB, NavBarC, NavBarD };
     const componentsSide = { SideBarA, SideBarB, SideBarC, SideBarD };
-    const ComponentToRender = componentName[0] === "N"? componentsNav[componentName] : componentsSide[componentName];
+    const ComponentToRender = componentName[0] === "N" ? componentsNav[componentName] : componentsSide[componentName];
 
     return ComponentToRender ? <ComponentToRender /> : null;
   }

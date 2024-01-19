@@ -11,8 +11,8 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20231219112052_bdAtualizado")]
-    partial class bdAtualizado
+    [Migration("20240111114323_criarBanco")]
+    partial class criarBanco
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,6 +23,34 @@ namespace SGED.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("SGED.Models.Entities.Bairro", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("idBairro");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CidadeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("IdCidade")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("NomeBairro")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("Bairro");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CidadeId");
+
+                    b.ToTable("Bairro");
+                });
 
             modelBuilder.Entity("SGED.Models.Entities.Cidade", b =>
                 {
@@ -40,7 +68,7 @@ namespace SGED.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
-                        .HasColumnName("nomecidade");
+                        .HasColumnName("cidade");
 
                     b.HasKey("Id");
 
@@ -1601,6 +1629,17 @@ namespace SGED.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SGED.Models.Entities.Bairro", b =>
+                {
+                    b.HasOne("SGED.Models.Entities.Cidade", "Cidade")
+                        .WithMany("Bairros")
+                        .HasForeignKey("CidadeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cidade");
+                });
+
             modelBuilder.Entity("SGED.Models.Entities.Cidade", b =>
                 {
                     b.HasOne("SGED.Models.Entities.Estado", "Estado")
@@ -1621,6 +1660,11 @@ namespace SGED.Migrations
                         .IsRequired();
 
                     b.Navigation("TipoUsuario");
+                });
+
+            modelBuilder.Entity("SGED.Models.Entities.Cidade", b =>
+                {
+                    b.Navigation("Bairros");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.Estado", b =>

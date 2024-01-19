@@ -7,10 +7,11 @@ import NotPermission from '../../pages/allRoutes/utility/notpermission';
 export default function RouteB() {
     return (
         <Routes>
-            <Route path="/b/home" element={<Home />} />
             <Route path="/b/development" element={<Development />}></Route>
             <Route path="/b/notfound" element={<NotFound />} />
             <Route path="/b/notpermission" element={<NotPermission />} />
+
+            <Route path="/b/home" element={<Home />} />
         </Routes>
     );
 }

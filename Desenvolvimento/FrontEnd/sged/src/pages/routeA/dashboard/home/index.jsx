@@ -1,8 +1,9 @@
 import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import { FaAngleRight, FaTableCellsLarge, FaFile } from "react-icons/fa6";
-import { useEffect } from "react";
+
 import { useMontage } from '../../../../object/modules/montage';
+import { useEffect } from "react";
 
 export default function Home() {
 
@@ -18,7 +19,7 @@ export default function Home() {
         <NavBar />
         <div className="flex flex-1 min-h-full">
           <SideBar />
-          <div className="min-h-screen"  style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
+          <div className="min-h-screen" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
             <br />
             <h3 className="text-2xl font-semibold text-gray-600">Visão Geral</h3>
             <div className="bg-slate-200 rounded-md" style={{ marginTop: 15 }}>

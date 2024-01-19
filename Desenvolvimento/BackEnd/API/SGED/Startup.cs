@@ -122,6 +122,14 @@ namespace SGED
             services.AddScoped<ICidadeRepository, CidadeRepository>();
             services.AddScoped<ICidadeService, CidadeService>();
 
+            // Dependência: Bairro
+            services.AddScoped<IBairroRepository, BairroRepository>();
+            services.AddScoped<IBairroService, BairroService>();
+
+            // Dependência: TipoProcesso
+            //services.AddScoped<ITipoProcessoRepository, TipoProcessoRepository>();
+            //services.AddScoped<ITipoProcessoService, TipoProcessoService>();
+
             // Dependência: Usuario
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped<IUsuarioService, UsuarioService>();

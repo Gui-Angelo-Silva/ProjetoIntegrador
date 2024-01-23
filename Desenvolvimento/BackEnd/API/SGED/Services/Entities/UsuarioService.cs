@@ -59,7 +59,7 @@ public class UsuarioService : IUsuarioService
         var usuario = await _usuarioRepository.Autentication(autentication);
 
         UsuarioDTO usuarioDTO = _mapper.Map<UsuarioDTO>(usuario);
-        usuarioDTO.TipoUsuarioDTO = _mapper.Map<TipoUsuarioDTO>(usuario.TipoUsuario);
+        if (usuarioDTO != null) { usuarioDTO.TipoUsuarioDTO = _mapper.Map<TipoUsuarioDTO>(usuario.TipoUsuario); }
 
         return usuarioDTO;
     }

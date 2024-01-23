@@ -31,6 +31,9 @@ namespace SGED.DTO.Mappings
 
             CreateMap<TipoLogradouroDTO, TipoLogradouro>();
             CreateMap<TipoLogradouro, TipoLogradouroDTO>().ReverseMap();
+
+            CreateMap<BairroDTO, Bairro>();
+            CreateMap<Bairro, BairroDTO>().ReverseMap();
         }
     }
 }

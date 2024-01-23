@@ -21,6 +21,5 @@ namespace SGED.DTO.Entities
 
         [JsonIgnore]
         public ICollection<CidadeDTO>? CidadesDTO { get; set; }
-
     }
 }

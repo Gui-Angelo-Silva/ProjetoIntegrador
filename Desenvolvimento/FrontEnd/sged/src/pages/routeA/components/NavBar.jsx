@@ -12,14 +12,16 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 //import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import { useSession } from '../../../services/session';
+import LogoJales from '../../../assets/LogoJales.png'
+
+import { useSession } from '../../../object/service/session';
+import { useServer } from '../../../routes/serverRoute';
 import { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom';
 
 export default function NavBar() {
 
-  const { getSession, closeSession, defaultSession } = useSession();
-  const navigate = useNavigate();
+  const { getSession, defaultSession } = useSession();
+  const { clearSegment, inDevelopment } = useServer();
   const [userName, setUserName] = useState("");
 
   const GetUser = () => {
@@ -30,9 +32,8 @@ export default function NavBar() {
   };
 
   const encerateSession = () => {
-    closeSession();
     defaultSession();
-    navigate('/login');
+    clearSegment("login");
   };
 
   useEffect(() => {
@@ -79,9 +80,8 @@ export default function NavBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Minha conta</MenuItem>
-      <MenuItem onClick={encerateSession}>Sair</MenuItem>
+      <MenuItem onClick={() => inDevelopment("Perfil")}>Perfil</MenuItem>
+      <MenuItem onClick={() => encerateSession()}>Sair</MenuItem>
     </Menu>
   );
 
@@ -148,7 +148,7 @@ export default function NavBar() {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' }, marginLeft: 5 }}
           >
-            <img className='' src='../src/assets/LogoJales.png' alt="Logo de Jales"></img>
+            <img className='' src={LogoJales} alt="Logo de Jales"></img>
           </Typography> 
           <Box sx={{ flexGrow: 1 }} />
           <Typography

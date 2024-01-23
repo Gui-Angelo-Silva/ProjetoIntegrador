@@ -1,10 +1,10 @@
 import NavBar from "../../components/NavBar";
 import SideBar from "../../components/SideBar";
 //import { Link } from "react-router-dom";
-
 import { useMontage } from '../../../../object/modules/montage';
 import Cards from '../../components/Cards';
 import React, { useState, useEffect } from "react";
+import CardIcon from "../../components/CardIcon";
 
 export default function Registrations() {
 
@@ -14,7 +14,8 @@ export default function Registrations() {
         componentMounted();
     }, [componentMounted]);
 
-    const { titles, titleColors, cards, dataCards } = Cards();
+    const [dataCategory, setDataCategory] = useState(Cards());
+    const [categoryFiltered, setCategoryFiltered] = useState(dataCategory);
     const [searchFilter, setSearchFilter] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("Todos");
 
@@ -28,7 +29,49 @@ export default function Registrations() {
         setSelectedCategory(value);
     };
 
-    const filteredTitles = selectedCategory === "Todos" ? titles : [selectedCategory];
+    function filterByTitle() {
+        const filteredCategories = {};
+        
+        for (const [categoryName, categoryCards] of Object.entries(dataCategory)) {
+            const filteredCards = categoryCards.filter((card) =>
+                normalizeString(card.title.toLowerCase()).includes(normalizeString(searchFilter.toLowerCase()))
+            );
+            
+            if (filteredCards.length > 0) {
+                filteredCategories[categoryName] = filteredCards;
+            }
+        }
+
+        setCategoryFiltered(filteredCategories);
+    }
+
+    function filterByCategory() {
+        const filteredCategories = {};
+        console.log(selectedCategory)
+        
+
+        for (const [categoryName, categoryCards] of Object.entries(dataCategory)) {
+            const filteredCards = categoryCards.filter((card) =>
+                normalizeString(card.title.toLowerCase()).includes(normalizeString(searchFilter.toLowerCase())) && card.module == selectedCategory
+            );
+            
+            if (filteredCards.length > 0) {
+                filteredCategories[categoryName] = filteredCards;
+            }
+        }
+
+        setCategoryFiltered(filteredCategories);
+    }
+
+    useEffect(() => {
+        if (selectedCategory === "Todos") {
+            filterByTitle()
+            return
+        }
+        filterByCategory()
+    }, [selectedCategory, dataCategory, searchFilter])
+
+    //const filteredCategory = selectedCategory === "Todos" ? dataCards : dataCards.filter(x => x.module == selectedCategory);
 
     return (
         <div className="flex flex-1 min-h-screen">
@@ -51,10 +94,10 @@ export default function Registrations() {
                                     <option key="Todos" value="Todos">
                                         Todos
                                     </option>
-                                    <option key="Imóvel" value="Imóvel">
+                                    <option key="Imóvel" value="Imovel">
                                         Imóvel
                                     </option>
-                                    <option key="Usuário" value="Usuário">
+                                    <option key="Usuário" value="Usuario">
                                         Usuário
                                     </option>
                                     <option key="Processo" value="Processo">
@@ -63,26 +106,18 @@ export default function Registrations() {
                                 </select>
                             </div>
                         </div>
-                        <div className="flex">
-                            {filteredTitles.map((title, indexTitle) => (
-                                <div key={indexTitle} className="pr-[50px]">
-                                    <div className="pt-4 text-xl font-semibold text-gray-600 pb-2">{title}</div>
+                        <div className="flex mt-10">
+                            {Object.entries(categoryFiltered).map(([categoryName, categoryCards]) => (
+                                <div className="pr-[50px]">
+                                    <div className="text-gray-600 text-lg font-semibold mb-2">
+                                        {categoryName}
+                                    </div>
                                     <div className="grid grid-cols-2">
-                                        {cards[title].filter(card => searchFilter !== "" ? normalizeString(card.toLowerCase()).includes(normalizeString(searchFilter.toLowerCase())) : card).length > 0 ? (
-                                            cards[title].filter(card => searchFilter !== "" ? normalizeString(card.toLowerCase()).includes(normalizeString(searchFilter.toLowerCase())) : card).map((card, indexCard) => (
-                                                <button key={indexCard} onClick={dataCards[card]?.[0]?.onClick}>
-                                                    <div className={`flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 bg-[${titleColors[title].bg}] hover:bg-[${titleColors[title].hover}] hover:scale-105 shadow-xl mb-3 mr-4 rounded-xl text-lg font-semibold text-[${titleColors[title].text}] hover:text-white`}
-                                                        onMouseEnter={dataCards[card]?.[0]?.mouseEnter}
-                                                        onMouseLeave={dataCards[card]?.[0]?.mouseLeave}
-                                                    >
-                                                        {card}
-                                                        <img src={dataCards[card]?.[0]?.image} title={dataCards[card]?.[0]?.title} style={{ filter: dataCards[card]?.[0]?.filter }} />
-                                                    </div>
-                                                </button>
+                                        {
+                                            categoryCards.map((card, index) => (
+                                                <CardIcon onClick={card.onClick} key={index} srcImage={card.image} title={card.title} module={card.module} />
                                             ))
-                                        ) : (
-                                            <div className="w-[148px] mr-4"></div>
-                                        )}
+                                        }
                                     </div>
                                 </div>
                             ))}

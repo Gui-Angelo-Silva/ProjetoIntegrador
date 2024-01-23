@@ -41,7 +41,7 @@ function TypePublicPlaceClass() {
         let status = true;
 
         if (typePublicPlaceIc) {
-            if (typePublicPlaceIc.length > 3) {
+            if (typePublicPlaceIc.length < 3) {
                 setErrorTypePublicPlaceIc('O código informativo precisa ter até 3 letras!');
                 status = false;
             }
@@ -63,6 +63,13 @@ function TypePublicPlaceClass() {
         return status;
     }
 
+    function verifyIc(ic) {
+        const regex = /^[a-zA-Z]*$/;
+        if (regex.test(ic) || uf === '') {
+            setTypePublicPlaceIc(ic);
+        }
+    }
+
     return {
         typePublicPlaceDescription,
         setTypePublicPlaceDescription,
@@ -77,6 +84,7 @@ function TypePublicPlaceClass() {
         clearData,
         clearError,
         verifyData,
+        verifyIc
     }
 }
 

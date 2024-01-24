@@ -34,6 +34,9 @@ namespace SGED.DTO.Mappings
 
             CreateMap<BairroDTO, Bairro>();
             CreateMap<Bairro, BairroDTO>().ReverseMap();
+
+            CreateMap<TipoProcessoDTO, TipoProcesso>();
+            CreateMap<TipoProcesso, TipoProcessoDTO>().ReverseMap();
         }
     }
 }

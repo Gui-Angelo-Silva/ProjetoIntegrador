@@ -10,16 +10,14 @@ namespace SGED.DTO.Entities
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "O nome da TipoProcesso é requerida!")]
+        [Required(ErrorMessage = "O nome do TipoProcesso é requerida!")]
         [MinLength(3)]
         [MaxLength(100)]
         public string NomeTipoProcesso { get; set; }
 
-        [JsonIgnore]
-        public CidadeDTO? CidadeDTO { get; set; }
-
-        [Required(ErrorMessage = "A Cidade é requerida!")]
-        public int IdCidade { get; set; }
-
+		[Required(ErrorMessage = "A descrição do TipoProcesso é requerida!")]
+		[MinLength(3)]
+		[MaxLength(100)]
+		public string DescricaoTipoProcesso { get; set; }
     }
 }

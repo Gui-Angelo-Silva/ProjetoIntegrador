@@ -20,6 +20,5 @@ namespace SGED.DTO.Entities
 
         [Required(ErrorMessage = "A Cidade é requerida!")]
         public int IdCidade { get; set; }
-
     }
 }

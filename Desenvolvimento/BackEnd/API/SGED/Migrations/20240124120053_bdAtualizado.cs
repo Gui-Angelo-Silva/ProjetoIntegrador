@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class criarBanco : Migration
+    public partial class bdAtualizado : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -56,6 +56,20 @@ namespace SGED.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tipologradouro", x => x.idtipologradouro);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TipoProcesso",
+                columns: table => new
+                {
+                    idTipoProcesso = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    tipoProcesso = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    descricaoTipoProcesso = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TipoProcesso", x => x.idTipoProcesso);
                 });
 
             migrationBuilder.CreateTable(
@@ -121,21 +135,20 @@ namespace SGED.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Bairro",
+                name: "bairro",
                 columns: table => new
                 {
-                    idBairro = table.Column<int>(type: "integer", nullable: false)
+                    idbairro = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Bairro = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    CidadeId = table.Column<int>(type: "integer", nullable: false),
+                    bairro = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     IdCidade = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Bairro", x => x.idBairro);
+                    table.PrimaryKey("PK_bairro", x => x.idbairro);
                     table.ForeignKey(
-                        name: "FK_Bairro_cidade_CidadeId",
-                        column: x => x.CidadeId,
+                        name: "FK_bairro_cidade_IdCidade",
+                        column: x => x.IdCidade,
                         principalTable: "cidade",
                         principalColumn: "idcidade",
                         onDelete: ReferentialAction.Cascade);
@@ -399,9 +412,9 @@ namespace SGED.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bairro_CidadeId",
-                table: "Bairro",
-                column: "CidadeId");
+                name: "IX_bairro_IdCidade",
+                table: "bairro",
+                column: "IdCidade");
 
             migrationBuilder.CreateIndex(
                 name: "IX_cidade_IdEstado",
@@ -418,13 +431,16 @@ namespace SGED.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Bairro");
+                name: "bairro");
 
             migrationBuilder.DropTable(
                 name: "municipe");
 
             migrationBuilder.DropTable(
                 name: "tipologradouro");
+
+            migrationBuilder.DropTable(
+                name: "TipoProcesso");
 
             migrationBuilder.DropTable(
                 name: "usuario");

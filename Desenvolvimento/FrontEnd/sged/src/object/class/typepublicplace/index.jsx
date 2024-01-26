@@ -8,7 +8,11 @@ function TypePublicPlaceClass() {
     const [errorTypePublicPlaceDescription, setErrorTypePublicPlaceDescription] = useState('');
 
     function propertyName() {
-        return typePublicPlaceDescription;
+        return "Tipo Logradouro " + typePublicPlaceDescription;
+    }
+
+    function gender() {
+        return "o";
     }
 
     function getData(object) {
@@ -40,38 +44,50 @@ function TypePublicPlaceClass() {
         clearError();
         let status = true;
 
+        let ic = '';
+        let description = '';
+
         if (typePublicPlaceIc) {
             if (typePublicPlaceIc.length > 3) {
-                setErrorTypePublicPlaceIc('O código informativo precisa ter até 3 letras!');
+                ic = 'O código informativo precisa ter até 3 letras!';
                 status = false;
             }
         } else {
-            setErrorTypePublicPlaceIc('O código informativo precisa ser preenchido!');
+            ic = 'O código informativo precisa ser preenchido!';
             status = false;
         }
 
         if (typePublicPlaceDescription) {
             if (typePublicPlaceDescription.length < 3) {
-                setErrorTypePublicPlaceDescription('A descrição precisa ter mais de 3 letras!');
+                description = 'A descrição precisa ter mais de 3 letras!';
                 status = false;
             }
         } else {
-            setErrorTypePublicPlaceDescription('A descrição é requerida!');
+            description = 'A descrição é requerida!';
             status = false;
         }
+
+        setErrorTypePublicPlaceIc(ic);
+        setErrorTypePublicPlaceDescription(description);
 
         return status;
     }
 
     return {
+        // Atributos
         typePublicPlaceDescription,
         setTypePublicPlaceDescription,
         typePublicPlaceIc,
         setTypePublicPlaceIc,
         typePublicPlaceId,
+
+        // Erros
         errorTypePublicPlaceIc,
         errorTypePublicPlaceDescription,
+
+        // Funções Essencias
         propertyName,
+        gender,
         getData,
         setData,
         clearData,

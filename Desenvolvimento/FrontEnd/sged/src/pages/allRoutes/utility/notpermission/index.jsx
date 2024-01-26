@@ -12,6 +12,7 @@ import NavBarD from "../../../routeA/components/NavBar";
 import Button from '@mui/material/Button';
 //import { FaAngleRight, FaTableCellsLarge, FaFile } from "react-icons/fa6";
 
+import { useMontage } from '../../../../object/modules/montage';
 import { useServer } from "../../../../routes/serverRoute";
 import { useEffect } from "react";
 
@@ -55,7 +56,11 @@ export default function Development() {
           <br />
           <h3 className="text-3xl font-semibold text-gray-600">Acesso Negado</h3>
           <p className="pl-4" style={{ marginTop: '40px', textAlign: 'center' }}>
-            Sua conta não tem permissão para navegar para o nível de acesso <span style={{ color: 'red' }}>{acessLevel}</span>.
+            {permission !== null ?
+              "Sua conta não tem permissão para navegar para o nível de acesso " :
+              "Você não possui privilégios para navegar para uma rota de nível "
+            }
+            <span style={{ color: 'red' }}>{acessLevel}</span>.
             <br />
             Clique no botão abaixo para retornar para a página {permission !== null ? "principal" : "de autenticação"}.
           </p>

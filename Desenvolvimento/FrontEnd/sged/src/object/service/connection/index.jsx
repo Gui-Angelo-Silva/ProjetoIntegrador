@@ -6,74 +6,64 @@ function ConnectionEntity(url) {
     const { getAuthConfig } = useSession();
     const { appendRoute } = useApi();
     const objectUrl = appendRoute(url);
+    const statusArray = [200, 201];
 
     async function getOrder() {
         try {
             const response = await axios.get(objectUrl, getAuthConfig());
-            if (response.status === 200) {
+            if (statusArray.includes(response.status)) {
                 return { status: true, message: response.data };
             } else {
                 return { status: false, message: 'Erro ao processar a requisição.' };
             }
         } catch (error) {
-            return { status: false, message: error };
+            return { status: false, message: "Erro no servidor: " + error };
         }
     }
 
     async function postOrder(object) {
-        var response = await object.verifyData();
-        if (response) {
-            const data = object.setData();
-            delete data.id;
+        const data = object.setData();
+        delete data.id;
 
-            try {
-                response = await axios.post(objectUrl, data, getAuthConfig());
-                if (response.status === 201) {
-                    object.getData(response);
-                    return { status: true, message: 'Registro ' + object.propertyName() + ' cadastrado com sucesso.' };
-                } else {
-                    return { status: false, message: 'Erro ao processar a requisição!' };
-                }
-            } catch (error) {
-                return { status: false, message: error };
+        try {
+            const response = await axios.post(objectUrl, data, getAuthConfig());
+            if (statusArray.includes(response.status)) {
+                return { status: true, message: `${object.propertyName()} cadastrad${object.gender()} com sucesso.` };
+            } else {
+                return { status: false, message: 'Erro ao processar a requisição!' };
             }
-        } else {
-            return { status: false, message: 'Dados inválidos!' };
+        } catch (error) {
+            return { status: false, message: "Erro no servidor: " + error };
         }
     }
 
     async function putOrder(object) {
-        var response = await object.verifyData();
-        if (response) {
-            const data = object.setData();
+        const data = object.setData();
 
-            try {
-                response = await axios.put(objectUrl, data, getAuthConfig());
-                if (response.status === 200) {
-                    object.getData(response);
-                    return { status: true, message: 'Registro ' + object.propertyName() + ' alterado com sucesso.' };
-                } else {
-                    return { status: false, message: 'Erro ao processar a requisição!' };
-                }
-            } catch (error) {
-                return { status: false, message: error };
+        try {
+            const response = await axios.put(objectUrl, data, getAuthConfig());
+            if (statusArray.includes(response.status)) {
+                return { status: true, message: `${object.propertyName()} alterad${object.gender()} com sucesso.` };
+            } else {
+                return { status: false, message: 'Erro ao processar a requisição!' };
             }
-        } else {
-            return { status: false, message: 'Dados inválidos!' };
+        } catch (error) {
+            return { status: false, message: "Erro no servidor: " + error };
         }
     }
 
     async function deleteOrder(object) {
         const data = object.setData();
+
         try {
             const response = await axios.delete(objectUrl + data.id, getAuthConfig());
-            if (response.status === 200) {
-                return { status: true, message: 'Registro ' + object.propertyName() + ' excluído com sucesso.' };
+            if (statusArray.includes(response.status)) {
+                return { status: true, message: `${object.propertyName()} excluíd${object.gender()} com sucesso.` };
             } else {
                 return { status: false, message: 'Erro ao processar a requisição.' };
             }
         } catch (error) {
-            return { status: false, message: error };
+            return { status: false, message: "Erro no servidor: " + error };
         }
     }
 

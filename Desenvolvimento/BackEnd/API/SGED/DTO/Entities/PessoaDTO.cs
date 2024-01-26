@@ -38,7 +38,7 @@ namespace SGED.DTO.Entities
         [Required(ErrorMessage = "O RG ou IE é requerido!")]
         [MinLength(12)]
         [MaxLength(15)]
-        public string RgIEPessoa { get; set; }
+        public string RgIePessoa { get; set; }
 
 
         public virtual bool verificaIdentico(string documento) {

@@ -46,7 +46,7 @@ namespace SGED.Controllers
             else if (response == -2) return BadRequest("CNPJ inválido!");
             else if (response == -3) return BadRequest("Documento incompleto!");
 
-            response = municipeDTO.RgIe(municipeDTO.RgIEPessoa);
+            response = municipeDTO.RgIe(municipeDTO.RgIePessoa);
             if (response == 0) return BadRequest("Documento incorreto!");
             else if (response == -1) return BadRequest("RG inválido!");
             else if (response == -2) return BadRequest("IE inválido!");
@@ -67,7 +67,7 @@ namespace SGED.Controllers
             else if (response == -2) return BadRequest("CNPJ inválido!");
             else if (response == -3) return BadRequest("Documento incompleto!");
 
-            response = municipeDTO.RgIe(municipeDTO.RgIEPessoa);
+            response = municipeDTO.RgIe(municipeDTO.RgIePessoa);
             if (response == 0) return BadRequest("Documento incorreto!");
             else if (response == -1) return BadRequest("RG inválido!");
             else if (response == -2) return BadRequest("IE inválido!");

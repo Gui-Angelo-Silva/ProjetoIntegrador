@@ -34,6 +34,7 @@ export default function TypePublicPlace() {
 
     const Select = (object, option) => {
         typepublicplace.getData(object);
+        console.log(typepublicplace.typePublicPlaceDescription);
 
         if (option === "Editar") {
             openCloseModalEdit();
@@ -154,7 +155,7 @@ export default function TypePublicPlace() {
     }, [searchTerm, data]);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
+    const itemsPerPage = 15;
     const totalItems = typePublicPlaceToRender.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 

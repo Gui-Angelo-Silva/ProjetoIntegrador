@@ -24,7 +24,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet(Name = "GetEstados")]
-        public async Task<ActionResult<IEnumerable<EstadoCidadeDTO>>> GetAll()
+        public async Task<ActionResult<IEnumerable<EstadoDTO>>> GetAll()
         {
             var estadosDTO = await _estadoService.GetAll();
             if (estadosDTO == null) return NotFound("Estados não econtrados!");

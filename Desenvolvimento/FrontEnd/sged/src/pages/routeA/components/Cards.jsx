@@ -46,7 +46,7 @@ function Cards() {
                 module: "Imovel"
             },
             {
-                onClick: () => inDevelopment("Controle de Bairro"),
+                onClick: () => addSegment("neighborhood"),
                 image: ImgBairro,
                 tooltip: "Abrir a Página de Controle de Bairro",
                 title: "Bairro",

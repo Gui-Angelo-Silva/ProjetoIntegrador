@@ -21,7 +21,7 @@ export default function TypeUser() {
         componentMounted();
     }, [componentMounted]);
 
-    const connection = ConnectionEntity('TipoUsuario/');
+    const connection = ConnectionEntity();
     const list = List();
     const typeuser = TypeUserClass();
 
@@ -69,11 +69,11 @@ export default function TypeUser() {
     };
 
     const GetTypeUser = async () => {
-        const response = await connection.getOrder();
+        const response = await connection.objectUrl("TipoUsuario").getOrder();
         if (response.status) {
-            list.setList(response.message);
+            list.setList(response.data);
         } else {
-            console.error(response.message);
+            console.error(response.data);
         }
     };
 
@@ -81,7 +81,7 @@ export default function TypeUser() {
         setInOperation(true);
 
         if (await typeuser.verifyData()) {
-            const response = await connection.postOrder(typeuser);
+            const response = await connection.objectUrl("TipoUsuario").postOrder(typeuser);
 
             openCloseModalInsert(!response.status);
             setUpdateData(response.status);
@@ -97,7 +97,7 @@ export default function TypeUser() {
         setInOperation(true);
 
         if (await typeuser.verifyData()) {
-            const response = await connection.putOrder(typeuser);
+            const response = await connection.objectUrl("TipoUsuario").putOrder(typeuser);
 
             openCloseModalEdit(!response.status);
             setUpdateData(response.status);
@@ -112,7 +112,7 @@ export default function TypeUser() {
     const DeleteTypeUser = async () => {
         setInOperation(true);
 
-        const response = await connection.deleteOrder(typeuser);
+        const response = await connection.objectUrl("TipoUsuario").deleteOrder(typeuser);
 
         openCloseModalDelete(!response.status);
         setUpdateData(response.status);

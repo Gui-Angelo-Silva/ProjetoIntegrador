@@ -57,10 +57,10 @@ export default function Development() {
           <h3 className="text-3xl font-semibold text-gray-600">Acesso Negado</h3>
           <p className="pl-4" style={{ marginTop: '40px', textAlign: 'center' }}>
             {permission !== null ?
-              "Sua conta não tem permissão para navegar para o nível de acesso " :
-              "Você não possui privilégios para navegar para uma rota de nível "
+              "Sua conta não tem permissão para navegar em uma rota de nível " :
+              "Você não possui privilégios para navegar em uma rota de nível "
             }
-            <span style={{ color: 'red' }}>{acessLevel}</span>.
+            <span style={{ color: 'red', fontWeight: 'bold' }}>{acessLevel}</span>.
             <br />
             Clique no botão abaixo para retornar para a página {permission !== null ? "principal" : "de autenticação"}.
           </p>

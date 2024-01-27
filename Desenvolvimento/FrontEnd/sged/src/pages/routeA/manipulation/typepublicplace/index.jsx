@@ -20,7 +20,7 @@ export default function TypePublicPlace() {
     }, [componentMounted]);
 
     const typepublicplace = TypePublicPlaceClass();
-    const connection = ConnectionEntity('TipoLogradouro/');
+    const connection = ConnectionEntity();
 
     const [data, setData] = useState([]);
     const [modalInsert, setModalInsert] = useState(false);
@@ -71,16 +71,16 @@ export default function TypePublicPlace() {
     };
 
     const GetTypePublicPlace = async () => {
-        const response = await connection.getOrder();
+        const response = await connection.objectUrl("TipoLogradouro").getOrder();
         if (response.status) {
-            setData(response.message);
+            setData(response.data);
         } else {
-            console.error(response.message);
+            console.error(response.data);
         }
     };
 
     const PostTypePublicPlace = async () => {
-        const response = await connection.postOrder(typepublicplace);
+        const response = await connection.objectUrl("TipoLogradouro").postOrder(typepublicplace);
         if (response.status) {
             openCloseModalInsert();
             setUpdateData(true);
@@ -91,7 +91,7 @@ export default function TypePublicPlace() {
     };
 
     const PutTypePublicPlace = async () => {
-        const response = await connection.putOrder(typepublicplace);
+        const response = await connection.objectUrl("TipoLogradouro").putOrder(typepublicplace);
         if (response.status) {
             openCloseModalEdit();
             setUpdateData(true);
@@ -102,7 +102,7 @@ export default function TypePublicPlace() {
     };
 
     const DeleteTypePublicPlace = async () => {
-        const response = await connection.deleteOrder(typepublicplace);
+        const response = await connection.objectUrl("TipoLogradouro").deleteOrder(typepublicplace);
         if (response.status) {
             openCloseModalDelete();
             setUpdateData(true);

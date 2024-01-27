@@ -49,6 +49,7 @@ function UserClass() {
 
   const [errorUserPassword, setErrorUserPassword] = useState('');
   const [errorUserOffice, setErrorUserOffice] = useState('');
+  const [errorIdTypeUser, setErrorIdTypeUser] = useState('');
 
   function propertyName() {
     return "Usuário " + personName;
@@ -91,6 +92,7 @@ function UserClass() {
     clearErrorPerson();
     setErrorUserPassword('');
     setErrorUserOffice('');
+    setErrorIdTypeUser('');
   }
 
   function verifyData(list) {
@@ -99,6 +101,7 @@ function UserClass() {
 
     let password = '';
     let office = '';
+    let typeuser = '';
 
     if (userPassword) {
       if (userPassword.length < 6) {
@@ -120,8 +123,14 @@ function UserClass() {
       status = false;
     }
 
+    if (!idTypeUser) {
+      typeuser = 'O tipo usuário é requerido!';
+      status = false;
+    }
+
     setErrorUserPassword(password);
     setErrorUserOffice(office);
+    setIdTypeUser(typeuser);
 
     return status;
   }
@@ -207,6 +216,7 @@ function UserClass() {
     // Erros
     errorUserPassword,
     errorUserOffice,
+    errorIdTypeUser,
 
     // Funções Essencias
     propertyName,

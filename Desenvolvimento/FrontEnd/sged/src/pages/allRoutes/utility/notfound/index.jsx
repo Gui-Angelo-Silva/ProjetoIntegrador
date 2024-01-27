@@ -56,7 +56,7 @@ export default function Development() {
           <br />
           <h3 className="text-3xl font-semibold text-gray-600">Página Inexistente</h3>
           <p className="pl-4" style={{ marginTop: '40px', textAlign: 'center' }}>
-            A página <span style={{ color: 'blue' }}>{pagePrevious}</span> informada não existe dentro do website.
+            A página <span style={{ color: 'blue', fontWeight: 'bold' }}>{pagePrevious}</span> informada não existe dentro do website.
             <br />
             Clique no botão abaixo para retornar para a página {permission !== null ? "principal" : "de autenticação"}.
           </p>

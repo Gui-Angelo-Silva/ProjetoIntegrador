@@ -36,11 +36,12 @@ export default function Development() {
   }
 
   const callComponent = (component) => {
-    const componentName = permission !== null ? component + permission : component;
-
-    const componentsNav = { NavBar, NavBarA, NavBarB, NavBarC, NavBarD };
-    const componentsSide = { SideBarA, SideBarB, SideBarC, SideBarD };
-    const ComponentToRender = componentName[0] === "N" ? componentsNav[componentName] : componentsSide[componentName];
+    const components = {
+      NavBar: { A: NavBarA, B: NavBarB, C: NavBarC, D: NavBarD, null: NavBar },
+      SideBar: { A: SideBarA, B: SideBarB, C: SideBarC, D: SideBarD },
+    };
+    
+    const ComponentToRender = components[component][permission];
 
     return ComponentToRender ? <ComponentToRender /> : null;
   }
@@ -56,7 +57,7 @@ export default function Development() {
           <br />
           <h3 className="text-3xl font-semibold text-gray-600">Em Desenvolvimento</h3>
           <p className="pl-4" style={{ marginTop: '40px', textAlign: 'center' }}>
-            A página de <span style={{ color: '#4DA8B6' }}>{pageInDevelopment}</span> está em desenvolvimento.
+            A página de <span style={{ fontWeight: 'bold' }}>{pageInDevelopment}</span> está em desenvolvimento.
             <br />
             Clique no botão abaixo para retornar para a página {permission !== null ? "principal" : "de autenticação"}.
           </p>

@@ -21,6 +21,7 @@ import { useMontage } from '../../../../object/modules/montage';
 import { useEffect, useState } from "react";
 import { useSession } from '../../../../object/service/session';
 import { useServer } from '../../../../routes/serverRoute';
+import LoginClass from '../../../../object/class/login';
 
 const defaultTheme = createTheme();
 
@@ -32,75 +33,47 @@ export default function SignInSide() {
     componentMounted();
   }, [componentMounted]);
 
+  const [modalOpen, setModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
-  const [userPassword, setUserPassword] = useState('');
-  const [persistLogin, setPersistLogin] = useState(false);
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
   const [loginError, setLoginError] = useState('');
-  const { clearSegment, inDevelopment } = useServer();
-  const { createSession, getLogin } = useSession();
+  const server = useServer();
+  const session = useSession();
+  const login = LoginClass();
 
   const getDataLogin = () => {
-    const data = JSON.parse(getLogin());
-    if (data !== null && data.persist) {
-      setUserEmail(data.emailPessoa);
-      setUserPassword(data.senhaUsuario);
-      setPersistLogin(true);
+    const data = session.getLogin();
+    if (data) {
+      login.getData(data);
+    } else {
+      login.clearData();
     }
   };
 
   const handlePersistLoginChange = (e) => {
     const checked = e.target.checked;
-    setPersistLogin(checked);
+    login.setPersistLogin(checked);
   };
 
   const handleSubmit = async (e) => {
     setIsLoading(true);
+    setLoginError('');
 
     e.preventDefault();
-    setEmailError('');
-    setPasswordError('');
-    setLoginError('');
-    var email = '';
-    var password = '';
-
-    if (!userEmail) {
-      email = 'Informe o e-mail!';
-    }
-
-    if (!userPassword) {
-      password = 'Informe a senha!';
-    }
-
-    if (!email && (!userEmail.includes('@') || !userEmail.includes('.') || userEmail.lastIndexOf('.') < userEmail.indexOf('@'))) {
-      email = 'Insira um email válido!';
-    }
-
-    if (!password && userPassword.length < 6) {
-      password = 'Insira uma senha válida!';
-    }
-
-    if (!email && !password) {
+    if (login.verifyData()) {
       try {
-        const loginResult = await createSession(userEmail, userPassword, persistLogin);
-        if (loginResult.validation) {
-          clearSegment("home");
+        const response = await session.createSession(login);
+        if (response.validation) {
+          server.clearSegment("home");
         } else {
-          setLoginError(loginResult.message);
+          setLoginError(response.message);
         }
       } catch (error) {
-        setLoginError('Erro ao fazer login:', error);
+        setLoginError('Erro ao fazer login: ', error.message);
       }
     }
 
-    setEmailError(email);
-    setPasswordError(password);
     setIsLoading(false);
   };
-
-  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     getDataLogin();
@@ -128,7 +101,7 @@ export default function SignInSide() {
             <Button
               onClick={() => {
                 setModalOpen(false);
-                setPersistLogin(true);
+                login.setPersistLogin(true);
               }}
               sx={{
                 border: 1,
@@ -147,7 +120,7 @@ export default function SignInSide() {
             <Button
               onClick={() => {
                 setModalOpen(false);
-                setPersistLogin(false);
+                login.setPersistLogin(false);
               }}
               sx={{
                 border: 1,
@@ -215,11 +188,11 @@ export default function SignInSide() {
                 name="email"
                 autoComplete="email"
                 autoFocus
-                onChange={(e) => setUserEmail(e.target.value)}
-                value={userEmail}
+                onChange={(e) => login.setPersonEmail(e.target.value)}
+                value={login.personEmail}
               />
               <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                {emailError}
+                {login.errorPersonEmail}
               </div>
               <TextField
                 margin="normal"
@@ -230,11 +203,11 @@ export default function SignInSide() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
-                onChange={(e) => setUserPassword(e.target.value)}
-                value={userPassword}
+                onChange={(e) => login.setUserPassword(e.target.value)}
+                value={login.userPassword}
               />
               <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                {passwordError}
+                {login.errorUserPassword}
               </div>
               <br />
               <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
@@ -242,7 +215,7 @@ export default function SignInSide() {
               </div>
               <br />
               <FormControlLabel
-                control={<Checkbox value="remember" color="primary" checked={persistLogin} />}
+                control={<Checkbox value="remember" color="primary" checked={login.persistLogin} />}
                 onChange={(e) => {
                   handlePersistLoginChange(e);
                   if (e.target.checked === true) {
@@ -252,7 +225,7 @@ export default function SignInSide() {
                 label="Lembre de mim"
               />
               <button
-                onClick={() => inDevelopment("Registro")}
+                onClick={() => server.inDevelopment("Registro")}
                 style={{ color: 'blue', marginLeft: '150px' }}
               >
                 Não possuo conta

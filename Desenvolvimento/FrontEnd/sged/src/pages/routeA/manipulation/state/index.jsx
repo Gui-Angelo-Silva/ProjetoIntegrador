@@ -20,7 +20,7 @@ export default function State() {
         componentMounted();
     }, []);
 
-    const connection = ConnectionEntity('Estado/');
+    const connection = ConnectionEntity();
     const list = List();
     const state = StateClass();
 
@@ -68,11 +68,11 @@ export default function State() {
     };
 
     const GetState = async () => {
-        const response = await connection.getOrder();
+        const response = await connection.objectUrl("Estado").getOrder();
         if (response.status) {
-            list.setList(response.message);
+            list.setList(response.data);
         } else {
-            console.error(response.message);
+            console.error(response.data);
         }
     };
 
@@ -80,7 +80,7 @@ export default function State() {
         setInOperation(true);
 
         if (state.verifyData()) {
-            const response = await connection.postOrder(state);
+            const response = await connection.objectUrl("Estado").postOrder(state);
 
             openCloseModalInsert(!response.status);
             setUpdateData(response.status);
@@ -96,7 +96,7 @@ export default function State() {
         setInOperation(true);
 
         if (state.verifyData()) {
-            const response = await connection.putOrder(state);
+            const response = await connection.objectUrl("Estado").putOrder(state);
 
             openCloseModalEdit(!response.status);
             setUpdateData(response.status);
@@ -111,7 +111,7 @@ export default function State() {
     const DeleteState = async () => {
         setInOperation(true);
 
-        const response = await connection.deleteOrder(state);
+        const response = await connection.objectUrl("Estado").deleteOrder(state);
 
         openCloseModalDelete(!response.status);
         setUpdateData(response.status);

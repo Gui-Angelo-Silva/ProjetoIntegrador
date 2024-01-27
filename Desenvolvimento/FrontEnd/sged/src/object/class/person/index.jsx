@@ -300,7 +300,7 @@ function PersonClass() {
             const quantSymbol = personEmail.split('@').length - 1;
             const indexSymbol = personEmail.indexOf('@');
             const indexLastCaracter = personEmail.length - 1;
-            const [, domain] = personEmail.split('@');
+            const [emailAddress, domain] = personEmail.split('@');
 
             if (!email && !hasAtSymbol) {
                 email = 'E-mail inválido: O e-mail deve conter um "@"!';
@@ -312,7 +312,10 @@ function PersonClass() {
                 email = 'E-mail inválido: O e-mail não pode conter mais de um "@"!';
                 status = false;
             } else {
-                if (!email && lastDotPosition <= personEmail.indexOf('@')) {
+                if (!email && !emailAddress) {
+                    email = 'E-mail inválido: O nome do usuário de e-mail não pode ser vazio!';
+                    status = false;
+                  } else if (!email && lastDotPosition <= personEmail.indexOf('@')) {
                     email = 'E-mail inválido: O "." deve estar após o "@"!';
                     status = false;
                 } else if (!email && (personEmail[indexSymbol + 1] === '.' || personEmail[indexLastCaracter] === '.' || control.removeNonNumericCharacter(domain))) {
@@ -326,7 +329,7 @@ function PersonClass() {
             status = false;
         }
 
-        if (/\d/.test(personTelephone)) {
+        if (personTelephone) {
             if (personTelephone.length !== 15) {
                 telephone = 'O telefone inválido: informe o número e ddd!';
                 status = false;
@@ -336,7 +339,7 @@ function PersonClass() {
             status = false;
         }
 
-        if (/\d/.test(personCpfCnpj)) {
+        if (personCpfCnpj) {
 
             const response = CpfCnpj(personCpfCnpj);
 
@@ -349,7 +352,7 @@ function PersonClass() {
             status = false;
         }
 
-        if (/\d/.test(personRgIe)) {
+        if (personRgIe) {
 
             const response = RgIe(personRgIe);
 

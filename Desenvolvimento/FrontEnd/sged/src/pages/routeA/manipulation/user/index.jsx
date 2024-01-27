@@ -1,21 +1,19 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
-import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
-import InputMask from 'react-input-mask';
 import Select from 'react-select';
-import debounce from 'lodash.debounce';
 
 import { useMontage } from '../../../../object/modules/montage';
 import ConnectionEntity from '../../../../object/service/connection';
-import List from '../../../../object/modules/list';
+import ListModule from '../../../../object/modules/list';
 import UserClass from '../../../../object/class/user';
-import Control from '../../../../object/modules/control';
+import ControlModule from '../../../../object/modules/control';
+import SelectModule from '../../../../object/modules/select';
 
 export default function User() {
 
@@ -25,12 +23,12 @@ export default function User() {
         componentMounted();
     }, []);
 
-    const connection = ConnectionEntity('Usuario/');
-    const list = List();
+    const connection = ConnectionEntity();
     const user = UserClass();
-    const control = Control();
-    const connectionTypeUser = ConnectionEntity('TipoUsuario/');
-    const listTypeUser = List();
+    const list = ListModule();
+    const listTypeUser = ListModule();
+    const control = ControlModule();
+    const selectBox = SelectModule();
 
     const [modalInsert, setModalInsert] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
@@ -66,7 +64,7 @@ export default function User() {
 
     const SelectObject = (object, option) => {
         user.getData(object);
-        selectOption(object.idTipoUsuario);
+        selectBox.selectOption(object.idTipoUsuario);
 
         if (option === "Editar") {
             openCloseModalEdit(true);
@@ -77,20 +75,20 @@ export default function User() {
     };
 
     const GetUser = async () => {
-        const response = await connection.getOrder();
+        const response = await connection.objectUrl("Usuario").getOrder();
         if (response.status) {
-            list.setList(response.message);
+            list.setList(response.data);
         } else {
-            console.error(response.message);
+            console.log(response.message);
         }
     };
 
     const GetTypeUser = async () => {
-        const response = await connectionTypeUser.getOrder();
+        const response = await connection.objectUrl("TipoUsuario").getOrder();
         if (response.status) {
-            listTypeUser.setList(response.message);
+            listTypeUser.setList(response.data);
         } else {
-            console.error(response.message);
+            console.log(response.message);
         }
     };
 
@@ -98,7 +96,7 @@ export default function User() {
         setInOperation(true);
 
         if (user.verifyData(list.list)) {
-            const response = await connection.postOrder(user);
+            const response = await connection.objectUrl("Usuario").postOrder(user);
 
             openCloseModalInsert(!response.status);
             setUpdateData(response.status);
@@ -114,7 +112,7 @@ export default function User() {
         setInOperation(true);
 
         if (user.verifyData(list.list)) {
-            const response = await connection.putOrder(user);
+            const response = await connection.objectUrl("Usuario").putOrder(user);
 
             openCloseModalEdit(!response.status);
             setUpdateData(response.status);
@@ -129,7 +127,7 @@ export default function User() {
     const DeleteUser = async () => {
         setInOperation(true);
 
-        const response = await connection.deleteOrder(user);
+        const response = await connection.objectUrl("Usuario").deleteOrder(user);
 
         openCloseModalDelete(!response.status);
         setUpdateData(response.status);
@@ -196,8 +194,8 @@ export default function User() {
 
     useEffect(() => {
         if (updateData) {
-            GetUser();
             GetTypeUser();
+            GetUser();
 
             user.setUserStatus(true);
             if (listTypeUser.list.length > 0) {
@@ -210,58 +208,10 @@ export default function User() {
 
     useEffect(() => {
         if (!modalInsert && !modalEdit && !modalDelete) {
-            selectOption(listTypeUser.list[0]?.id);
+            selectBox.updateOptions(listTypeUser.list, "id", "nomeTipoUsuario");
+            selectBox.selectOption(listTypeUser.list[0]?.id);
         }
     }, [updateData, listTypeUser.list, modalInsert, modalEdit, modalDelete]);
-
-
-    const [selectedOption, setSelectedOption] = useState(null);
-
-    const handleChange = (option) => {
-        setSelectedOption(option);
-        if (option) {
-            user.setIdTypeUser(option.value);
-        } else {
-            user.setIdTypeUser('');
-        }
-    };
-
-    const selectOption = (id) => {
-        const foundOption = allOptions.find(option => option.value === id);
-        if (foundOption) {
-            setSelectedOption(foundOption);
-        }
-    };
-
-    const options = listTypeUser.list.map(item => ({
-        value: item.id,
-        label: item.nomeTipoUsuario
-    }));
-
-    const allOptions = listTypeUser.list.map(item => ({
-        value: item.id,
-        label: item.nomeTipoUsuario
-    }));
-
-    const filterOptions = (inputValue) => {
-        if (!inputValue) {
-            return allOptions;
-        }
-
-        const searchTermNormalized = inputValue.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-
-        return allOptions.filter(option =>
-            option.label.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().includes(searchTermNormalized)
-        );
-    };
-
-    const delayedSearch = debounce((inputValue) => {
-        filterOptions(inputValue);
-    }, 300);
-
-    const loadOptions = (inputValue, callback) => {
-        callback(filterOptions(inputValue));
-    };
 
     const togglePasswordVisibility = () => {
         const passwordInput = document.getElementById('passwordInput');
@@ -480,11 +430,11 @@ export default function User() {
                             <label className="text-[#444444]">Tipo Usuário:</label>
                             <br />
                             <Select
-                                value={selectedOption}
-                                onChange={handleChange}
-                                onInputChange={delayedSearch}
-                                loadOptions={loadOptions}
-                                options={options}
+                                value={selectBox.selectedOption}
+                                onChange={selectBox.handleChange}
+                                onInputChange={selectBox.delayedSearch}
+                                loadOptions={selectBox.loadOptions}
+                                options={selectBox.options}
                                 placeholder="Pesquisar tipo usuário . . ."
                                 isClearable
                                 isSearchable
@@ -497,6 +447,9 @@ export default function User() {
                                 }}
                                 className="style-select"
                             />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {user.errorIdTypeUser}
+                            </div>
                         </div>
                     </ModalBody>
                     <ModalFooter>
@@ -592,11 +545,11 @@ export default function User() {
                             <label>Tipo Usuário:</label>
                             <br />
                             <Select
-                                value={selectedOption}
-                                onChange={handleChange}
-                                onInputChange={delayedSearch}
-                                loadOptions={loadOptions}
-                                options={options}
+                                value={selectBox.selectedOption}
+                                onChange={selectBox.handleChange}
+                                onInputChange={selectBox.delayedSearch}
+                                loadOptions={selectBox.loadOptions}
+                                options={selectBox.options}
                                 placeholder="Pesquisar estado . . ."
                                 isClearable
                                 isSearchable
@@ -607,7 +560,11 @@ export default function User() {
                                         return "Nenhuma opção encontrada!";
                                     }
                                 }}
+                                className="style-select"
                             />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {user.errorIdTypeUser}
+                            </div>
                             <br />
                         </div>
                     </ModalBody>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-function List() {
+function ListModule() {
 
     const [list, setList] = useState([]);
     const [listToRender, setListToRender] = useState([]);
@@ -81,4 +81,4 @@ function List() {
     };
 }
 
-export default List;
+export default ListModule;

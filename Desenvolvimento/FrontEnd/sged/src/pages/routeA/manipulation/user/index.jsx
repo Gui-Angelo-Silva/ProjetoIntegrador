@@ -187,12 +187,11 @@ export default function User() {
         }
     };
 
-    useEffect(() => {
+    useEffect(() => { // Filtro especial para os dados do usuário
         filterUser();
     }, [searchTerm, searchBy, list.list]);
 
-
-    useEffect(() => {
+    useEffect(() => { // Para atualizar quando uma ação é efetuada com sucesso
         if (updateData) {
             GetTypeUser();
             GetUser();
@@ -206,12 +205,16 @@ export default function User() {
         }
     }, [updateData]);
 
-    useEffect(() => {
+    useEffect(() => { // Para atualizar as opções do Select bem como o valor padrão selecionado
         if (!modalInsert && !modalEdit && !modalDelete) {
             selectBox.updateOptions(listTypeUser.list, "id", "nomeTipoUsuario");
             selectBox.selectOption(listTypeUser.list[0]?.id);
         }
     }, [updateData, listTypeUser.list, modalInsert, modalEdit, modalDelete]);
+
+    useEffect(() => { // Para atualizar o idTipoUsuario conforme o valor selecionado muda
+        user.setIdTypeUser(selectBox.selectedOption.value);
+    }, [selectBox.selectedOption]);
 
     const togglePasswordVisibility = () => {
         const passwordInput = document.getElementById('passwordInput');
@@ -322,7 +325,7 @@ export default function User() {
                                     onChange={(e) => list.goToPage(Number(e.target.value))}
                                 >
                                     {[...Array(list.totalPages)].map((_, index) => (
-                                        <option key={index + 1} value={index + 1}>
+                                        <option key={index + 1} value={index + 1} >
                                             {index + 1}
                                         </option>
                                     ))}
@@ -454,7 +457,7 @@ export default function User() {
                     </ModalBody>
                     <ModalFooter>
                         <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert(false)}>Cancelar</button>
-                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostUser()}>Cadastrar</button>{"  "}
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostUser()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Cadastrar'} </button>{"  "}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalEdit}>
@@ -570,7 +573,7 @@ export default function User() {
                     </ModalBody>
                     <ModalFooter>
                         <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit(false)}>Cancelar</button>
-                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PutUser()}>Atualizar</button>{"  "}
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutUser()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Atualizar'} </button>{"  "}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalDelete}>
@@ -584,7 +587,7 @@ export default function User() {
                         </div>
                         <div className="flex justify-center gap-2 pt-3">
                             <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete(false)}>Cancelar</button>
-                            <button className='btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' onClick={() => DeleteUser()}>Confirmar</button>
+                            <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteUser()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'} </button>{"  "}
                         </div>
                         {/* <ModalFooter>
                     </ModalFooter> */}

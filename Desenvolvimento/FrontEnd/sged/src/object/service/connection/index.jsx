@@ -10,6 +10,7 @@ function ConnectionEntity() {
     function objectUrl(url) {
         // Limpa e adiciona uma nova url
         requisitionUrl = api.appendRoute(url);
+        requisitionUrl += "/";
         return this;
     }
 
@@ -25,6 +26,7 @@ function ConnectionEntity() {
 
         // Remonta a string com "/"
         requisitionUrl = objectUrl.join("/");
+        requisitionUrl += "/";
         return this;
     }
 

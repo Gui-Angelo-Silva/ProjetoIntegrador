@@ -9,7 +9,7 @@ import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icon
 
 import { useMontage } from '../../../../object/modules/montage';
 import ConnectionEntity from '../../../../object/service/connection';
-import List from '../../../../object/modules/list';
+import ListModule from '../../../../object/modules/list';
 import StateClass from '../../../../object/class/state';
 
 export default function State() {
@@ -21,7 +21,7 @@ export default function State() {
     }, []);
 
     const connection = ConnectionEntity();
-    const list = List();
+    const list = ListModule();
     const state = StateClass();
 
     const [modalInsert, setModalInsert] = useState(false);
@@ -30,7 +30,7 @@ export default function State() {
     const [updateData, setUpdateData] = useState(true);
     const [inOperation, setInOperation] = useState(false);
 
-    const Select = (object, option) => {
+    const SelectObject = (object, option) => {
         state.getData(object);
 
         if (option === "Editar") {
@@ -129,8 +129,6 @@ export default function State() {
         list.searchBy ? null : list.setSearchBy('nomeEstado');
     }, [updateData]);
 
-    //list.setSearchBy('nomeEstado');
-
     return (
         <div className="flex flex-1 min-h-screen">
             <div className="h-full w-full" style={{ display: 'flex', flexDirection: 'column' }}>
@@ -191,13 +189,13 @@ export default function State() {
                                         <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                             <button
                                                 className=""
-                                                onClick={() => Select(object, "Editar")}
+                                                onClick={() => SelectObject(object, "Editar")}
                                             >
                                                 <PencilSimple size={20} className="hover:text-cyan-500" />
                                             </button>{" "}
                                             <button
                                                 className=""
-                                                onClick={() => Select(object, "Excluir")}
+                                                onClick={() => SelectObject(object, "Excluir")}
                                             >
                                                 <TrashSimple size={20} className="hover:text-red-600" />
                                             </button>

@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class criarBanco : Migration
+    public partial class Database : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -377,16 +377,16 @@ namespace SGED.Migrations
                 columns: new[] { "idcidade", "IdEstado", "cidade" },
                 values: new object[,]
                 {
-                    { 1, 1, "Aparecida d'Oeste" },
-                    { 2, 1, "Jales" },
-                    { 3, 1, "Palmeira d'Oeste" },
-                    { 4, 1, "Paranapuã" },
-                    { 5, 1, "Rubineia" },
-                    { 6, 1, "Santa Clara d'Oeste" },
-                    { 7, 1, "Santa Fé do Sul" },
-                    { 8, 1, "São Francisco" },
-                    { 9, 1, "São João das Duas Pontes" },
-                    { 10, 1, "Urânia" }
+                    { 29, 1, "Aparecida d'Oeste" },
+                    { 284, 1, "Jales" },
+                    { 399, 1, "Palmeira d'Oeste" },
+                    { 406, 1, "Paranapuã" },
+                    { 502, 1, "Rubineia" },
+                    { 518, 1, "Santa Clara d'Oeste" },
+                    { 524, 1, "Santa Fé do Sul" },
+                    { 550, 1, "São Francisco" },
+                    { 552, 1, "São João das Duas Pontes" },
+                    { 628, 1, "Urânia" }
                 });
 
             migrationBuilder.InsertData(

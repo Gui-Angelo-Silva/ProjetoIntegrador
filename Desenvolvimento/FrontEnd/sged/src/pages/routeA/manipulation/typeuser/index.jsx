@@ -10,7 +10,7 @@ import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icon
 
 import { useMontage } from '../../../../object/modules/montage';
 import ConnectionEntity from '../../../../object/service/connection';
-import List from '../../../../object/modules/list';
+import ListModule from '../../../../object/modules/list';
 import TypeUserClass from '../../../../object/class/typeuser';
 
 export default function TypeUser() {
@@ -22,7 +22,7 @@ export default function TypeUser() {
     }, [componentMounted]);
 
     const connection = ConnectionEntity();
-    const list = List();
+    const list = ListModule();
     const typeuser = TypeUserClass();
 
     const [modalInsert, setModalInsert] = useState(false);
@@ -57,7 +57,7 @@ export default function TypeUser() {
         }
     };
 
-    const Select = (object, option) => {
+    const SelectObject = (object, option) => {
         user.getData(object);
 
         if (option === "Editar") {
@@ -195,13 +195,13 @@ export default function TypeUser() {
                                         <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                             <button
                                                 className=""
-                                                onClick={() => Select(typeuser, "Editar")}
+                                                onClick={() => SelectObject(typeuser, "Editar")}
                                             >
                                                 <PencilSimple size={20} className="hover:text-cyan-500" />
                                             </button>{"  "}
                                             <button
                                                 className=""
-                                                onClick={() => Select(typeuser, "Excluir")}
+                                                onClick={() => SelectObject(typeuser, "Excluir")}
                                             >
                                                 <TrashSimple size={20} className="hover:text-red-600" />
                                             </button>
@@ -223,7 +223,7 @@ export default function TypeUser() {
                                     onChange={(e) => list.goToPage(Number(e.target.value))}
                                 >
                                     {[...Array(list.totalPages)].map((_, index) => (
-                                        <option key={index + 1} value={index + 1}>
+                                        <option key={index + 1} value={index + 1} >
                                             {index + 1}
                                         </option>
                                     ))}
@@ -279,7 +279,7 @@ export default function TypeUser() {
                     </ModalBody>
                     <ModalFooter>
                         <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert(false)}>Cancelar</button>
-                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostTypeUser()}>Cadastrar</button>{"  "}
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostTypeUser()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Cadastrar'} </button>{"  "}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalEdit}>
@@ -314,7 +314,7 @@ export default function TypeUser() {
                     </ModalBody>
                     <ModalFooter>
                         <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit(false)}>Cancelar</button>
-                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PutTypeUser()}>Atualizar</button>{"  "}
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutTypeUser()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Atualizar'} </button>{"  "}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalDelete}>
@@ -328,7 +328,7 @@ export default function TypeUser() {
                         </div>
                         <div className="flex justify-center gap-2 pt-3">
                             <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete(false)}>Cancelar</button>
-                            <button className='btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' onClick={() => DeleteTypeUser()}>Confirmar</button>
+                            <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteTypeUser()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'} </button>{"  "}
                         </div>
                         {/* <ModalFooter>
                     </ModalFooter> */}

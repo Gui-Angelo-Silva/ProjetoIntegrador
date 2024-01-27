@@ -130,7 +130,7 @@ function UserClass() {
 
     setErrorUserPassword(password);
     setErrorUserOffice(office);
-    setIdTypeUser(typeuser);
+    setErrorIdTypeUser(typeuser);
 
     return status;
   }

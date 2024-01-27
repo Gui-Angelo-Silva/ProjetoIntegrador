@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import debounce from 'lodash.debounce';
 
-function Control() {
+function ControlModule() {
 
-    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedOption, setSelectedOption] = useState({});
     const [options, setOptions] = useState([{}]);
 
     const updateOptions = (list, atributeId, atributeName) => {
@@ -16,9 +16,6 @@ function Control() {
     const handleChange = (option) => {
         if (option) {
             setSelectedOption(option);
-            user.setIdTypeUser(option.value);
-        } else {
-            user.setIdTypeUser('');
         }
     };
 
@@ -67,4 +64,4 @@ function Control() {
 
 }
 
-export default Control;
+export default ControlModule;

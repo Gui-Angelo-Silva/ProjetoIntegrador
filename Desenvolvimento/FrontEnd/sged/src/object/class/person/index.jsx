@@ -55,10 +55,6 @@ function PersonClass() {
         setErrorPersonRgIe('');
     };
 
-    function checkCaracters(document) {
-        return /^(.)\1+$/.test(document);
-    };
-
     function checkDataExists(persons, id, email, cpfCnpj, rgIe) {
         let emailExists = false;
         let cpfCnpjExists = false;
@@ -143,11 +139,9 @@ function PersonClass() {
                 cpfCnpj[7] === '.' &&
                 cpfCnpj[11] === '-'
             ) {
-                cpfCnpj = cpfCnpj.replace(/\./g, '').replace('-', '');
+                cpfCnpj = control.removeNonNumericCharacter(cpfCnpj);
 
-                if (!checkCaracters(cpfCnpj)) {
-                    if (!/^\d+$/.test(cpfCnpj)) return -3;
-
+                if (!control.checkEqualsCaracters(cpfCnpj)) {
                     if (validateCpf(cpfCnpj)) return 1;
                     else return -1;
                 } else { return -1; }
@@ -159,11 +153,9 @@ function PersonClass() {
                 cpfCnpj[10] === '/' &&
                 cpfCnpj[15] === '-'
             ) {
-                cpfCnpj = cpfCnpj.replace(/\./g, '').replace(/\//g, '').replace('-', '');
+                cpfCnpj = control.removeNonNumericCharacter(cpfCnpj);
 
-                if (!checkCaracters(cpfCnpj)) {
-                    if (!/^\d+$/.test(cpfCnpj)) return -3;
-
+                if (!control.checkEqualsCaracters(cpfCnpj)) {
                     if (validateCnpj(cpfCnpj)) return 2;
                     else return -2;
                 } else { return -2; }
@@ -238,11 +230,9 @@ function PersonClass() {
                 rgIe[6] === '.' &&
                 rgIe[10] === '-'
             ) {
-                rgIe = rgIe.replace(/\./g, '').replace('-', '');
+                rgIe = control.removeNonNumericCharacter(rgIe);
 
-                if (!checkCaracters(rgIe)) {
-                    if (!/^\d+$/.test(rgIe)) return -3;
-
+                if (!control.checkEqualsCaracters(rgIe)) {
                     if (validateRg(rgIe)) return 1;
                     else return -1;
                 } else { return -1; }
@@ -253,11 +243,9 @@ function PersonClass() {
                 rgIe[7] === '.' &&
                 rgIe[11] === '.'
             ) {
-                rgIe = rgIe.replace(/\./g, '');
+                rgIe = control.removeNonNumericCharacter(rgIe);
 
-                if (!checkCaracters(rgIe)) {
-                    if (!/^\d+$/.test(rgIe)) return -3;
-
+                if (!control.checkEqualsCaracters(rgIe)) {
                     if (validateIe(rgIe)) return 2;
                     else return -2;
                 } else { return -2; }
@@ -345,7 +333,6 @@ function PersonClass() {
 
             if (response === -1) { cpfCnpj = 'CPF inválido!'; status = false; }
             else if (response === -2) { cpfCnpj = 'CNPJ inválido!'; status = false; }
-            else if (response === -3 || response === 0) { cpfCnpj = 'Documento incorreto!'; status = false; }
 
         } else {
             cpfCnpj = 'O CPF ou CNPJ é requerido!';
@@ -358,7 +345,6 @@ function PersonClass() {
 
             if (response === -1) { rgIe = 'RG inválido!'; status = false; }
             else if (response === -2) { rgIe = 'IE inválido!'; status = false; }
-            else if (response === -3 || response === 0) { rgIe = 'Documento incorreto!'; status = false; }
 
         } else {
             rgIe = 'O RG ou IE é requerido!';

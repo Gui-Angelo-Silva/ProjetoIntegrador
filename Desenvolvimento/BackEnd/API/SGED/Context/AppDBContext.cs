@@ -15,10 +15,15 @@ public class AppDBContext : DbContext
     public DbSet<Usuario> Usuario { get; set; }
 	public DbSet<Municipe> Municipe { get; set; }
 	public DbSet<TipoLogradouro> TipoLogradouro { get; set; }
+	public DbSet<TipoProcesso> TipoProcesso { get; set; }
 
 	// Fluent API
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
+		// Builder: TipoProcesso
+		modelBuilder.Entity<TipoProcesso>().HasKey(b => b.Id);
+		modelBuilder.Entity<TipoProcesso>().Property(b => b.NomeTipoProcesso).HasMaxLength(100).IsRequired();
+		modelBuilder.Entity<TipoProcesso>().Property(b => b.DescricaoTipoProcesso).HasMaxLength(100).IsRequired();
 
 		// Builder: Estado
 		modelBuilder.Entity<Estado>().HasKey(b => b.Id);
@@ -39,6 +44,7 @@ public class AppDBContext : DbContext
         // Builder: Bairro
         modelBuilder.Entity<Bairro>().HasKey(b => b.Id);
         modelBuilder.Entity<Bairro>().Property(b => b.NomeBairro).HasMaxLength(50).IsRequired();
+		modelBuilder.Entity<Bairro>().HasOne(b => b.Cidade).WithMany().HasForeignKey(b => b.IdCidade);
 
         // Relacionamento: Estado -> Cidade
         modelBuilder.Entity<Estado>().HasMany(p => p.Cidades).WithOne(b => b.Estado).IsRequired().OnDelete(DeleteBehavior.Cascade);

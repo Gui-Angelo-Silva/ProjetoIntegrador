@@ -237,7 +237,7 @@ export default function TypePublicPlace() {
                         <div className="form-group">
                             <label className="text-[#444444]">Código Informativo: </label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typepublicplace.setTypePublicPlaceIc(e.target.value)} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typepublicplace.verifyIc(e.target.value.toUpperCase())} value={typepublicplace.typePublicPlaceIc} maxLength={3}/>
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                                 {typepublicplace.errorTypePublicPlaceIc}
                             </div>
@@ -263,14 +263,14 @@ export default function TypePublicPlace() {
                             <label className="text-[#444444]">ID: </label><br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={typepublicplace.typePublicPlaceId} /> <br />
                             <label className="text-[#444444]">Código Informativo:</label>
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="codigoInformativo" onChange={(e) => typepublicplace.setTypePublicPlaceIc(e.target.value)} value={typepublicplace.typePublicPlaceIc} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="codigoInformativo" onChange={(e) => typepublicplace.verifyIc(e.target.value.toUpperCase())} value={typepublicplace.typePublicPlaceIc} maxLength={3} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                                 {typepublicplace.errorTypePublicPlaceIc}
                             </div>
                             <br />
                             <label className="text-[#444444]">Sigla:</label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="descricao" onChange={(e) => typepublicplace.setTypePublicPlaceDescription(e.target.value)} value={typepublicplace.typePublicPlaceDescription} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="descricao" onChange={(e) => typepublicplace.setTypePublicPlaceDescription(e.target.value)} value={typepublicplace.typePublicPlaceDescription}/>
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                                 {typepublicplace.errorTypePublicPlaceDescription}
                             </div>

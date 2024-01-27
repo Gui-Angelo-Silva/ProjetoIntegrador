@@ -11,7 +11,7 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240127210054_Database")]
+    [Migration("20240127212027_Database")]
     partial class Database
     {
         /// <inheritdoc />
@@ -29,12 +29,9 @@ namespace SGED.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("idBairro");
+                        .HasColumnName("idbairro");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CidadeId")
-                        .HasColumnType("integer");
 
                     b.Property<int>("IdCidade")
                         .HasColumnType("integer");
@@ -43,13 +40,13 @@ namespace SGED.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
-                        .HasColumnName("Bairro");
+                        .HasColumnName("bairro");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CidadeId");
+                    b.HasIndex("IdCidade");
 
-                    b.ToTable("Bairro");
+                    b.ToTable("bairro");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.Cidade", b =>
@@ -1468,6 +1465,32 @@ namespace SGED.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SGED.Models.Entities.TipoProcesso", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("idTipoProcesso");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DescricaoTipoProcesso")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("descricaoTipoProcesso");
+
+                    b.Property<string>("NomeTipoProcesso")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("tipoProcesso");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TipoProcesso");
+                });
+
             modelBuilder.Entity("SGED.Models.Entities.TipoUsuario", b =>
                 {
                     b.Property<int>("Id")
@@ -1633,7 +1656,7 @@ namespace SGED.Migrations
                 {
                     b.HasOne("SGED.Models.Entities.Cidade", "Cidade")
                         .WithMany("Bairros")
-                        .HasForeignKey("CidadeId")
+                        .HasForeignKey("IdCidade")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

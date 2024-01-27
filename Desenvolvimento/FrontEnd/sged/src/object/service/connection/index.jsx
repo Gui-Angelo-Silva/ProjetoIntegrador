@@ -37,7 +37,7 @@ function ConnectionEntity() {
             if (statusArray.includes(response.status)) {
                 return { status: true, message: 'Informações adquiridas com sucesso.', data: response.data };
             } else {
-                return { status: false, message: 'Erro ao processar a requisição.', data: response.data };
+                return { status: false, message: 'Erro ao processar a requisição!', data: response.data };
             }
         } catch (error) {
             if (error.response) {
@@ -96,7 +96,7 @@ function ConnectionEntity() {
             if (statusArray.includes(response.status)) {
                 return { status: true, message: `${object.propertyName()} excluíd${object.gender()} com sucesso.`, data: response.data };
             } else {
-                return { status: false, message: 'Erro ao processar a requisição.', data: response.data };
+                return { status: false, message: 'Erro ao processar a requisição!', data: response.data };
             }
         } catch (error) {
             if (error.response) {

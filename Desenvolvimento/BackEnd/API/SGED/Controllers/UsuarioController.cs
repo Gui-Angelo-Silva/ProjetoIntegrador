@@ -30,9 +30,8 @@ namespace SGED.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UsuarioDTO>>> Get()
         {
-            var usuarios = await _usuarioService.GetAll();
-            if (usuarios == null) return NotFound("Usuarios não encontradas!");
-            return Ok(usuarios);
+            var usuariosDTO = await _usuarioService.GetAll();
+            return Ok(usuariosDTO);
         }
 
         [HttpGet("{id}", Name = "GetUsuario")]

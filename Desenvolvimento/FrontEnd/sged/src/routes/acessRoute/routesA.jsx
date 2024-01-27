@@ -11,6 +11,7 @@ import Registration from '../../pages/routeA/dashboard/registration';
 import Document from '../../pages/routeA/dashboard/document';
 import Test from '../../pages/routeA/dashboard/test';
 import TypePublicPlace from '../../pages/routeA/manipulation/typepublicplace';
+import Neighborhood from '../../pages/routeA/manipulation/neighborhood';
 
 export default function RouteA() {
     return (
@@ -27,6 +28,7 @@ export default function RouteA() {
             <Route path="/a/registration/typeuser" element={<TypeUser />}></Route>
             <Route path="/a/registration/user" element={<User />}></Route>
             <Route path="/a/registration/typepublicplace" element={<TypePublicPlace />}></Route>
+            <Route path="/a/registration/neighborhood" element={<Neighborhood />}></Route>
 
             <Route path="/a/document" element={<Document />}></Route>
             <Route path="/a/test" element={<Test />}></Route>

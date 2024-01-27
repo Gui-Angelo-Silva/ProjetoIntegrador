@@ -73,6 +73,13 @@ function TypePublicPlaceClass() {
         return status;
     }
 
+    function verifyIc(ic) {
+        const regex = /^[a-zA-Z]*$/;
+        if (regex.test(ic) || uf === '') {
+            setTypePublicPlaceIc(ic);
+        }
+    }
+
     return {
         // Atributos
         typePublicPlaceDescription,
@@ -93,6 +100,7 @@ function TypePublicPlaceClass() {
         clearData,
         clearError,
         verifyData,
+        verifyIc
     }
 }
 

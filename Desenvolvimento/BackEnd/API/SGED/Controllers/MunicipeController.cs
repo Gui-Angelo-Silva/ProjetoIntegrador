@@ -23,7 +23,6 @@ namespace SGED.Controllers
         public async Task<ActionResult<IEnumerable<MunicipeDTO>>> Get()
         {
             var municipesDTO = await _municipeService.GetAll();
-            if (municipesDTO == null) return NotFound("Municipes não encontradas!");
             return Ok(municipesDTO);
         }
 

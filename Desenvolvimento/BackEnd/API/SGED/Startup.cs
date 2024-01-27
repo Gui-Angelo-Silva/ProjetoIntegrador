@@ -127,8 +127,8 @@ namespace SGED
             services.AddScoped<IBairroService, BairroService>();
 
             // Dependência: TipoProcesso
-            //services.AddScoped<ITipoProcessoRepository, TipoProcessoRepository>();
-            //services.AddScoped<ITipoProcessoService, TipoProcessoService>();
+            services.AddScoped<ITipoProcessoRepository, TipoProcessoRepository>();
+            services.AddScoped<ITipoProcessoService, TipoProcessoService>();
 
             // Dependência: Usuario
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();

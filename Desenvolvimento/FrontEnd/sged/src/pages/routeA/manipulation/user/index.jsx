@@ -213,7 +213,7 @@ export default function User() {
     }, [updateData, listTypeUser.list, modalInsert, modalEdit, modalDelete]);
 
     useEffect(() => { // Para atualizar o idTipoUsuario conforme o valor selecionado muda
-        user.setIdTypeUser(selectBox.selectedOption.value);
+        user.setIdTypeUser(selectBox.selectedOption.value? selectBox.selectedOption.value : '');
     }, [selectBox.selectedOption]);
 
     const togglePasswordVisibility = () => {

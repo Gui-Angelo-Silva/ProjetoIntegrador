@@ -108,7 +108,7 @@ export default function Registrations() {
                         </div>
                         <div className="flex mt-10">
                             {Object.entries(categoryFiltered).map(([categoryName, categoryCards]) => (
-                                <div className="pr-[50px]">
+                                <div className="pr-[50px]" key={categoryName}>
                                     <div className="text-gray-600 text-lg font-semibold mb-2">
                                         {categoryName}
                                     </div>

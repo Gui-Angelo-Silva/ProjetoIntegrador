@@ -14,13 +14,37 @@ export const useApi = () => {
 export const ApiProvider = ({ children }) => {
 
   const baseURL = "https://localhost:7096/api/";
+  let token = '';
 
   const appendRoute = (route) => {
     return baseURL + route;
   };
-  
+
+  const updateToken = (newToken) => {
+    token = newToken;
+  };
+
+  const getAuthConfig = () => {
+    const token = sessionStorage.getItem("token");
+
+    if (token) {
+      return {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      };
+    } else {
+      return {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+    }
+  };
+
   return (
-    <ApiContext.Provider value={{ appendRoute }}>
+    <ApiContext.Provider value={{ appendRoute, updateToken, getAuthConfig }}>
       {children}
     </ApiContext.Provider>
   );

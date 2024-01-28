@@ -110,7 +110,7 @@ export const ServerProvider = ({ children }) => {
 
                 } else if (permission !== null && initialPages.includes(permissionInRoute)) {
                     clearSegment("home");
-                } else if (["notfound", "notpermission"].includes(currentPathSegments[currentPathSegments.length - 1])) {
+                } else if (["notfound", "notpermission", "development"].includes(currentPathSegments[currentPathSegments.length - 1])) {
                     clearSegment(permission !== null ? "home" : "login");
                 }
 

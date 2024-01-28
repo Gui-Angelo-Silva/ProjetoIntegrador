@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Newtonsoft.Json;
+using System.Diagnostics.Eventing.Reader;
 
 namespace SGED.Controllers
 {
@@ -33,16 +34,22 @@ namespace SGED.Controllers
             {
                 if (autenticationDTO.Email == usuarioDTO.EmailPessoa && autenticationDTO.Senha == usuarioDTO.SenhaUsuario)
                 {
-                    EntitySecurityDTO entitySecurity = new EntitySecurityDTO();
-                    var token = GenerateToken(entitySecurity.Key, entitySecurity.Issuer, entitySecurity.Audience, usuarioDTO.EmailPessoa, 1);
-                    return Ok(new { token, usuario = usuarioDTO });
+                    if (usuarioDTO.StatusUsuario)
+                    {
+                        EntitySecurityDTO entitySecurity = new EntitySecurityDTO();
+                        var token = GenerateToken(entitySecurity.Key, entitySecurity.Issuer, entitySecurity.Audience, usuarioDTO.EmailPessoa, 1);
+                        return Ok(new { token, usuario = usuarioDTO });
+                    }
+                    else {
+                        return Unauthorized(new { message = "O usuário " + usuarioDTO.NomePessoa + " está inativo!" });
+                    }
                 }
             }
 
             return Unauthorized(new { message = "E-mail ou senha incorretos!" });
         }
 
-        private string GenerateToken(string secretKey, string issuer, string audience, string subject, int expiryInMinutes)
+        private static string GenerateToken(string secretKey, string issuer, string audience, string subject, int expiryInMinutes)
         {
             var payload = new Dictionary<string, object>
             {
@@ -72,7 +79,7 @@ namespace SGED.Controllers
             }
         }
 
-        private bool ValidateToken(string token, string issuer, string audience, string expectedEmail)
+        private static bool ValidateToken(string token, string issuer, string audience, string expectedEmail)
         {
             // Passo 1: Verificar se o token tem três partes
             string[] tokenParts = token.Split('.');

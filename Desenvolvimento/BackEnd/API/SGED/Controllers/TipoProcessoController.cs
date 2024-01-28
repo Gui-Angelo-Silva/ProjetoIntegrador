@@ -24,9 +24,8 @@ namespace SGED.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TipoProcessoDTO>>> Get()
         {
-            var TipoProcessosDTO = await _TipoProcessoService.GetAll();
-            if (!TipoProcessosDTO.Any()) return NotFound("TipoProcessos não encontradas!");
-            return Ok(TipoProcessosDTO);
+            var tipoProcessosDTO = await _TipoProcessoService.GetAll();
+            return Ok(tipoProcessosDTO);
         }
 
         [HttpGet("{id}", Name = "GetTipoProcesso")]

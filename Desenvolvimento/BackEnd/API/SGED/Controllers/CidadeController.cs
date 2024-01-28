@@ -25,7 +25,6 @@ namespace SGED.Controllers
         public async Task<ActionResult<IEnumerable<CidadeDTO>>> Get()
         {
             var cidadesDTO = await _cidadeService.GetAll();
-            if (!cidadesDTO.Any()) return NotFound("Cidades não encontradas!");
             return Ok(cidadesDTO);
         }
 

@@ -24,9 +24,8 @@ namespace SGED.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BairroDTO>>> Get()
         {
-            var BairrosDTO = await _BairroService.GetAll();
-            if (!BairrosDTO.Any()) return NotFound("Bairros não encontradas!");
-            return Ok(BairrosDTO);
+            var bairrosDTO = await _BairroService.GetAll();
+            return Ok(bairrosDTO);
         }
 
         [HttpGet("{id}", Name = "GetBairro")]

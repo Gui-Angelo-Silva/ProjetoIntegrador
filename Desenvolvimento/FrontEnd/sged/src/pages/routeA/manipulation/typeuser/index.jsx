@@ -57,7 +57,7 @@ export default function TypeUser() {
         }
     };
 
-    const SelectObject = (object, option) => {
+    const SelectTypeUser = (object, option) => {
         user.getData(object);
 
         if (option === "Editar") {
@@ -195,13 +195,13 @@ export default function TypeUser() {
                                         <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                             <button
                                                 className=""
-                                                onClick={() => SelectObject(typeuser, "Editar")}
+                                                onClick={() => SelectTypeUser(typeuser, "Editar")}
                                             >
                                                 <PencilSimple size={20} className="hover:text-cyan-500" />
                                             </button>{"  "}
                                             <button
                                                 className=""
-                                                onClick={() => SelectObject(typeuser, "Excluir")}
+                                                onClick={() => SelectTypeUser(typeuser, "Excluir")}
                                             >
                                                 <TrashSimple size={20} className="hover:text-red-600" />
                                             </button>

@@ -112,16 +112,16 @@ public class AppDBContext : DbContext
 		);
 
 		modelBuilder.Entity<Cidade>().HasData(
-			new Cidade { Id = 29, NomeCidade = "Aparecida d'Oeste", IdEstado = 1 },
-			new Cidade { Id = 284, NomeCidade = "Jales", IdEstado = 1 },
-			new Cidade { Id = 399, NomeCidade = "Palmeira d'Oeste", IdEstado = 1 },
-			new Cidade { Id = 406, NomeCidade = "Paranapuã", IdEstado = 1 },
-			new Cidade { Id = 502, NomeCidade = "Rubineia", IdEstado = 1 },
-			new Cidade { Id = 518, NomeCidade = "Santa Clara d'Oeste", IdEstado = 1 },
-			new Cidade { Id = 524, NomeCidade = "Santa Fé do Sul", IdEstado = 1 },
-			new Cidade { Id = 550, NomeCidade = "São Francisco", IdEstado = 1 },
-			new Cidade { Id = 552, NomeCidade = "São João das Duas Pontes", IdEstado = 1 },
-			new Cidade { Id = 628, NomeCidade = "Urânia", IdEstado = 1 }
+			new Cidade { Id = 1, NomeCidade = "Aparecida d'Oeste", IdEstado = 1 },
+			new Cidade { Id = 2, NomeCidade = "Jales", IdEstado = 1 },
+			new Cidade { Id = 3, NomeCidade = "Palmeira d'Oeste", IdEstado = 1 },
+			new Cidade { Id = 4, NomeCidade = "Paranapuã", IdEstado = 1 },
+			new Cidade { Id = 5, NomeCidade = "Rubineia", IdEstado = 1 },
+			new Cidade { Id = 6, NomeCidade = "Santa Clara d'Oeste", IdEstado = 1 },
+			new Cidade { Id = 7, NomeCidade = "Santa Fé do Sul", IdEstado = 1 },
+			new Cidade { Id = 8, NomeCidade = "São Francisco", IdEstado = 1 },
+			new Cidade { Id = 9, NomeCidade = "São João das Duas Pontes", IdEstado = 1 },
+			new Cidade { Id = 10, NomeCidade = "Urânia", IdEstado = 1 }
 		);
 
 		modelBuilder.Entity<TipoLogradouro>().HasData(

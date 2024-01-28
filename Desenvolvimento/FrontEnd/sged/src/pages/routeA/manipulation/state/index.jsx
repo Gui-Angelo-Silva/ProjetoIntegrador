@@ -30,7 +30,7 @@ export default function State() {
     const [updateData, setUpdateData] = useState(true);
     const [inOperation, setInOperation] = useState(false);
 
-    const SelectObject = (object, option) => {
+    const SelectState = (object, option) => {
         state.getData(object);
 
         if (option === "Editar") {
@@ -189,13 +189,13 @@ export default function State() {
                                         <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                             <button
                                                 className=""
-                                                onClick={() => SelectObject(object, "Editar")}
+                                                onClick={() => SelectState(object, "Editar")}
                                             >
                                                 <PencilSimple size={20} className="hover:text-cyan-500" />
                                             </button>{" "}
                                             <button
                                                 className=""
-                                                onClick={() => SelectObject(object, "Excluir")}
+                                                onClick={() => SelectState(object, "Excluir")}
                                             >
                                                 <TrashSimple size={20} className="hover:text-red-600" />
                                             </button>

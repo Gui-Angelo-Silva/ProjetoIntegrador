@@ -73,61 +73,61 @@ namespace SGED.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 29,
+                            Id = 1,
                             IdEstado = 1,
                             NomeCidade = "Aparecida d'Oeste"
                         },
                         new
                         {
-                            Id = 284,
+                            Id = 2,
                             IdEstado = 1,
                             NomeCidade = "Jales"
                         },
                         new
                         {
-                            Id = 399,
+                            Id = 3,
                             IdEstado = 1,
                             NomeCidade = "Palmeira d'Oeste"
                         },
                         new
                         {
-                            Id = 406,
+                            Id = 4,
                             IdEstado = 1,
                             NomeCidade = "Paranapuã"
                         },
                         new
                         {
-                            Id = 502,
+                            Id = 5,
                             IdEstado = 1,
                             NomeCidade = "Rubineia"
                         },
                         new
                         {
-                            Id = 518,
+                            Id = 6,
                             IdEstado = 1,
                             NomeCidade = "Santa Clara d'Oeste"
                         },
                         new
                         {
-                            Id = 524,
+                            Id = 7,
                             IdEstado = 1,
                             NomeCidade = "Santa Fé do Sul"
                         },
                         new
                         {
-                            Id = 550,
+                            Id = 8,
                             IdEstado = 1,
                             NomeCidade = "São Francisco"
                         },
                         new
                         {
-                            Id = 552,
+                            Id = 9,
                             IdEstado = 1,
                             NomeCidade = "São João das Duas Pontes"
                         },
                         new
                         {
-                            Id = 628,
+                            Id = 10,
                             IdEstado = 1,
                             NomeCidade = "Urânia"
                         });

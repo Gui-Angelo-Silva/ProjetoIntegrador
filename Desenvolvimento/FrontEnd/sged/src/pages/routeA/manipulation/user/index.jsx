@@ -62,7 +62,7 @@ export default function User() {
         }
     };
 
-    const SelectObject = (object, option) => {
+    const SelectUser = (object, option) => {
         user.getData(object);
         selectBox.selectOption(object.idTipoUsuario);
 
@@ -74,19 +74,19 @@ export default function User() {
         }
     };
 
-    const GetUser = async () => {
-        const response = await connection.objectUrl("Usuario").getOrder();
+    const GetTypeUser = async () => {
+        const response = await connection.objectUrl("TipoUsuario").getOrder();
         if (response.status) {
-            list.setList(response.data);
+            listTypeUser.setList(response.data);
         } else {
             console.log(response.message);
         }
     };
 
-    const GetTypeUser = async () => {
-        const response = await connection.objectUrl("TipoUsuario").getOrder();
+    const GetUser = async () => {
+        const response = await connection.objectUrl("Usuario").getOrder();
         if (response.status) {
-            listTypeUser.setList(response.data);
+            list.setList(response.data);
         } else {
             console.log(response.message);
         }
@@ -197,9 +197,7 @@ export default function User() {
             GetUser();
 
             user.setUserStatus(true);
-            if (listTypeUser.list.length > 0) {
-                user.setIdTypeUser(listTypeUser.list[0].id);
-            }
+            user.setIdTypeUser(listTypeUser.list[0]?.id);
 
             setUpdateData(false);
         }
@@ -210,7 +208,7 @@ export default function User() {
             selectBox.updateOptions(listTypeUser.list, "id", "nomeTipoUsuario");
             selectBox.selectOption(listTypeUser.list[0]?.id);
         }
-    }, [updateData, listTypeUser.list, modalInsert, modalEdit, modalDelete]);
+    }, [listTypeUser.list, modalInsert, modalEdit, modalDelete]);
 
     useEffect(() => { // Para atualizar o idTipoUsuario conforme o valor selecionado muda
         user.setIdTypeUser(selectBox.selectedOption.value? selectBox.selectedOption.value : '');
@@ -300,12 +298,12 @@ export default function User() {
                                         <li className="grid grid-cols-6 w-full" key={user.id}>
                                             <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{user.nomePessoa}</span>
                                             <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.emailPessoa}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoUsuario ? tipoUsuario.nomeTipoUsuario : 'Tipo de usuário não encontrado!'}</span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoUsuario ? tipoUsuario.nomeTipoUsuario : 'Tipo Usuário não encontrado!'}</span>
                                             <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.cargoUsuario}</span>
                                             <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.statusUsuario ? 'Ativo' : 'Inativo'}</span>
                                             <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                                <button className="" onClick={() => SelectObject(user, "Editar")}><PencilSimple size={20} className="hover:text-cyan-500" /></button>{"  "}
-                                                <button className="" onClick={() => SelectObject(user, "Excluir")}><TrashSimple size={20} className="hover:text-red-600" /></button>
+                                                <button className="" onClick={() => SelectUser(user, "Editar")}><PencilSimple size={20} className="hover:text-cyan-500" /></button>{"  "}
+                                                <button className="" onClick={() => SelectUser(user, "Excluir")}><TrashSimple size={20} className="hover:text-red-600" /></button>
                                             </span>
                                         </li>
                                     );

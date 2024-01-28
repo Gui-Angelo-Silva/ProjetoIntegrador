@@ -30,7 +30,7 @@ export default function TypePublicPlace() {
     const [updateData, setUpdateData] = useState(true);
     const [inOperation, setInOperation] = useState(false);
 
-    const SelectObject = (object, option) => {
+    const SelectTypePublicPlace = (object, option) => {
         typepublicplace.getData(object);
 
         if (option === "Editar") {
@@ -186,13 +186,13 @@ export default function TypePublicPlace() {
                                         <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                             <button
                                                 className=""
-                                                onClick={() => SelectObject(object, "Editar")}
+                                                onClick={() => SelectTypePublicPlace(object, "Editar")}
                                             >
                                                 <PencilSimple size={20} className="hover:text-cyan-500" />
                                             </button>{" "}
                                             <button
                                                 className=""
-                                                onClick={() => SelectObject(object, "Excluir")}
+                                                onClick={() => SelectTypePublicPlace(object, "Excluir")}
                                             >
                                                 <TrashSimple size={20} className="hover:text-red-600" />
                                             </button>

@@ -87,7 +87,6 @@ function TypeUserClass() {
     typeUserDescription,
     setTypeUserDescription,
     typeUserId,
-    setTypeUserId,
 
     // Erros
     errorTypeUserName,

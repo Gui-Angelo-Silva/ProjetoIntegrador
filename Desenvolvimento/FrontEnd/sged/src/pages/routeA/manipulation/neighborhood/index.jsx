@@ -1,221 +1,141 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
-import axios from "axios";
 import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Select from 'react-select';
-import debounce from 'lodash.debounce';
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
+
 import { useMontage } from '../../../../object/modules/montage';
-import { useSession } from '../../../../object/service/session';
-import { useApi } from '../../../../object/service/api';
+import ConnectionEntity from '../../../../object/service/connection';
+import ListModule from '../../../../object/modules/list';
+import NeighborhoodClass from '../../../../object/class/neighborhood';
+import SelectModule from '../../../../object/modules/select';
 
 export default function Neighborhood() {
+
     const { componentMounted } = useMontage();
 
     useEffect(() => {
         componentMounted();
-    }, [componentMounted]);
+    }, []);
 
-    const { getAuthConfig } = useSession();
-    const { appendRoute } = useApi();
-    const neighborhoodURL = appendRoute('Bairro/');
-    const cityURL = appendRoute('Cidade/');
+    const connection = ConnectionEntity();
+    const neighborhood = NeighborhoodClass();
+    const list = ListModule();
+    const listCity = ListModule();
+    const selectBox = SelectModule();
 
-    const [data, setData] = useState([]);
-    const [dataCity, setDataCity] = useState([]);
     const [modalInsert, setModalInsert] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
     const [updateData, setUpdateData] = useState(true);
-    const [neighborhoodId, setNeighborhoodId] = useState("");
-    const [neighborhoodName, setNeighborhoodName] = useState("");
-    const [idCity, setIdCity] = useState(dataCity.length > 0 ? dataCity[0].id : null);
-    const [selectNeighborhood] = useState({
-        id: "",
-        nomeBairro: "",
-        idCidade: "",
-    });
+    const [inOperation, setInOperation] = useState(false);
 
-    const [errorNeighborhoodName, setErrortNeighborhoodName] = useState("");
+    const openCloseModalInsert = (boolean) => {
+        setModalInsert(boolean);
+        neighborhood.clearError();
 
-    const clearErrors = () => {
-        setErrortNeighborhoodName('');
+        if (!boolean) {
+            neighborhood.clearData();
+        }
     };
 
-    const clearDatas = () => {
-        setNeighborhoodId('');
-        setNeighborhoodName('');
-        setIdCity(dataCity.length > 0 ? dataCity[0].id : null);
-    }
+    const openCloseModalEdit = (boolean) => {
+        setModalEdit(boolean);
+        neighborhood.clearError();
 
-    const NeighborhoodSelect = (neighborhood, option) => {
-        setNeighborhoodId(neighborhood.id);
-        setNeighborhoodName(neighborhood.nomeBairro);
-        setIdCity(neighborhood.idCidade);
+        if (!boolean) {
+            neighborhood.clearData();
+        }
+    };
+
+    const openCloseModalDelete = (boolean) => {
+        setModalDelete(boolean);
+
+        if (!boolean) {
+            neighborhood.clearData();
+        }
+    };
+
+    const SelectNeighborhood = (object, option) => {
+        neighborhood.getData(object);
+        selectBox.selectOption(object.idCidade);
 
         if (option === "Editar") {
-            const foundOption = allOptions.find(option => option.value === neighborhood.idCidade)
-            if (foundOption) {
-                setSelectedOption(foundOption);
-            }
-            openCloseModalEdit();
+            openCloseModalEdit(true);
+        }
+        else {
+            openCloseModalDelete(true);
+        }
+    };
+
+    const GetCity = async () => {
+        const response = await connection.objectUrl("Cidade").getOrder();
+        if (response.status) {
+            listCity.setList(response.data);
         } else {
-            openCloseModalDelete();
-        }
-    }
-
-    const openCloseModalInsert = () => {
-        setModalInsert(!modalInsert);
-        clearErrors();
-
-        if (modalInsert) {
-            clearDatas();
+            console.log(response.message);
         }
     };
 
-    const openCloseModalEdit = () => {
-        setModalEdit(!modalEdit);
-        clearErrors();
-
-        if (modalEdit) {
-            clearDatas();
-        }
-    };
-
-    const openCloseModalDelete = () => {
-        setModalDelete(!modalDelete);
-
-        if (!modalDelete === false) {
-            clearDatas();
-        }
-    };
-
-    const checkData = async () => {
-        clearErrors();
-        var status = true;
-
-        if (neighborhoodName) {
-            if (neighborhoodName.length < 3) {
-                setErrortNeighborhoodName('O nome precisa ter no mínimo 3 letras!');
-                status = false;
-            }
+    const GetNeighborhood = async () => {
+        const response = await connection.objectUrl("Bairro").getOrder();
+        if (response.status) {
+            list.setList(response.data);
         } else {
-            setErrortNeighborhoodName('o nome é requerido!');
-            status = false;
+            console.log(response.message);
         }
-
-        return status;
     };
 
-    const GetOrderCity = async () => {
-        await axios
-            .get(cityURL, getAuthConfig())
-            .then((response) => {
-                setDataCity(response.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+    const PostNeighborhood = async () => {
+        setInOperation(true);
+
+        if (neighborhood.verifyData(list.list)) {
+            const response = await connection.objectUrl("Bairro").postOrder(neighborhood);
+
+            openCloseModalInsert(!response.status);
+            setUpdateData(response.status);
+            console.log(response.message);
+        } else {
+            console.log('Dados inválidos!');
+        }
+
+        setInOperation(false);
     };
 
     const PutNeighborhood = async () => {
-        await axios
-            .get(cityURL, getAuthConfig())
-            .then((response) => {
-                setDataCity(response.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    };
+        setInOperation(true);
 
-    const PostOrder = async () => {
-        var response = await checkData();
-        if (response) {
-            await axios
-                .post(neighborhoodURL, { nomeBairro: neighborhoodName, idCidade: idCity }, getAuthConfig())
-                .then((response) => {
-                    setData([...data, response.data]);
-                    openCloseModalInsert();
-                    setUpdateData(true);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+        if (neighborhood.verifyData(list.list)) {
+            const response = await connection.objectUrl("Bairro").putOrder(neighborhood);
+
+            openCloseModalEdit(!response.status);
+            setUpdateData(response.status);
+            console.log(response.message);
+        } else {
+            console.log('Dados inválidos!');
         }
-    }
 
-    const PutOrder = async () => {
-        var response = await checkData();
-        if (response) {
-            await axios
-                .put(neighborhoodURL, {
-                    id: neighborhoodId,
-                    nomeBairro: neighborhoodName,
-                    idCidade: idCity,
-                }, getAuthConfig())
-                .then((response) => {
-                    setData((previousData) =>
-                        previousData.map((neighborhood) =>
-                            neighborhood.id === selectNeighborhood.id
-                                ? { ...neighborhood, nomeBairro: response.data.nomeBairro }
-                                : neighborhood
-                        )
-                    );
-
-                    const updateNeighborhood = response.data;
-
-                    setData((prevData) => {
-                        return prevData.map((neighborhood) => {
-                            if (neighborhood.id === neighborhoodId) {
-                                return updateNeighborhood;
-                            }
-                            return neighborhood
-                        });
-                    });
-
-                    openCloseModalEdit();
-                    setUpdateData(true);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        }
+        setInOperation(false);
     };
 
-    const DeleteOrder = async () => {
-        await axios
-            .delete(neighborhoodURL + neighborhoodId, getAuthConfig())
-            .then(() => {
-                setData((previousData) =>
-                    previousData.filter((neighborhood) => neighborhood.id !== neighborhoodId)
-                );
-                PutNeighborhood();
-                openCloseModalDelete();
-                setUpdateData(true);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+    const DeleteNeighborhood = async () => {
+        setInOperation(true);
+
+        const response = await connection.objectUrl("Bairro").deleteOrder(neighborhood);
+
+        openCloseModalDelete(!response.status);
+        setUpdateData(response.status);
+        console.log(response.message);
+
+        setInOperation(false);
     };
 
-    const [neighborhoodToRender, setNeighborhoodToRender] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchBy, setSearchBy] = useState('nomeBairro');
-
-    const fechData = async () => {
-        try {
-            const response = await axios.get(neighborhoodURL, getAuthConfig());
-            setData(response.data);
-            setNeighborhoodToRender(response.data);
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     const handleSearch = (searchTerm) => {
         setSearchTerm(searchTerm);
@@ -228,114 +148,58 @@ export default function Neighborhood() {
     const filterNeighborhood = () => {
         const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-        if (searchTerm === '') {
-            setNeighborhoodToRender(data);
+        if (!searchTerm) {
+            list.setListToRender(list.list);
         } else {
-            if (searchBy == 'nomeCidade') {
-                const filteredCity = dataCity.filter((city) => {
+            if (searchBy === 'nomeCidade') {
+
+                const filteredCity = listCity.list.filter((city) => {
                     const cityFilter = city[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                     return cityFilter.toLowerCase().includes(searchTermNormalized.toLowerCase());
-                })
+                });
 
                 const filteredIds = filteredCity.map((city) => city.id);
 
-                const filtered = data.filter((neighborhood) => {
+                const filtered = list.list.filter((neighborhood) => {
                     return filteredIds.includes(neighborhood.idCidade);
                 });
 
-                setNeighborhoodToRender(filtered);
+                list.setListToRender(filtered);
+
             } else {
-                const filtered = data.filter((neighborhood) => {
-                    const neighborhoodNameNormalized = neighborhood.nomeBairro.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                    return neighborhoodNameNormalized.toLowerCase().includes(searchTermNormalized.toLowerCase());
-                });
-                setNeighborhoodToRender(filtered);
+
+                list.setSearchTerm(searchTerm);
+                list.setSearchBy(searchBy);
+
             }
         }
     };
 
-    useEffect(() => {
-        if (updateData) {
-            fechData();
-            GetOrderCity();
-            clearDatas();
-            setUpdateData(false);
-
-            if (!idCity && dataCity.length > 0) {
-                setIdCity(dataCity[0].id);
-            }
-        }
-
-        const foundOption = allOptions.find(option => option.value === dataCity[0].id);
-
-        if (foundOption && !modalEdit) {
-            setSelectedOption(foundOption);
-        }
-    }, [updateData, dataCity, idCity]);
-
-    useEffect(() => {
+    useEffect(() => { // Filtro especial para os dados do usuário
         filterNeighborhood();
-    }, [searchTerm, data]);
+    }, [searchTerm, searchBy, list.list]);
 
-    const [selectedOption, setSelectedOption] = useState(null);
+    useEffect(() => { // Para atualizar quando uma ação é efetuada com sucesso
+        if (updateData) {
+            GetCity();
+            GetNeighborhood();
 
-    const handleChange = (option) => {
-        setSelectedOption(option);
-        if (option) {
-            setIdCity(option.value)
-        } else {
-            setIdCity('');
+            neighborhood.setIdCity(listCity.list[0]?.id);
+
+            setUpdateData(false);
         }
-    };
+    }, [updateData]);
 
-    const options = dataCity.map(item => ({
-        value: item.id,
-        label: item.nomeCidade
-    }));
-
-    const allOptions = dataCity.map(item => ({
-        value: item.id,
-        label: item.nomeCidade
-    }));
-
-    const filterOptions = (inputValue) => {
-        if (!inputValue) {
-            return allOptions;
+    useEffect(() => { // Para atualizar as opções do Select bem como o valor padrão selecionado
+        if (!modalInsert && !modalEdit && !modalDelete) {
+            selectBox.updateOptions(listCity.list, "id", "nomeCidade");
+            selectBox.selectOption(listCity.list[0]?.id);
         }
+    }, [listCity.list, modalInsert, modalEdit, modalDelete]);
 
-        const searchTermNormalized = inputValue.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-
-        return allOptions.filter(option =>
-            option.label.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().includes(searchTermNormalized)
-        );
-    };
-
-    const delayedSearch = debounce((inputValue) => {
-        filterOptions(inputValue);
-    }, 300);
-
-    const loadOptions = (inputValue, callback) => {
-        callback(filterOptions(inputValue));
-    };
-
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
-    const totalItems = neighborhoodToRender.length;
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-    const getCurrentPageItems = (page) => {
-        const startIndex = (page - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-        return neighborhoodToRender.slice(startIndex, endIndex);
-    };
-
-    const currentNeighborhood = getCurrentPageItems(currentPage);
-
-    const goToPage = (page) => {
-        if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page);
-        }
-    };
+    useEffect(() => { // Para atualizar o idCidade conforme o valor selecionado muda
+        neighborhood.setIdCity(selectBox.selectedOption.value ? selectBox.selectedOption.value : '');
+    }, [selectBox.selectedOption]);
 
     return (
         <div className="flex flex-1 min-h-screen">
@@ -375,7 +239,7 @@ export default function Neighborhood() {
                                 </div>
                             </div>
                             <div className="flex items-center">
-                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert()}>
+                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert(true)}>
                                     Novo <FaPlus className="inline-block" style={{ alignItems: 'center' }} />
                                 </button>
                             </div>
@@ -387,8 +251,8 @@ export default function Neighborhood() {
                                 <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                             </div>
                             <ul className="w-full">
-                                {currentNeighborhood.map((neighborhood) => {
-                                    const cidade = dataCity.find((city) => city.id === neighborhood.idCidade);
+                                {list.currentList.map((neighborhood) => {
+                                    const cidade = listCity.list.find((city) => city.id === neighborhood.idCidade);
                                     return (
                                         <li className="grid grid-cols-3 w-full" key={neighborhood.id}>
                                             <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{neighborhood.nomeBairro}</span>
@@ -396,13 +260,13 @@ export default function Neighborhood() {
                                             <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                                 <button
                                                     className=""
-                                                    onClick={() => NeighborhoodSelect(neighborhood, "Editar")}
+                                                    onClick={() => SelectNeighborhood(neighborhood, "Editar")}
                                                 >
                                                     <PencilSimple size={20} className="hover:text-cyan-500" />
                                                 </button>{" "}
                                                 <button
                                                     className=""
-                                                    onClick={() => NeighborhoodSelect(neighborhood, "Excluir")}
+                                                    onClick={() => SelectNeighborhood(neighborhood, "Excluir")}
                                                 >
                                                     <TrashSimple size={20} className="hover:text-red-600" />
                                                 </button>
@@ -415,16 +279,16 @@ export default function Neighborhood() {
                             <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
                                 <button
                                     className=""
-                                    onClick={() => goToPage(currentPage - 1)}
+                                    onClick={() => list.goToPage(list.currentPage - 1)}
                                 >
                                     <CaretLeft size={22} className="text-[#58AFAE]" />
                                 </button>
                                 <select
                                     className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
-                                    value={currentPage}
-                                    onChange={(e) => goToPage(Number(e.target.value))}
+                                    value={list.currentPage}
+                                    onChange={(e) => list.goToPage(Number(e.target.value))}
                                 >
-                                    {[...Array(totalPages)].map((_, index) => (
+                                    {[...Array(list.totalPages)].map((_, index) => (
                                         <option key={index + 1} value={index + 1}>
                                             {index + 1}
                                         </option>
@@ -432,7 +296,7 @@ export default function Neighborhood() {
                                 </select>
                                 <button
                                     className=""
-                                    onClick={() => goToPage(currentPage + 1)}
+                                    onClick={() => list.goToPage(list.currentPage + 1)}
                                 >
                                     <CaretRight size={22} className="text-[#58AFAE]" />
                                 </button>
@@ -451,25 +315,25 @@ export default function Neighborhood() {
                             <input
                                 type="text"
                                 className="form-control rounded-md border-[#BCBCBC]"
-                                onChange={(e) => setNeighborhoodName(e.target.value)}
+                                onChange={(e) => neighborhood.setNeighborhoodName(e.target.value)}
                             />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {errorNeighborhoodName}
+                                {neighborhood.errorNeighborhoodName}
                             </div>
                             <br />
                             <label className="text-[#444444]">Cidade:</label>
                             <br />
                             <Select
-                                value={selectedOption}
-                                onChange={handleChange}
-                                onInputChange={delayedSearch}
-                                loadOptions={loadOptions}
-                                options={options}
+                                value={selectBox.selectedOption}
+                                onChange={selectBox.handleChange}
+                                onInputChange={selectBox.delayedSearch}
+                                loadOptions={selectBox.loadOptions}
+                                options={selectBox.options}
                                 placeholder="Pesquisar cidade . . ."
                                 isClearable
                                 isSearchable
                                 noOptionsMessage={() => {
-                                    if (dataState.length === 0) {
+                                    if (listCity.list.length === 0) {
                                         return "Nenhuma cidade cadastrada!";
                                     } else {
                                         return "Nenhuma opção encontrada!";
@@ -477,14 +341,17 @@ export default function Neighborhood() {
                                 }}
                                 className="style-select"
                             />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {neighborhood.errorIdCity}
+                            </div>
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert()}>
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert(false)}>
                             Cancelar
                         </button>
-                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostOrder()}>
-                            Cadastrar
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostNeighborhood()} disabled={inOperation} >
+                            {inOperation ? 'Aguarde' : 'Cadastrar'}
                         </button>{" "}
                     </ModalFooter>
                 </Modal>
@@ -498,7 +365,7 @@ export default function Neighborhood() {
                                 type="text"
                                 className="form-control rounded-md border-[#BCBCBC]"
                                 readOnly
-                                value={neighborhoodId}
+                                value={neighborhood.neighborhoodId}
                             />
                             <br />
                             <label className="text-[#444444]">Nome:</label>
@@ -506,41 +373,44 @@ export default function Neighborhood() {
                                 type="text"
                                 className="form-control rounded-md border-[#BCBCBC]"
                                 name="nomeCidade"
-                                onChange={(e) => setNeighborhoodName(e.target.value)}
-                                value={neighborhoodName}
+                                onChange={(e) => neighborhood.setNeighborhoodName(e.target.value)}
+                                value={neighborhood.neighborhoodName}
                             />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {errorNeighborhoodName}
+                                {neighborhood.errorNeighborhoodName}
                             </div>
                             <br />
                             <label className="text-[#444444]">Cidade:</label>
                             <br />
                             <Select
-                                value={selectedOption}
-                                onChange={handleChange}
-                                onInputChange={delayedSearch}
-                                loadOptions={loadOptions}
-                                options={options}
+                                value={selectBox.selectedOption}
+                                onChange={selectBox.handleChange}
+                                onInputChange={selectBox.delayedSearch}
+                                loadOptions={selectBox.loadOptions}
+                                options={selectBox.options}
                                 placeholder="Pesquisar cidade . . ."
                                 isClearable
                                 isSearchable
                                 noOptionsMessage={() => {
-                                    if (dataState.length === 0) {
+                                    if (listCity.list.length === 0) {
                                         return "Nenhuma cidade cadastrada!";
                                     } else {
                                         return "Nenhuma opção encontrada!";
                                     }
                                 }}
                             />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {neighborhood.errorIdCity}
+                            </div>
                             <br />
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit()}>
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit(false)}>
                             Cancelar
                         </button>
-                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PutOrder()}>
-                            Atualizar
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutNeighborhood()} disabled={inOperation} >
+                            {inOperation ? 'Aguarde' : 'Atualizar'}
                         </button>{" "}
                     </ModalFooter>
                 </Modal>
@@ -550,12 +420,12 @@ export default function Neighborhood() {
                         <div className="flex flex-row justify-center p-2">
                             Confirmar a exclusão deste bairro:
                             <div className="text-[#059669] ml-1">
-                                {neighborhoodName}
+                                {neighborhood.neighborhoodName}
                             </div> ?
                         </div>
                         <div className="flex justify-center gap-2 pt-3">
-                            <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete()}>Cancelar</button>
-                            <button className='btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' onClick={() => DeleteOrder()}>Confirmar</button>
+                            <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete(false)}>Cancelar</button>
+                            <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteNeighborhood()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'}</button>
                         </div>
                     </ModalBody>
                 </Modal>

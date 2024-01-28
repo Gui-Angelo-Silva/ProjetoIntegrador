@@ -211,7 +211,6 @@ function UserClass() {
     idTypeUser,
     setIdTypeUser,
     userId,
-    setUserId,
 
     // Erros
     errorUserPassword,

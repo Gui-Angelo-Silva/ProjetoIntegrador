@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class Database : Migration
+    public partial class AdicionadoLogradouro : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -151,6 +151,37 @@ namespace SGED.Migrations
                         column: x => x.IdCidade,
                         principalTable: "cidade",
                         principalColumn: "idcidade",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "logradouro",
+                columns: table => new
+                {
+                    idlogradouro = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ceplogradouro = table.Column<string>(type: "character varying(9)", maxLength: 9, nullable: false),
+                    numeroInicial = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    numeroFinal = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    BairroId = table.Column<int>(type: "integer", nullable: false),
+                    IdBairro = table.Column<int>(type: "integer", nullable: false),
+                    TipoLogradouroId = table.Column<int>(type: "integer", nullable: false),
+                    IdTipoLogradouro = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_logradouro", x => x.idlogradouro);
+                    table.ForeignKey(
+                        name: "FK_logradouro_bairro_BairroId",
+                        column: x => x.BairroId,
+                        principalTable: "bairro",
+                        principalColumn: "idbairro",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_logradouro_tipologradouro_TipoLogradouroId",
+                        column: x => x.TipoLogradouroId,
+                        principalTable: "tipologradouro",
+                        principalColumn: "idtipologradouro",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -422,6 +453,16 @@ namespace SGED.Migrations
                 column: "IdEstado");
 
             migrationBuilder.CreateIndex(
+                name: "IX_logradouro_BairroId",
+                table: "logradouro",
+                column: "BairroId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_logradouro_TipoLogradouroId",
+                table: "logradouro",
+                column: "TipoLogradouroId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_usuario_IdTipoUsuario",
                 table: "usuario",
                 column: "IdTipoUsuario");
@@ -431,13 +472,10 @@ namespace SGED.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "bairro");
+                name: "logradouro");
 
             migrationBuilder.DropTable(
                 name: "municipe");
-
-            migrationBuilder.DropTable(
-                name: "tipologradouro");
 
             migrationBuilder.DropTable(
                 name: "TipoProcesso");
@@ -446,10 +484,16 @@ namespace SGED.Migrations
                 name: "usuario");
 
             migrationBuilder.DropTable(
-                name: "cidade");
+                name: "bairro");
+
+            migrationBuilder.DropTable(
+                name: "tipologradouro");
 
             migrationBuilder.DropTable(
                 name: "tipousuario");
+
+            migrationBuilder.DropTable(
+                name: "cidade");
 
             migrationBuilder.DropTable(
                 name: "estado");

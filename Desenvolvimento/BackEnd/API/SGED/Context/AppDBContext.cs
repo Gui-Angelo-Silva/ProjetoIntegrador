@@ -16,6 +16,7 @@ public class AppDBContext : DbContext
 	public DbSet<Municipe> Municipe { get; set; }
 	public DbSet<TipoLogradouro> TipoLogradouro { get; set; }
 	public DbSet<TipoProcesso> TipoProcesso { get; set; }
+	public DbSet<Logradouro> Logradouro { get; set; }
 
 	// Fluent API
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -51,6 +52,18 @@ public class AppDBContext : DbContext
 
         // Relacionamento: Cidade -> Bairro
         modelBuilder.Entity<Cidade>().HasMany(p => p.Bairros).WithOne(b => b.Cidade).IsRequired().OnDelete(DeleteBehavior.Cascade);
+
+		// Buider: Logradouro
+		modelBuilder.Entity<Logradouro>().HasKey(b => b.Id);
+		modelBuilder.Entity<Logradouro>().Property(b => b.Cep).HasMaxLength(9).IsRequired();
+		modelBuilder.Entity<Logradouro>().Property(b => b.NumeroInicial).HasMaxLength(10).IsRequired();
+		modelBuilder.Entity<Logradouro>().Property(b => b.NumeroFinal).HasMaxLength(10).IsRequired();
+
+		// Relacionamento: Bairro -> Logradouro
+		modelBuilder.Entity<Bairro>().HasMany(p => p.Logradouros).WithOne(b => b.Bairro).IsRequired().OnDelete(DeleteBehavior.Cascade);
+
+		// Relacionamento: TipoLogradouro -> Logradouro
+		modelBuilder.Entity<TipoLogradouro>().HasMany(p => p.Logradouros).WithOne(b => b.TipoLogradouro).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
         // Builder: Usuario 
         modelBuilder.Entity<Usuario>().HasKey(b => b.Id);

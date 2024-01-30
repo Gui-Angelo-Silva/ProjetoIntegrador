@@ -10,8 +10,8 @@ namespace SGED.DTO.Entities
 		public int Id { get; set; }
 
 		[Required(ErrorMessage = "CEP do bairro requerido!")]
-		[MinLength(10)]
-		[MaxLength(10)]
+		[MinLength(9)]
+		[MaxLength(9)]
 		public string Cep { get; set; }
 
 		[MinLength(1)]

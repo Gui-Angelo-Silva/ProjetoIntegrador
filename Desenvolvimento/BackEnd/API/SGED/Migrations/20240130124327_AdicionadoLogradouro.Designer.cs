@@ -11,8 +11,8 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240128143612_Database")]
-    partial class Database
+    [Migration("20240130124327_AdicionadoLogradouro")]
+    partial class AdicionadoLogradouro
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -324,6 +324,54 @@ namespace SGED.Migrations
                             NomeEstado = "Tocantins",
                             UfEstado = "TO"
                         });
+                });
+
+            modelBuilder.Entity("SGED.Models.Entities.Logradouro", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("idlogradouro");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BairroId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Cep")
+                        .IsRequired()
+                        .HasMaxLength(9)
+                        .HasColumnType("character varying(9)")
+                        .HasColumnName("ceplogradouro");
+
+                    b.Property<int>("IdBairro")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("IdTipoLogradouro")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("NumeroFinal")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("numeroFinal");
+
+                    b.Property<string>("NumeroInicial")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("numeroInicial");
+
+                    b.Property<int>("TipoLogradouroId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BairroId");
+
+                    b.HasIndex("TipoLogradouroId");
+
+                    b.ToTable("logradouro");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.Municipe", b =>
@@ -1674,6 +1722,25 @@ namespace SGED.Migrations
                     b.Navigation("Estado");
                 });
 
+            modelBuilder.Entity("SGED.Models.Entities.Logradouro", b =>
+                {
+                    b.HasOne("SGED.Models.Entities.Bairro", "Bairro")
+                        .WithMany("Logradouros")
+                        .HasForeignKey("BairroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SGED.Models.Entities.TipoLogradouro", "TipoLogradouro")
+                        .WithMany("Logradouros")
+                        .HasForeignKey("TipoLogradouroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bairro");
+
+                    b.Navigation("TipoLogradouro");
+                });
+
             modelBuilder.Entity("SGED.Models.Entities.Usuario", b =>
                 {
                     b.HasOne("SGED.Models.Entities.TipoUsuario", "TipoUsuario")
@@ -1685,6 +1752,11 @@ namespace SGED.Migrations
                     b.Navigation("TipoUsuario");
                 });
 
+            modelBuilder.Entity("SGED.Models.Entities.Bairro", b =>
+                {
+                    b.Navigation("Logradouros");
+                });
+
             modelBuilder.Entity("SGED.Models.Entities.Cidade", b =>
                 {
                     b.Navigation("Bairros");
@@ -1693,6 +1765,11 @@ namespace SGED.Migrations
             modelBuilder.Entity("SGED.Models.Entities.Estado", b =>
                 {
                     b.Navigation("Cidades");
+                });
+
+            modelBuilder.Entity("SGED.Models.Entities.TipoLogradouro", b =>
+                {
+                    b.Navigation("Logradouros");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.TipoUsuario", b =>

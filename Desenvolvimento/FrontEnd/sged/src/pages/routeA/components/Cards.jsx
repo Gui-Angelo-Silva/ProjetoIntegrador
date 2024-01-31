@@ -53,7 +53,7 @@ function Cards() {
                 module: "Imovel"
             },
             {
-                onClick: () => inDevelopment("Controle de Logradouro"),
+                onClick: () => addSegment("publicplace"),
                 image: ImgLogradouro,
                 tooltip: "Abrir a Página de Controle de Logradouro",
                 title: "Logradouro",

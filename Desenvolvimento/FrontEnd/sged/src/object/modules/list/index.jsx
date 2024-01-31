@@ -33,7 +33,7 @@ function ListModule() {
     }, [searchTerm, searchBy, list]);
 
     const [currentPage, setCurrentPage] = useState(1);
-    let itemsPerPage = 15;
+    let itemsPerPage = 10;
     let totalItems = listToRender.length;
     let totalPages = Math.ceil(totalItems / itemsPerPage);
 

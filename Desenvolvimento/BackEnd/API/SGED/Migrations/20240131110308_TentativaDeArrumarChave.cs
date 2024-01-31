@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class AdicionadoLogradouro : Migration
+    public partial class TentativaDeArrumarChave : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -163,23 +163,21 @@ namespace SGED.Migrations
                     ceplogradouro = table.Column<string>(type: "character varying(9)", maxLength: 9, nullable: false),
                     numeroInicial = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
                     numeroFinal = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
-                    BairroId = table.Column<int>(type: "integer", nullable: false),
                     IdBairro = table.Column<int>(type: "integer", nullable: false),
-                    TipoLogradouroId = table.Column<int>(type: "integer", nullable: false),
                     IdTipoLogradouro = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_logradouro", x => x.idlogradouro);
                     table.ForeignKey(
-                        name: "FK_logradouro_bairro_BairroId",
-                        column: x => x.BairroId,
+                        name: "FK_logradouro_bairro_IdBairro",
+                        column: x => x.IdBairro,
                         principalTable: "bairro",
                         principalColumn: "idbairro",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_logradouro_tipologradouro_TipoLogradouroId",
-                        column: x => x.TipoLogradouroId,
+                        name: "FK_logradouro_tipologradouro_IdTipoLogradouro",
+                        column: x => x.IdTipoLogradouro,
                         principalTable: "tipologradouro",
                         principalColumn: "idtipologradouro",
                         onDelete: ReferentialAction.Cascade);
@@ -453,14 +451,14 @@ namespace SGED.Migrations
                 column: "IdEstado");
 
             migrationBuilder.CreateIndex(
-                name: "IX_logradouro_BairroId",
+                name: "IX_logradouro_IdBairro",
                 table: "logradouro",
-                column: "BairroId");
+                column: "IdBairro");
 
             migrationBuilder.CreateIndex(
-                name: "IX_logradouro_TipoLogradouroId",
+                name: "IX_logradouro_IdTipoLogradouro",
                 table: "logradouro",
-                column: "TipoLogradouroId");
+                column: "IdTipoLogradouro");
 
             migrationBuilder.CreateIndex(
                 name: "IX_usuario_IdTipoUsuario",

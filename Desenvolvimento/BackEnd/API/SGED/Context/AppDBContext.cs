@@ -58,6 +58,8 @@ public class AppDBContext : DbContext
 		modelBuilder.Entity<Logradouro>().Property(b => b.Cep).HasMaxLength(9).IsRequired();
 		modelBuilder.Entity<Logradouro>().Property(b => b.NumeroInicial).HasMaxLength(10).IsRequired();
 		modelBuilder.Entity<Logradouro>().Property(b => b.NumeroFinal).HasMaxLength(10).IsRequired();
+		modelBuilder.Entity<Logradouro>().HasOne(b => b.TipoLogradouro).WithMany().HasForeignKey(b => b.IdTipoLogradouro);
+		modelBuilder.Entity<Logradouro>().HasOne(b => b.Bairro).WithMany().HasForeignKey(b => b.IdBairro);
 
 		// Relacionamento: Bairro -> Logradouro
 		modelBuilder.Entity<Bairro>().HasMany(p => p.Logradouros).WithOne(b => b.Bairro).IsRequired().OnDelete(DeleteBehavior.Cascade);

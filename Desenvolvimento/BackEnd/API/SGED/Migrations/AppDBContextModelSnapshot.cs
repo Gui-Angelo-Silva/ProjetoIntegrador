@@ -332,9 +332,6 @@ namespace SGED.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BairroId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Cep")
                         .IsRequired()
                         .HasMaxLength(9)
@@ -359,14 +356,11 @@ namespace SGED.Migrations
                         .HasColumnType("character varying(10)")
                         .HasColumnName("numeroInicial");
 
-                    b.Property<int>("TipoLogradouroId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("BairroId");
+                    b.HasIndex("IdBairro");
 
-                    b.HasIndex("TipoLogradouroId");
+                    b.HasIndex("IdTipoLogradouro");
 
                     b.ToTable("logradouro");
                 });
@@ -1723,13 +1717,13 @@ namespace SGED.Migrations
                 {
                     b.HasOne("SGED.Models.Entities.Bairro", "Bairro")
                         .WithMany("Logradouros")
-                        .HasForeignKey("BairroId")
+                        .HasForeignKey("IdBairro")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SGED.Models.Entities.TipoLogradouro", "TipoLogradouro")
                         .WithMany("Logradouros")
-                        .HasForeignKey("TipoLogradouroId")
+                        .HasForeignKey("IdTipoLogradouro")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

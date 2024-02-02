@@ -12,8 +12,8 @@ import { useMontage } from "../../../../object/modules/montage";
 import ConnectionEntity from "../../../../object/service/connection";
 import ListModule from "../../../../object/modules/list";
 import PublicPlaceClass from "../../../../object/class/publicplace";
+import ControlModule from '../../../../object/modules/control';
 import SelectModule from "../../../../object/modules/select";
-import InputMask from "react-input-mask";
 
 export default function PublicPlace() {
 
@@ -24,17 +24,18 @@ export default function PublicPlace() {
     }, []);
 
     const connection = ConnectionEntity();
+    const control = ControlModule();
     const publicplace = PublicPlaceClass();
     const list = ListModule();
     const listNeighborhood = ListModule();
     const listTypePublicPlace = ListModule();
-    const selectBox = SelectModule();
-    const selectBoxBairro = SelectModule();
+    const selectBoxNeighborhood = SelectModule();
+    const selectBoxTypePublicPlace = SelectModule();
 
     const [modalInsert, setModalInsert] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
-    const [updateData, setUpdateData] = useState(false);
+    const [updateData, setUpdateData] = useState(true);
     const [inOperation, setInOperation] = useState(false);
 
     const openCloseModalInsert = (boolean) => {
@@ -65,8 +66,8 @@ export default function PublicPlace() {
 
     const SelectPublicPlace = (object, option) => {
         publicplace.getData(object);
-        selectBoxBairro.selectOption(object.idBairro);
-        selectBox.selectOption(object.idTipoLogradouro);
+        selectBoxNeighborhood.selectOption(object.idBairro);
+        selectBoxTypePublicPlace.selectOption(object.idTipoLogradouro);
 
         if (option === "Editar") {
             openCloseModalEdit(true);
@@ -200,13 +201,11 @@ export default function PublicPlace() {
     }, [searchTerm, searchBy, list.list]);
 
     useEffect(() => {
-        GetNeighborhood();
+        if (updateData) {
+            GetNeighborhood();
         GetTypePublicPlace();
         GetPublicPlace();
-    }, [])
 
-    useEffect(() => {
-        if (updateData) {
             publicplace.setIdNeighborhood(listNeighborhood.list[0]?.id);
             publicplace.setIdTypePublicPlace(listTypePublicPlace.list[0]?.id);
             setUpdateData(false);
@@ -215,22 +214,22 @@ export default function PublicPlace() {
 
     useEffect(() => {
         if (!modalInsert && !modalEdit && !modalDelete) {
-            selectBoxBairro.updateOptions(listNeighborhood.list, "id", "nomeBairro");
-            selectBoxBairro.selectOption(listNeighborhood.list[0]?.id);
+            selectBoxNeighborhood.updateOptions(listNeighborhood.list, "id", "nomeBairro");
+            selectBoxNeighborhood.selectOption(listNeighborhood.list[0]?.id);
         }
     }, [listNeighborhood.list, modalInsert, modalEdit, modalDelete]);
 
     useEffect(() => {
         if (!modalInsert && !modalEdit && !modalDelete) {
-            selectBox.updateOptions(listTypePublicPlace.list, "id", "descricao");
-            selectBox.selectOption(listTypePublicPlace.list[0]?.id);
+            selectBoxTypePublicPlace.updateOptions(listTypePublicPlace.list, "id", "descricao");
+            selectBoxTypePublicPlace.selectOption(listTypePublicPlace.list[0]?.id);
         }
     }, [listTypePublicPlace.list, modalInsert, modalEdit, modalDelete]);
 
     useEffect(() => {
-        publicplace.setIdNeighborhood(selectBoxBairro.selectedOption.value ? selectBoxBairro.selectedOption.value : '');
-        publicplace.setIdTypePublicPlace(selectBox.selectedOption.value ? selectBox.selectedOption.value : '');
-    }, [selectBox.selectedOption, selectBoxBairro.selectedOption]);
+        publicplace.setIdNeighborhood(selectBoxNeighborhood.selectedOption.value ? selectBoxNeighborhood.selectedOption.value : '');
+        publicplace.setIdTypePublicPlace(selectBoxTypePublicPlace.selectedOption.value ? selectBoxTypePublicPlace.selectedOption.value : '');
+    }, [selectBoxTypePublicPlace.selectedOption, selectBoxNeighborhood.selectedOption]);
 
     return (
         <div className="flex flex-1 min-h-screen">
@@ -353,11 +352,7 @@ export default function PublicPlace() {
                         <div className="form-group">
                             <label className="text-[#444444]">CEP: </label>
                             <br />
-                            <InputMask  
-                                mask="99999-999" maskPlaceholder="99999-999" type="text"
-                                className="form-control rounded-md border-[#BCBCBC]"
-                                onChange={(e) => publicplace.setPublicPlaceCep(e.target.value)}
-                            />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => publicplace.handleCEP(e.target.value)} value={publicplace.publicPlaceCep} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                                 {publicplace.errorPublicPlaceCep}
                             </div>
@@ -366,24 +361,34 @@ export default function PublicPlace() {
                             <input
                                 type="number"
                                 className="form-control rounded-md border-[#BCBCBC]"
-                                onChange={(e) => publicplace.setPublicPlaceInitialNumber(e.target.value)}
+                                onKeyDown={control.handleKeyDown}
+                                onChange={(e) => publicplace.setPublicPlaceInitialNumber(e.target.value >= 1? e.target.value : '')}
+                                value={publicplace.publicPlaceInitialNumber}
                             />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {publicplace.errorPublicPlaceInitialNumber}
+                            </div>
                             <br />
                             <label className="text-[#444444]">Número Final: </label>
                             <input
                                 type="number"
                                 className="form-control rounded-md border-[#BCBCBC]"
-                                onChange={(e) => publicplace.setPublicPlaceFinalNumber(e.target.value)}
+                                onKeyDown={control.handleKeyDown}
+                                onChange={(e) => publicplace.setPublicPlaceFinalNumber(e.target.value >= 1? e.target.value : '')}
+                                value={publicplace.publicPlaceFinalNumber}
                             />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {publicplace.errorPublicPlaceFinalNumber}
+                            </div>
                             <br />
                             <label className="text-[#444444]">Bairro:</label>
                             <br />
                             <Select
-                                value={selectBoxBairro.selectedOption}
-                                onChange={selectBoxBairro.handleChange}
-                                onInputChange={selectBoxBairro.delayedSearch}
-                                loadOptions={selectBoxBairro.loadOptions}
-                                options={selectBoxBairro.options}
+                                value={selectBoxNeighborhood.selectedOption}
+                                onChange={selectBoxNeighborhood.handleChange}
+                                onInputChange={selectBoxNeighborhood.delayedSearch}
+                                loadOptions={selectBoxNeighborhood.loadOptions}
+                                options={selectBoxNeighborhood.options}
                                 placeholder="Pesquisar bairro . . ."
                                 isClearable
                                 isSearchable
@@ -396,14 +401,17 @@ export default function PublicPlace() {
                                 }}
                                 className="style-select"
                             />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {publicplace.errorIdNeighborhood}
+                            </div>
                             <br /><label className="text-[#444444]">Tipo Logradouro:</label>
                             <br />
                             <Select
-                                value={selectBox.selectedOption}
-                                onChange={selectBox.handleChange}
-                                onInputChange={selectBox.delayedSearch}
-                                loadOptions={selectBox.loadOptions}
-                                options={selectBox.options}
+                                value={selectBoxTypePublicPlace.selectedOption}
+                                onChange={selectBoxTypePublicPlace.handleChange}
+                                onInputChange={selectBoxTypePublicPlace.delayedSearch}
+                                loadOptions={selectBoxTypePublicPlace.loadOptions}
+                                options={selectBoxTypePublicPlace.options}
                                 placeholder="Pesquisar tipo logradouro . . ."
                                 isClearable
                                 isSearchable
@@ -416,6 +424,9 @@ export default function PublicPlace() {
                                 }}
                                 className="style-select"
                             />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {publicplace.errorIdTypePublicPlace}
+                            </div>
                         </div>
                     </ModalBody>
                     <ModalFooter>
@@ -441,13 +452,7 @@ export default function PublicPlace() {
                             />
                             <br />
                             <label className="text-[#444444]">CEP:</label>
-                            <input
-                                type="text"
-                                className="form-control rounded-md border-[#BCBCBC]"
-                                name="cep"
-                                onChange={(e) => publicplace.setPublicPlaceCep(e.target.value)}
-                                value={publicplace.publicPlaceCep}
-                            />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => publicplace.handleCEP(e.target.value)} value={publicplace.publicPlaceCep} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                                 {publicplace.errorPublicPlaceCep}
                             </div>
@@ -456,28 +461,34 @@ export default function PublicPlace() {
                             <input
                                 type="number"
                                 className="form-control rounded-md border-[#BCBCBC]"
-                                name="numeroInicial"
-                                onChange={(e) => publicplace.setPublicPlaceInitialNumber(e.target.value)}
+                                onKeyDown={control.handleKeyDown}
+                                onChange={(e) => publicplace.setPublicPlaceInitialNumber(e.target.value >= 1? e.target.value : '')}
                                 value={publicplace.publicPlaceInitialNumber}
                             />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {publicplace.errorPublicPlaceInitialNumber}
+                            </div>
                             <br />
                             <label className="text-[#444444]">Número Final:</label>
                             <input
                                 type="number"
                                 className="form-control rounded-md border-[#BCBCBC]"
-                                name="numeroFinal"
-                                onChange={(e) => publicplace.setPublicPlaceFinalNumber(e.target.value)}
+                                onKeyDown={control.handleKeyDown}
+                                onChange={(e) => publicplace.setPublicPlaceFinalNumber(e.target.value >= 1? e.target.value : '')}
                                 value={publicplace.publicPlaceFinalNumber}
                             />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {publicplace.errorPublicPlaceFinalNumber}
+                            </div>
                             <br />
                             <label className="text-[#444444]">Bairro:</label>
                             <br />
                             <Select
-                                value={selectBoxBairro.selectedOption}
-                                onChange={selectBoxBairro.handleChange}
-                                onInputChange={selectBoxBairro.delayedSearch}
-                                loadOptions={selectBoxBairro.loadOptions}
-                                options={selectBoxBairro.options}
+                                value={selectBoxNeighborhood.selectedOption}
+                                onChange={selectBoxNeighborhood.handleChange}
+                                onInputChange={selectBoxNeighborhood.delayedSearch}
+                                loadOptions={selectBoxNeighborhood.loadOptions}
+                                options={selectBoxNeighborhood.options}
                                 placeholder="Pesquisar bairro . . ."
                                 isClearable
                                 isSearchable
@@ -489,15 +500,18 @@ export default function PublicPlace() {
                                     }
                                 }}
                             />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {publicplace.errorIdNeighborhood}
+                            </div>
                             <br />
                             <label className="text-[#444444]">Tipo Logradouro:</label>
                             <br />
                             <Select
-                                value={selectBox.selectedOption}
-                                onChange={selectBox.handleChange}
-                                onInputChange={selectBox.delayedSearch}
-                                loadOptions={selectBox.loadOptions}
-                                options={selectBox.options}
+                                value={selectBoxTypePublicPlace.selectedOption}
+                                onChange={selectBoxTypePublicPlace.handleChange}
+                                onInputChange={selectBoxTypePublicPlace.delayedSearch}
+                                loadOptions={selectBoxTypePublicPlace.loadOptions}
+                                options={selectBoxTypePublicPlace.options}
                                 placeholder="Pesquisar tipo logradouro . . ."
                                 isClearable
                                 isSearchable
@@ -509,6 +523,9 @@ export default function PublicPlace() {
                                     }
                                 }}
                             />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {publicplace.errorIdTypePublicPlace}
+                            </div>
                             <br />
                         </div>
                     </ModalBody>

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import Control from '../../../object/modules/control';
+import ControlModule from '../../../object/modules/control';
 
 function PersonClass() {
-    const control = Control();
+    const control = ControlModule();
 
     const [personName, setPersonName] = useState("");
     const [personEmail, setPersonEmail] = useState("");
@@ -362,13 +362,13 @@ function PersonClass() {
             const response = checkDataExists(persons, id, personEmail, personCpfCnpj, personRgIe);
 
             status ? status = response.status : null;
-            if (response.emailExists && !email) {
+            if (response.emailExists) {
                 email = 'O e-mail informado já existe!';
             }
-            if (response.cpfCnpjExists && !cpfCnpj) {
+            if (response.cpfCnpjExists) {
                 personCpfCnpj.length === 14 ? cpfCnpj = 'O CPF informado já existe!' : cpfCnpj = 'O CNPJ informado já existe!';
             }
-            if (response.rgIeExists && !rgIe) {
+            if (response.rgIeExists) {
                 personRgIe.length === 12 ? rgIe = 'O RG informado já existe!' : rgIe = 'A IE informada já existe!';
             }
         }

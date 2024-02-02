@@ -46,11 +46,11 @@ namespace SGED.Controllers
 			return Ok(logradouroDTO);
 		}
 
-		[HttpDelete("id")]
-		public async Task<ActionResult> Delete(int id)
+		[HttpDelete("{id}")]
+		public async Task<ActionResult<LogradouroDTO>> Delete(int id)
 		{
 			var logradouroDTO = await _logradouroService.GetById(id);
-			if (logradouroDTO == null) return BadRequest("Dado Inválido!");
+			if (logradouroDTO == null) return BadRequest("Logradouro não encontrado!");
 			await _logradouroService.Remove(id);
 			return Ok(logradouroDTO);
 		}

@@ -54,7 +54,6 @@ function ConnectionEntity() {
 
         try {
             const response = await axios.post(requisitionUrl, data, api.getAuthConfig());
-            console.log(response);
             if (statusArray.includes(response.status)) {
                 return { status: true, message: `${object.propertyName()} cadastrad${object.gender()} com sucesso.`, data: response.data };
             } else {

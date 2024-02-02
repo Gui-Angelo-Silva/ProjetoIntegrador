@@ -13,6 +13,7 @@ import ConnectionEntity from "../../../../object/service/connection";
 import ListModule from "../../../../object/modules/list";
 import PublicPlaceClass from "../../../../object/class/publicplace";
 import SelectModule from "../../../../object/modules/select";
+import InputMask from "react-input-mask";
 
 export default function PublicPlace() {
 
@@ -28,6 +29,7 @@ export default function PublicPlace() {
     const listNeighborhood = ListModule();
     const listTypePublicPlace = ListModule();
     const selectBox = SelectModule();
+    const selectBoxBairro = SelectModule();
 
     const [modalInsert, setModalInsert] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
@@ -78,33 +80,33 @@ export default function PublicPlace() {
         if (response.status) {
             listNeighborhood.setList(response.data);
         } else {
-            console.log(response.message);
+            console.log("Erro ao obter dados de Bairro:", response.message);
         }
     };
-
+    
     const GetTypePublicPlace = async () => {
         const response = await connection.objectUrl("TipoLogradouro").getOrder();
         if (response.status) {
             listTypePublicPlace.setList(response.data);
         } else {
-            console.log(response.message);
+            console.log("Erro ao obter dados de Tipo Logradouro:", response.message);
         }
     };
-
+    
     const GetPublicPlace = async () => {
         const response = await connection.objectUrl("Logradouro").getOrder();
         if (response.status) {
             list.setList(response.data);
         } else {
-            console.log(response.message);
+            console.log("Erro ao obter dados de Logradouro:", response.message);
         }
     };
-
+    
     const PostPublicPlace = async () => {
-        setInOperation(true);
-
+        setInOperation(false);
         if (publicplace.verifyData(list.list)) {
             const response = await connection.objectUrl("Logradouro").postOrder(publicplace);
+
             openCloseModalInsert(!response.status);
             setUpdateData(response.status);
             console.log(response.message);
@@ -133,7 +135,7 @@ export default function PublicPlace() {
     const DeletePublicPlace = async () => {
         setInOperation(true);
 
-        const response = await connection.objectUrl("Lograoduro").deleteOrder(publicplace);
+        const response = await connection.objectUrl("Logradouro").deleteOrder(publicplace);
 
         openCloseModalDelete(!response.status);
         setUpdateData(response.status);
@@ -198,27 +200,36 @@ export default function PublicPlace() {
     }, [searchTerm, searchBy, list.list]);
 
     useEffect(() => {
+        GetNeighborhood();
+        GetTypePublicPlace();
+        GetPublicPlace();
+    }, [])
+
+    useEffect(() => {
         if (updateData) {
-            GetNeighborhood();
-            GetTypePublicPlace();
-            GetPublicPlace();
-
             publicplace.setIdNeighborhood(listNeighborhood.list[0]?.id);
-            publicplace.setIdTypePublicPlace(listTypePublicPlace[0]?.id);
-
+            publicplace.setIdTypePublicPlace(listTypePublicPlace.list[0]?.id);
             setUpdateData(false);
         }
     }, [updateData]);
 
     useEffect(() => {
         if (!modalInsert && !modalEdit && !modalDelete) {
-            selectBox.updateOptions(listNeighborhood.list, "id", "nomeBairro");
-            selectBox.selectOption(listNeighborhood.list[0]?.id);
+            selectBoxBairro.updateOptions(listNeighborhood.list, "id", "nomeBairro");
+            selectBoxBairro.selectOption(listNeighborhood.list[0]?.id);
         }
     }, [listNeighborhood.list, modalInsert, modalEdit, modalDelete]);
 
     useEffect(() => {
-        publicplace.setIdNeighborhood(selectBox.selectedOption.value ? selectBox.selectedOption.value : '');
+        if (!modalInsert && !modalEdit && !modalDelete) {
+            selectBox.updateOptions(listTypePublicPlace.list, "id", "descricao");
+            selectBox.selectOption(listTypePublicPlace.list[0]?.id);
+        }
+    }, [listTypePublicPlace.list, modalInsert, modalEdit, modalDelete]);
+
+    useEffect(() => {
+        publicplace.setIdNeighborhood(selectBoxBairro.selectedOption.value ? selectBoxBairro.selectedOption.value : '');
+        publicplace.setIdTypePublicPlace(selectBox.selectedOption.value ? selectBox.selectedOption.value : '');
     }, [selectBox.selectedOption]);
 
     return (
@@ -267,9 +278,156 @@ export default function PublicPlace() {
                                 </button>
                             </div>
                         </div>
+                        <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
+                            <div className="grid grid-cols-6 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
+                                <span className="flex ml-5 text-white text-lg font-semibold">CEP</span>
+                                <span className="flex justify-center items-center text-white text-lg font-semibold">Número Inicial</span>
+                                <span className="flex justify-center items-center text-white text-lg font-semibold">Número Final</span>
+                                <span className="flex justify-center items-center text-white text-lg font-semibold">Bairro</span>
+                                <span className="flex justify-center items-center text-white text-lg font-semibold">Tipo Logradouro</span>
+                                <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                            </div>
+                            <ul className="w-full">
+                                {list.currentList.map((publicplace) => {
+                                    const bairro = listNeighborhood.list.find((neighborhood) => neighborhood.id === publicplace.idBairro);
+                                    const tipoLogradouro = listTypePublicPlace.list.find((typepublicplace) => typepublicplace.id === publicplace.idTipoLogradouro)
+                                    return (
+                                        <li className="grid grid-cols-6 w-full" key={publicplace.id}>
+                                            <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{publicplace.cep}</span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{publicplace.numeroInicial}</span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{publicplace.numeroFinal}</span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{bairro ? bairro.nomeBairro : "Bairro não encontrado!"}</span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoLogradouro ? tipoLogradouro.descricao : "Tipo Logradouro não encontrado!"}</span>
+                                            <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                                <button
+                                                    className=""
+                                                    onClick={() => SelectPublicPlace(publicplace, "Editar")}
+                                                >
+                                                    <PencilSimple size={20} className="hover:text-cyan-500" />
+                                                </button>{" "}
+                                                <button
+                                                    className=""
+                                                    onClick={() => SelectPublicPlace(publicplace, "Excluir")}
+                                                >
+                                                    <TrashSimple size={20} className="hover:text-red-600" />
+                                                </button>
+                                            </span>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                            {/* Estilização dos botões de navegação */}
+                            <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
+                                <button
+                                    className=""
+                                    onClick={() => list.goToPage(list.currentPage - 1)}
+                                >
+                                    <CaretLeft size={22} className="text-[#58AFAE]" />
+                                </button>
+                                <select
+                                    className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
+                                    value={list.currentPage}
+                                    onChange={(e) => list.goToPage(Number(e.target.value))}
+                                >
+                                    {[...Array(list.totalPages)].map((_, index) => (
+                                        <option key={index + 1} value={index + 1}>
+                                            {index + 1}
+                                        </option>
+                                    ))}
+                                </select>
+                                <button
+                                    className=""
+                                    onClick={() => list.goToPage(list.currentPage + 1)}
+                                >
+                                    <CaretRight size={22} className="text-[#58AFAE]" />
+                                </button>
+                            </div>
+                            {/* Espaçamento abaixo dos botões */}
+                            <div className="mt-4"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+                <Modal isOpen={modalInsert}>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Logradouro</ModalHeader>
+                    <ModalBody>
+                        <div className="form-group">
+                            <label className="text-[#444444]">CEP: </label>
+                            <br />
+                            <InputMask 
+                                mask="99999-999" maskPlaceholder="99999-999" type="text"
+                                className="form-control rounded-md border-[#BCBCBC]"
+                                onChange={(e) => publicplace.setPublicPlaceCep(e.target.value)}
+                            />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {publicplace.errorPublicPlaceCep}
+                            </div>
+                            <br />
+                            <label className="text-[#444444]">Número Inicial: </label>
+                            <input
+                                type="number"
+                                className="form-control rounded-md border-[#BCBCBC]"
+                                onChange={(e) => publicplace.setPublicPlaceInitialNumber(e.target.value)}
+                            />
+                            <br />
+                            <label className="text-[#444444]">Número Final: </label>
+                            <input
+                                type="number"
+                                className="form-control rounded-md border-[#BCBCBC]"
+                                onChange={(e) => publicplace.setPublicPlaceFinalNumber(e.target.value)}
+                            />
+                            <br />
+                            <label className="text-[#444444]">Bairro:</label>
+                            <br />
+                            <Select
+                                value={selectBoxBairro.selectedOption}
+                                onChange={selectBoxBairro.handleChange}
+                                onInputChange={selectBoxBairro.delayedSearch}
+                                loadOptions={selectBoxBairro.loadOptions}
+                                options={selectBoxBairro.options}
+                                placeholder="Pesquisar bairro . . ."
+                                isClearable
+                                isSearchable
+                                noOptionsMessage={() => {
+                                    if (listNeighborhood.list.length === 0) {
+                                        return "Nenhum Bairro cadastrado!";
+                                    } else {
+                                        return "Nenhuma opção encontrada!";
+                                    }
+                                }}
+                                className="style-select"
+                            />
+                            <br /><label className="text-[#444444]">Tipo Logradouro:</label>
+                            <br />
+                            <Select
+                                value={selectBox.selectedOption}
+                                onChange={selectBox.handleChange}
+                                onInputChange={selectBox.delayedSearch}
+                                loadOptions={selectBox.loadOptions}
+                                options={selectBox.options}
+                                placeholder="Pesquisar tipo logradouro . . ."
+                                isClearable
+                                isSearchable
+                                noOptionsMessage={() => {
+                                    if (listTypePublicPlace.list.length === 0) {
+                                        return "Nenhum Tipo Logradouro cadastrado!";
+                                    } else {
+                                        return "Nenhuma opção encontrada!";
+                                    }
+                                }}
+                                className="style-select"
+                            />
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert(false)}>
+                            Cancelar
+                        </button>
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostPublicPlace()} disabled={inOperation} >
+                            {inOperation ? 'Aguarde' : 'Cadastrar'}
+                        </button>{" "}
+                    </ModalFooter>
+                </Modal>
+            </div >
+        </div >
     );
 }

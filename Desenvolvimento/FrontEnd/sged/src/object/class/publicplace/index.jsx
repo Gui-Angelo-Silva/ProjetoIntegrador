@@ -17,7 +17,7 @@ function PublicPlaceClass() {
     }
 
     function gender() {
-        return "a";
+        return "o";
     }
 
     function getData(object) {
@@ -41,18 +41,18 @@ function PublicPlaceClass() {
     }
 
     function clearData() {
-        setPublicPlaceId("");
-        setPublicPlaceCep(""),
-        setPublicPlaceInitialNumber("");
-        setPublicPlaceFinalNumber("");
-        setIdNeighborhood("");
-        setIdTypePublicPlace("");
+        setPublicPlaceId('');
+        setPublicPlaceCep('');
+        setPublicPlaceInitialNumber('');
+        setPublicPlaceFinalNumber('');
+        setIdNeighborhood('');
+        setIdTypePublicPlace('');
     }
 
     function clearError() {
-        setErrorPublicPlaceCep("");
-        setErrorIdNeighborhood("");
-        setErrorIdTypePublicPlace("");
+        setErrorPublicPlaceCep('');
+        setErrorIdNeighborhood('');
+        setErrorIdTypePublicPlace('');
     }
 
     function verifyData() {
@@ -65,21 +65,21 @@ function PublicPlaceClass() {
 
         if (publicPlaceCep) {
             if (publicPlaceCep.length < 9) {
-                postalcode = "Preencha o CEP com todos os dígitos!";
+                postalcode = 'Preencha o CEP com todos os dígitos!';
                 status = false;
             }
         } else {
-            postalcode = "O CEP é requerido!";
+            postalcode = 'O CEP é requerido!';
             status = false;
         }
         
         if (!idNeighborhood) {
-            neighborhood = "O Bairro é requerido!";
+            neighborhood = 'O Bairro é requerido!';
             status = false;
         }
 
         if (!idTypePublicPlace) {
-            typepublicplace = "O Tipo de Logradouro é requerido!";
+            typepublicplace = 'O Tipo de Logradouro é requerido!';
             status = false;
         }
 

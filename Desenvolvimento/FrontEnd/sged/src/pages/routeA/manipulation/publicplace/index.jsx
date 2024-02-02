@@ -230,7 +230,7 @@ export default function PublicPlace() {
     useEffect(() => {
         publicplace.setIdNeighborhood(selectBoxBairro.selectedOption.value ? selectBoxBairro.selectedOption.value : '');
         publicplace.setIdTypePublicPlace(selectBox.selectedOption.value ? selectBox.selectedOption.value : '');
-    }, [selectBox.selectedOption]);
+    }, [selectBox.selectedOption, selectBoxBairro.selectedOption]);
 
     return (
         <div className="flex flex-1 min-h-screen">

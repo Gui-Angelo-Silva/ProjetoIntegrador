@@ -99,6 +99,7 @@ export default function City() {
             openCloseModalInsert(!response.status);
             setUpdateData(response.status);
             console.log(response.message);
+            setUpdateData(true)
         } else {
             console.log('Dados inválidos!');
         }

@@ -65,7 +65,7 @@ export default function PublicPlace() {
 
     const SelectPublicPlace = (object, option) => {
         publicplace.getData(object);
-        selectBox.selectOption(object.idBairro);
+        selectBoxBairro.selectOption(object.idBairro);
         selectBox.selectOption(object.idTipoLogradouro);
 
         if (option === "Editar") {
@@ -353,7 +353,7 @@ export default function PublicPlace() {
                         <div className="form-group">
                             <label className="text-[#444444]">CEP: </label>
                             <br />
-                            <InputMask 
+                            <InputMask  
                                 mask="99999-999" maskPlaceholder="99999-999" type="text"
                                 className="form-control rounded-md border-[#BCBCBC]"
                                 onChange={(e) => publicplace.setPublicPlaceCep(e.target.value)}
@@ -426,6 +426,115 @@ export default function PublicPlace() {
                             {inOperation ? 'Aguarde' : 'Cadastrar'}
                         </button>{" "}
                     </ModalFooter>
+                </Modal>
+                <Modal isOpen={modalEdit}>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Cidade</ModalHeader>
+                    <ModalBody>
+                        <div className="form-group">
+                            <label className="text-[#444444]">ID: </label>
+                            <br />
+                            <input
+                                type="text"
+                                className="form-control rounded-md border-[#BCBCBC]"
+                                readOnly
+                                value={publicplace.publicPlaceId}
+                            />
+                            <br />
+                            <label className="text-[#444444]">CEP:</label>
+                            <input
+                                type="text"
+                                className="form-control rounded-md border-[#BCBCBC]"
+                                name="cep"
+                                onChange={(e) => publicplace.setPublicPlaceCep(e.target.value)}
+                                value={publicplace.publicPlaceCep}
+                            />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {publicplace.errorPublicPlaceCep}
+                            </div>
+                            <br />
+                            <label className="text-[#444444]">Número Inicial:</label>
+                            <input
+                                type="number"
+                                className="form-control rounded-md border-[#BCBCBC]"
+                                name="numeroInicial"
+                                onChange={(e) => publicplace.setPublicPlaceInitialNumber(e.target.value)}
+                                value={publicplace.publicPlaceInitialNumber}
+                            />
+                            <br />
+                            <label className="text-[#444444]">Número Final:</label>
+                            <input
+                                type="number"
+                                className="form-control rounded-md border-[#BCBCBC]"
+                                name="numeroFinal"
+                                onChange={(e) => publicplace.setPublicPlaceFinalNumber(e.target.value)}
+                                value={publicplace.publicPlaceFinalNumber}
+                            />
+                            <br />
+                            <label className="text-[#444444]">Bairro:</label>
+                            <br />
+                            <Select
+                                value={selectBoxBairro.selectedOption}
+                                onChange={selectBoxBairro.handleChange}
+                                onInputChange={selectBoxBairro.delayedSearch}
+                                loadOptions={selectBoxBairro.loadOptions}
+                                options={selectBoxBairro.options}
+                                placeholder="Pesquisar bairro . . ."
+                                isClearable
+                                isSearchable
+                                noOptionsMessage={() => {
+                                    if (listNeighborhood.list.length === 0) {
+                                        return "Nenhum Bairro cadastrado!";
+                                    } else {
+                                        return "Nenhuma opção encontrada!";
+                                    }
+                                }}
+                            />
+                            <br />
+                            <label className="text-[#444444]">Tipo Logradouro:</label>
+                            <br />
+                            <Select
+                                value={selectBox.selectedOption}
+                                onChange={selectBox.handleChange}
+                                onInputChange={selectBox.delayedSearch}
+                                loadOptions={selectBox.loadOptions}
+                                options={selectBox.options}
+                                placeholder="Pesquisar tipo logradouro . . ."
+                                isClearable
+                                isSearchable
+                                noOptionsMessage={() => {
+                                    if (listNeighborhood.list.length === 0) {
+                                        return "Nenhum Tipo Logradouro cadastrado!";
+                                    } else {
+                                        return "Nenhuma opção encontrada!";
+                                    }
+                                }}
+                            />
+                            <br />
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit(false)}>
+                            Cancelar
+                        </button>
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutPublicPlace()} disabled={inOperation} >
+                            {inOperation ? 'Aguarde' : 'Atualizar'}
+                        </button>{" "}
+                    </ModalFooter>
+                </Modal>
+                <Modal isOpen={modalDelete}>
+                    <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
+                    <ModalBody className="justify-center">
+                        <div className="flex flex-row justify-center p-2">
+                            Confirmar a exclusão deste logradouro:
+                            <div className="text-[#059669] ml-1">
+                                {publicplace.publicPlaceCep}
+                            </div> ?
+                        </div>
+                        <div className="flex justify-center gap-2 pt-3">
+                            <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete(false)}>Cancelar</button>
+                            <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeletePublicPlace()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'}</button>
+                        </div>
+                    </ModalBody>
                 </Modal>
             </div >
         </div >

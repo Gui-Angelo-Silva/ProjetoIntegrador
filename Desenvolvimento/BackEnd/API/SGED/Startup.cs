@@ -145,6 +145,10 @@ namespace SGED
             // Dependência: Logradouro
             services.AddScoped<ILogradouroRepository, LogradouroRepository>();
             services.AddScoped<ILogradouroService, LogradouroService>();
+
+            // Dependência: TipoDocumento
+            services.AddScoped<ITipoDocumentoRepository, TipoDocumentoRepository>();
+            services.AddScoped<ITipoDocumentoService, TipoDocumentoService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

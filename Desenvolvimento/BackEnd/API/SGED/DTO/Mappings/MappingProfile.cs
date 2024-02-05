@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SGED.DTO.Entities;
+using SGED.Models;
 using SGED.Models.Entities;
 
 namespace SGED.DTO.Mappings
@@ -40,6 +41,9 @@ namespace SGED.DTO.Mappings
 
             CreateMap<LogradouroDTO, Logradouro>();
             CreateMap<Logradouro, LogradouroDTO>().ReverseMap();
+
+            CreateMap<TipoDocumentoDTO, TipoDocumento>();   
+            CreateMap<TipoDocumento, TipoDocumentoDTO>().ReverseMap();
         }
     }
 }

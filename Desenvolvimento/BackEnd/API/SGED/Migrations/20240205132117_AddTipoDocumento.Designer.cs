@@ -11,8 +11,8 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240131110308_TentativaDeArrumarChave")]
-    partial class TentativaDeArrumarChave
+    [Migration("20240205132117_AddTipoDocumento")]
+    partial class AddTipoDocumento
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1692,6 +1692,32 @@ namespace SGED.Migrations
                             StatusUsuario = true,
                             TelefonePessoa = "(00) 00000-0000"
                         });
+                });
+
+            modelBuilder.Entity("SGED.Models.TipoDocumento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("idTipoDocumento");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DescricaoTipoDocumento")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)")
+                        .HasColumnName("descricaoTipoDocumento");
+
+                    b.Property<string>("NomeTipoDocumento")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("nomeTipoDocumento");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TipoDocumento");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.Bairro", b =>

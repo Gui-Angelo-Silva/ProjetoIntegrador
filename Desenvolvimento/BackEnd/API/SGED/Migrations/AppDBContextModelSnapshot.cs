@@ -1691,6 +1691,32 @@ namespace SGED.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SGED.Models.TipoDocumento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("idTipoDocumento");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DescricaoTipoDocumento")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)")
+                        .HasColumnName("descricaoTipoDocumento");
+
+                    b.Property<string>("NomeTipoDocumento")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("nomeTipoDocumento");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TipoDocumento");
+                });
+
             modelBuilder.Entity("SGED.Models.Entities.Bairro", b =>
                 {
                     b.HasOne("SGED.Models.Entities.Cidade", "Cidade")

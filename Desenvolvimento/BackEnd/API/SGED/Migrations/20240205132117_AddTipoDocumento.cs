@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class TentativaDeArrumarChave : Migration
+    public partial class AddTipoDocumento : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -42,6 +42,20 @@ namespace SGED.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_municipe", x => x.idmunicipe);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TipoDocumento",
+                columns: table => new
+                {
+                    idTipoDocumento = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    nomeTipoDocumento = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    descricaoTipoDocumento = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TipoDocumento", x => x.idTipoDocumento);
                 });
 
             migrationBuilder.CreateTable(
@@ -474,6 +488,9 @@ namespace SGED.Migrations
 
             migrationBuilder.DropTable(
                 name: "municipe");
+
+            migrationBuilder.DropTable(
+                name: "TipoDocumento");
 
             migrationBuilder.DropTable(
                 name: "TipoProcesso");

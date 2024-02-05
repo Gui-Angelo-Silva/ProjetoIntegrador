@@ -1,5 +1,6 @@
 ﻿using SGED.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using SGED.Models;
 
 namespace SGED.Context;
 public class AppDBContext : DbContext
@@ -11,12 +12,12 @@ public class AppDBContext : DbContext
 	public DbSet<TipoUsuario> TipoUsuario { get; set; }
 	public DbSet<Cidade> Cidade { get; set; }
     public DbSet<Bairro> Bairro { get; set; }
-    //public DbSet<TipoProcesso> TipoProcesso { get; set; }
     public DbSet<Usuario> Usuario { get; set; }
 	public DbSet<Municipe> Municipe { get; set; }
 	public DbSet<TipoLogradouro> TipoLogradouro { get; set; }
 	public DbSet<TipoProcesso> TipoProcesso { get; set; }
 	public DbSet<Logradouro> Logradouro { get; set; }
+	public DbSet<TipoDocumento> TipoDocumento { get; set; }
 
 	// Fluent API
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -94,6 +95,11 @@ public class AppDBContext : DbContext
 		modelBuilder.Entity<TipoLogradouro>().HasKey(b => b.Id);
 		modelBuilder.Entity<TipoLogradouro>().Property(b => b.CodigoInformativo).HasMaxLength(3).IsRequired();
 		modelBuilder.Entity<TipoLogradouro>().Property(b => b.Descricao).HasMaxLength(35).IsRequired();
+
+		// Builder: TipoDocumento
+		modelBuilder.Entity<TipoDocumento>().HasKey(b => b.Id);
+		modelBuilder.Entity<TipoDocumento>().Property(b => b.NomeTipoDocumento).HasMaxLength(30).IsRequired();
+		modelBuilder.Entity<TipoDocumento>().Property(b => b.DescricaoTipoDocumento).HasMaxLength(450).IsRequired();
 
 		// Inserções:
 		modelBuilder.Entity<Estado>().HasData(

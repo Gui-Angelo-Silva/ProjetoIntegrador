@@ -242,7 +242,7 @@ export default function TypeDocument() {
                             <br />
                             <label className="text-[#444444]">Descrição:</label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typedocument.setTypeDocumentDescription(e.target.value)} />
+                            <textarea className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typedocument.setTypeDocumentDescription(e.target.value)} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                                 {typedocument.errorTypeDocumentDescription}
                             </div>
@@ -253,6 +253,49 @@ export default function TypeDocument() {
                         <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" style={{ width: '100px', height: '40px' }} onClick={() => openCloseModalInsert(false)}>Cancelar</button>
                         <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostTypeDocument()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Cadastrar'} </button>{"  "}
                     </ModalFooter>
+                </Modal>
+                <Modal isOpen={modalEdit}>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC]">Editar Tipo de Logradouro</ModalHeader>
+                    <ModalBody>
+                        <div className="form-group">
+                            <label className="text-[#444444]">ID: </label><br />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={typedocument.typeDocumentId} /> <br />
+                            <label className="text-[#444444]">Nome:</label>
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomeTipoLogradouro" onChange={(e) => typedocument.setTypeDocumentName(e.target.value)} value={typedocument.typeDocumentName} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {typedocument.errorTypeDocumentName}
+                            </div>
+                            <br />
+                            <label className="text-[#444444]">Descrição:</label>
+                            <br />
+                            <textarea className="form-control rounded-md border-[#BCBCBC]" name="descricaoTipoLogradouro" onChange={(e) => typedocument.setTypeDocumentDescription(e.target.value)} value={typedocument.typeDocumentDescription} />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {typedocument.errorTypeDocumentDescription}
+                            </div>
+                            <br />
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" style={{ width: '100px', height: '40px' }} onClick={() => openCloseModalEdit(false)}>Cancelar</button>
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutTypeDocument()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Atualizar'} </button>{"  "}
+                    </ModalFooter>
+                </Modal>
+                <Modal isOpen={modalDelete}>
+                    <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
+                    <ModalBody className="justify-center">
+                        <div className="flex flex-row justify-center p-2">
+                            Confirme a exclusão deste Tipo de Documento:
+                            <div className="text-[#059669] ml-1">
+                                {typedocument.typeDocumentName}
+                            </div> ?
+                        </div>
+                        <div className="flex justify-center gap-2 pt-3">
+                            <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" style={{ width: '100px', height: '40px' }} onClick={() => openCloseModalDelete(false)}>Cancelar</button>
+                            <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteTypeDocument()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'} </button>{"  "}
+                        </div>
+                        {/* <ModalFooter>
+                    </ModalFooter> */}
+                    </ModalBody>
                 </Modal>
             </div>
         </div>

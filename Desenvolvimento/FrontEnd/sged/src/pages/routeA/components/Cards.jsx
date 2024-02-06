@@ -136,7 +136,7 @@ function Cards() {
                 module: "Processo"
             },
             {
-                onClick: () => inDevelopment("Controle de Tipo Documento"),
+                onClick: () => addSegment("typedocument"),
                 image: ImgTipoDocumento,
                 tooltip: "Abrir a Página de Controle de Tipo Documento",
                 title: "Tipo Documento",

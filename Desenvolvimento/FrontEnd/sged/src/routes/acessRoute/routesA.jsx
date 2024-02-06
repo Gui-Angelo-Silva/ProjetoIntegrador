@@ -13,6 +13,7 @@ import Test from '../../pages/routeA/dashboard/test';
 import TypePublicPlace from '../../pages/routeA/manipulation/typepublicplace';
 import Neighborhood from '../../pages/routeA/manipulation/neighborhood';
 import PublicPlace from '../../pages/routeA/manipulation/publicplace';
+import TypeDocument from '../../pages/routeA/manipulation/typedocument';
 
 export default function RouteA() {
     return (
@@ -31,6 +32,7 @@ export default function RouteA() {
             <Route path="/a/registration/typepublicplace" element={<TypePublicPlace />}></Route>
             <Route path="/a/registration/neighborhood" element={<Neighborhood />}></Route>
             <Route path="/a/registration/publicplace" element={<PublicPlace />}></Route>
+            <Route path="/a/registration/typedocument" element={<TypeDocument />}></Route>
 
             <Route path="/a/document" element={<Document />}></Route>
             <Route path="/a/test" element={<Test />}></Route>

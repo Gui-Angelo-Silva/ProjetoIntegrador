@@ -122,7 +122,7 @@ function Cards() {
                 module: "Processo"
             },
             {
-                onClick: () => inDevelopment("Controle de Tipo Processo"),
+                onClick: () => addSegment("typeprocess"),
                 image: ImgTipoProcesso,
                 tooltip: "Abrir a Página de Controle de Tipo Processo",
                 title: "Tipo Processo",

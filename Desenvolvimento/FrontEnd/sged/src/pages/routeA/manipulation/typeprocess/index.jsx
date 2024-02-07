@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
-import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
+import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
 import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
+import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
+
 import { useMontage } from "../../../../object/modules/montage";
 import ConnectionEntity from "../../../../object/service/connection";
 import ListModule from "../../../../object/modules/list";
-import TypeDocumentClass from "../../../../object/class/typedocument";
+import TypeProcessClass from "../../../../object/class/typeprocess";
 
-export default function TypeDocument() {
+export default function TypeProcess() {
 
     const { componentMounted } = useMontage();
 
@@ -21,7 +22,7 @@ export default function TypeDocument() {
 
     const connection = ConnectionEntity();
     const list = ListModule();
-    const typedocument = TypeDocumentClass();
+    const typeprocess = TypeProcessClass();
 
     const [modalInsert, setModalInsert] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
@@ -29,8 +30,8 @@ export default function TypeDocument() {
     const [updateData, setUpdateData] = useState(true);
     const [inOperation, setInOperation] = useState(false);
 
-    const SelectTypeDocument = (object, option) => {
-        typedocument.getData(object);
+    const SelectTypeProcess = (object, option) => {
+        typeprocess.getData(object);
 
         if (option === "Editar") {
             openCloseModalEdit(true);
@@ -41,19 +42,19 @@ export default function TypeDocument() {
 
     const openCloseModalInsert = (boolean) => {
         setModalInsert(boolean);
-        typedocument.clearError();
+        typeprocess.clearError();
 
         if (!boolean) {
-            typedocument.clearData();
+            typeprocess.clearData();
         }
     };
 
     const openCloseModalEdit = (boolean) => {
         setModalEdit(boolean);
-        typedocument.clearError();
+        typeprocess.clearError();
 
         if (!boolean) {
-            typedocument.clearData();
+            typeprocess.clearData();
         }
     };
 
@@ -61,12 +62,12 @@ export default function TypeDocument() {
         setModalDelete(boolean);
 
         if (!boolean) {
-            typedocument.clearData();
+            typeprocess.clearData();
         }
     };
 
-    const GetTypeDocument = async () => {
-        const response = await connection.objectUrl("TipoDocumento").getOrder();
+    const GetTypeProcess = async () => {
+        const response = await connection.objectUrl("TipoProcesso").getOrder();
         if (response.status) {
             list.setList(response.data);
         } else {
@@ -74,11 +75,11 @@ export default function TypeDocument() {
         }
     };
 
-    const PostTypeDocument = async () => {
+    const PostTypeProcess = async () => {
         setInOperation(true);
 
-        if (typedocument.verifyData()) {
-            const response = await connection.objectUrl("TipoDocumento").postOrder(typedocument);
+        if (typeprocess.verifyData()) {
+            const response = await connection.objectUrl("TipoProcesso").postOrder(typeprocess);
 
             openCloseModalInsert(!response.status);
             setUpdateData(response.status);
@@ -90,11 +91,11 @@ export default function TypeDocument() {
         setInOperation(false);
     };
 
-    const PutTypeDocument = async () => {
+    const PutTypeProcess = async () => {
         setInOperation(true);
 
-        if (typedocument.verifyData()) {
-            const response = await connection.objectUrl("TipoDocumento").putOrder(typedocument);
+        if (typeprocess.verifyData()) {
+            const response = await connection.objectUrl("TipoProcesso").putOrder(typeprocess);
 
             openCloseModalEdit(!response.status);
             setUpdateData(response.status);
@@ -106,10 +107,10 @@ export default function TypeDocument() {
         setInOperation(false);
     };
 
-    const DeleteTypeDocument = async () => {
+    const DeleteTypeProcess = async () => {
         setInOperation(true);
 
-        const response = await connection.objectUrl("TipoLogradouro").deleteOrder(typedocument);
+        const response = await connection.objectUrl("TipoProcesso").deleteOrder(typeprocess);
 
         openCloseModalDelete(!response.status);
         setUpdateData(response.status);
@@ -120,11 +121,11 @@ export default function TypeDocument() {
 
     useEffect(() => {
         if (updateData) {
-            GetTypeDocument();
+            GetTypeProcess();
             setUpdateData(false);
         }
 
-        list.searchBy ? null : list.setSearchBy('nomeTipoDocumento');
+        list.searchBy ? null : list.setSearchBy('nomeTipoProcesso');
     }, [updateData]);
 
     return (
@@ -140,7 +141,7 @@ export default function TypeDocument() {
                                 <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
                             </Link>
                             <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
-                            <h3 className="text-2xl font-semibold text-gray-700">Tipo Documento</h3>
+                            <h3 className="text-2xl font-semibold text-gray-700">Tipo Processo</h3>
                         </div>
                         <div className="flex" style={{ alignItems: 'center' }}>
                             <div className="flex justify-center items-center mx-auto">
@@ -152,12 +153,12 @@ export default function TypeDocument() {
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                             </svg>
                                         </div>
-                                        <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar estado" required onChange={(e) => list.handleSearch(e.target.value)} />
+                                        <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar tipo processo" required onChange={(e) => list.handleSearch(e.target.value)} />
                                         <select className="appearance-none form-control rounded-md w-28 text-gray-800" onChange={(e) => list.handleSearchBy(e.target.value)} >
-                                            <option key="nomeTipoDocumento" value="nomeTipoDocumento">
-                                                Tipo Documento
+                                            <option key="nomeTipoProcesso" value="nomeTipoProcesso">
+                                                Tipo Processo
                                             </option>
-                                            <option key="descricaoTipoDocumento" value="descricaoTipoDocumento">
+                                            <option key="descricaoTipoProcesso" value="descricaoTipoProcesso">
                                                 Descrição
                                             </option>
                                         </select>
@@ -172,25 +173,25 @@ export default function TypeDocument() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="flex ml-5 text-white text-lg font-semibold">Nome</span>
+                                <span className="flex ml-5 text-white text-lg font-semibold">Tipo Processo</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
                                 <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                             </div>
                             <ul className="w-full">
                                 {list.currentList.map((object) => (
                                     <li className="grid grid-cols-3 w-full" key={object.id}>
-                                        <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</span>
-                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoDocumento}</span>
+                                        <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoProcesso}</span>
+                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoProcesso}</span>
                                         <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                             <button
                                                 className=""
-                                                onClick={() => SelectTypeDocument(object, "Editar")}
+                                                onClick={() => SelectTypeProcess(object, "Editar")}
                                             >
                                                 <PencilSimple size={20} className="hover:text-cyan-500" />
                                             </button>{" "}
                                             <button
                                                 className=""
-                                                onClick={() => SelectTypeDocument(object, "Excluir")}
+                                                onClick={() => SelectTypeProcess(object, "Excluir")}
                                             >
                                                 <TrashSimple size={20} className="hover:text-red-600" />
                                             </button>
@@ -230,71 +231,69 @@ export default function TypeDocument() {
                     </div>
                 </div>
                 <Modal isOpen={modalInsert} >
-                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Tipo de Documento</ModalHeader>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Tipo de Processo</ModalHeader>
                     <ModalBody>
                         <div className="form-group">
-                            <label className="text-[#444444]">Nome: </label>
+                            <label className="text-[#444444]">Tipo Processo: </label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typedocument.setTypeDocumentName(e.target.value)} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typeprocess.setTypeProcessName(e.target.value)} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {typedocument.errorTypeDocumentName}
+                                {typeprocess.errorTypeProcessName}
                             </div>
                             <br />
-                            <label className="text-[#444444]">Descrição:</label>
+                            <label className="text-[#444444]">Descricao:</label>
                             <br />
-                            <textarea className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typedocument.setTypeDocumentDescription(e.target.value)} />
+                            <textarea className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typeprocess.setTypeProcessDescription(e.target.value)} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {typedocument.errorTypeDocumentDescription}
+                                {typeprocess.errorTypeProcessDescription}
                             </div>
                             <br />
                         </div>
                     </ModalBody>
                     <ModalFooter>
                         <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" style={{ width: '100px', height: '40px' }} onClick={() => openCloseModalInsert(false)}>Cancelar</button>
-                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostTypeDocument()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Cadastrar'} </button>{"  "}
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostTypeProcess()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Cadastrar'} </button>{"  "}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalEdit}>
-                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC]">Editar Tipo de Documento</ModalHeader>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC]">Editar Tipo de Processo</ModalHeader>
                     <ModalBody>
                         <div className="form-group">
                             <label className="text-[#444444]">ID: </label><br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={typedocument.typeDocumentId} /> <br />
-                            <label className="text-[#444444]">Nome:</label>
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomeTipoLogradouro" onChange={(e) => typedocument.setTypeDocumentName(e.target.value)} value={typedocument.typeDocumentName} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={typeprocess.typeProcessId} /> <br />
+                            <label className="text-[#444444]">Tipo Processo:</label>
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomeEstado" onChange={(e) => typeprocess.setTypeProcessName(e.target.value)} value={typeprocess.typeProcessName} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {typedocument.errorTypeDocumentName}
+                                {typeprocess.errorTypeProcessName}
                             </div>
                             <br />
                             <label className="text-[#444444]">Descrição:</label>
                             <br />
-                            <textarea className="form-control rounded-md border-[#BCBCBC]" name="descricaoTipoLogradouro" onChange={(e) => typedocument.setTypeDocumentDescription(e.target.value)} value={typedocument.typeDocumentDescription} />
+                            <textarea className="form-control rounded-md border-[#BCBCBC]" name="ufEstado" onChange={(e) => typeprocess.setTypeProcessDescription(e.target.value)} value={typeprocess.typeProcessDescription} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {typedocument.errorTypeDocumentDescription}
+                                {typeprocess.errorTypeProcessDescription}
                             </div>
                             <br />
                         </div>
                     </ModalBody>
                     <ModalFooter>
                         <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" style={{ width: '100px', height: '40px' }} onClick={() => openCloseModalEdit(false)}>Cancelar</button>
-                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutTypeDocument()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Atualizar'} </button>{"  "}
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutTypeProcess()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Atualizar'} </button>{"  "}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalDelete}>
                     <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
                     <ModalBody className="justify-center">
                         <div className="flex flex-row justify-center p-2">
-                            Confirme a exclusão deste Tipo de Documento:
+                            Confirme a exclusão deste Tipo Processo:
                             <div className="text-[#059669] ml-1">
-                                {typedocument.typeDocumentName}
+                                {typeprocess.typeProcessName}
                             </div> ?
                         </div>
                         <div className="flex justify-center gap-2 pt-3">
                             <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" style={{ width: '100px', height: '40px' }} onClick={() => openCloseModalDelete(false)}>Cancelar</button>
-                            <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteTypeDocument()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'} </button>{"  "}
+                            <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteTypeProcess()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'} </button>{"  "}
                         </div>
-                        {/* <ModalFooter>
-                    </ModalFooter> */}
                     </ModalBody>
                 </Modal>
             </div>

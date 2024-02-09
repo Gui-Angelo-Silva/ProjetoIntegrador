@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 import Select from 'react-select';
 
+import defaultPicture from '../../../../assets/user/defaultPicture.png';
 import { useMontage } from '../../../../object/modules/montage';
 import ConnectionEntity from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
@@ -39,6 +40,7 @@ export default function User() {
     const openCloseModalInsert = (boolean) => {
         setModalInsert(boolean);
         user.clearError();
+        user.removePicture();
 
         if (!boolean) {
             user.clearData();
@@ -211,7 +213,7 @@ export default function User() {
     }, [listTypeUser.list, modalInsert, modalEdit, modalDelete]);
 
     useEffect(() => { // Para atualizar o idTipoUsuario conforme o valor selecionado muda
-        user.setIdTypeUser(selectBox.selectedOption.value? selectBox.selectedOption.value : '');
+        user.setIdTypeUser(selectBox.selectedOption.value ? selectBox.selectedOption.value : '');
     }, [selectBox.selectedOption]);
 
     const togglePasswordVisibility = () => {
@@ -344,6 +346,43 @@ export default function User() {
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Usuário</ModalHeader>
                     <ModalBody>
                         <div className="form-group">
+                            <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <input
+                                    id="fileInputInsert"
+                                    type="file"
+                                    style={{ display: 'none' }}
+                                    onChange={(e) => user.insertPicture(e.target.files[0])}
+                                />
+                                <img
+                                    src={user.userPicture ? user.userPicture : defaultPicture}
+                                    style={{
+                                        cursor: 'pointer',
+                                        borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
+                                        width: '200px', // ajuste o tamanho da imagem conforme necessário
+                                        height: '200px', // ajuste o tamanho da imagem conforme necessário
+                                        objectFit: 'cover', // para garantir que a imagem seja totalmente coberta pelo círculo
+                                        boxShadow: '0 0 0 3px white, 0 0 0 5px black', // Adicionando uma borda branca (interna) e uma borda preta (externa)
+                                    }}
+                                    onClick={(e) => user.handleImageClick("Insert")}
+                                />
+                                {user.addImage && (
+                                    <img
+                                        src={user.closeIcon}
+                                        style={{
+                                            position: 'absolute',
+                                            top: '5px', // Distância do topo
+                                            right: '110px', // Distância da direita
+                                            cursor: 'pointer',
+                                            borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
+                                            width: '20px', // ajuste o tamanho da imagem conforme necessário
+                                            height: '20px', // ajuste o tamanho da imagem conforme necessário
+                                            objectFit: 'cover', // para garantir que a imagem seja totalmente coberta pelo círculo
+                                        }}
+                                        onClick={(e) => user.removePicture("Insert")}
+                                    />
+                                )}
+                            </div>
+                            <br />
                             <label className="text-[#444444]">Nome: </label>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.setPersonName(e.target.value)} />
@@ -462,6 +501,43 @@ export default function User() {
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Usuário</ModalHeader>
                     <ModalBody>
                         <div className="form-group">
+                            <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <input
+                                    id="fileInputInsert"
+                                    type="file"
+                                    style={{ display: 'none' }}
+                                    onChange={(e) => user.insertPicture(e.target.files[0])}
+                                />
+                                <img
+                                    src={user.userPicture ? user.userPicture : defaultPicture}
+                                    style={{
+                                        cursor: 'pointer',
+                                        borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
+                                        width: '200px', // ajuste o tamanho da imagem conforme necessário
+                                        height: '200px', // ajuste o tamanho da imagem conforme necessário
+                                        objectFit: 'cover', // para garantir que a imagem seja totalmente coberta pelo círculo
+                                        boxShadow: '0 0 0 3px white, 0 0 0 5px black', // Adicionando uma borda branca (interna) e uma borda preta (externa)
+                                    }}
+                                    onClick={(e) => user.handleImageClick("Insert")}
+                                />
+                                {user.addImage && (
+                                    <img
+                                        src={user.closeIcon}
+                                        style={{
+                                            position: 'absolute',
+                                            top: '5px', // Distância do topo
+                                            right: '110px', // Distância da direita
+                                            cursor: 'pointer',
+                                            borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
+                                            width: '20px', // ajuste o tamanho da imagem conforme necessário
+                                            height: '20px', // ajuste o tamanho da imagem conforme necessário
+                                            objectFit: 'cover', // para garantir que a imagem seja totalmente coberta pelo círculo
+                                        }}
+                                        onClick={(e) => user.removePicture("Insert")}
+                                    />
+                                )}
+                            </div>
+                            <br />
                             <label>ID: </label><br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={user.userId} /> <br />
                             <label>Nome:</label>

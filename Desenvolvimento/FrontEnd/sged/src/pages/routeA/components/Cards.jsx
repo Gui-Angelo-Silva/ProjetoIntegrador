@@ -1,20 +1,20 @@
-import ImgImovel from "../../../assets/ImgImovel.png"
-import ImgEstado from "../../../assets/ImgEstado.png";
-import ImgCidade from "../../../assets/ImgCidade.png";
-import ImgLogradouro from "../../../assets/ImgLogradouro.png";
-import ImgTipoLogradouro from "../../../assets/ImgTipoLogradouro.png";
-import ImgUsuario from "../../../assets/ImgUsuarioAtualizada.png";
-import ImgBairro from "../../../assets/ImgBairro.png";
-import ImgTipoUsuario from "../../../assets/ImgTipoUsuarioAtualizada.png";
-import ImgMunicipe from "../../../assets/ImgMunicipeAtualizada.png";
-import ImgEngenheiro from "../../../assets/ImgEngenheiroAtualizada.png";
-import ImgFiscal from "../../../assets/ImgFiscalAtualizada.png";
-import ImgAuditoria from "../../../assets/ImgAuditoriaAtualizada.png";
-import ImgProcesso from "../../../assets/ImgProcessoAtualizada.png";
-import ImgTipoProcesso from "../../../assets/ImgTipoProcessoAtualizada.png";
-import ImgEtapa from "../../../assets/ImgEtapaAtualizada.png";
-import ImgTipoDocumento from "../../../assets/ImgTipoDocumentoAtualizada.png";
-import ImgDocumentoProcesso from "../../../assets/ImgDocumentoProcessoAtualizada.png";
+import ImgImovel from "../../../assets/card/ImgImovel.png"
+import ImgEstado from "../../../assets/card/ImgEstado.png";
+import ImgCidade from "../../../assets/card/ImgCidade.png";
+import ImgLogradouro from "../../../assets/card/ImgLogradouro.png";
+import ImgTipoLogradouro from "../../../assets/card/ImgTipoLogradouro.png";
+import ImgUsuario from "../../../assets/card/ImgUsuarioAtualizada.png";
+import ImgBairro from "../../../assets/card/ImgBairro.png";
+import ImgTipoUsuario from "../../../assets/card/ImgTipoUsuarioAtualizada.png";
+import ImgMunicipe from "../../../assets/card/ImgMunicipeAtualizada.png";
+import ImgEngenheiro from "../../../assets/card/ImgEngenheiroAtualizada.png";
+import ImgFiscal from "../../../assets/card/ImgFiscalAtualizada.png";
+import ImgAuditoria from "../../../assets/card/ImgAuditoriaAtualizada.png";
+import ImgProcesso from "../../../assets/card/ImgProcessoAtualizada.png";
+import ImgTipoProcesso from "../../../assets/card/ImgTipoProcessoAtualizada.png";
+import ImgEtapa from "../../../assets/card/ImgEtapaAtualizada.png";
+import ImgTipoDocumento from "../../../assets/card/ImgTipoDocumentoAtualizada.png";
+import ImgDocumentoProcesso from "../../../assets/card/ImgDocumentoProcessoAtualizada.png";
 
 import { useServer } from "../../../routes/serverRoute";
 

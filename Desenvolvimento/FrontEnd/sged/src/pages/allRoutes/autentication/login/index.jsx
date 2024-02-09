@@ -6,7 +6,7 @@ import Checkbox from '@mui/material/Checkbox';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import background from '../../../../assets/imgTelaDeLogin.png';
+import background from '../../../../assets/pages/imgTelaDeLogin.png';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 //import { red } from '@mui/material/colors';

@@ -8,6 +8,8 @@ namespace SGED.DTO.Entities
     {
         public int Id { get; set; }
 
+        public string? ImagemUsuario { get; set; }
+
         [Required(ErrorMessage = "A senha é requerida!")]
         [MinLength(6)]
         [MaxLength(50)]

@@ -213,7 +213,9 @@ function UserClass() {
 
     if (addImage) {
       const fileInput = document.getElementById(`fileInput${modal}`);
-      fileInput.value = '';
+      if (fileInput) {
+        fileInput.value = '';
+      }
     }
 
     setAddImage(false);

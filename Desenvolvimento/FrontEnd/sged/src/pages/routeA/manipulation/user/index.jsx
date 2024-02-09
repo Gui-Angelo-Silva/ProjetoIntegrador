@@ -363,6 +363,7 @@ export default function User() {
                                         objectFit: 'cover', // para garantir que a imagem seja totalmente coberta pelo círculo
                                         boxShadow: '0 0 0 3px white, 0 0 0 5px black', // Adicionando uma borda branca (interna) e uma borda preta (externa)
                                     }}
+                                    title="Selecionar Imagem"
                                     onClick={(e) => user.handleImageClick("Insert")}
                                 />
                                 {user.addImage && (
@@ -518,6 +519,7 @@ export default function User() {
                                         objectFit: 'cover', // para garantir que a imagem seja totalmente coberta pelo círculo
                                         boxShadow: '0 0 0 3px white, 0 0 0 5px black', // Adicionando uma borda branca (interna) e uma borda preta (externa)
                                     }}
+                                    title="Selecionar Imagem"
                                     onClick={(e) => user.handleImageClick("Insert")}
                                 />
                                 {user.addImage && (

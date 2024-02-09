@@ -8,7 +8,6 @@ import { Link } from "react-router-dom";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 import Select from 'react-select';
 
-import defaultPicture from '../../../../assets/user/defaultPicture.png';
 import { useMontage } from '../../../../object/modules/montage';
 import ConnectionEntity from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
@@ -354,7 +353,7 @@ export default function User() {
                                     onChange={(e) => user.insertPicture(e.target.files[0])}
                                 />
                                 <img
-                                    src={user.userPicture ? user.userPicture : defaultPicture}
+                                    src={user.userPicture ? user.userPicture : user.defaultPicture}
                                     style={{
                                         cursor: 'pointer',
                                         borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
@@ -510,7 +509,7 @@ export default function User() {
                                     onChange={(e) => user.insertPicture(e.target.files[0])}
                                 />
                                 <img
-                                    src={user.userPicture ? user.userPicture : defaultPicture}
+                                    src={user.userPicture ? user.userPicture : user.defaultPicture}
                                     style={{
                                         cursor: 'pointer',
                                         borderRadius: '50%', // para fazer a imagem ter bordas arredondadas

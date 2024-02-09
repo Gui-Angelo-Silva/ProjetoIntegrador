@@ -71,7 +71,9 @@ function UserClass() {
     setIdTypeUser(object.idTipoUsuario);
     setUserId(object.id);
     setUserPicture(object.imagemUsuario);
-    setAddImage(true);
+    if (object.imagemUsuario) {
+      setAddImage(true);
+    }
   }
 
   function setData() {
@@ -179,10 +181,7 @@ function UserClass() {
 
   function insertPicture(file) {
     if (file) {
-      if (file.name !== 'defaultPicture.png') {
-        setAddImage(true);
-      }
-
+      setAddImage(true);
       const reader = new FileReader();
 
       reader.onload = () => {
@@ -195,29 +194,7 @@ function UserClass() {
   }
 
   function removePicture(modal) {
-    fetch(defaultPicture)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Erro na requisição HTTP! Resposta: ${response.status}`);
-        }
-        return response.blob();
-      })
-      .then((blob) => {
-        const fileName = 'defaultPicture.png';
-        const file = new File([blob], fileName, { type: 'image/png' });
-        insertPicture(file);
-      })
-      .catch((error) => {
-        console.error('Não foi possível obter a imagem: Erro: ', error);
-      });
-
-    if (addImage) {
-      const fileInput = document.getElementById(`fileInput${modal}`);
-      if (fileInput) {
-        fileInput.value = '';
-      }
-    }
-
+    setUserPicture("");
     setAddImage(false);
   };
 
@@ -289,6 +266,7 @@ function UserClass() {
     // Variáveis e Funções de Controle
     passwordStrength,
     closeIcon,
+    defaultPicture,
     addImage,
     insertPicture,
     removePicture,

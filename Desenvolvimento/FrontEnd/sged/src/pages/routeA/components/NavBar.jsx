@@ -12,7 +12,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 //import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import LogoJales from '../../../assets/LogoJales.png'
+import LogoJales from '../../../assets/pages/LogoJales.png'
 
 import { useSession } from '../../../object/service/session';
 import { useServer } from '../../../routes/serverRoute';
@@ -23,11 +23,13 @@ export default function NavBar() {
   const { getSession, defaultSession } = useSession();
   const { clearSegment, inDevelopment } = useServer();
   const [userName, setUserName] = useState("");
+  const [userPicture, setUserPicture] = useState("");
 
   const GetUser = () => {
     const user = getSession();
     if (user !== null) {
-      setUserName(user.nomePessoa);
+setUserName(user.nomePessoa);
+setUserPicture(user.imagemUsuario);
     }
   };
 
@@ -122,7 +124,7 @@ export default function NavBar() {
           aria-haspopup="true"
           color="inherit"
         >
-          <AccountCircle />
+          {userPicture ? <img src={userPicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '30px', height: '30px', objectFit: 'cover' }}/> : <AccountCircle style={{ cursor: 'pointer', borderRadius: '50%', width: '30px', height: '30px', objectFit: 'cover' }}/>}
         </IconButton>
         <p>Profile</p>
       </MenuItem>
@@ -132,7 +134,7 @@ export default function NavBar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar style={{backgroundColor: '#2D636B', height: 40}}>
+        <Toolbar style={{ backgroundColor: '#2D636B', height: 40 }}>
           {/* <IconButton
             size="large"
             edge="start"
@@ -149,7 +151,7 @@ export default function NavBar() {
             sx={{ display: { xs: 'none', sm: 'block' }, marginLeft: 5 }}
           >
             <img className='' src={LogoJales} alt="Logo de Jales"></img>
-          </Typography> 
+          </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Typography
             variant="h6"
@@ -157,8 +159,8 @@ export default function NavBar() {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' }, marginLeft: 5 }}
           >
-            { userName }
-          </Typography> 
+            {userName}
+          </Typography>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton
               size="large"
@@ -169,7 +171,7 @@ export default function NavBar() {
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              <AccountCircle />
+              {userPicture ? <img src={userPicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '30px', height: '30px', objectFit: 'cover' }}/> : <AccountCircle style={{ cursor: 'pointer', borderRadius: '50%', width: '30px', height: '30px', objectFit: 'cover' }}/>}
             </IconButton>
             <IconButton
               size="large"

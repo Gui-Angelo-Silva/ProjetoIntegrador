@@ -11,8 +11,8 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240205132117_AddTipoDocumento")]
-    partial class AddTipoDocumento
+    [Migration("20240209205942_Database")]
+    partial class Database
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1631,6 +1631,11 @@ namespace SGED.Migrations
                     b.Property<int>("IdTipoUsuario")
                         .HasColumnType("integer");
 
+                    b.Property<string>("ImagemUsuario")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("imagemusuario");
+
                     b.Property<string>("NomePessoa")
                         .IsRequired()
                         .HasMaxLength(70)
@@ -1673,6 +1678,7 @@ namespace SGED.Migrations
                             CpfCNPJPessoa = "000.000.000-00",
                             EmailPessoa = "devops@development.com",
                             IdTipoUsuario = 1,
+                            ImagemUsuario = "",
                             NomePessoa = "Dev",
                             RgIEPessoa = "00.000.000-0",
                             SenhaUsuario = "123456",
@@ -1686,6 +1692,7 @@ namespace SGED.Migrations
                             CpfCNPJPessoa = "000.000.000-00",
                             EmailPessoa = "admin@gmail.com",
                             IdTipoUsuario = 2,
+                            ImagemUsuario = "",
                             NomePessoa = "Secretário Geral",
                             RgIEPessoa = "00.000.000-0",
                             SenhaUsuario = "987654",

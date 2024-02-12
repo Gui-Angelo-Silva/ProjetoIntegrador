@@ -121,6 +121,7 @@ export const SessionProvider = ({ children }) => {
                     const acessLevel = String(data.usuario.tipoUsuarioDTO.nivelAcesso).toLowerCase();
 
                     localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.usuario));
                     localStorage.setItem('permission', acessLevel);
                 }
 

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import PersonClass from '../person';
+import defaultPicture from '../../../assets/user/defaultProfilePicture.png';
+import closeIcon from '../../../assets/user/closeIcon.png';
 
 function UserClass() {
 
@@ -41,6 +43,7 @@ function UserClass() {
   const handleRgIe = person.handleRgIe;
   person.effects();
 
+  const [userPicture, setUserPicture] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [userOffice, setUserOffice] = useState('');
   const [userStatus, setUserStatus] = useState(true);
@@ -62,16 +65,22 @@ function UserClass() {
   function getData(object) {
     getDataPerson(object);
     setUserPassword(object.senhaUsuario);
+    setUserPassword(object.senhaUsuario);
     setUserOffice(object.cargoUsuario);
     setUserStatus(object.statusUsuario);
     setIdTypeUser(object.idTipoUsuario);
     setUserId(object.id);
+    setUserPicture(object.imagemUsuario);
+    if (object.imagemUsuario) {
+      setAddImage(true);
+    }
   }
 
   function setData() {
     return {
       ...setDataPerson(),
       id: userId,
+      imagemUsuario: userPicture,
       senhaUsuario: userPassword,
       cargoUsuario: userOffice,
       statusUsuario: userStatus,
@@ -86,6 +95,7 @@ function UserClass() {
     setUserStatus(true);
     setIdTypeUser('');
     setUserId('');
+    removePicture();
   }
 
   function clearError() {
@@ -167,6 +177,32 @@ function UserClass() {
     passwordStrengthIndicator();
   }, [userPassword]);
 
+  const [addImage, setAddImage] = useState(false);
+
+  function insertPicture(file) {
+    if (file) {
+      setAddImage(true);
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const base64String = reader.result;
+        setUserPicture(base64String);
+      };
+
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function removePicture(modal) {
+    setUserPicture("");
+    setAddImage(false);
+  };
+
+  function handleImageClick(modal) {
+    const fileInput = document.getElementById(`fileInput${modal}`);
+    fileInput.click();
+  }
+
   return {
     /* -----  Pessoa  ----- */
 
@@ -202,6 +238,7 @@ function UserClass() {
     /* -----  Usuário  ----- */
 
     // Atributos
+    userPicture,
     userPassword,
     setUserPassword,
     userOffice,
@@ -226,8 +263,14 @@ function UserClass() {
     clearError,
     verifyData,
 
-    // Variável de Controle
-    passwordStrength
+    // Variáveis e Funções de Controle
+    passwordStrength,
+    closeIcon,
+    defaultPicture,
+    addImage,
+    insertPicture,
+    removePicture,
+    handleImageClick
   };
 }
 

@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTipoDocumento : Migration
+    public partial class Database : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -127,6 +127,7 @@ namespace SGED.Migrations
                 {
                     idusuario = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    imagemusuario = table.Column<string>(type: "text", nullable: false),
                     senhausuario = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     cargousuario = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     statususuario = table.Column<bool>(type: "boolean", nullable: false),
@@ -447,11 +448,11 @@ namespace SGED.Migrations
 
             migrationBuilder.InsertData(
                 table: "usuario",
-                columns: new[] { "idusuario", "cargousuario", "cpfcnpjpessoa", "emailpessoa", "IdTipoUsuario", "nomepessoa", "rgiepessoa", "senhausuario", "statususuario", "telefonepessoa" },
+                columns: new[] { "idusuario", "cargousuario", "cpfcnpjpessoa", "emailpessoa", "IdTipoUsuario", "imagemusuario", "nomepessoa", "rgiepessoa", "senhausuario", "statususuario", "telefonepessoa" },
                 values: new object[,]
                 {
-                    { 1, "Desenvolvimento", "000.000.000-00", "devops@development.com", 1, "Dev", "00.000.000-0", "123456", true, "(00) 00000-0000" },
-                    { 2, "Secretário Geral", "000.000.000-00", "admin@gmail.com", 2, "Secretário Geral", "00.000.000-0", "987654", true, "(00) 00000-0000" }
+                    { 1, "Desenvolvimento", "000.000.000-00", "devops@development.com", 1, "", "Dev", "00.000.000-0", "123456", true, "(00) 00000-0000" },
+                    { 2, "Secretário Geral", "000.000.000-00", "admin@gmail.com", 2, "", "Secretário Geral", "00.000.000-0", "987654", true, "(00) 00000-0000" }
                 });
 
             migrationBuilder.CreateIndex(

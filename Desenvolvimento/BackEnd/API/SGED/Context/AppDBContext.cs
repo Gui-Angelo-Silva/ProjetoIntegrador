@@ -1,6 +1,5 @@
 ﻿using SGED.Models.Entities;
 using Microsoft.EntityFrameworkCore;
-using SGED.Models;
 
 namespace SGED.Context;
 public class AppDBContext : DbContext
@@ -18,6 +17,7 @@ public class AppDBContext : DbContext
 	public DbSet<TipoProcesso> TipoProcesso { get; set; }
 	public DbSet<Logradouro> Logradouro { get; set; }
 	public DbSet<TipoDocumento> TipoDocumento { get; set; }
+	public DbSet<Etapa> Etapa { get; set; }
 
 	// Fluent API
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,6 +26,15 @@ public class AppDBContext : DbContext
 		modelBuilder.Entity<TipoProcesso>().HasKey(b => b.Id);
 		modelBuilder.Entity<TipoProcesso>().Property(b => b.NomeTipoProcesso).HasMaxLength(100).IsRequired();
 		modelBuilder.Entity<TipoProcesso>().Property(b => b.DescricaoTipoProcesso).HasMaxLength(100).IsRequired();
+
+		// Builder: Etapa
+		modelBuilder.Entity<Etapa>().HasKey(b => b.Id);
+		modelBuilder.Entity<Etapa>().Property(b => b.NomeEtapa).HasMaxLength(50).IsRequired();
+		modelBuilder.Entity<Etapa>().Property(b => b.DescricaoEtapa).HasMaxLength(250).IsRequired();
+		modelBuilder.Entity<Etapa>().HasOne(b => b.TipoProcesso).WithMany().HasForeignKey(b => b.IdTipoProcesso);
+
+		// Relacionamento: TipoProcesso -> Etapa
+		modelBuilder.Entity<TipoProcesso>().HasMany(p => p.Etapas).WithOne(b => b.TipoProcesso).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
 		// Builder: Estado
 		modelBuilder.Entity<Estado>().HasKey(b => b.Id);

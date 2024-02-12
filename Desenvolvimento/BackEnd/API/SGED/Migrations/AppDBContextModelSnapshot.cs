@@ -323,6 +323,37 @@ namespace SGED.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SGED.Models.Entities.Etapa", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("idetapa");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DescricaoEtapa")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)")
+                        .HasColumnName("descricaoetapa");
+
+                    b.Property<int>("IdTipoProcesso")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("NomeEtapa")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("nomeetapa");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdTipoProcesso");
+
+                    b.ToTable("etapa");
+                });
+
             modelBuilder.Entity("SGED.Models.Entities.Logradouro", b =>
                 {
                     b.Property<int>("Id")
@@ -406,6 +437,32 @@ namespace SGED.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("municipe");
+                });
+
+            modelBuilder.Entity("SGED.Models.Entities.TipoDocumento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("idTipoDocumento");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DescricaoTipoDocumento")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)")
+                        .HasColumnName("descricaoTipoDocumento");
+
+                    b.Property<string>("NomeTipoDocumento")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("nomeTipoDocumento");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TipoDocumento");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.TipoLogradouro", b =>
@@ -1509,7 +1566,7 @@ namespace SGED.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("idTipoProcesso");
+                        .HasColumnName("idtipoprocesso");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
@@ -1517,17 +1574,17 @@ namespace SGED.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
-                        .HasColumnName("descricaoTipoProcesso");
+                        .HasColumnName("descricaotipoprocesso");
 
                     b.Property<string>("NomeTipoProcesso")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
-                        .HasColumnName("tipoProcesso");
+                        .HasColumnName("tipoprocesso");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TipoProcesso");
+                    b.ToTable("tipoprocesso");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.TipoUsuario", b =>
@@ -1698,32 +1755,6 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Models.TipoDocumento", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("idTipoDocumento");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DescricaoTipoDocumento")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("character varying(450)")
-                        .HasColumnName("descricaoTipoDocumento");
-
-                    b.Property<string>("NomeTipoDocumento")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)")
-                        .HasColumnName("nomeTipoDocumento");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TipoDocumento");
-                });
-
             modelBuilder.Entity("SGED.Models.Entities.Bairro", b =>
                 {
                     b.HasOne("SGED.Models.Entities.Cidade", "Cidade")
@@ -1744,6 +1775,17 @@ namespace SGED.Migrations
                         .IsRequired();
 
                     b.Navigation("Estado");
+                });
+
+            modelBuilder.Entity("SGED.Models.Entities.Etapa", b =>
+                {
+                    b.HasOne("SGED.Models.Entities.TipoProcesso", "TipoProcesso")
+                        .WithMany("Etapas")
+                        .HasForeignKey("IdTipoProcesso")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TipoProcesso");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.Logradouro", b =>
@@ -1794,6 +1836,11 @@ namespace SGED.Migrations
             modelBuilder.Entity("SGED.Models.Entities.TipoLogradouro", b =>
                 {
                     b.Navigation("Logradouros");
+                });
+
+            modelBuilder.Entity("SGED.Models.Entities.TipoProcesso", b =>
+                {
+                    b.Navigation("Etapas");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.TipoUsuario", b =>

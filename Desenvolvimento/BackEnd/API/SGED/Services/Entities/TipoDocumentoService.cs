@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using SGED.DTO.Entities;
-using SGED.Models;
+using SGED.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
 
 namespace SGED.Services.Entities
 {
-	public class TipoDocumentoService : ITipoDocumentoService
+    public class TipoDocumentoService : ITipoDocumentoService
 	{
 		private readonly ITipoDocumentoRepository _tipoDocumentoRepository;
 		private readonly IMapper _mapper;

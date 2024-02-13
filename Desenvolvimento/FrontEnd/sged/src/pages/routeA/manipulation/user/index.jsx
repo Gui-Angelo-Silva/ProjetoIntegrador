@@ -371,7 +371,8 @@ export default function User() {
                                         style={{
                                             position: 'absolute',
                                             top: '5px', // Distância do topo
-                                            right: '110px', // Distância da direita
+                                            left: 'calc(50% + 150px)', // Centralizando horizontalmente e adicionando 100px à esquerda após o meio
+                                            transform: 'translate(-50%, -50%)', // Centralizando completamente
                                             cursor: 'pointer',
                                             borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
                                             width: '20px', // ajuste o tamanho da imagem conforme necessário
@@ -527,7 +528,8 @@ export default function User() {
                                         style={{
                                             position: 'absolute',
                                             top: '5px', // Distância do topo
-                                            right: '110px', // Distância da direita
+                                            left: 'calc(50% + 150px)', // Centralizando horizontalmente e adicionando 100px à esquerda após o meio
+                                            transform: 'translate(-50%, -50%)', // Centralizando completamente
                                             cursor: 'pointer',
                                             borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
                                             width: '20px', // ajuste o tamanho da imagem conforme necessário

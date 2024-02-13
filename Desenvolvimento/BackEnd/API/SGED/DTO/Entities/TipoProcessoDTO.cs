@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace SGED.DTO.Entities
 {
+    [Table("tipoprocesso")]
     public class TipoProcessoDTO
     {
         public int Id { get; set; }
@@ -19,5 +20,8 @@ namespace SGED.DTO.Entities
 		[MinLength(3)]
 		[MaxLength(100)]
 		public string DescricaoTipoProcesso { get; set; }
+
+        [JsonIgnore]
+        public ICollection<EtapaDTO>? EtapaDTOs { get; set; }
     }
 }

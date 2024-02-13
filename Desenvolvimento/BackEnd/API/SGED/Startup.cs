@@ -149,6 +149,10 @@ namespace SGED
             // Dependência: TipoDocumento
             services.AddScoped<ITipoDocumentoRepository, TipoDocumentoRepository>();
             services.AddScoped<ITipoDocumentoService, TipoDocumentoService>();
+
+            // Dependência: Etapa
+            services.AddScoped<IEtapaRepository, EtapaRepository>();
+            services.AddScoped<IEtapaService, EtapaService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

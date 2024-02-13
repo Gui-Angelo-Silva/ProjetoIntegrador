@@ -1,4 +1,4 @@
-﻿using SGED.Models;
+﻿using SGED.Models.Entities;
 
 namespace SGED.Repositories.Interfaces;
 

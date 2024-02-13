@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class Database : Migration
+    public partial class AddEtapa : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -73,17 +73,17 @@ namespace SGED.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TipoProcesso",
+                name: "tipoprocesso",
                 columns: table => new
                 {
-                    idTipoProcesso = table.Column<int>(type: "integer", nullable: false)
+                    idtipoprocesso = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    tipoProcesso = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    descricaoTipoProcesso = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                    tipoprocesso = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    descricaotipoprocesso = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TipoProcesso", x => x.idTipoProcesso);
+                    table.PrimaryKey("PK_tipoprocesso", x => x.idtipoprocesso);
                 });
 
             migrationBuilder.CreateTable(
@@ -118,6 +118,27 @@ namespace SGED.Migrations
                         column: x => x.IdEstado,
                         principalTable: "estado",
                         principalColumn: "idestado",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "etapa",
+                columns: table => new
+                {
+                    idetapa = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    nomeetapa = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    descricaoetapa = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
+                    IdTipoProcesso = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_etapa", x => x.idetapa);
+                    table.ForeignKey(
+                        name: "FK_etapa_tipoprocesso_IdTipoProcesso",
+                        column: x => x.IdTipoProcesso,
+                        principalTable: "tipoprocesso",
+                        principalColumn: "idtipoprocesso",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -466,6 +487,11 @@ namespace SGED.Migrations
                 column: "IdEstado");
 
             migrationBuilder.CreateIndex(
+                name: "IX_etapa_IdTipoProcesso",
+                table: "etapa",
+                column: "IdTipoProcesso");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_logradouro_IdBairro",
                 table: "logradouro",
                 column: "IdBairro");
@@ -485,6 +511,9 @@ namespace SGED.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "etapa");
+
+            migrationBuilder.DropTable(
                 name: "logradouro");
 
             migrationBuilder.DropTable(
@@ -494,10 +523,10 @@ namespace SGED.Migrations
                 name: "TipoDocumento");
 
             migrationBuilder.DropTable(
-                name: "TipoProcesso");
+                name: "usuario");
 
             migrationBuilder.DropTable(
-                name: "usuario");
+                name: "tipoprocesso");
 
             migrationBuilder.DropTable(
                 name: "bairro");

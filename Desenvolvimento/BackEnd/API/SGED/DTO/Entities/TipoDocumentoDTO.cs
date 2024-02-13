@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SGED.DTO.Entities
 {
+	[Table("tipodocumento")]
 	public class TipoDocumentoDTO
 	{
 		public int Id { get; set; }

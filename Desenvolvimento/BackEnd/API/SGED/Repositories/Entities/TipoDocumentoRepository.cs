@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SGED.Context;
-using SGED.Models;
+using SGED.Models.Entities;
 using SGED.Repositories.Interfaces;
 
 namespace SGED.Repositories.Entities
 {
-	public class TipoDocumentoRepository : ITipoDocumentoRepository
+    public class TipoDocumentoRepository : ITipoDocumentoRepository
 	{
 		private readonly AppDBContext _dbcontext;
 

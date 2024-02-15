@@ -14,28 +14,40 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import LogoJales from '../../../assets/pages/LogoJales.png'
 
+import MoonIcon from '@mui/icons-material/DarkModeOutlined';
+import SunIcon from '@mui/icons-material/WbSunnyOutlined';
+
 import { useSession } from '../../../object/service/session';
 import { useServer } from '../../../routes/serverRoute';
 import { useEffect, useState } from "react";
 
 export default function NavBar() {
 
-  const { getSession, defaultSession } = useSession();
-  const { clearSegment, inDevelopment } = useServer();
+  const [darkMode, setDarkMode] = useState(false);
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+    // Aqui você pode adicionar lógica para alternar a cor de fundo do website
+    // por exemplo, mudando classes CSS ou chamando uma função para alterar
+    // o tema da aplicação
+  };
+
+  const session = useSession();
+  const server = useServer();
   const [userName, setUserName] = useState("");
   const [userPicture, setUserPicture] = useState("");
 
   const GetUser = () => {
-    const user = getSession();
+    const user = session.getSession();
     if (user !== null) {
-setUserName(user.nomePessoa);
-setUserPicture(user.imagemUsuario);
+      setUserName(user.nomePessoa);
+      setUserPicture(user.imagemUsuario);
     }
   };
 
   const encerateSession = () => {
-    defaultSession();
-    clearSegment("login");
+    session.defaultSession();
+    server.clearSegment("login");
   };
 
   useEffect(() => {
@@ -82,7 +94,7 @@ setUserPicture(user.imagemUsuario);
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={() => inDevelopment("Perfil")}>Perfil</MenuItem>
+      <MenuItem onClick={() => server.clearSegment("profile")}>Perfil</MenuItem>
       <MenuItem onClick={() => encerateSession()}>Sair</MenuItem>
     </Menu>
   );
@@ -124,7 +136,7 @@ setUserPicture(user.imagemUsuario);
           aria-haspopup="true"
           color="inherit"
         >
-          {userPicture ? <img src={userPicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '30px', height: '30px', objectFit: 'cover' }}/> : <AccountCircle style={{ cursor: 'pointer', borderRadius: '50%', width: '30px', height: '30px', objectFit: 'cover' }}/>}
+          {userPicture ? <img src={userPicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '30px', height: '30px', objectFit: 'cover' }} /> : <AccountCircle style={{ cursor: 'pointer', borderRadius: '50%', width: '30px', height: '30px', objectFit: 'cover' }} />}
         </IconButton>
         <p>Profile</p>
       </MenuItem>
@@ -171,7 +183,21 @@ setUserPicture(user.imagemUsuario);
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              {userPicture ? <img src={userPicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '30px', height: '30px', objectFit: 'cover' }}/> : <AccountCircle style={{ cursor: 'pointer', borderRadius: '50%', width: '30px', height: '30px', objectFit: 'cover' }}/>}
+              {userPicture ? <img src={userPicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '25px', height: '25px', objectFit: 'cover', boxShadow: '0 0 0 1px white' }} /> : <AccountCircle style={{ cursor: 'pointer', borderRadius: '50%', width: '25px', height: '25px', objectFit: 'cover', boxShadow: '0 0 0 1px white' }} />}
+            </IconButton>
+            <IconButton
+              size="large"
+              aria-label="toggle dark mode"
+              color="inherit"
+              onClick={toggleDarkMode}
+            >
+              <Badge color="error">
+                {darkMode ? (
+                  <MoonIcon style={{ color: '#CCCCCC' }} />
+                ) : (
+                  <SunIcon style={{ color: '#FFD700' }} />
+                )}
+              </Badge>
             </IconButton>
             <IconButton
               size="large"

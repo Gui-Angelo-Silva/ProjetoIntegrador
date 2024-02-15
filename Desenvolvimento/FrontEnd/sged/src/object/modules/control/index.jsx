@@ -19,14 +19,23 @@ function ControlModule() {
         return /^(.)\1+$/.test(value); // Verifica se todos caracteres numéricos são iguais
     };
 
+    function clearInput(name) {
+        const input = document.getElementById(name);
+
+        if (input) {
+            input.value = ''; // Limpar o valor de um campo qualquer
+        }
+    };
+
     return {
         // Funções
         handleKeyDown,
         removeNonNumericCharacter,
         removeNumericCharacter,
-        checkEqualsCaracters
+        checkEqualsCaracters,
+        clearInput,
     };
-    
+
 }
 
 export default ControlModule;

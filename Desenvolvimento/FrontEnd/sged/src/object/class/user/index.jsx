@@ -195,6 +195,12 @@ function UserClass() {
 
   function removePicture(modal) {
     setUserPicture("");
+    const fileInput = document.getElementById(`fileInput${modal}`);
+
+    if(fileInput) {
+      fileInput.value = '';
+    }
+
     setAddImage(false);
   };
 

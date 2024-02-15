@@ -55,31 +55,53 @@ function PersonClass() {
         setErrorPersonRgIe('');
     };
 
-    function checkDataExists(persons, id, email, cpfCnpj, rgIe) {
+    function checkEmailExist(persons, id, email) {
         let emailExists = false;
-        let cpfCnpjExists = false;
-        let rgIeExists = false;
 
         if (id === 0) {
             emailExists = persons.some(object => object.emailPessoa === email);
-            cpfCnpjExists = persons.some(object => object.cpfCnpjPessoa === cpfCnpj);
-            rgIeExists = persons.some(object => object.rgIePessoa === rgIe);
         } else {
             emailExists = persons.some(object => object.id !== id && object.emailPessoa === email);
-            cpfCnpjExists = persons.some(object => object.id !== id && object.cpfCnpjPessoa === cpfCnpj);
-            rgIeExists = persons.some(object => object.id !== id && object.rgIePessoa === rgIe);
         }
+
+        console.log()
 
         if (!emailExists) {
             const string = "devops@development.com";
-            if (email === string) {
-                emailExists = true;
-            }
+            emailExists = email === string;
         }
 
-        const status = emailExists || cpfCnpjExists || rgIeExists ? false : true;
+        const status = emailExists ? false : true;
 
-        return { status, emailExists, cpfCnpjExists, rgIeExists };
+        return { status, emailExists };
+    };
+
+    function checkCfCnpjExists(persons, id, cpfCnpj) {
+        let cpfCnpjExists = false;
+
+        if (id === 0) {
+            cpfCnpjExists = persons.some(object => object.cpfCnpjPessoa === cpfCnpj);
+        } else {
+            cpfCnpjExists = persons.some(object => object.id !== id && object.cpfCnpjPessoa === cpfCnpj);
+        }
+
+        const status = cpfCnpjExists ? false : true;
+
+        return { status, cpfCnpjExists };
+    };
+
+    function checkRgIeExists(persons, id, rgIe) {
+        let rgIeExists = false;
+
+        if (id === 0) {
+            rgIeExists = persons.some(object => object.rgIePessoa === rgIe);
+        } else {
+            rgIeExists = persons.some(object => object.id !== id && object.rgIePessoa === rgIe);
+        }
+
+        const status = rgIeExists ? false : true;
+
+        return { status, rgIeExists };
     };
 
     function validateCpf(cpf) {
@@ -303,7 +325,7 @@ function PersonClass() {
                 if (!email && !emailAddress) {
                     email = 'E-mail inválido: O nome do usuário de e-mail não pode ser vazio!';
                     status = false;
-                  } else if (!email && lastDotPosition <= personEmail.indexOf('@')) {
+                } else if (!email && lastDotPosition <= personEmail.indexOf('@')) {
                     email = 'E-mail inválido: O "." deve estar após o "@"!';
                     status = false;
                 } else if (!email && (personEmail[indexSymbol + 1] === '.' || personEmail[indexLastCaracter] === '.' || control.removeNonNumericCharacter(domain))) {
@@ -331,7 +353,8 @@ function PersonClass() {
 
             const response = CpfCnpj(personCpfCnpj);
 
-            if (response === -1) { cpfCnpj = 'CPF inválido!'; status = false; }
+            if (response === 0) { cpfCnpj = 'Documento incompleto!'; status = false; }
+            else if (response === -1) { cpfCnpj = 'CPF inválido!'; status = false; }
             else if (response === -2) { cpfCnpj = 'CNPJ inválido!'; status = false; }
 
         } else {
@@ -343,7 +366,8 @@ function PersonClass() {
 
             const response = RgIe(personRgIe);
 
-            if (response === -1) { rgIe = 'RG inválido!'; status = false; }
+            if (response === 0) { rgIe = 'Documento incompleto!'; status = false; }
+            else if (response === -1) { rgIe = 'RG inválido!'; status = false; }
             else if (response === -2) { rgIe = 'IE inválido!'; status = false; }
 
         } else {
@@ -359,17 +383,33 @@ function PersonClass() {
                 rgIePessoa: object.rgIePessoa
             }));
 
-            const response = checkDataExists(persons, id, personEmail, personCpfCnpj, personRgIe);
+            let response;
 
-            status ? status = response.status : null;
-            if (response.emailExists) {
-                email = 'O e-mail informado já existe!';
+            if (!email) {
+                response = checkEmailExist(persons, id, personEmail);
+                status ? status = response.status : undefined;
+
+                if (response.emailExists) {
+                    email = 'O e-mail informado já existe!';
+                }
             }
-            if (response.cpfCnpjExists) {
-                personCpfCnpj.length === 14 ? cpfCnpj = 'O CPF informado já existe!' : cpfCnpj = 'O CNPJ informado já existe!';
+
+            if (!cpfCnpj) {
+                response = checkCfCnpjExists(persons, id, personCpfCnpj);
+                status ? status = response.status : undefined;
+
+                if (response.cpfCnpjExists) {
+                    personCpfCnpj.length === 14 ? cpfCnpj = 'O CPF informado já existe!' : cpfCnpj = 'O CNPJ informado já existe!';
+                }
             }
-            if (response.rgIeExists) {
-                personRgIe.length === 12 ? rgIe = 'O RG informado já existe!' : rgIe = 'A IE informada já existe!';
+
+            if (!rgIe) {
+                response = checkRgIeExists(persons, id, personRgIe);
+                status ? status = response.status : undefined;
+
+                if (response.rgIeExists) {
+                    personRgIe.length === 12 ? rgIe = 'O RG informado já existe!' : rgIe = 'A IE informada já existe!';
+                }
             }
         }
 

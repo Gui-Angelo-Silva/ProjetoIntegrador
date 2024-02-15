@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import Home from '../../pages/routeA/dashboard/home';
+import Profile from '../../pages/allRoutes/account/profile';
 import Development from '../../pages/allRoutes/utility/development';
 import NotFound from '../../pages/allRoutes/utility/notfound';
 import NotPermission from '../../pages/allRoutes/utility/notpermission';
@@ -24,6 +25,8 @@ export default function RouteA() {
             <Route path="/a/notpermission" element={<NotPermission />} />
 
             <Route path="/a/home" element={<Home />}></Route>
+
+            <Route path="/a/profile" element={<Profile />} />
 
             <Route path="/a/registration" element={<Registration />}></Route>
             <Route path="/a/registration/state" element={<State />}></Route>

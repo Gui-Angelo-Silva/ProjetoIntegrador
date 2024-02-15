@@ -15,7 +15,7 @@ import UserClass from '../../../../object/class/user';
 import ControlModule from '../../../../object/modules/control';
 import SelectModule from '../../../../object/modules/select';
 
-export default function User() {
+export default function Citizen() {
 
     const { componentMounted } = useMontage();
 
@@ -39,7 +39,6 @@ export default function User() {
     const openCloseModalInsert = (boolean) => {
         setModalInsert(boolean);
         user.clearError();
-        user.removePicture();
 
         if (!boolean) {
             user.clearData();

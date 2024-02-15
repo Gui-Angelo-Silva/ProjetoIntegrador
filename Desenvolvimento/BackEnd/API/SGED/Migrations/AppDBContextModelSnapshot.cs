@@ -416,6 +416,11 @@ namespace SGED.Migrations
                         .HasColumnType("text")
                         .HasColumnName("emailpessoa");
 
+                    b.Property<string>("ImagemPessoa")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("imagempessoa");
+
                     b.Property<string>("NomePessoa")
                         .IsRequired()
                         .HasMaxLength(70)
@@ -1685,10 +1690,10 @@ namespace SGED.Migrations
                     b.Property<int>("IdTipoUsuario")
                         .HasColumnType("integer");
 
-                    b.Property<string>("ImagemUsuario")
+                    b.Property<string>("ImagemPessoa")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("imagemusuario");
+                        .HasColumnName("imagempessoa");
 
                     b.Property<string>("NomePessoa")
                         .IsRequired()
@@ -1732,7 +1737,7 @@ namespace SGED.Migrations
                             CpfCNPJPessoa = "000.000.000-00",
                             EmailPessoa = "devops@development.com",
                             IdTipoUsuario = 1,
-                            ImagemUsuario = "",
+                            ImagemPessoa = "",
                             NomePessoa = "Dev",
                             RgIEPessoa = "00.000.000-0",
                             SenhaUsuario = "123456",
@@ -1746,7 +1751,7 @@ namespace SGED.Migrations
                             CpfCNPJPessoa = "000.000.000-00",
                             EmailPessoa = "admin@gmail.com",
                             IdTipoUsuario = 2,
-                            ImagemUsuario = "",
+                            ImagemPessoa = "",
                             NomePessoa = "Secretário Geral",
                             RgIEPessoa = "00.000.000-0",
                             SenhaUsuario = "987654",

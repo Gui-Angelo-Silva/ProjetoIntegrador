@@ -44,6 +44,7 @@ public class UsuarioRepository : IUsuarioRepository
 
     public async Task<Usuario> Update(Usuario usuario)
     {
+        _dbContext.ChangeTracker.Clear();
         _dbContext.Entry(usuario).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
         return usuario;

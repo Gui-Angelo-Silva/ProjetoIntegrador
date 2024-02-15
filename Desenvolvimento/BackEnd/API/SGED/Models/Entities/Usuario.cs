@@ -11,9 +11,6 @@ namespace SGED.Models.Entities
         [Column("idusuario")]
         public int Id { get; set; }
 
-        [Column("imagemusuario")]
-        public string ImagemUsuario { get; set; }
-
         [Column("senhausuario")]
         public string SenhaUsuario { get; set; }
 

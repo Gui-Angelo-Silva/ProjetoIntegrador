@@ -20,6 +20,7 @@ import SunIcon from '@mui/icons-material/WbSunnyOutlined';
 import { useSession } from '../../../object/service/session';
 import { useServer } from '../../../routes/serverRoute';
 import { useEffect, useState } from "react";
+import UserClass from '../../../object/class/user';
 
 export default function NavBar() {
 
@@ -34,14 +35,12 @@ export default function NavBar() {
 
   const session = useSession();
   const server = useServer();
-  const [userName, setUserName] = useState("");
-  const [userPicture, setUserPicture] = useState("");
+  const user = UserClass();
 
   const GetUser = () => {
-    const user = session.getSession();
-    if (user !== null) {
-      setUserName(user.nomePessoa);
-      setUserPicture(user.imagemUsuario);
+    const object = session.getSession();
+    if (object !== null) {
+      user.getData(object);
     }
   };
 
@@ -136,7 +135,7 @@ export default function NavBar() {
           aria-haspopup="true"
           color="inherit"
         >
-          {userPicture ? <img src={userPicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '30px', height: '30px', objectFit: 'cover' }} /> : <AccountCircle style={{ cursor: 'pointer', borderRadius: '50%', width: '30px', height: '30px', objectFit: 'cover' }} />}
+          {user.personPicture ? <img src={user.personPicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '30px', height: '30px', objectFit: 'cover' }} /> : <AccountCircle style={{ cursor: 'pointer', borderRadius: '50%', width: '30px', height: '30px', objectFit: 'cover' }} />}
         </IconButton>
         <p>Profile</p>
       </MenuItem>
@@ -171,7 +170,7 @@ export default function NavBar() {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' }, marginLeft: 5 }}
           >
-            {userName}
+            {user.personName}
           </Typography>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton
@@ -183,7 +182,7 @@ export default function NavBar() {
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              {userPicture ? <img src={userPicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '25px', height: '25px', objectFit: 'cover', boxShadow: '0 0 0 1px white' }} /> : <AccountCircle style={{ cursor: 'pointer', borderRadius: '50%', width: '25px', height: '25px', objectFit: 'cover', boxShadow: '0 0 0 1px white' }} />}
+              {user.personPicture ? <img src={user.personPicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '25px', height: '25px', objectFit: 'cover', boxShadow: '0 0 0 1px white' }} /> : <img src={user.defaultPicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '25px', height: '25px', objectFit: 'cover', boxShadow: '0 0 0 1px white' }} />}
             </IconButton>
             <IconButton
               size="large"

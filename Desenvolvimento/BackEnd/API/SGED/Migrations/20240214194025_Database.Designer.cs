@@ -11,8 +11,8 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240212131513_AddEtapa")]
-    partial class AddEtapa
+    [Migration("20240214194025_Database")]
+    partial class Database
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -418,6 +418,11 @@ namespace SGED.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("emailpessoa");
+
+                    b.Property<string>("ImagemPessoa")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("imagempessoa");
 
                     b.Property<string>("NomePessoa")
                         .IsRequired()
@@ -1688,10 +1693,10 @@ namespace SGED.Migrations
                     b.Property<int>("IdTipoUsuario")
                         .HasColumnType("integer");
 
-                    b.Property<string>("ImagemUsuario")
+                    b.Property<string>("ImagemPessoa")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("imagemusuario");
+                        .HasColumnName("imagempessoa");
 
                     b.Property<string>("NomePessoa")
                         .IsRequired()
@@ -1735,7 +1740,7 @@ namespace SGED.Migrations
                             CpfCNPJPessoa = "000.000.000-00",
                             EmailPessoa = "devops@development.com",
                             IdTipoUsuario = 1,
-                            ImagemUsuario = "",
+                            ImagemPessoa = "",
                             NomePessoa = "Dev",
                             RgIEPessoa = "00.000.000-0",
                             SenhaUsuario = "123456",
@@ -1749,7 +1754,7 @@ namespace SGED.Migrations
                             CpfCNPJPessoa = "000.000.000-00",
                             EmailPessoa = "admin@gmail.com",
                             IdTipoUsuario = 2,
-                            ImagemUsuario = "",
+                            ImagemPessoa = "",
                             NomePessoa = "Secretário Geral",
                             RgIEPessoa = "00.000.000-0",
                             SenhaUsuario = "987654",

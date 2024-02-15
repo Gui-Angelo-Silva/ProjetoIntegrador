@@ -79,7 +79,7 @@ public class AppDBContext : DbContext
 
         // Builder: Usuario 
         modelBuilder.Entity<Usuario>().HasKey(b => b.Id);
-        modelBuilder.Entity<Usuario>().Property(b => b.ImagemUsuario);
+        modelBuilder.Entity<Usuario>().Property(b => b.ImagemPessoa).IsRequired();
         modelBuilder.Entity<Usuario>().Property(b => b.NomePessoa).HasMaxLength(70).IsRequired();
 		modelBuilder.Entity<Usuario>().Property(b => b.EmailPessoa).IsRequired();
 		modelBuilder.Entity<Usuario>().Property(b => b.SenhaUsuario).HasMaxLength(50).IsRequired();
@@ -95,7 +95,8 @@ public class AppDBContext : DbContext
 
 		// Builder: Municipe
 		modelBuilder.Entity<Municipe>().HasKey(b => b.Id);
-		modelBuilder.Entity<Municipe>().Property(b => b.NomePessoa).HasMaxLength(70).IsRequired();
+        modelBuilder.Entity<Municipe>().Property(b => b.ImagemPessoa).IsRequired();
+        modelBuilder.Entity<Municipe>().Property(b => b.NomePessoa).HasMaxLength(70).IsRequired();
 		modelBuilder.Entity<Municipe>().Property(b => b.EmailPessoa).IsRequired();
 		modelBuilder.Entity<Municipe>().Property(b => b.TelefonePessoa).HasMaxLength(15).IsRequired();
 		modelBuilder.Entity<Municipe>().Property(b => b.CpfCNPJPessoa).HasMaxLength(18).IsRequired();
@@ -345,8 +346,8 @@ public class AppDBContext : DbContext
 		);
 
 		modelBuilder.Entity<Usuario>().HasData(
-			new Usuario { Id = 1, ImagemUsuario = "", NomePessoa = "Dev", EmailPessoa = "devops@development.com", SenhaUsuario = "123456", TelefonePessoa = "(00) 00000-0000", CpfCNPJPessoa = "000.000.000-00", RgIEPessoa = "00.000.000-0", CargoUsuario = "Desenvolvimento", StatusUsuario = true, IdTipoUsuario = 1 },
-			new Usuario { Id = 2, ImagemUsuario = "", NomePessoa = "Secretário Geral", EmailPessoa = "admin@gmail.com", SenhaUsuario = "987654", TelefonePessoa = "(00) 00000-0000", CpfCNPJPessoa = "000.000.000-00", RgIEPessoa = "00.000.000-0", CargoUsuario = "Secretário Geral", StatusUsuario = true, IdTipoUsuario = 2 }
+			new Usuario { Id = 1, ImagemPessoa = "", NomePessoa = "Dev", EmailPessoa = "devops@development.com", SenhaUsuario = "123456", TelefonePessoa = "(00) 00000-0000", CpfCNPJPessoa = "000.000.000-00", RgIEPessoa = "00.000.000-0", CargoUsuario = "Desenvolvimento", StatusUsuario = true, IdTipoUsuario = 1 },
+			new Usuario { Id = 2, ImagemPessoa = "", NomePessoa = "Secretário Geral", EmailPessoa = "admin@gmail.com", SenhaUsuario = "987654", TelefonePessoa = "(00) 00000-0000", CpfCNPJPessoa = "000.000.000-00", RgIEPessoa = "00.000.000-0", CargoUsuario = "Secretário Geral", StatusUsuario = true, IdTipoUsuario = 2 }
 		);
 	}
 }

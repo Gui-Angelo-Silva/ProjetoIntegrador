@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class AddEtapa : Migration
+    public partial class Database : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -33,6 +33,7 @@ namespace SGED.Migrations
                 {
                     idmunicipe = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    imagempessoa = table.Column<string>(type: "text", nullable: false),
                     nomepessoa = table.Column<string>(type: "character varying(70)", maxLength: 70, nullable: false),
                     emailpessoa = table.Column<string>(type: "text", nullable: false),
                     telefonepessoa = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
@@ -148,11 +149,11 @@ namespace SGED.Migrations
                 {
                     idusuario = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    imagemusuario = table.Column<string>(type: "text", nullable: false),
                     senhausuario = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     cargousuario = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     statususuario = table.Column<bool>(type: "boolean", nullable: false),
                     IdTipoUsuario = table.Column<int>(type: "integer", nullable: false),
+                    imagempessoa = table.Column<string>(type: "text", nullable: false),
                     nomepessoa = table.Column<string>(type: "character varying(70)", maxLength: 70, nullable: false),
                     emailpessoa = table.Column<string>(type: "text", nullable: false),
                     telefonepessoa = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
@@ -469,7 +470,7 @@ namespace SGED.Migrations
 
             migrationBuilder.InsertData(
                 table: "usuario",
-                columns: new[] { "idusuario", "cargousuario", "cpfcnpjpessoa", "emailpessoa", "IdTipoUsuario", "imagemusuario", "nomepessoa", "rgiepessoa", "senhausuario", "statususuario", "telefonepessoa" },
+                columns: new[] { "idusuario", "cargousuario", "cpfcnpjpessoa", "emailpessoa", "IdTipoUsuario", "imagempessoa", "nomepessoa", "rgiepessoa", "senhausuario", "statususuario", "telefonepessoa" },
                 values: new object[,]
                 {
                     { 1, "Desenvolvimento", "000.000.000-00", "devops@development.com", 1, "", "Dev", "00.000.000-0", "123456", true, "(00) 00000-0000" },

@@ -13,8 +13,10 @@ import NotVisible from '@mui/icons-material/VisibilityOffOutlined';
 import { useMontage } from '../../../../object/modules/montage';
 import { useSession } from '../../../../object/service/session';
 import ConnectionEntity from '../../../../object/service/connection';
-import ListModule from '../../../../object/modules/list';
 import UserClass from '../../../../object/class/user';
+import CitizenClass from '../../../../object/class/citizen';
+import LoginClass from '../../../../object/class/login';
+import ListModule from '../../../../object/modules/list';
 import ControlModule from '../../../../object/modules/control';
 
 export default function User() {
@@ -28,12 +30,14 @@ export default function User() {
   const session = useSession();
   const connection = ConnectionEntity();
   const user = UserClass();
+  const citizen = CitizenClass();
+  const login = LoginClass();
   const list = ListModule();
   const control = ControlModule();
 
   const [inEdit, setInEdit] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [inOperation, setInOperation] = useState(false);
+  const [inOperation, setInOperation] = useState('');
   const [sucessUpdate, setSucessUpdate] = useState(false);
 
   const openCloseEdit = (boolean) => {
@@ -57,25 +61,64 @@ export default function User() {
   };
 
   const PutUser = async () => {
-    setInOperation(true);
+    setInOperation('Verificando Dados...');
 
-    if (user.verifyData(list.list)) {
-      const response = await connection.objectUrl("Usuario").putOrder(user);
+    if (user.verifyData()) {
+      setInOperation('Enviando Dados...');
+      let response = await connection.objectUrl("Usuario").putOrder(user);
 
-      openCloseEdit(!response.status);
-      setSucessUpdate(response.status);
-      console.log(response.message);
+      if (!response.status) { user.getError(response.data); setInOperation(''); }
+      else {
+        citizen.getData(response.data);
+        response = await connection.objectUrl("Municipe").putOrder(citizen);
+
+        if (!response.status) { user.getError(response.data); setInOperation(''); }
+        else {
+          setInOperation('Salvando Dados...');
+
+          login.setPersonEmail(user.personEmail);
+          login.setUserPassword(user.userPassword);
+
+          setSucessUpdate('Sucesso');
+        }
+      }
     } else {
       console.log('Dados inválidos!');
+      setInOperation('');
     }
 
-    setInOperation(false);
+    console.log(citizen);
   };
 
   useEffect(() => {
     GetUser();
     selectUser();
+
+    const getDataLogin = () => {
+      const data = session.getLogin();
+      if (data) {
+        login.setPersistLogin(true);
+      }
+    }; getDataLogin();
   }, []);
+
+  useEffect(() => {
+    const UpdateSession = async () => {
+      if (sucessUpdate === 'Sucesso') {
+        try {
+          const response = await session.createSession(login);
+          if (response.validation) {
+            setSucessUpdate(true);
+            openCloseEdit(false);
+          } else {
+            console.log(response.message);
+          }
+        } catch (error) {
+          console.error(response.message);
+        }
+      }; setInOperation('');
+    }; UpdateSession();
+  }, [sucessUpdate]);
 
   const clearField = (attribute) => {
     user[attribute] instanceof Function ? user[attribute]('') : console.log(`O atributo ${attribute} não existe!`);
@@ -95,13 +138,13 @@ export default function User() {
               <div className="form-group">
                 <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                   <input
-                    id="fileInputInsert"
+                    id="fileInput"
                     type="file"
                     style={{ display: 'none' }}
                     onChange={(e) => user.insertPicture(e.target.files[0])}
                   />
                   <img
-                    src={user.userPicture ? user.userPicture : user.defaultPicture}
+                    src={user.personPicture ? user.personPicture : user.defaultPicture}
                     style={{
                       cursor: 'pointer',
                       borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
@@ -111,7 +154,7 @@ export default function User() {
                       boxShadow: '0 0 0 3px white, 0 0 0 5px black', // Adicionando uma borda branca (interna) e uma borda preta (externa)
                     }}
                     title="Selecionar Imagem"
-                    onClick={(e) => inEdit ? user.handleImageClick("Insert") : undefined}
+                    onClick={(e) => inEdit ? user.handleImageClick('') : undefined}
                   />
                   {user.addImage && inEdit && (
                     <img
@@ -127,7 +170,7 @@ export default function User() {
                         height: '20px', // ajuste o tamanho da imagem conforme necessário
                         objectFit: 'cover', // para garantir que a imagem seja totalmente coberta pelo círculo
                       }}
-                      onClick={(e) => user.removePicture("Insert")}
+                      onClick={(e) => user.removePicture('')}
                     />
                   )}
                 </div>
@@ -316,9 +359,9 @@ export default function User() {
                       className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`}
                       style={{ width: '100px', height: '40px' }}
                       onClick={() => inOperation ? null : PutUser()}
-                      disabled={inOperation}
+                      disabled={inOperation ? true : false}
                     >
-                      {inOperation ? 'Aguarde' : 'Atualizar'}
+                      {inOperation ? inOperation : 'Atualizar'}
                     </button>
                   </>
                 ) : (
@@ -337,7 +380,7 @@ export default function User() {
             </div>
           </div>
         </div >
-        <Modal isOpen={sucessUpdate}>
+        <Modal isOpen={sucessUpdate === true ? true : false}>
           <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
           <ModalBody className="justify-center">
             <div className="flex flex-row justify-center p-2" style={{ textAlign: 'center' }}>

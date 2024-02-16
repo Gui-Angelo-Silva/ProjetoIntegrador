@@ -129,7 +129,7 @@ function Cards() {
                 module: "Processo"
             },
             {
-                onClick: () => inDevelopment("Controle de Etapa"),
+                onClick: () => addSegment("stage"),
                 image: ImgEtapa,
                 tooltip: "Abrir a Página de Controle de Etapa",
                 title: "Etapa",

@@ -16,6 +16,7 @@ import Neighborhood from '../../pages/routeA/manipulation/neighborhood';
 import PublicPlace from '../../pages/routeA/manipulation/publicplace';
 import TypeDocument from '../../pages/routeA/manipulation/typedocument';
 import TypeProcess from '../../pages/routeA/manipulation/typeprocess';
+import Stage from '../../pages/routeA/manipulation/stage';
 
 export default function RouteA() {
     return (
@@ -38,6 +39,7 @@ export default function RouteA() {
             <Route path="/a/registration/publicplace" element={<PublicPlace />}></Route>
             <Route path="/a/registration/typedocument" element={<TypeDocument />}></Route>
             <Route path="/a/registration/typeprocess" element={<TypeProcess  />}></Route>
+            <Route path="/a/registration/stage" element={<Stage  />}></Route>
 
             <Route path="/a/document" element={<Document />}></Route>
             <Route path="/a/test" element={<Test />}></Route>

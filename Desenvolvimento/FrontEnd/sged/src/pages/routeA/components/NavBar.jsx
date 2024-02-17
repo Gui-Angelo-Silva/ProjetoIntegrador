@@ -135,7 +135,7 @@ export default function NavBar() {
           aria-haspopup="true"
           color="inherit"
         >
-          {user.personPicture ? <img src={user.personPicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '30px', height: '30px', objectFit: 'cover' }} /> : <AccountCircle style={{ cursor: 'pointer', borderRadius: '50%', width: '30px', height: '30px', objectFit: 'cover' }} />}
+          <img src={user.personPicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '25px', height: '25px', objectFit: 'cover', border: '1px solid black', boxShadow: '0 0 0 1px white', backgroundColor: 'white' }} />
         </IconButton>
         <p>Profile</p>
       </MenuItem>
@@ -182,7 +182,7 @@ export default function NavBar() {
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              {user.personPicture ? <img src={user.personPicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '25px', height: '25px', objectFit: 'cover', boxShadow: '0 0 0 1px white' }} /> : <img src={user.defaultPicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '25px', height: '25px', objectFit: 'cover', boxShadow: '0 0 0 1px white' }} />}
+              <img src={user.personPicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '25px', height: '25px', objectFit: 'cover', border: '1px solid black', boxShadow: '0 0 0 1px white', backgroundColor: 'white' }} />
             </IconButton>
             <IconButton
               size="large"

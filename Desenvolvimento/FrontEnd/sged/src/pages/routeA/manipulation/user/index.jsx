@@ -8,11 +8,12 @@ import { Link } from "react-router-dom";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 import Select from 'react-select';
 
+import defaultProfilePicture from '../../../../assets/user/defaultProfilePicture.png';
+
 import { useMontage } from '../../../../object/modules/montage';
 import ConnectionEntity from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
 import UserClass from '../../../../object/class/user';
-import ControlModule from '../../../../object/modules/control';
 import SelectModule from '../../../../object/modules/select';
 
 export default function User() {
@@ -27,7 +28,6 @@ export default function User() {
     const user = UserClass();
     const list = ListModule();
     const listTypeUser = ListModule();
-    const control = ControlModule();
     const selectBox = SelectModule();
 
     const [modalInsert, setModalInsert] = useState(false);
@@ -289,11 +289,11 @@ export default function User() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-6 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="flex ml-5 text-white text-lg font-semibold">Nome</span>
+                                <span className="flex ml-5 justify-center items-center text-white text-lg font-semibold">Imagem</span>
+                                <span className="flex justify-center items-center text-white text-lg font-semibold">Nome</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">E-mail</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">Tipo Usuário</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">Cargo</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Status</span>
                                 <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                             </div>
                             <ul className="w-full">
@@ -301,11 +301,13 @@ export default function User() {
                                     const tipoUsuario = listTypeUser.list.find(typeuser => typeuser.id === user.idTipoUsuario);
                                     return (
                                         <li className="grid grid-cols-6 w-full" key={user.id}>
-                                            <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{user.nomePessoa}</span>
+                                            <span className="flex pl-5 justify-center items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">
+                                                <img src={user.imagemPessoa ? user.imagemPessoa : defaultProfilePicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '40px', height: '40px', objectFit: 'cover', boxShadow: '0 0 0 1px black', }} />
+                                            </span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.nomePessoa}</span>
                                             <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.emailPessoa}</span>
                                             <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoUsuario ? tipoUsuario.nomeTipoUsuario : 'Tipo Usuário não encontrado!'}</span>
                                             <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.cargoUsuario}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.statusUsuario ? 'Ativo' : 'Inativo'}</span>
                                             <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                                 <button className="" onClick={() => SelectUser(user, "Editar")}><PencilSimple size={20} className="hover:text-cyan-500" /></button>{"  "}
                                                 <button className="" onClick={() => SelectUser(user, "Excluir")}><TrashSimple size={20} className="hover:text-red-600" /></button>
@@ -357,7 +359,7 @@ export default function User() {
                                     onChange={(e) => user.insertPicture(e.target.files[0])}
                                 />
                                 <img
-                                    src={user.userPicture ? user.userPicture : user.defaultPicture}
+                                    src={user.personPicture ? user.personPicture : user.defaultPicture}
                                     style={{
                                         cursor: 'pointer',
                                         borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
@@ -424,7 +426,7 @@ export default function User() {
                             <br />
                             <label className="text-[#444444]">Telefone: </label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => user.handlePhone(e.target.value)} value={user.personTelephone} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.handlePhone(e.target.value)} value={user.personTelephone} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                                 {user.errorPersonTelephone}
                             </div>
@@ -440,7 +442,7 @@ export default function User() {
                                 </option>
                             </select>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => user.handleCpfCnpj(e.target.value)} value={user.personCpfCnpj} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.handleCpfCnpj(e.target.value)} value={user.personCpfCnpj} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                                 {user.errorPersonCpfCnpj}
                             </div>
@@ -456,7 +458,7 @@ export default function User() {
                                 </option>
                             </select>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => user.handleRgIe(e.target.value)} value={user.personRgIe} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.handleRgIe(e.target.value)} value={user.personRgIe} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                                 {user.errorPersonRgIe}
                             </div>
@@ -514,7 +516,7 @@ export default function User() {
                                     onChange={(e) => user.insertPicture(e.target.files[0])}
                                 />
                                 <img
-                                    src={user.userPicture ? user.userPicture : user.defaultPicture}
+                                    src={user.personPicture ? user.personPicture : user.defaultPicture}
                                     style={{
                                         cursor: 'pointer',
                                         borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
@@ -578,7 +580,7 @@ export default function User() {
                             <br />
                             <label className="text-[#444444]">Telefone: </label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => user.handlePhone(e.target.value)} value={user.personTelephone} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.handlePhone(e.target.value)} value={user.personTelephone} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                                 {user.errorPersonTelephone}
                             </div>
@@ -594,7 +596,7 @@ export default function User() {
                                 </option>
                             </select>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => user.handleCpfCnpj(e.target.value)} value={user.personCpfCnpj} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.handleCpfCnpj(e.target.value)} value={user.personCpfCnpj} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                                 {user.errorPersonCpfCnpj}
                             </div>
@@ -610,7 +612,7 @@ export default function User() {
                                 </option>
                             </select>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => user.handleRgIe(e.target.value)} value={user.personRgIe} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.handleRgIe(e.target.value)} value={user.personRgIe} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
                                 {user.errorPersonRgIe}
                             </div>
@@ -634,12 +636,12 @@ export default function User() {
                                 onInputChange={selectBox.delayedSearch}
                                 loadOptions={selectBox.loadOptions}
                                 options={selectBox.options}
-                                placeholder="Pesquisar estado . . ."
+                                placeholder="Pesquisar tipo usuário . . ."
                                 isClearable
                                 isSearchable
                                 noOptionsMessage={() => {
                                     if (listTypeUser.list.length === 0) {
-                                        return "Nenhum estado cadastrado!";
+                                        return "Nenhum tipo usuário cadastrado!";
                                     } else {
                                         return "Nenhuma opção encontrada!";
                                     }

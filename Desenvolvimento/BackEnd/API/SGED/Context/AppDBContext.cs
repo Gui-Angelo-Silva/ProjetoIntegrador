@@ -339,14 +339,13 @@ public class AppDBContext : DbContext
 
 		modelBuilder.Entity<TipoUsuario>().HasData(
 			new TipoUsuario { Id = 1, NomeTipoUsuario = "Desenvolvedor", NivelAcesso = "A", DescricaoTipoUsuario = "Entidade voltada ao time de desenvolvimento para uso da plataforma durante testes." },
-			new TipoUsuario { Id = 2, NomeTipoUsuario = "Administrador", NivelAcesso = "A", DescricaoTipoUsuario = "Entidade administrativa do orgão da Secretária." },
-			new TipoUsuario { Id = 3, NomeTipoUsuario = "Funcionário", NivelAcesso = "B", DescricaoTipoUsuario = "Entidade de suporte para a comunidade local." },
-			new TipoUsuario { Id = 4, NomeTipoUsuario = "Jurídico", NivelAcesso = "C", DescricaoTipoUsuario = "Entidade que representa empresas, instituições ou qualquer entidade jurídica perante a lei." },
-			new TipoUsuario { Id = 5, NomeTipoUsuario = "Físico", NivelAcesso = "D", DescricaoTipoUsuario = "Entidade que representa todos os munícipes da cidade." }
+			new TipoUsuario { Id = 2, NomeTipoUsuario = "Administrador", NivelAcesso = "A", DescricaoTipoUsuario = "Entidade administrativa do Sistema." },
+			new TipoUsuario { Id = 3, NomeTipoUsuario = "Funcionário", NivelAcesso = "B", DescricaoTipoUsuario = "Entidade responsável pela alimentação de informações do Sistema." },
+			new TipoUsuario { Id = 4, NomeTipoUsuario = "Estagiário", NivelAcesso = "C", DescricaoTipoUsuario = "Entidade auxiliar na alimentação de informações do Sistema." }
 		);
 
 		modelBuilder.Entity<Usuario>().HasData(
-			new Usuario { Id = 1, ImagemPessoa = "", NomePessoa = "Dev", EmailPessoa = "devops@development.com", SenhaUsuario = "123456", TelefonePessoa = "(00) 00000-0000", CpfCNPJPessoa = "000.000.000-00", RgIEPessoa = "00.000.000-0", CargoUsuario = "Desenvolvimento", StatusUsuario = true, IdTipoUsuario = 1 },
+			new Usuario { Id = 1, ImagemPessoa = "", NomePessoa = "Desenvolvedor", EmailPessoa = "devops@development.com", SenhaUsuario = "123456", TelefonePessoa = "(00) 00000-0000", CpfCNPJPessoa = "000.000.000-00", RgIEPessoa = "00.000.000-0", CargoUsuario = "Desenvolvimento", StatusUsuario = true, IdTipoUsuario = 1 },
 			new Usuario { Id = 2, ImagemPessoa = "", NomePessoa = "Secretário Geral", EmailPessoa = "admin@gmail.com", SenhaUsuario = "987654", TelefonePessoa = "(00) 00000-0000", CpfCNPJPessoa = "000.000.000-00", RgIEPessoa = "00.000.000-0", CargoUsuario = "Secretário Geral", StatusUsuario = true, IdTipoUsuario = 2 }
 		);
 	}

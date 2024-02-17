@@ -445,10 +445,9 @@ namespace SGED.Migrations
                 values: new object[,]
                 {
                     { 1, "Entidade voltada ao time de desenvolvimento para uso da plataforma durante testes.", "A", "Desenvolvedor" },
-                    { 2, "Entidade administrativa do orgão da Secretária.", "A", "Administrador" },
-                    { 3, "Entidade de suporte para a comunidade local.", "B", "Funcionário" },
-                    { 4, "Entidade que representa empresas, instituições ou qualquer entidade jurídica perante a lei.", "C", "Jurídico" },
-                    { 5, "Entidade que representa todos os munícipes da cidade.", "D", "Físico" }
+                    { 2, "Entidade administrativa do Sistema.", "A", "Administrador" },
+                    { 3, "Entidade responsável pela alimentação de informações do Sistema.", "B", "Funcionário" },
+                    { 4, "Entidade auxiliar na alimentação de informações do Sistema.", "C", "Estagiário" }
                 });
 
             migrationBuilder.InsertData(
@@ -473,7 +472,7 @@ namespace SGED.Migrations
                 columns: new[] { "idusuario", "cargousuario", "cpfcnpjpessoa", "emailpessoa", "IdTipoUsuario", "imagempessoa", "nomepessoa", "rgiepessoa", "senhausuario", "statususuario", "telefonepessoa" },
                 values: new object[,]
                 {
-                    { 1, "Desenvolvimento", "000.000.000-00", "devops@development.com", 1, "", "Dev", "00.000.000-0", "123456", true, "(00) 00000-0000" },
+                    { 1, "Desenvolvimento", "000.000.000-00", "devops@development.com", 1, "", "Desenvolvedor", "00.000.000-0", "123456", true, "(00) 00000-0000" },
                     { 2, "Secretário Geral", "000.000.000-00", "admin@gmail.com", 2, "", "Secretário Geral", "00.000.000-0", "987654", true, "(00) 00000-0000" }
                 });
 

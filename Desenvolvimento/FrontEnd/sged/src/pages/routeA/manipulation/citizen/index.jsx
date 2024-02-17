@@ -6,13 +6,13 @@ import NavBar from "../../components/NavBar";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
-import Select from 'react-select';
+
+import defaultProfilePicture from '../../../../assets/user/defaultProfilePicture.png';
 
 import { useMontage } from '../../../../object/modules/montage';
 import ConnectionEntity from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
-import UserClass from '../../../../object/class/user';
-import ControlModule from '../../../../object/modules/control';
+import CitizenClass from '../../../../object/class/user';
 import SelectModule from '../../../../object/modules/select';
 
 export default function Citizen() {
@@ -24,10 +24,8 @@ export default function Citizen() {
     }, []);
 
     const connection = ConnectionEntity();
-    const user = UserClass();
+    const citizen = CitizenClass();
     const list = ListModule();
-    const listTypeUser = ListModule();
-    const control = ControlModule();
     const selectBox = SelectModule();
 
     const [modalInsert, setModalInsert] = useState(false);
@@ -38,19 +36,20 @@ export default function Citizen() {
 
     const openCloseModalInsert = (boolean) => {
         setModalInsert(boolean);
-        user.clearError();
+        citizen.clearError();
+        citizen.removePicture();
 
         if (!boolean) {
-            user.clearData();
+            citizen.clearData();
         }
     };
 
     const openCloseModalEdit = (boolean) => {
         setModalEdit(boolean);
-        user.clearError();
+        citizen.clearError();
 
         if (!boolean) {
-            user.clearData();
+            citizen.clearData();
         }
     };
 
@@ -58,12 +57,12 @@ export default function Citizen() {
         setModalDelete(boolean);
 
         if (!boolean) {
-            user.clearData();
+            citizen.clearData();
         }
     };
 
-    const SelectUser = (object, option) => {
-        user.getData(object);
+    const SelectCitizen = (object, option) => {
+        citizen.getData(object);
         selectBox.selectOption(object.idTipoUsuario);
 
         if (option === "Editar") {
@@ -74,17 +73,8 @@ export default function Citizen() {
         }
     };
 
-    const GetTypeUser = async () => {
-        const response = await connection.objectUrl("TipoUsuario").getOrder();
-        if (response.status) {
-            listTypeUser.setList(response.data);
-        } else {
-            console.log(response.message);
-        }
-    };
-
-    const GetUser = async () => {
-        const response = await connection.objectUrl("Usuario").getOrder();
+    const GetCitizen = async () => {
+        const response = await connection.objectUrl("Municipe").getOrder();
         if (response.status) {
             list.setList(response.data);
         } else {
@@ -92,13 +82,13 @@ export default function Citizen() {
         }
     };
 
-    const PostUser = async () => {
+    const PostCitizen = async () => {
         setInOperation(true);
 
-        if (user.verifyData(list.list)) {
-            const response = await connection.objectUrl("Usuario").postOrder(user);
+        if (citizen.verifyData(list.list)) {
+            const response = await connection.objectUrl("Municipe").postOrder(citizen);
 
-            if (!response.status) { user.getError(response.data); }
+            if (!response.status) { citizen.getError(response.data); }
 
             openCloseModalInsert(!response.status);
             setUpdateData(response.status);
@@ -110,13 +100,13 @@ export default function Citizen() {
         setInOperation(false);
     };
 
-    const PutUser = async () => {
+    const PutCitizen = async () => {
         setInOperation(true);
 
-        if (user.verifyData(list.list)) {
-            const response = await connection.objectUrl("Usuario").putOrder(user);
+        if (citizen.verifyData(list.list)) {
+            const response = await connection.objectUrl("Municipe").putOrder(citizen);
 
-            if (!response.status) { user.getError(response.data); }
+            if (!response.status) { citizen.getError(response.data); }
 
             openCloseModalEdit(!response.status);
             setUpdateData(response.status);
@@ -128,10 +118,10 @@ export default function Citizen() {
         setInOperation(false);
     };
 
-    const DeleteUser = async () => {
+    const DeleteCitizen = async () => {
         setInOperation(true);
 
-        const response = await connection.objectUrl("Usuario").deleteOrder(user);
+        const response = await connection.objectUrl("Municipe").deleteOrder(citizen);
 
         openCloseModalDelete(!response.status);
         setUpdateData(response.status);
@@ -140,83 +130,14 @@ export default function Citizen() {
         setInOperation(false);
     };
 
-    const [searchTerm, setSearchTerm] = useState('');
-    const [searchBy, setSearchBy] = useState('nomePessoa');
-
-    const handleSearch = (searchTerm) => {
-        setSearchTerm(searchTerm);
-    };
-
-    const handleSearchBy = (value) => {
-        setSearchBy(value);
-    };
-
-    const filterUser = () => {
-        const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-
-        if (!searchTerm) {
-            list.setListToRender(list.list);
-        } else {
-            if (searchBy === 'nomeTipoUsuario') {
-
-                const filteredTypeUser = listTypeUser.list.filter((typeuser) => {
-                    const typeuserFilter = typeuser[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                    return typeuserFilter.toLowerCase().includes(searchTermNormalized.toLowerCase());
-                });
-
-                const filteredIds = filteredTypeUser.map((typeuser) => typeuser.id);
-
-                const filtered = list.list.filter((user) => {
-                    return filteredIds.includes(user.idTipoUsuario);
-                });
-
-                list.setListToRender(filtered);
-
-            } else if (searchBy === 'statusUsuario') {
-
-                const filtered = list.list.filter((user) => {
-                    const userStatus = user[searchBy];
-                    const statusText = userStatus ? 'Ativo' : 'Inativo';
-                    return statusText.toLowerCase().includes(searchTermNormalized.toLowerCase());
-                });
-
-                list.setListToRender(filtered);
-
-            } else {
-
-                list.setSearchTerm(searchTerm);
-                list.setSearchBy(searchBy);
-
-            }
-        }
-    };
-
-    useEffect(() => { // Filtro especial para os dados do usuário
-        filterUser();
-    }, [searchTerm, searchBy, list.list]);
-
-    useEffect(() => { // Para atualizar quando uma ação é efetuada com sucesso
+    useEffect(() => {
         if (updateData) {
-            GetTypeUser();
-            GetUser();
-
-            user.setUserStatus(true);
-            user.setIdTypeUser(listTypeUser.list[0]?.id);
-
+            GetCitizen();
             setUpdateData(false);
         }
+
+        list.searchBy ? null : list.setSearchBy('nomePessoa');
     }, [updateData]);
-
-    useEffect(() => { // Para atualizar as opções do Select bem como o valor padrão selecionado
-        if (!modalInsert && !modalEdit && !modalDelete) {
-            selectBox.updateOptions(listTypeUser.list, "id", "nomeTipoUsuario");
-            selectBox.selectOption(listTypeUser.list[0]?.id);
-        }
-    }, [listTypeUser.list, modalInsert, modalEdit, modalDelete]);
-
-    useEffect(() => { // Para atualizar o idTipoUsuario conforme o valor selecionado muda
-        user.setIdTypeUser(selectBox.selectedOption.value ? selectBox.selectedOption.value : '');
-    }, [selectBox.selectedOption]);
 
     const togglePasswordVisibility = () => {
         const passwordInput = document.getElementById('passwordInput');
@@ -246,7 +167,7 @@ export default function Citizen() {
                                 <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
                             </Link>
                             <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
-                            <h3 className="text-2xl font-semibold text-gray-800">Usuário</h3>
+                            <h3 className="text-2xl font-semibold text-gray-800">Munícipe</h3>
                         </div>
                         <div className="flex" style={{ alignItems: 'center' }}>
                             <div className="flex justify-center items-center mx-auto">
@@ -258,22 +179,19 @@ export default function Citizen() {
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                             </svg>
                                         </div>
-                                        <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar usuário" required onChange={(e) => handleSearch(e.target.value)} />
-                                        <select className="form-control rounded-md w-28 text-gray-800" onChange={(e) => handleSearchBy(e.target.value)}>
+                                        <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar usuário" required onChange={(e) => list.handleSearch(e.target.value)} />
+                                        <select className="form-control rounded-md w-28 text-gray-800" onChange={(e) => list.handleSearchBy(e.target.value)}>
                                             <option key="nomePessoa" value="nomePessoa">
                                                 Nome
                                             </option>
                                             <option key="emailPessoa" value="emailPessoa">
                                                 E-mail
                                             </option>
-                                            <option key="nomeTipoUsuario" value="nomeTipoUsuario">
-                                                Tipo Usuário
+                                            <option key="cpfCnpjPessoa" value="cpfCnpjPessoa">
+                                                CPF / CNPJ
                                             </option>
-                                            <option key="cargoUsuario" value="cargoUsuario">
-                                                Cargo
-                                            </option>
-                                            <option key="statusUsuario" value="statusUsuario">
-                                                Status
+                                            <option key="rgIePessoa" value="rgIePessoa">
+                                                RG / IE
                                             </option>
                                         </select>
                                         {/* <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-emerald-600 hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Pesquisar</button> */}
@@ -288,29 +206,28 @@ export default function Citizen() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-6 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="flex ml-5 text-white text-lg font-semibold">Nome</span>
+                                <span className="flex ml-5 justify-center items-center text-white text-lg font-semibold">Imagem</span>
+                                <span className="flex justify-center items-center text-white text-lg font-semibold">Nome</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">E-mail</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Tipo Usuário</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Cargo</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Status</span>
+                                <span className="flex justify-center items-center text-white text-lg font-semibold">CPF / CNPJ</span>
+                                <span className="flex justify-center items-center text-white text-lg font-semibold">RG / IE</span>
                                 <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                             </div>
                             <ul className="w-full">
                                 {list.currentList.map(user => {
-                                    const tipoUsuario = listTypeUser.list.find(typeuser => typeuser.id === user.idTipoUsuario);
-                                    return (
-                                        <li className="grid grid-cols-6 w-full" key={user.id}>
-                                            <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{user.nomePessoa}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.emailPessoa}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoUsuario ? tipoUsuario.nomeTipoUsuario : 'Tipo Usuário não encontrado!'}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.cargoUsuario}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.statusUsuario ? 'Ativo' : 'Inativo'}</span>
-                                            <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                                <button className="" onClick={() => SelectUser(user, "Editar")}><PencilSimple size={20} className="hover:text-cyan-500" /></button>{"  "}
-                                                <button className="" onClick={() => SelectUser(user, "Excluir")}><TrashSimple size={20} className="hover:text-red-600" /></button>
-                                            </span>
-                                        </li>
-                                    );
+                                    <li className="grid grid-cols-6 w-full" key={citizen.id}>
+                                        <span className="flex pl-5 justify-center items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">
+                                            <img src={citizen.imagemPessoa ? citizen.imagemPessoa : defaultProfilePicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '40px', height: '40px', objectFit: 'cover', boxShadow: '0 0 0 1px black', }} />
+                                        </span>
+                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{citizen.nomePessoa}</span>
+                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{citizen.emailPessoa}</span>
+                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{citizen.cpfCnpjPessoa}</span>
+                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{citizen.rgIePessoa}</span>
+                                        <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                            <button className="" onClick={() => SelectCitizen(user, "Editar")}><PencilSimple size={20} className="hover:text-cyan-500" /></button>{"  "}
+                                            <button className="" onClick={() => SelectCitizen(user, "Excluir")}><TrashSimple size={20} className="hover:text-red-600" /></button>
+                                        </span>
+                                    </li>
                                 })}
                             </ul>
                             {/* Estilização dos botões de navegação */}
@@ -345,7 +262,7 @@ export default function Citizen() {
                     </div>
                 </div>
                 <Modal isOpen={modalInsert}>
-                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Usuário</ModalHeader>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Munícipe</ModalHeader>
                     <ModalBody>
                         <div className="form-group">
                             <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -353,10 +270,10 @@ export default function Citizen() {
                                     id="fileInputInsert"
                                     type="file"
                                     style={{ display: 'none' }}
-                                    onChange={(e) => user.insertPicture(e.target.files[0])}
+                                    onChange={(e) => citizen.insertPicture(e.target.files[0])}
                                 />
                                 <img
-                                    src={user.userPicture ? user.userPicture : user.defaultPicture}
+                                    src={citizen.personPicture ? citizen.personPicture : citizen.defaultPicture}
                                     style={{
                                         cursor: 'pointer',
                                         borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
@@ -366,11 +283,11 @@ export default function Citizen() {
                                         boxShadow: '0 0 0 3px white, 0 0 0 5px black', // Adicionando uma borda branca (interna) e uma borda preta (externa)
                                     }}
                                     title="Selecionar Imagem"
-                                    onClick={(e) => user.handleImageClick("Insert")}
+                                    onClick={(e) => citizen.handleImageClick("Insert")}
                                 />
-                                {user.addImage && (
+                                {citizen.addImage && (
                                     <img
-                                        src={user.closeIcon}
+                                        src={citizen.closeIcon}
                                         style={{
                                             position: 'absolute',
                                             top: '5px', // Distância do topo
@@ -382,55 +299,35 @@ export default function Citizen() {
                                             height: '20px', // ajuste o tamanho da imagem conforme necessário
                                             objectFit: 'cover', // para garantir que a imagem seja totalmente coberta pelo círculo
                                         }}
-                                        onClick={(e) => user.removePicture("Insert")}
+                                        onClick={(e) => citizen.removePicture("Insert")}
                                     />
                                 )}
                             </div>
                             <br />
                             <label className="text-[#444444]">Nome: </label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.setPersonName(e.target.value)} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => citizen.setPersonName(e.target.value)} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {user.errorPersonName}
+                                {citizen.errorPersonName}
                             </div>
                             <br />
                             <label className="text-[#444444]">E-mail:</label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.setPersonEmail(e.target.value.toLowerCase())} value={user.personEmail} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => citizen.setPersonEmail(e.target.value.toLowerCase())} value={citizen.personEmail} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {user.errorPersonEmail}
-                            </div>
-                            <br />
-                            <label className="text-[#444444]">Senha:</label>
-                            <br />
-                            <div className="password-input">
-                                <input type="password" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.setUserPassword(e.target.value)} id="passwordInput" />
-                                <i className="toggle-password fas fa-eye" onClick={() => togglePasswordVisibility()} ></i>
-                            </div>
-                            <div className="error-message" style={{ fontSize: '14px', color: 'black' }}>
-                                {user.passwordStrength}
-                            </div>
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {user.errorUserPassword}
-                            </div>
-                            <br />
-                            <label className="text-[#444444]">Cargo: </label>
-                            <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.setUserOffice(e.target.value)} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {user.errorUserOffice}
+                                {citizen.errorPersonEmail}
                             </div>
                             <br />
                             <label className="text-[#444444]">Telefone: </label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => user.handlePhone(e.target.value)} value={user.personTelephone} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => citizen.handlePhone(e.target.value)} value={citizen.personTelephone} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {user.errorPersonTelephone}
+                                {citizen.errorPersonTelephone}
                             </div>
                             <br />
                             <label>CPF / CNPJ: </label>
                             <br />
-                            <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.setIdentifyCpfCnpj(e.target.value)} value={user.identifyCpfCnpj}>
+                            <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => citizen.setIdentifyCpfCnpj(e.target.value)} value={citizen.identifyCpfCnpj}>
                                 <option key="cpf" value="cpf">
                                     CPF
                                 </option>
@@ -439,14 +336,14 @@ export default function Citizen() {
                                 </option>
                             </select>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => user.handleCpfCnpj(e.target.value)} value={user.personCpfCnpj} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => citizen.handleCpfCnpj(e.target.value)} value={citizen.personCpfCnpj} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {user.errorPersonCpfCnpj}
+                                {citizen.errorPersonCpfCnpj}
                             </div>
                             <br />
                             <label>RG / IE: </label>
                             <br />
-                            <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.setIdentifyRgIe(e.target.value)} value={user.identifyRgIe}>
+                            <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => citizen.setIdentifyRgIe(e.target.value)} value={citizen.identifyRgIe}>
                                 <option key="rg" value="rg">
                                     RG
                                 </option>
@@ -455,54 +352,20 @@ export default function Citizen() {
                                 </option>
                             </select>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => user.handleRgIe(e.target.value)} value={user.personRgIe} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => citizen.handleRgIe(e.target.value)} value={citizen.personRgIe} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {user.errorPersonRgIe}
+                                {citizen.errorPersonRgIe}
                             </div>
                             <br />
-                            <label className="text-[#444444]">Status:</label>
-                            <br />
-                            <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.setUserStatus(e.target.value === "true")} value={user.userStatus}>
-                                <option key="true" value="true">
-                                    Ativo
-                                </option>
-                                <option key="false" value="false">
-                                    Inativo
-                                </option>
-                            </select>
-                            <br />
-                            <label className="text-[#444444]">Tipo Usuário:</label>
-                            <br />
-                            <Select
-                                value={selectBox.selectedOption}
-                                onChange={selectBox.handleChange}
-                                onInputChange={selectBox.delayedSearch}
-                                loadOptions={selectBox.loadOptions}
-                                options={selectBox.options}
-                                placeholder="Pesquisar tipo usuário . . ."
-                                isClearable
-                                isSearchable
-                                noOptionsMessage={() => {
-                                    if (listTypeUser.list.length === 0) {
-                                        return "Nenhum tipo usuário cadastrado!";
-                                    } else {
-                                        return "Nenhuma opção encontrada!";
-                                    }
-                                }}
-                                className="style-select"
-                            />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {user.errorIdTypeUser}
-                            </div>
                         </div>
                     </ModalBody>
                     <ModalFooter>
                         <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert(false)}>Cancelar</button>
-                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostUser()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Cadastrar'} </button>{"  "}
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostCitizen()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Cadastrar'} </button>{"  "}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalEdit}>
-                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Usuário</ModalHeader>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Munícipe</ModalHeader>
                     <ModalBody>
                         <div className="form-group">
                             <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -510,10 +373,10 @@ export default function Citizen() {
                                     id="fileInputInsert"
                                     type="file"
                                     style={{ display: 'none' }}
-                                    onChange={(e) => user.insertPicture(e.target.files[0])}
+                                    onChange={(e) => citizen.insertPicture(e.target.files[0])}
                                 />
                                 <img
-                                    src={user.userPicture ? user.userPicture : user.defaultPicture}
+                                    src={citizen.personPicture ? citizen.personPicture : citizen.defaultPicture}
                                     style={{
                                         cursor: 'pointer',
                                         borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
@@ -523,11 +386,11 @@ export default function Citizen() {
                                         boxShadow: '0 0 0 3px white, 0 0 0 5px black', // Adicionando uma borda branca (interna) e uma borda preta (externa)
                                     }}
                                     title="Selecionar Imagem"
-                                    onClick={(e) => user.handleImageClick("Insert")}
+                                    onClick={(e) => citizen.handleImageClick("Insert")}
                                 />
-                                {user.addImage && (
+                                {citizen.addImage && (
                                     <img
-                                        src={user.closeIcon}
+                                        src={citizen.closeIcon}
                                         style={{
                                             position: 'absolute',
                                             top: '5px', // Distância do topo
@@ -539,52 +402,29 @@ export default function Citizen() {
                                             height: '20px', // ajuste o tamanho da imagem conforme necessário
                                             objectFit: 'cover', // para garantir que a imagem seja totalmente coberta pelo círculo
                                         }}
-                                        onClick={(e) => user.removePicture("Insert")}
+                                        onClick={(e) => citizen.removePicture("Insert")}
                                     />
                                 )}
                             </div>
                             <br />
                             <label>ID: </label><br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={user.userId} /> <br />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={citizen.citizenId} /> <br />
                             <label>Nome:</label>
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomePessoa" onChange={(e) => user.setPersonName(e.target.value)} value={user.personName} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomePessoa" onChange={(e) => citizen.setPersonName(e.target.value)} value={citizen.personName} />
                             <br />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {user.errorPersonName}
+                                {citizen.errorPersonName}
                             </div>
                             <label>E-mail:</label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="emailPessoa" onChange={(e) => user.setPersonEmail(e.target.value.toLowerCase())} value={user.personEmail} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="emailPessoa" onChange={(e) => citizen.setPersonEmail(e.target.value.toLowerCase())} value={citizen.personEmail} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {user.errorPersonEmail}
-                            </div>
-                            <br />
-                            <label>Senha:</label>
-                            <br />
-                            <input type="password" className="form-control rounded-md border-[#BCBCBC]" name="senhaUsuario" onChange={(e) => user.setUserPassword(e.target.value)} value={user.userPassword} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'black' }}>
-                                {user.passwordStrength}
-                            </div>
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {user.errorUserPassword}
-                            </div>
-                            <br />
-                            <label>Cargo:</label>
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="cargoUsuario" onChange={(e) => user.setUserOffice(e.target.value)} value={user.userOffice} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {user.errorUserOffice}
-                            </div>
-                            <br />
-                            <label className="text-[#444444]">Telefone: </label>
-                            <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => user.handlePhone(e.target.value)} value={user.personTelephone} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {user.errorPersonTelephone}
+                                {citizen.errorPersonEmail}
                             </div>
                             <br />
                             <label>CPF / CNPJ: </label>
                             <br />
-                            <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.setIdentifyCpfCnpj(e.target.value)} value={user.identifyCpfCnpj}>
+                            <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => citizen.setIdentifyCpfCnpj(e.target.value)} value={citizen.identifyCpfCnpj}>
                                 <option key="cpf" value="cpf">
                                     CPF
                                 </option>
@@ -593,14 +433,14 @@ export default function Citizen() {
                                 </option>
                             </select>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => user.handleCpfCnpj(e.target.value)} value={user.personCpfCnpj} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => citizen.handleCpfCnpj(e.target.value)} value={citizen.personCpfCnpj} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {user.errorPersonCpfCnpj}
+                                {citizen.errorPersonCpfCnpj}
                             </div>
                             <br />
                             <label>RG / IE: </label>
                             <br />
-                            <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.setIdentifyRgIe(e.target.value)} value={user.identifyRgIe}>
+                            <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => citizen.setIdentifyRgIe(e.target.value)} value={citizen.identifyRgIe}>
                                 <option key="rg" value="rg">
                                     RG
                                 </option>
@@ -609,65 +449,30 @@ export default function Citizen() {
                                 </option>
                             </select>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => user.handleRgIe(e.target.value)} value={user.personRgIe} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => citizen.handleRgIe(e.target.value)} value={citizen.personRgIe} />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {user.errorPersonRgIe}
-                            </div>
-                            <br />
-                            <label>Status:</label>
-                            <br />
-                            <select className="form-control rounded border" onChange={(e) => user.setUserStatus(e.target.value === "true")} value={user.userStatus}>
-                                <option key="true" value="true">
-                                    Ativo
-                                </option>
-                                <option key="false" value="false">
-                                    Inativo
-                                </option>
-                            </select>
-                            <br />
-                            <label>Tipo Usuário:</label>
-                            <br />
-                            <Select
-                                value={selectBox.selectedOption}
-                                onChange={selectBox.handleChange}
-                                onInputChange={selectBox.delayedSearch}
-                                loadOptions={selectBox.loadOptions}
-                                options={selectBox.options}
-                                placeholder="Pesquisar estado . . ."
-                                isClearable
-                                isSearchable
-                                noOptionsMessage={() => {
-                                    if (listTypeUser.list.length === 0) {
-                                        return "Nenhum estado cadastrado!";
-                                    } else {
-                                        return "Nenhuma opção encontrada!";
-                                    }
-                                }}
-                                className="style-select"
-                            />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {user.errorIdTypeUser}
+                                {citizen.errorPersonRgIe}
                             </div>
                             <br />
                         </div>
                     </ModalBody>
                     <ModalFooter>
                         <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit(false)}>Cancelar</button>
-                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutUser()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Atualizar'} </button>{"  "}
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutCitizen()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Atualizar'} </button>{"  "}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalDelete}>
                     <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
                     <ModalBody className="justify-center">
                         <div className="flex flex-row justify-center p-2">
-                            Confirmar a exclusão deste usuário:
+                            Confirmar a exclusão deste munícipe:
                             <div className="text-[#059669] ml-1">
-                                {user.personName}
+                                {citizen.personName}
                             </div> ?
                         </div>
                         <div className="flex justify-center gap-2 pt-3">
                             <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete(false)}>Cancelar</button>
-                            <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteUser()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'} </button>{"  "}
+                            <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteCitizen()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'} </button>{"  "}
                         </div>
                         {/* <ModalFooter>
                     </ModalFooter> */}

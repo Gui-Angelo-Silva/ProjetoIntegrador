@@ -48,21 +48,23 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const delay = (milliseconds) => {
+      return new Promise(resolve => setTimeout(resolve, milliseconds));
+    };
+
     setLoginError('');
     setIsLoading('Verificando Dados...');
 
     if (login.verifyData()) {
-      setIsLoading('Efetuando Autenticação...');
+      await delay(1000); setIsLoading('Criando Sessão...');
 
-      try {
-        const response = await session.createSession(login);
-        if (response.validation) {
-          server.clearSegment("home");
-        } else {
-          setLoginError(response.message);
-        }
-      } catch (error) {
-        setLoginError('Erro ao efetuar autenticação: ', error.message);
+      const response = await session.createSession(login);
+
+      if (response.validation) {
+        await delay(1000); setIsLoading('Liberando Entrada...');
+        await delay(1000); server.clearSegment("home");
+      } else {
+        setLoginError(response.message);
       }
     }
 
@@ -78,7 +80,7 @@ export default function SignIn() {
         login.clearData();
       }
     };
-    
+
     getDataLogin();
   }, []);
 

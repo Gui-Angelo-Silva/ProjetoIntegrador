@@ -14,7 +14,6 @@ import { useMontage } from '../../../../object/modules/montage';
 import { useSession } from '../../../../object/service/session';
 import ConnectionEntity from '../../../../object/service/connection';
 import UserClass from '../../../../object/class/user';
-import CitizenClass from '../../../../object/class/citizen';
 import LoginClass from '../../../../object/class/login';
 import ListModule from '../../../../object/modules/list';
 import ControlModule from '../../../../object/modules/control';
@@ -30,7 +29,6 @@ export default function User() {
   const session = useSession();
   const connection = ConnectionEntity();
   const user = UserClass();
-  const citizen = CitizenClass();
   const login = LoginClass();
   const list = ListModule();
   const control = ControlModule();
@@ -69,25 +67,17 @@ export default function User() {
 
       if (!response.status) { user.getError(response.data); setInOperation(''); }
       else {
-        citizen.getData(response.data);
-        response = await connection.objectUrl("Municipe").putOrder(citizen);
+        setInOperation('Atualizando Sessão...');
 
-        if (!response.status) { user.getError(response.data); setInOperation(''); }
-        else {
-          setInOperation('Salvando Dados...');
+        login.setPersonEmail(user.personEmail);
+        login.setUserPassword(user.userPassword);
 
-          login.setPersonEmail(user.personEmail);
-          login.setUserPassword(user.userPassword);
-
-          setSucessUpdate('Sucesso');
-        }
+        setSucessUpdate('Sucesso');
       }
     } else {
       console.log('Dados inválidos!');
       setInOperation('');
     }
-
-    console.log(citizen);
   };
 
   useEffect(() => {

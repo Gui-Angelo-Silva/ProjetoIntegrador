@@ -1634,30 +1634,23 @@ namespace SGED.Migrations
                         new
                         {
                             Id = 2,
-                            DescricaoTipoUsuario = "Entidade administrativa do orgão da Secretária.",
+                            DescricaoTipoUsuario = "Entidade administrativa do Sistema.",
                             NivelAcesso = "A",
                             NomeTipoUsuario = "Administrador"
                         },
                         new
                         {
                             Id = 3,
-                            DescricaoTipoUsuario = "Entidade de suporte para a comunidade local.",
+                            DescricaoTipoUsuario = "Entidade responsável pela alimentação de informações do Sistema.",
                             NivelAcesso = "B",
                             NomeTipoUsuario = "Funcionário"
                         },
                         new
                         {
                             Id = 4,
-                            DescricaoTipoUsuario = "Entidade que representa empresas, instituições ou qualquer entidade jurídica perante a lei.",
+                            DescricaoTipoUsuario = "Entidade auxiliar na alimentação de informações do Sistema.",
                             NivelAcesso = "C",
-                            NomeTipoUsuario = "Jurídico"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            DescricaoTipoUsuario = "Entidade que representa todos os munícipes da cidade.",
-                            NivelAcesso = "D",
-                            NomeTipoUsuario = "Físico"
+                            NomeTipoUsuario = "Estagiário"
                         });
                 });
 
@@ -1738,7 +1731,7 @@ namespace SGED.Migrations
                             EmailPessoa = "devops@development.com",
                             IdTipoUsuario = 1,
                             ImagemPessoa = "",
-                            NomePessoa = "Dev",
+                            NomePessoa = "Desenvolvedor",
                             RgIEPessoa = "00.000.000-0",
                             SenhaUsuario = "123456",
                             StatusUsuario = true,

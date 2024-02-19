@@ -11,8 +11,8 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240212131513_AddEtapa")]
-    partial class AddEtapa
+    [Migration("20240219112638_ForeignKeyTipoDocumento")]
+    partial class ForeignKeyTipoDocumento
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -457,6 +457,9 @@ namespace SGED.Migrations
                         .HasColumnType("character varying(450)")
                         .HasColumnName("descricaoTipoDocumento");
 
+                    b.Property<int>("IdEtapa")
+                        .HasColumnType("integer");
+
                     b.Property<string>("NomeTipoDocumento")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -464,6 +467,8 @@ namespace SGED.Migrations
                         .HasColumnName("nomeTipoDocumento");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdEtapa");
 
                     b.ToTable("TipoDocumento");
                 });
@@ -1810,6 +1815,17 @@ namespace SGED.Migrations
                     b.Navigation("TipoLogradouro");
                 });
 
+            modelBuilder.Entity("SGED.Models.Entities.TipoDocumento", b =>
+                {
+                    b.HasOne("SGED.Models.Entities.Etapa", "Etapa")
+                        .WithMany("TipoDocumento")
+                        .HasForeignKey("IdEtapa")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Etapa");
+                });
+
             modelBuilder.Entity("SGED.Models.Entities.Usuario", b =>
                 {
                     b.HasOne("SGED.Models.Entities.TipoUsuario", "TipoUsuario")
@@ -1834,6 +1850,11 @@ namespace SGED.Migrations
             modelBuilder.Entity("SGED.Models.Entities.Estado", b =>
                 {
                     b.Navigation("Cidades");
+                });
+
+            modelBuilder.Entity("SGED.Models.Entities.Etapa", b =>
+                {
+                    b.Navigation("TipoDocumento");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.TipoLogradouro", b =>

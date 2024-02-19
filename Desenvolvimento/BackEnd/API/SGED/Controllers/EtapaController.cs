@@ -47,7 +47,7 @@ namespace SGED.Controllers
 			return Ok(etapaDTO);
 		}
 
-		[HttpDelete("id")]
+		[HttpDelete("{id}")]
 		public async Task<ActionResult<EtapaDTO>> Delete(int id)
 		{
 			var etapaDTO = await _etapaService.GetById(id);

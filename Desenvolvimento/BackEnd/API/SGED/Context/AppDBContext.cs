@@ -36,6 +36,15 @@ public class AppDBContext : DbContext
 		// Relacionamento: TipoProcesso -> Etapa
 		modelBuilder.Entity<TipoProcesso>().HasMany(p => p.Etapas).WithOne(b => b.TipoProcesso).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
+		// Builder: TipoDocumento
+		modelBuilder.Entity<TipoDocumento>().HasKey(b => b.Id);
+		modelBuilder.Entity<TipoDocumento>().Property(b => b.NomeTipoDocumento).HasMaxLength(30).IsRequired();
+		modelBuilder.Entity<TipoDocumento>().Property(b => b.DescricaoTipoDocumento).HasMaxLength(450).IsRequired();
+		modelBuilder.Entity<TipoDocumento>().HasOne(b => b.Etapa).WithMany().HasForeignKey(b => b.IdEtapa);
+
+		// Relacionamento: Etapa -> TipoDocumento
+		modelBuilder.Entity<Etapa>().HasMany(p => p.TipoDocumento).WithOne(b => b.Etapa).IsRequired().OnDelete(DeleteBehavior.Cascade);
+
 		// Builder: Estado
 		modelBuilder.Entity<Estado>().HasKey(b => b.Id);
 		modelBuilder.Entity<Estado>().Property(b => b.NomeEstado).HasMaxLength(50).IsRequired();
@@ -105,11 +114,6 @@ public class AppDBContext : DbContext
 		modelBuilder.Entity<TipoLogradouro>().HasKey(b => b.Id);
 		modelBuilder.Entity<TipoLogradouro>().Property(b => b.CodigoInformativo).HasMaxLength(3).IsRequired();
 		modelBuilder.Entity<TipoLogradouro>().Property(b => b.Descricao).HasMaxLength(35).IsRequired();
-
-		// Builder: TipoDocumento
-		modelBuilder.Entity<TipoDocumento>().HasKey(b => b.Id);
-		modelBuilder.Entity<TipoDocumento>().Property(b => b.NomeTipoDocumento).HasMaxLength(30).IsRequired();
-		modelBuilder.Entity<TipoDocumento>().Property(b => b.DescricaoTipoDocumento).HasMaxLength(450).IsRequired();
 
 		// Inserções:
 		modelBuilder.Entity<Estado>().HasData(

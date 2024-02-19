@@ -95,20 +95,20 @@ export default function User() {
   useEffect(() => {
     const UpdateSession = async () => {
       if (sucessUpdate === 'Sucesso') {
-        try {
-          const response = await session.createSession(login);
-          if (response.validation) {
-            setSucessUpdate(true);
-            openCloseEdit(false);
-          } else {
-            console.log(response.message);
-          }
-        } catch (error) {
-          console.error(response.message);
+        const response = await session.createSession(login);
+        if (response.validation) {
+          setSucessUpdate(true);
+          openCloseEdit(false);
+        } else {
+          console.log(response.message);
         }
       }; setInOperation('');
     }; UpdateSession();
   }, [sucessUpdate]);
+
+  useEffect(() => {
+    console.log(user.personPicture);
+  }, [user.personPicture]);
 
   const clearField = (attribute) => {
     user[attribute] instanceof Function ? user[attribute]('') : console.log(`O atributo ${attribute} não existe!`);

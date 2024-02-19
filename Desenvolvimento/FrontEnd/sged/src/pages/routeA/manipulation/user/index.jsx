@@ -11,6 +11,7 @@ import Select from 'react-select';
 import defaultProfilePicture from '../../../../assets/user/defaultProfilePicture.png';
 
 import { useMontage } from '../../../../object/modules/montage';
+import { useServer } from '../../../../routes/serverRoute';
 import ConnectionEntity from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
 import UserClass from '../../../../object/class/user';
@@ -24,6 +25,7 @@ export default function User() {
         componentMounted();
     }, []);
 
+    const server = useServer();
     const connection = ConnectionEntity();
     const user = UserClass();
     const list = ListModule();
@@ -96,7 +98,7 @@ export default function User() {
     const PostUser = async () => {
         setInOperation(true);
 
-        if (user.verifyData(list.list)) {
+        if (user.verifyData()) {
             const response = await connection.objectUrl("Usuario").postOrder(user);
 
             if (!response.status) { user.getError(response.data); }
@@ -114,7 +116,7 @@ export default function User() {
     const PutUser = async () => {
         setInOperation(true);
 
-        if (user.verifyData(list.list)) {
+        if (user.verifyData()) {
             const response = await connection.objectUrl("Usuario").putOrder(user);
 
             if (!response.status) { user.getError(response.data); }
@@ -243,7 +245,8 @@ export default function User() {
                     <div className="min-h-screen" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
                         <br />
                         <div className="flex flex-row">
-                            <Link to="/a/registration">
+                        <h3 className="text-2xl font-semibold text-gray-500 pr-2" style={{ cursor: 'pointer' }} onClick={() => server.removeSegment(1)}>Cadastros</h3>
+                            <Link onClick={() => server.removeSegment(1)}>
                                 <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
                             </Link>
                             <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>

@@ -86,9 +86,7 @@ function CitizenClass() {
 
   function verifyData() {
     clearError();
-    var status = verifyDataPerson();
-
-    return status;
+    return verifyDataPerson();
   }
 
   return {

@@ -22,7 +22,7 @@ function PersonClass() {
 
     function getData(object) {
         if (object.imagemPessoa) {
-            if (object.imagemPessoa !== defaultPicture) setAddImage(true);
+            if (object.imagemPessoa !== personPicture) setAddImage(true);
             setPersonPicture(object.imagemPessoa);
         } else removePicture();
 

@@ -85,7 +85,7 @@ export default function Citizen() {
     const PostCitizen = async () => {
         setInOperation(true);
 
-        if (citizen.verifyData(list.list)) {
+        if (citizen.verifyData()) {
             const response = await connection.objectUrl("Municipe").postOrder(citizen);
 
             if (!response.status) { citizen.getError(response.data); }
@@ -103,7 +103,7 @@ export default function Citizen() {
     const PutCitizen = async () => {
         setInOperation(true);
 
-        if (citizen.verifyData(list.list)) {
+        if (citizen.verifyData()) {
             const response = await connection.objectUrl("Municipe").putOrder(citizen);
 
             if (!response.status) { citizen.getError(response.data); }
@@ -138,21 +138,6 @@ export default function Citizen() {
 
         list.searchBy ? null : list.setSearchBy('nomePessoa');
     }, [updateData]);
-
-    const togglePasswordVisibility = () => {
-        const passwordInput = document.getElementById('passwordInput');
-        const passwordIcon = document.querySelector('.toggle-password');
-
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            passwordIcon.classList.remove('fa-eye');
-            passwordIcon.classList.add('fa-eye-slash');
-        } else {
-            passwordInput.type = 'password';
-            passwordIcon.classList.remove('fa-eye-slash');
-            passwordIcon.classList.add('fa-eye');
-        }
-    };
 
     return (
         <div className="flex flex-1 min-h-screen">
@@ -273,7 +258,7 @@ export default function Citizen() {
                                     onChange={(e) => citizen.insertPicture(e.target.files[0])}
                                 />
                                 <img
-                                    src={citizen.personPicture ? citizen.personPicture : citizen.defaultPicture}
+                                    src={citizen.personPicture}
                                     style={{
                                         cursor: 'pointer',
                                         borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
@@ -302,6 +287,9 @@ export default function Citizen() {
                                         onClick={(e) => citizen.removePicture("Insert")}
                                     />
                                 )}
+                            </div>
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {citizen.errorPersonPicture}
                             </div>
                             <br />
                             <label className="text-[#444444]">Nome: </label>

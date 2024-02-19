@@ -22,5 +22,8 @@ namespace SGED.DTO.Entities
 
 		[Required(ErrorMessage = "O TipoProcesso é requerido!")]
 		public int IdTipoProcesso { get; set; }
+
+		[JsonIgnore]
+		public ICollection<TipoDocumentoDTO>? TipoDocumentoDTO { get; set; }
 	}
 }

@@ -16,12 +16,12 @@ namespace SGED.Repositories.Entities
 
 		public async Task<IEnumerable<TipoDocumento>> GetAll()
 		{
-			return await _dbcontext.TipoDocumento.ToListAsync();
+			return await _dbcontext.TipoDocumento.Include(objeto => objeto.Etapa).ToListAsync();
 		}
 
 		public async Task<TipoDocumento> GetById(int id)
 		{
-			return await _dbcontext.TipoDocumento.Where(objeto => objeto.Id == id).FirstOrDefaultAsync();
+			return await _dbcontext.TipoDocumento.Include(objeto => objeto.Etapa).Where(b => b.Id == id).FirstOrDefaultAsync();
 		}
 
 		public async Task<TipoDocumento> Create(TipoDocumento TipoDocumento)

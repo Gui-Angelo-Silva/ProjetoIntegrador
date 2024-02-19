@@ -2,14 +2,17 @@ import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
-import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
+import { Link } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Select from 'react-select';
+import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
+
 import { useMontage } from "../../../../object/modules/montage";
 import ConnectionEntity from "../../../../object/service/connection";
 import ListModule from "../../../../object/modules/list";
 import TypeDocumentClass from "../../../../object/class/typedocument";
+import SelectModule from '../../../../object/modules/select';
 
 export default function TypeDocument() {
 
@@ -20,24 +23,16 @@ export default function TypeDocument() {
     }, []);
 
     const connection = ConnectionEntity();
-    const list = ListModule();
     const typedocument = TypeDocumentClass();
+    const list = ListModule();
+    const listStage = ListModule();
+    const selectBox = SelectModule();
 
     const [modalInsert, setModalInsert] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
     const [updateData, setUpdateData] = useState(true);
     const [inOperation, setInOperation] = useState(false);
-
-    const SelectTypeDocument = (object, option) => {
-        typedocument.getData(object);
-
-        if (option === "Editar") {
-            openCloseModalEdit(true);
-        } else {
-            openCloseModalDelete(true);
-        }
-    };
 
     const openCloseModalInsert = (boolean) => {
         setModalInsert(boolean);
@@ -64,6 +59,25 @@ export default function TypeDocument() {
             typedocument.clearData();
         }
     };
+
+    const SelectTypeDocument = (object, option) => {
+        typedocument.getData(object);
+
+        if (option === "Editar") {
+            openCloseModalEdit(true);
+        } else {
+            openCloseModalDelete(true);
+        }
+    };
+
+    const GetStage = async () => {
+        const response = await connection.objectUrl("Etapa").getOrder();
+        if (response.status) {
+            listStage.setList(response.data);
+        } else {
+            console.log(response.message);
+        }
+    }
 
     const GetTypeDocument = async () => {
         const response = await connection.objectUrl("TipoDocumento").getOrder();
@@ -109,7 +123,7 @@ export default function TypeDocument() {
     const DeleteTypeDocument = async () => {
         setInOperation(true);
 
-        const response = await connection.objectUrl("TipoLogradouro").deleteOrder(typedocument);
+        const response = await connection.objectUrl("TipoDocumento").deleteOrder(typedocument);
 
         openCloseModalDelete(!response.status);
         setUpdateData(response.status);
@@ -118,14 +132,75 @@ export default function TypeDocument() {
         setInOperation(false);
     };
 
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchBy, setSearchBy] = useState('nomeTipoDocumento');
+
+    const handleSearch = (searchTerm) => {
+        setSearchTerm(searchTerm);
+    };
+
+    const handleSearchBy = (value) => {
+        setSearchBy(value);
+    };
+
+    const filterTypeDocument = () => {
+        const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+        if (!searchTerm) {
+            list.setListToRender(list.list);
+        } else {
+            if (searchBy === 'nomeEtapa') {
+                const filteredStage = listStage.list.filter((stage) => {
+                    const stageFilter = stage[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    return stageFilter.toLowerCase().includes(searchTermNormalized.toLowerCase());
+                });
+
+                const filteredIds = filteredStage.map((stage) => stage.id);
+
+                const filtered = list.list.filter((typedocument) => {
+                    return filteredIds.includes(typedocument.idEtapa);
+                });
+
+                list.setListToRender(filtered);
+            } else if (searchBy === 'descricaoTipoDocumento') {
+                const filtered = list.list.filter((typedocument) => {
+                    const typedocumentFilter = typedocument[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    return typedocumentFilter.toLowerCase().includes(searchTermNormalized.toLowerCase());
+                });
+
+                list.setListToRender(filtered);
+            } else {
+                list.setSearchTerm(searchTerm);
+                list.setSearchBy(searchBy);
+            }
+        }
+    };
+
+    useEffect(() => {
+        filterTypeDocument();
+    }, [searchTerm, searchBy, list.list]);
+
     useEffect(() => {
         if (updateData) {
             GetTypeDocument();
+            GetStage();
+
+            typedocument.setIdStage(listStage.list[0]?.id);
+
             setUpdateData(false);
         }
-
-        list.searchBy ? null : list.setSearchBy('nomeTipoDocumento');
     }, [updateData]);
+
+    useEffect(() => {
+        if (!modalInsert && !modalEdit && !modalDelete) {
+            selectBox.updateOptions(listStage.list, "id", "nomeEtapa");
+            selectBox.selectOption(listStage.list[0]?.id);
+        }
+    }, [listStage.list, modalInsert, modalEdit, modalDelete]);
+
+    useEffect(() => {
+        typedocument.setIdStage(selectBox.selectedOption.value ? selectBox.selectedOption.value : '');
+    }, [selectBox.selectedOption]);
 
     return (
         <div className="flex flex-1 min-h-screen">
@@ -152,7 +227,7 @@ export default function TypeDocument() {
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                             </svg>
                                         </div>
-                                        <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar estado" required onChange={(e) => list.handleSearch(e.target.value)} />
+                                        <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar tipo documento" required onChange={(e) => list.handleSearch(e.target.value)} />
                                         <select className="appearance-none form-control rounded-md w-28 text-gray-800" onChange={(e) => list.handleSearchBy(e.target.value)} >
                                             <option key="nomeTipoDocumento" value="nomeTipoDocumento">
                                                 Tipo Documento
@@ -171,32 +246,37 @@ export default function TypeDocument() {
                             </div>
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
-                            <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
+                            <div className="grid grid-cols-4 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
                                 <span className="flex ml-5 text-white text-lg font-semibold">Nome</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
+                                <span className="flex justify-center items-center text-white text-lg font-semibold">Etapa</span>
                                 <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                             </div>
                             <ul className="w-full">
-                                {list.currentList.map((object) => (
-                                    <li className="grid grid-cols-3 w-full" key={object.id}>
-                                        <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</span>
-                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoDocumento}</span>
-                                        <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                            <button
-                                                className=""
-                                                onClick={() => SelectTypeDocument(object, "Editar")}
-                                            >
-                                                <PencilSimple size={20} className="hover:text-cyan-500" />
-                                            </button>{" "}
-                                            <button
-                                                className=""
-                                                onClick={() => SelectTypeDocument(object, "Excluir")}
-                                            >
-                                                <TrashSimple size={20} className="hover:text-red-600" />
-                                            </button>
-                                        </span>
-                                    </li>
-                                ))}
+                                {list.currentList.map((object) => {
+                                    const etapa = listStage.list.find((stage) => stage.id === object.idEtapa);
+                                    return (
+                                        <li className="grid grid-cols-4 w-full" key={object.id}>
+                                            <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoDocumento}</span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{etapa ?  etapa.nomeEtapa : "Etapa não encontrada!"}</span>
+                                            <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                                <button
+                                                    className=""
+                                                    onClick={() => SelectTypeDocument(object, "Editar")}
+                                                >
+                                                    <PencilSimple size={20} className="hover:text-cyan-500" />
+                                                </button>{" "}
+                                                <button
+                                                    className=""
+                                                    onClick={() => SelectTypeDocument(object, "Excluir")}
+                                                >
+                                                    <TrashSimple size={20} className="hover:text-red-600" />
+                                                </button>
+                                            </span>
+                                        </li>
+                                    )
+                                })}
                             </ul>
                             {/* Estilização dos botões de navegação */}
                             <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
@@ -247,6 +327,27 @@ export default function TypeDocument() {
                                 {typedocument.errorTypeDocumentDescription}
                             </div>
                             <br />
+                            <label className="text-[#444444]">Etapa:</label>
+                            <br />
+                            <Select
+                                value={selectBox.selectedOption}
+                                onChange={selectBox.handleChange}
+                                onInputChange={selectBox.delayedSearch}
+                                loadOptions={selectBox.loadOptions}
+                                options={selectBox.options}
+                                placeholder="Pesquisar etapa . . ."
+                                isClearable
+                                isSearchable
+                                noOptionsMessage={() => {
+                                    if (listState.list.length === 0) {
+                                        return "Nenhum Etapa cadastrado!";
+                                    } else {
+                                        return "Nenhuma opção encontrada!";
+                                    }
+                                }}
+                                className="style-select"
+                            />
+                            <br />
                         </div>
                     </ModalBody>
                     <ModalFooter>
@@ -273,6 +374,27 @@ export default function TypeDocument() {
                                 {typedocument.errorTypeDocumentDescription}
                             </div>
                             <br />
+                            <label className="text-[#444444]">Etapa:</label>
+                            <br />
+                            <Select
+                                value={selectBox.selectedOption}
+                                onChange={selectBox.handleChange}
+                                onInputChange={selectBox.delayedSearch}
+                                loadOptions={selectBox.loadOptions}
+                                options={selectBox.options}
+                                placeholder="Pesquisar etapa . . ."
+                                isClearable
+                                isSearchable
+                                noOptionsMessage={() => {
+                                    if (listState.list.length === 0) {
+                                        return "Nenhum Etapa cadastrado!";
+                                    } else {
+                                        return "Nenhuma opção encontrada!";
+                                    }
+                                }}
+                                className="style-select"
+                            />
+                            <br />
                         </div>
                     </ModalBody>
                     <ModalFooter>
@@ -293,8 +415,6 @@ export default function TypeDocument() {
                             <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" style={{ width: '100px', height: '40px' }} onClick={() => openCloseModalDelete(false)}>Cancelar</button>
                             <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteTypeDocument()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'} </button>{"  "}
                         </div>
-                        {/* <ModalFooter>
-                    </ModalFooter> */}
                     </ModalBody>
                 </Modal>
             </div>

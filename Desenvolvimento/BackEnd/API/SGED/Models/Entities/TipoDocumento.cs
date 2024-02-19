@@ -13,5 +13,10 @@ namespace SGED.Models.Entities
 
         [Column("descricaoTipoDocumento")]
         public string DescricaoTipoDocumento { get; set; }
+
+        public Etapa? Etapa { get; set; }
+
+        [ForeignKey("idetapa")]
+        public int IdEtapa { get; set; }
     }
 }

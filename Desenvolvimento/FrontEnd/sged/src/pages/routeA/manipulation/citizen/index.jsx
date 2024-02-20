@@ -12,7 +12,7 @@ import defaultProfilePicture from '../../../../assets/user/defaultProfilePicture
 import { useMontage } from '../../../../object/modules/montage';
 import ConnectionEntity from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
-import CitizenClass from '../../../../object/class/user';
+import CitizenClass from '../../../../object/class/citizen';
 import SelectModule from '../../../../object/modules/select';
 
 export default function Citizen() {
@@ -136,7 +136,7 @@ export default function Citizen() {
             setUpdateData(false);
         }
 
-        list.searchBy ? null : list.setSearchBy('nomePessoa');
+        if (!list.searchBy) list.setSearchBy('nomePessoa');
     }, [updateData]);
 
     return (
@@ -199,20 +199,22 @@ export default function Citizen() {
                                 <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                             </div>
                             <ul className="w-full">
-                                {list.currentList.map(user => {
-                                    <li className="grid grid-cols-6 w-full" key={citizen.id}>
-                                        <span className="flex pl-5 justify-center items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">
-                                            <img src={citizen.imagemPessoa ? citizen.imagemPessoa : defaultProfilePicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '40px', height: '40px', objectFit: 'cover', boxShadow: '0 0 0 1px black', }} />
-                                        </span>
-                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{citizen.nomePessoa}</span>
-                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{citizen.emailPessoa}</span>
-                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{citizen.cpfCnpjPessoa}</span>
-                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{citizen.rgIePessoa}</span>
-                                        <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                            <button className="" onClick={() => SelectCitizen(user, "Editar")}><PencilSimple size={20} className="hover:text-cyan-500" /></button>{"  "}
-                                            <button className="" onClick={() => SelectCitizen(user, "Excluir")}><TrashSimple size={20} className="hover:text-red-600" /></button>
-                                        </span>
-                                    </li>
+                                {list.currentList.map((object) => {
+                                    return (
+                                        <li className="grid grid-cols-6 w-full" key={object.id}>
+                                            <span className="flex pl-5 justify-center items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">
+                                                <img src={object.imagemPessoa ? object.imagemPessoa : defaultProfilePicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '40px', height: '40px', objectFit: 'cover', boxShadow: '0 0 0 1px black', }} />
+                                            </span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.nomePessoa}</span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.emailPessoa}</span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.cpfCnpjPessoa}</span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.rgIePessoa}</span>
+                                            <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                                <button onClick={() => SelectCitizen(object, "Editar")}><PencilSimple size={20} className="hover:text-cyan-500" /></button>{"  "}
+                                                <button onClick={() => SelectCitizen(object, "Excluir")}><TrashSimple size={20} className="hover:text-red-600" /></button>
+                                            </span>
+                                        </li>
+                                    );
                                 })}
                             </ul>
                             {/* Estilização dos botões de navegação */}

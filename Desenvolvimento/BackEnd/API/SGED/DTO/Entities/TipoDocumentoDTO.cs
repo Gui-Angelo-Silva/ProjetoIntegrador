@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace SGED.DTO.Entities
 {
@@ -17,5 +18,11 @@ namespace SGED.DTO.Entities
 		[MinLength(5)]
 		[MaxLength(450)]
 		public string DescricaoTipoDocumento { get; set; }
+
+		[JsonIgnore]
+		public EtapaDTO? EtapaDTO { get; set; }
+
+		[Required(ErrorMessage = "A etapa é requerida!")]
+		public int IdEtapa { get; set; }
 	}
 }

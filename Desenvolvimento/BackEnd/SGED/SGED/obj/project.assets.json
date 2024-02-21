@@ -3294,23 +3294,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Aluno\\.nuget\\packages\\": {},
+    "C:\\Users\\santo\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Aluno\\Documents\\ProjetoIntegrador\\Desenvolvimento\\BackEnd\\SGED\\SGED\\SGED.csproj",
+      "projectUniqueName": "C:\\Users\\santo\\OneDrive\\Área de Trabalho\\Fatec\\Repository\\ProjetoIntegrador\\Desenvolvimento\\BackEnd\\SGED\\SGED\\SGED.csproj",
       "projectName": "SGED",
-      "projectPath": "C:\\Users\\Aluno\\Documents\\ProjetoIntegrador\\Desenvolvimento\\BackEnd\\SGED\\SGED\\SGED.csproj",
-      "packagesPath": "C:\\Users\\Aluno\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Aluno\\Documents\\ProjetoIntegrador\\Desenvolvimento\\BackEnd\\SGED\\SGED\\obj\\",
+      "projectPath": "C:\\Users\\santo\\OneDrive\\Área de Trabalho\\Fatec\\Repository\\ProjetoIntegrador\\Desenvolvimento\\BackEnd\\SGED\\SGED\\SGED.csproj",
+      "packagesPath": "C:\\Users\\santo\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\santo\\OneDrive\\Área de Trabalho\\Fatec\\Repository\\ProjetoIntegrador\\Desenvolvimento\\BackEnd\\SGED\\SGED\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Aluno\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\santo\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -3319,7 +3319,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\sdk\\7.0.306\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3458,8 +3458,50 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "O pacote 'Microsoft.IdentityModel.JsonWebTokens' 7.0.2 tem uma moderado vulnerabilidade de gravidade conhecida, https://github.com/advisories/GHSA-59j7-ghrg-fj52",
+      "libraryId": "Microsoft.IdentityModel.JsonWebTokens",
+      "targetGraphs": [
+        "net7.0"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "O pacote 'Microsoft.IdentityModel.JsonWebTokens' 7.0.2 tem uma moderado vulnerabilidade de gravidade conhecida, https://github.com/advisories/GHSA-8g9c-28fc-mcx2",
+      "libraryId": "Microsoft.IdentityModel.JsonWebTokens",
+      "targetGraphs": [
+        "net7.0"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "O pacote 'System.IdentityModel.Tokens.Jwt' 7.0.2 tem uma moderado vulnerabilidade de gravidade conhecida, https://github.com/advisories/GHSA-59j7-ghrg-fj52",
+      "libraryId": "System.IdentityModel.Tokens.Jwt",
+      "targetGraphs": [
+        "net7.0"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "O pacote 'System.IdentityModel.Tokens.Jwt' 7.0.2 tem uma moderado vulnerabilidade de gravidade conhecida, https://github.com/advisories/GHSA-8g9c-28fc-mcx2",
+      "libraryId": "System.IdentityModel.Tokens.Jwt",
+      "targetGraphs": [
+        "net7.0"
+      ]
+    }
+  ]
 }

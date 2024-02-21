@@ -84,7 +84,7 @@ function Cards() {
                 module: "Usuario"
             },
             {
-                onClick: () => inDevelopment("Controle de Munícipe"),
+                onClick: () => addSegment("citizen"),
                 image: ImgMunicipe,
                 tooltip: "Abrir a Página de Controle de Munícipe",
                 title: "Munícipe",

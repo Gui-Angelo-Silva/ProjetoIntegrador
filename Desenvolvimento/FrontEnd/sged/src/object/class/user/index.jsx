@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import PersonClass from '../person';
-import defaultPicture from '../../../assets/user/defaultProfilePicture.png';
-import closeIcon from '../../../assets/user/closeIcon.png';
 
 function UserClass() {
 
   const person = PersonClass();
 
   // Atributos
+  const personPicture = person.personPicture;
   const personName = person.personName;
   const setPersonName = person.setPersonName;
   const personEmail = person.personEmail;
@@ -20,6 +19,7 @@ function UserClass() {
   const setPersonRgIe = person.setPersonRgIe;
 
   // Erros
+  const errorPersonPicture = person.errorPersonPicture;
   const errorPersonName = person.errorPersonName;
   const errorPersonEmail = person.errorPersonEmail;
   const errorPersonTelephone = person.errorPersonTelephone;
@@ -29,6 +29,7 @@ function UserClass() {
   // Funções Essenciais
   const getDataPerson = person.getData;
   const setDataPerson = person.setData;
+  const getErrorPerson = person.getError;
   const clearDataPerson = person.clearData;
   const clearErrorPerson = person.clearError;
   const verifyDataPerson = person.verifyData;
@@ -41,9 +42,13 @@ function UserClass() {
   const handlePhone = person.handlePhone;
   const handleCpfCnpj = person.handleCpfCnpj;
   const handleRgIe = person.handleRgIe;
+  const closeIcon = person.closeIcon;
+  const addImage = person.addImage;
+  const insertPicture = person.insertPicture;
+  const removePicture = person.removePicture;
+  const handleImageClick = person.handleImageClick;
   person.effects();
 
-  const [userPicture, setUserPicture] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [userOffice, setUserOffice] = useState('');
   const [userStatus, setUserStatus] = useState(true);
@@ -70,22 +75,21 @@ function UserClass() {
     setUserStatus(object.statusUsuario);
     setIdTypeUser(object.idTipoUsuario);
     setUserId(object.id);
-    setUserPicture(object.imagemUsuario);
-    if (object.imagemUsuario) {
-      setAddImage(true);
-    }
   }
 
   function setData() {
     return {
       ...setDataPerson(),
       id: userId,
-      imagemUsuario: userPicture,
       senhaUsuario: userPassword,
       cargoUsuario: userOffice,
       statusUsuario: userStatus,
       idTipoUsuario: idTypeUser
     }
+  }
+
+  function getError(json) {
+    getErrorPerson(json);
   }
 
   function clearData() {
@@ -95,7 +99,6 @@ function UserClass() {
     setUserStatus(true);
     setIdTypeUser('');
     setUserId('');
-    removePicture();
   }
 
   function clearError() {
@@ -105,9 +108,9 @@ function UserClass() {
     setErrorIdTypeUser('');
   }
 
-  function verifyData(list) {
+  function verifyData() {
     clearError();
-    var status = verifyDataPerson(list, userId ? userId : 0);
+    var status = verifyDataPerson();
 
     let password = '';
     let office = '';
@@ -177,42 +180,11 @@ function UserClass() {
     passwordStrengthIndicator();
   }, [userPassword]);
 
-  const [addImage, setAddImage] = useState(false);
-
-  function insertPicture(file) {
-    if (file) {
-      setAddImage(true);
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        const base64String = reader.result;
-        setUserPicture(base64String);
-      };
-
-      reader.readAsDataURL(file);
-    }
-  }
-
-  function removePicture(modal) {
-    setUserPicture("");
-    const fileInput = document.getElementById(`fileInput${modal}`);
-
-    if(fileInput) {
-      fileInput.value = '';
-    }
-
-    setAddImage(false);
-  };
-
-  function handleImageClick(modal) {
-    const fileInput = document.getElementById(`fileInput${modal}`);
-    fileInput.click();
-  }
-
   return {
     /* -----  Pessoa  ----- */
 
     // Atributos
+    personPicture,
     personName,
     setPersonName,
     personEmail,
@@ -225,6 +197,7 @@ function UserClass() {
     setPersonRgIe,
 
     // Erros
+    errorPersonPicture,
     errorPersonName,
     errorPersonEmail,
     errorPersonTelephone,
@@ -239,12 +212,16 @@ function UserClass() {
     handlePhone,
     handleCpfCnpj,
     handleRgIe,
+    closeIcon,
+    addImage,
+    insertPicture,
+    removePicture,
+    handleImageClick,
 
 
     /* -----  Usuário  ----- */
 
     // Atributos
-    userPicture,
     userPassword,
     setUserPassword,
     userOffice,
@@ -265,18 +242,13 @@ function UserClass() {
     gender,
     getData,
     setData,
+    getError,
     clearData,
     clearError,
     verifyData,
 
     // Variáveis e Funções de Controle
-    passwordStrength,
-    closeIcon,
-    defaultPicture,
-    addImage,
-    insertPicture,
-    removePicture,
-    handleImageClick
+    passwordStrength
   };
 }
 

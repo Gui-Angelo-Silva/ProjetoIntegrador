@@ -25,7 +25,7 @@ import LoginClass from '../../../../object/class/login';
 
 const defaultTheme = createTheme();
 
-export default function SignInSide() {
+export default function SignIn() {
 
   const { componentMounted } = useMontage();
 
@@ -34,20 +34,11 @@ export default function SignInSide() {
   }, [componentMounted]);
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState('');
   const [loginError, setLoginError] = useState('');
   const server = useServer();
   const session = useSession();
   const login = LoginClass();
-
-  const getDataLogin = () => {
-    const data = session.getLogin();
-    if (data) {
-      login.getData(data);
-    } else {
-      login.clearData();
-    }
-  };
 
   const handlePersistLoginChange = (e) => {
     const checked = e.target.checked;
@@ -55,27 +46,41 @@ export default function SignInSide() {
   };
 
   const handleSubmit = async (e) => {
-    setIsLoading(true);
-    setLoginError('');
-
     e.preventDefault();
+
+    const delay = (milliseconds) => {
+      return new Promise(resolve => setTimeout(resolve, milliseconds));
+    };
+
+    setLoginError('');
+    setIsLoading('Verificando Dados...');
+
     if (login.verifyData()) {
-      try {
-        const response = await session.createSession(login);
-        if (response.validation) {
-          server.clearSegment("home");
-        } else {
-          setLoginError(response.message);
-        }
-      } catch (error) {
-        setLoginError('Erro ao fazer login: ', error.message);
+      await delay(1000); setIsLoading('Criando Sessão...');
+
+      const response = await session.createSession(login);
+
+      if (response.validation) {
+        await delay(1000); setIsLoading('Liberando Entrada...');
+        await delay(1000); server.clearSegment("home");
+      } else {
+        setLoginError(response.message);
       }
     }
 
-    setIsLoading(false);
+    setIsLoading('');
   };
 
   useEffect(() => {
+    const getDataLogin = () => {
+      const data = session.getLogin();
+      if (data) {
+        login.getData(data);
+      } else {
+        login.clearData();
+      }
+    };
+
     getDataLogin();
   }, []);
 
@@ -175,7 +180,7 @@ export default function SignInSide() {
             </Avatar> */}
 
             <Typography component="h1" variant="h5" fontSize={40} paddingBottom={5} >
-              Entrar
+              Autenticação
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }} style={{ width: 450 }}>
               <TextField
@@ -225,7 +230,7 @@ export default function SignInSide() {
                 label="Lembre de mim"
               />
               <button
-                onClick={() => server.inDevelopment("Registro")}
+                onClick={() => server.clearSegment("register")}
                 style={{ color: 'blue', marginLeft: '150px' }}
               >
                 Não possuo conta
@@ -240,9 +245,9 @@ export default function SignInSide() {
                   }
                 }}
                 style={{}}
-                disabled={isLoading}
+                disabled={isLoading ? true : false}
               >
-                {isLoading ? 'Aguarde...' : 'Entrar'}
+                {isLoading ? isLoading : 'Entrar'}
               </Button>
             </Box>
           </Box>

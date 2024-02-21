@@ -34,6 +34,7 @@ public class MunicipeRepository : IMunicipeRepository
 
     public async Task<Municipe> Update(Municipe municipe)
     {
+        _dbContext.ChangeTracker.Clear();
         _dbContext.Entry(municipe).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
         return municipe;

@@ -343,7 +343,7 @@ export default function Stage() {
                                 isClearable
                                 isSearchable
                                 noOptionsMessage={() => {
-                                    if (listState.list.length === 0) {
+                                    if (listTypeProcess.list.length === 0) {
                                         return "Nenhum Tipo Processo cadastrado!";
                                     } else {
                                         return "Nenhuma opção encontrada!";
@@ -408,7 +408,7 @@ export default function Stage() {
                                 isClearable
                                 isSearchable
                                 noOptionsMessage={() => {
-                                    if (listState.list.length === 0) {
+                                    if (listTypeProcess.list.length === 0) {
                                         return "Nenhum Tipo Processo cadastrado!";
                                     } else {
                                         return "Nenhuma opção encontrada!";

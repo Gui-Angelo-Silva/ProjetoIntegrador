@@ -260,11 +260,8 @@ export default function TypeUser() {
                                 <option key="B" value="B" title="Descrição: pode realizar todas funcionalidades do sistema, porém com auditoria de ações.">
                                     B
                                 </option>
-                                <option key="C" value="C" title="Descrição: pode vizualizar todos dados, com exceção de senhas.">
+                                <option key="C" value="C" title="Descrição: pode realizar todas funcionalidades do sistema, porém com autorização dos superiores.">
                                     C
-                                </option>
-                                <option key="D" value="D" title="Descrição: pode vizualizar somente dados relacionados a ele próprio.">
-                                    D
                                 </option>
                             </select>
                             <br />
@@ -299,8 +296,7 @@ export default function TypeUser() {
                             <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typeuser.setTypeUserAcessLevel(e.target.value)} value={typeuser.typeUserAcessLevel}>
                                 <option value="A" title="Descrição: pode realizar todas funcionalidades do sistema.">A</option>
                                 <option value="B" title="Descrição: pode realizar todas funcionalidades do sistema, porém com auditoria de ações.">B</option>
-                                <option value="C" title="Descrição: pode vizualizar todos dados, com exceção de senhas.">C</option>
-                                <option value="D" title="Descrição: pode vizualizar somente dados relacionados a ele próprio.">D</option>
+                                <option value="C" title="Descrição: pode realizar todas funcionalidades do sistema, porém com autorização dos superiores.">C</option>
                             </select>
                             <br />
                             <label className="text-[#444444]">Descrição:</label>

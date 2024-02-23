@@ -133,6 +133,59 @@ namespace SGED.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SGED.Models.Entities.Engenheiro", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("idengenheiro");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CpfCNPJPessoa")
+                        .IsRequired()
+                        .HasMaxLength(18)
+                        .HasColumnType("character varying(18)")
+                        .HasColumnName("cpfcnpjpessoa");
+
+                    b.Property<string>("EmailPessoa")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("emailpessoa");
+
+                    b.Property<string>("ImagemPessoa")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("imagempessoa");
+
+                    b.Property<string>("NomePessoa")
+                        .IsRequired()
+                        .HasMaxLength(70)
+                        .HasColumnType("character varying(70)")
+                        .HasColumnName("nomepessoa");
+
+                    b.Property<string>("RgIEPessoa")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("rgiepessoa");
+
+                    b.Property<string>("TelefonePessoa")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("telefonepessoa");
+
+                    b.Property<string>("crea")
+                        .IsRequired()
+                        .HasMaxLength(9)
+                        .HasColumnType("character varying(9)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("engenheiro");
+                });
+
             modelBuilder.Entity("SGED.Models.Entities.Estado", b =>
                 {
                     b.Property<int>("Id")

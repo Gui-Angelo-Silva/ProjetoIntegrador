@@ -5,45 +5,45 @@ using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
 
 namespace SGED.Services.Entities;
-public class MunicipeService : IMunicipeService
+public class EngenheiroService : IEngenheiroService
 {
 
-    private readonly IMunicipeRepository _municipeRepository;
+    private readonly IEngenheiroRepository _engenheiroRepository;
     private readonly IMapper _mapper;
 
-    public MunicipeService(IMunicipeRepository municipeRepository, IMapper mapper)
+    public EngenheiroService(IEngenheiroRepository engenheiroRepository, IMapper mapper)
     {
-        _municipeRepository = municipeRepository;
+        _engenheiroRepository = engenheiroRepository;
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<MunicipeDTO>> GetAll()
+    public async Task<IEnumerable<EngenheiroDTO>> GetAll()
     {
-        var municipes = await _municipeRepository.GetAll();
-        return _mapper.Map<IEnumerable<MunicipeDTO>>(municipes);
+        var engenheiros = await _engenheiroRepository.GetAll();
+        return _mapper.Map<IEnumerable<EngenheiroDTO>>(engenheiros);
     }
 
-    public async Task<MunicipeDTO> GetById(int id)
+    public async Task<EngenheiroDTO> GetById(int id)
     {
-        var municipe = await _municipeRepository.GetById(id);
-        return _mapper.Map<MunicipeDTO>(municipe);
+        var engenheiro = await _engenheiroRepository.GetById(id);
+        return _mapper.Map<EngenheiroDTO>(engenheiro);
     }
 
-    public async Task Create(MunicipeDTO municipeDTO)
+    public async Task Create(EngenheiroDTO engenheiroDTO)
     {
-        var municipe = _mapper.Map<Municipe>(municipeDTO);
-        await _municipeRepository.Create(municipe);
-        municipeDTO.Id = municipe.Id;
+        var engenheiro = _mapper.Map<Engenheiro>(engenheiroDTO);
+        await _engenheiroRepository.Create(engenheiro);
+        engenheiroDTO.Id = engenheiro.Id;
     }
 
-    public async Task Update(MunicipeDTO municipeDTO)
+    public async Task Update(EngenheiroDTO engenheiroDTO)
     {
-        var municipe = _mapper.Map<Municipe>(municipeDTO);
-        await _municipeRepository.Update(municipe);
+        var engenheiro = _mapper.Map<Engenheiro>(engenheiroDTO);
+        await _engenheiroRepository.Update(engenheiro);
     }
 
     public async Task Remove(int id)
     {
-        await _municipeRepository.Delete(id);
+        await _engenheiroRepository.Delete(id);
     }
 }

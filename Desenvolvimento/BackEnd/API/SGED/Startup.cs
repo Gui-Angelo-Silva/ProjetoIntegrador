@@ -138,8 +138,12 @@ namespace SGED
             services.AddScoped<IMunicipeRepository, MunicipeRepository>();
             services.AddScoped<IMunicipeService, MunicipeService>();
 
-            // Dependência: TipoLogradouro
-            services.AddScoped<ITipoLogradouroRepository, TipoLogradouroRepository>();
+			// Dependência: Engenheiro
+			services.AddScoped<IEngenheiroRepository, EngenheiroRepository>();
+			services.AddScoped<IEngenheiroService, EngenheiroService>();
+
+			// Dependência: TipoLogradouro
+			services.AddScoped<ITipoLogradouroRepository, TipoLogradouroRepository>();
             services.AddScoped<ITipoLogradouroService, TipoLogradouroService>();
 
             // Dependência: Logradouro

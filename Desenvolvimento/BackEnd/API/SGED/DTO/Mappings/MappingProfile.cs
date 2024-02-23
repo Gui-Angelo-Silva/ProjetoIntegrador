@@ -11,7 +11,10 @@ namespace SGED.DTO.Mappings
             CreateMap<EstadoDTO, Estado>();
             CreateMap<Estado, EstadoDTO>().ReverseMap();
 
-            CreateMap<TipoUsuarioDTO, TipoUsuario>();
+			CreateMap<EngenheiroDTO, Engenheiro>();
+			CreateMap<Engenheiro, EngenheiroDTO>().ReverseMap();
+
+			CreateMap<TipoUsuarioDTO, TipoUsuario>();
             CreateMap<TipoUsuario, TipoUsuarioDTO>().ReverseMap();
 
             CreateMap<PessoaDTO, Pessoa>();

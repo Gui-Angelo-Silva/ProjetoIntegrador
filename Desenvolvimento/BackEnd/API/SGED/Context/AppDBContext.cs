@@ -13,6 +13,7 @@ public class AppDBContext : DbContext
     public DbSet<Bairro> Bairro { get; set; }
     public DbSet<Usuario> Usuario { get; set; }
 	public DbSet<Municipe> Municipe { get; set; }
+	public DbSet<Municipe> Engenheiro { get; set; }
 	public DbSet<TipoLogradouro> TipoLogradouro { get; set; }
 	public DbSet<TipoProcesso> TipoProcesso { get; set; }
 	public DbSet<Logradouro> Logradouro { get; set; }
@@ -110,6 +111,16 @@ public class AppDBContext : DbContext
 		modelBuilder.Entity<Municipe>().Property(b => b.TelefonePessoa).HasMaxLength(15).IsRequired();
 		modelBuilder.Entity<Municipe>().Property(b => b.CpfCNPJPessoa).HasMaxLength(18).IsRequired();
 		modelBuilder.Entity<Municipe>().Property(b => b.RgIEPessoa).HasMaxLength(15).IsRequired();
+
+		// Builder: Engenheiro
+		modelBuilder.Entity<Engenheiro>().HasKey(b => b.Id);
+		modelBuilder.Entity<Engenheiro>().Property(b => b.ImagemPessoa).IsRequired();
+		modelBuilder.Entity<Engenheiro>().Property(b => b.NomePessoa).HasMaxLength(70).IsRequired();
+		modelBuilder.Entity<Engenheiro>().Property(b => b.EmailPessoa).IsRequired();
+		modelBuilder.Entity<Engenheiro>().Property(b => b.TelefonePessoa).HasMaxLength(15).IsRequired();
+		modelBuilder.Entity<Engenheiro>().Property(b => b.CpfCNPJPessoa).HasMaxLength(18).IsRequired();
+		modelBuilder.Entity<Engenheiro>().Property(b => b.RgIEPessoa).HasMaxLength(15).IsRequired();
+		modelBuilder.Entity<Engenheiro>().Property(b => b.crea).HasMaxLength(9).IsRequired();
 
 		// Builder: TipoLogradouro
 		modelBuilder.Entity<TipoLogradouro>().HasKey(b => b.Id);

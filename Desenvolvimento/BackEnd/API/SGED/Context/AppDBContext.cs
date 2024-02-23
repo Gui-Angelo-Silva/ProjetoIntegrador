@@ -13,7 +13,7 @@ public class AppDBContext : DbContext
     public DbSet<Bairro> Bairro { get; set; }
     public DbSet<Usuario> Usuario { get; set; }
 	public DbSet<Municipe> Municipe { get; set; }
-	public DbSet<Municipe> Engenheiro { get; set; }
+	public DbSet<Engenheiro> Engenheiro { get; set; }
 	public DbSet<TipoLogradouro> TipoLogradouro { get; set; }
 	public DbSet<TipoProcesso> TipoProcesso { get; set; }
 	public DbSet<Logradouro> Logradouro { get; set; }

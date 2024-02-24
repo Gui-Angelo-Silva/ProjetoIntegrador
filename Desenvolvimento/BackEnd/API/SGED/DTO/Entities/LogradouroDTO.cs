@@ -33,5 +33,8 @@ namespace SGED.DTO.Entities
 
 		[Required(ErrorMessage = "O Tipo de logradouro é requerido!")]
 		public int IdTipoLogradouro { get; set; }
+
+		[JsonIgnore]
+		public ICollection<ImovelDTO> ImovelDTOs { get; set; }
 	}
 }

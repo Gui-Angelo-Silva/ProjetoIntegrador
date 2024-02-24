@@ -49,6 +49,9 @@ namespace SGED.DTO.Mappings
 
             CreateMap<EtapaDTO, Etapa>();
             CreateMap<Etapa, EtapaDTO>().ReverseMap();  
+
+            CreateMap<ImovelDTO, Imovel>(); 
+            CreateMap<Imovel, ImovelDTO>().ReverseMap();    
         }
     }
 }

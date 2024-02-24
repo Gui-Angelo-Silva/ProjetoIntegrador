@@ -9,5 +9,8 @@ namespace SGED.DTO.Entities
     public class MunicipeDTO : PessoaDTO
     {
         public int Id { get; set; }
+
+        [JsonIgnore]
+        public ICollection<ImovelDTO> ImovelDTOs { get; set; }  
     }
 }

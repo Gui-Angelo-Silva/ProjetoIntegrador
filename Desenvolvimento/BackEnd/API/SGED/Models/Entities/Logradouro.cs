@@ -16,6 +16,7 @@ namespace SGED.Models.Entities
 
 		[Column("numeroFinal")]
 		public string NumeroFinal { get; set; }
+
 		public Bairro? Bairro { get; set; }
 
 		[ForeignKey("idbairro")]
@@ -25,5 +26,7 @@ namespace SGED.Models.Entities
 
 		[ForeignKey("idtipologradouro")]
 		public int IdTipoLogradouro { get; set; }
+
+		public ICollection<Imovel>? Imovels { get; set;}
 	}
 }

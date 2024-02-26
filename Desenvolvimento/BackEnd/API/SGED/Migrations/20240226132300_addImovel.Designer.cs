@@ -11,8 +11,8 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240223184321_sgedDB")]
-    partial class sgedDB
+    [Migration("20240226132300_addImovel")]
+    partial class addImovel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -408,6 +408,36 @@ namespace SGED.Migrations
                     b.HasIndex("IdTipoProcesso");
 
                     b.ToTable("etapa");
+                });
+
+            modelBuilder.Entity("SGED.Models.Entities.Imovel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("idimovel");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("IdLogradouro")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("IdMunicipe")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("NumeroImovel")
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("character varying(6)")
+                        .HasColumnName("numeroimovel");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdLogradouro");
+
+                    b.HasIndex("IdMunicipe");
+
+                    b.ToTable("imovel");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.Logradouro", b =>
@@ -1847,6 +1877,25 @@ namespace SGED.Migrations
                     b.Navigation("TipoProcesso");
                 });
 
+            modelBuilder.Entity("SGED.Models.Entities.Imovel", b =>
+                {
+                    b.HasOne("SGED.Models.Entities.Logradouro", "Logradouro")
+                        .WithMany("Imovels")
+                        .HasForeignKey("IdLogradouro")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SGED.Models.Entities.Municipe", "Municipe")
+                        .WithMany("Imovels")
+                        .HasForeignKey("IdMunicipe")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Logradouro");
+
+                    b.Navigation("Municipe");
+                });
+
             modelBuilder.Entity("SGED.Models.Entities.Logradouro", b =>
                 {
                     b.HasOne("SGED.Models.Entities.Bairro", "Bairro")
@@ -1906,6 +1955,16 @@ namespace SGED.Migrations
             modelBuilder.Entity("SGED.Models.Entities.Etapa", b =>
                 {
                     b.Navigation("TipoDocumento");
+                });
+
+            modelBuilder.Entity("SGED.Models.Entities.Logradouro", b =>
+                {
+                    b.Navigation("Imovels");
+                });
+
+            modelBuilder.Entity("SGED.Models.Entities.Municipe", b =>
+                {
+                    b.Navigation("Imovels");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.TipoLogradouro", b =>

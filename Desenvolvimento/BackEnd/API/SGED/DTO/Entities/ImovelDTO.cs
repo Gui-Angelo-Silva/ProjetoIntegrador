@@ -19,7 +19,7 @@ namespace SGED.DTO.Entities
 		public int IdLogradouro { get; set; }
 
 		[JsonIgnore]
-		public MunicipeDTO MunicipeDTO { get; set; }
+		public MunicipeDTO? MunicipeDTO { get; set; }
 
 		[Required(ErrorMessage = "Munícipe é requerido!")]
 		public int IdMunicipe { get;set; }

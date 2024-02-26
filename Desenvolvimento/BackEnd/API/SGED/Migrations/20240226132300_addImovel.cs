@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class sgedDB : Migration
+    public partial class addImovel : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -243,6 +243,33 @@ namespace SGED.Migrations
                         column: x => x.IdTipoLogradouro,
                         principalTable: "tipologradouro",
                         principalColumn: "idtipologradouro",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "imovel",
+                columns: table => new
+                {
+                    idimovel = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    numeroimovel = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
+                    IdLogradouro = table.Column<int>(type: "integer", nullable: false),
+                    IdMunicipe = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_imovel", x => x.idimovel);
+                    table.ForeignKey(
+                        name: "FK_imovel_logradouro_IdLogradouro",
+                        column: x => x.IdLogradouro,
+                        principalTable: "logradouro",
+                        principalColumn: "idlogradouro",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_imovel_municipe_IdMunicipe",
+                        column: x => x.IdMunicipe,
+                        principalTable: "municipe",
+                        principalColumn: "idmunicipe",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -518,6 +545,16 @@ namespace SGED.Migrations
                 column: "IdTipoProcesso");
 
             migrationBuilder.CreateIndex(
+                name: "IX_imovel_IdLogradouro",
+                table: "imovel",
+                column: "IdLogradouro");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_imovel_IdMunicipe",
+                table: "imovel",
+                column: "IdMunicipe");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_logradouro_IdBairro",
                 table: "logradouro",
                 column: "IdBairro");
@@ -545,10 +582,7 @@ namespace SGED.Migrations
                 name: "engenheiro");
 
             migrationBuilder.DropTable(
-                name: "logradouro");
-
-            migrationBuilder.DropTable(
-                name: "municipe");
+                name: "imovel");
 
             migrationBuilder.DropTable(
                 name: "TipoDocumento");
@@ -557,10 +591,10 @@ namespace SGED.Migrations
                 name: "usuario");
 
             migrationBuilder.DropTable(
-                name: "bairro");
+                name: "logradouro");
 
             migrationBuilder.DropTable(
-                name: "tipologradouro");
+                name: "municipe");
 
             migrationBuilder.DropTable(
                 name: "etapa");
@@ -569,10 +603,16 @@ namespace SGED.Migrations
                 name: "tipousuario");
 
             migrationBuilder.DropTable(
-                name: "cidade");
+                name: "bairro");
+
+            migrationBuilder.DropTable(
+                name: "tipologradouro");
 
             migrationBuilder.DropTable(
                 name: "tipoprocesso");
+
+            migrationBuilder.DropTable(
+                name: "cidade");
 
             migrationBuilder.DropTable(
                 name: "estado");

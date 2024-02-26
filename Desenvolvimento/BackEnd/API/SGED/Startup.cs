@@ -157,6 +157,11 @@ namespace SGED
             // Dependência: Etapa
             services.AddScoped<IEtapaRepository, EtapaRepository>();
             services.AddScoped<IEtapaService, EtapaService>();
+
+            // Dependência: Imóvel
+            services.AddScoped<IImovelRepository, ImovelRepository>();
+            services.AddScoped<IImovelService, ImovelService>();
+            
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

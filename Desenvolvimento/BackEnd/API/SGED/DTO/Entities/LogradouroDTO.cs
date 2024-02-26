@@ -35,6 +35,6 @@ namespace SGED.DTO.Entities
 		public int IdTipoLogradouro { get; set; }
 
 		[JsonIgnore]
-		public ICollection<ImovelDTO> ImovelDTOs { get; set; }
+		public ICollection<ImovelDTO>? ImovelDTOs { get; set; }
 	}
 }

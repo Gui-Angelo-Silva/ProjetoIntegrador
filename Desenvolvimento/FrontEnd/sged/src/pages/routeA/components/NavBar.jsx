@@ -125,7 +125,7 @@ export default function NavBar() {
             <NotificationsIcon />
           </Badge>
         </IconButton>
-        <p>Notifications</p>
+        <p>Notificações</p>
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
@@ -137,7 +137,7 @@ export default function NavBar() {
         >
           <img src={user.personPicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '25px', height: '25px', objectFit: 'cover', border: '1px solid black', boxShadow: '0 0 0 1px white', backgroundColor: 'white' }} />
         </IconButton>
-        <p>Profile</p>
+        <p>Perfil</p>
       </MenuItem>
     </Menu>
   );

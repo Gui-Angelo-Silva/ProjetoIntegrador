@@ -17,6 +17,9 @@ namespace SGED.DTO.Mappings
             CreateMap<PessoaDTO, Pessoa>();
             CreateMap<Pessoa, PessoaDTO>().ReverseMap();
 
+            CreateMap<FiscalDTO, Fiscal>();
+            CreateMap<Fiscal, FiscalDTO>().ReverseMap();
+
             CreateMap<CidadeDTO, Cidade>();
             CreateMap<Cidade, CidadeDTO>().ReverseMap();
 

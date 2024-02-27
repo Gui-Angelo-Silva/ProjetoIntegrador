@@ -14,7 +14,8 @@ public class AppDBContext : DbContext
     //public DbSet<TipoProcesso> TipoProcesso { get; set; }
     public DbSet<Usuario> Usuario { get; set; }
 	public DbSet<Municipe> Municipe { get; set; }
-	public DbSet<TipoLogradouro> TipoLogradouro { get; set; }
+    public DbSet<Fiscal> Fiscal { get; set; }
+    public DbSet<TipoLogradouro> TipoLogradouro { get; set; }
 
 	// Fluent API
 	protected override void OnModelCreating(ModelBuilder modelBuilder)

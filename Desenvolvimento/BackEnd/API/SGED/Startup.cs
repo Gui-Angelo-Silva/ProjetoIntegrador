@@ -138,6 +138,10 @@ namespace SGED
             services.AddScoped<IMunicipeRepository, MunicipeRepository>();
             services.AddScoped<IMunicipeService, MunicipeService>();
 
+            // Dependência: Fiscal
+            services.AddScoped<IFiscalRepository, FiscalRepository>();
+            services.AddScoped<IFiscalService, FiscalService>();
+
             // Dependência: TipoLogradouro
             services.AddScoped<ITipoLogradouroRepository, TipoLogradouroRepository>();
             services.AddScoped<ITipoLogradouroService, TipoLogradouroService>();

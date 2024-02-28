@@ -25,7 +25,7 @@ function Cards() {
     const dataCategory = {
         "Imóvel": [
             {
-                onClick: () => inDevelopment("Controle de Imóvel"),
+                onClick: () => addSegment("realstate"),
                 image: ImgImovel,
                 tooltip: "Abrir a Página de Controle de Imóvel",
                 title: "Imóvel",

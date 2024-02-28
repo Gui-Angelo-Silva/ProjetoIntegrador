@@ -203,8 +203,8 @@ export default function PublicPlace() {
     useEffect(() => {
         if (updateData) {
             GetNeighborhood();
-        GetTypePublicPlace();
-        GetPublicPlace();
+            GetTypePublicPlace();
+            GetPublicPlace();
 
             publicplace.setIdNeighborhood(listNeighborhood.list[0]?.id);
             publicplace.setIdTypePublicPlace(listTypePublicPlace.list[0]?.id);

@@ -1,12 +1,9 @@
 import { Routes, Route } from 'react-router-dom';
-
 import Development from '../../pages/allRoutes/utility/development';
 import NotFound from '../../pages/allRoutes/utility/notfound';
 import NotPermission from '../../pages/allRoutes/utility/notpermission';
-
 import Home from '../../pages/routeA/dashboard/home';
 import Profile from '../../pages/allRoutes/account/profile';
-
 import Registration from '../../pages/routeA/dashboard/registration';
 import State from '../../pages/routeA/manipulation/state';
 import City from '../../pages/routeA/manipulation/city';
@@ -19,9 +16,9 @@ import PublicPlace from '../../pages/routeA/manipulation/publicplace';
 import TypeDocument from '../../pages/routeA/manipulation/typedocument';
 import TypeProcess from '../../pages/routeA/manipulation/typeprocess';
 import Stage from '../../pages/routeA/manipulation/stage';
-
 import Document from '../../pages/routeA/dashboard/document';
 import Test from '../../pages/routeA/dashboard/test';
+import RealState from '../../pages/routeA/manipulation/realstate';
 
 export default function RouteA() {
     return (
@@ -45,6 +42,7 @@ export default function RouteA() {
             <Route path="/a/registration/typedocument" element={<TypeDocument />}></Route>
             <Route path="/a/registration/typeprocess" element={<TypeProcess  />}></Route>
             <Route path="/a/registration/stage" element={<Stage  />}></Route>
+            <Route path="/a/registration/realstate" element={<RealState  />}></Route>
 
             <Route path="/a/document" element={<Document />}></Route>
             <Route path="/a/test" element={<Test />}></Route>

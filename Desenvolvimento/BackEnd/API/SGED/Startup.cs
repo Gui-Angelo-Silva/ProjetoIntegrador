@@ -144,10 +144,11 @@ namespace SGED
 
             // Dependência: TipoLogradouro
             services.AddScoped<ITipoLogradouroRepository, TipoLogradouroRepository>();
+            services.AddScoped<ITipoLogradouroService, TipoLogradouroService>();
 
-			      // Dependência: Engenheiro
-			      services.AddScoped<IEngenheiroRepository, EngenheiroRepository>();
-			      services.AddScoped<IEngenheiroService, EngenheiroService>();
+			// Dependência: Engenheiro
+			services.AddScoped<IEngenheiroRepository, EngenheiroRepository>();
+			services.AddScoped<IEngenheiroService, EngenheiroService>();
 
             // Dependência: Logradouro
             services.AddScoped<ILogradouroRepository, LogradouroRepository>();

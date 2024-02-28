@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class addImovel : Migration
+    public partial class addFiscal : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -44,6 +44,24 @@ namespace SGED.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_estado", x => x.idestado);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "fiscal",
+                columns: table => new
+                {
+                    idfiscal = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    imagempessoa = table.Column<string>(type: "text", nullable: false),
+                    nomepessoa = table.Column<string>(type: "character varying(70)", maxLength: 70, nullable: false),
+                    emailpessoa = table.Column<string>(type: "text", nullable: false),
+                    telefonepessoa = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
+                    cpfcnpjpessoa = table.Column<string>(type: "character varying(18)", maxLength: 18, nullable: false),
+                    rgiepessoa = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_fiscal", x => x.idfiscal);
                 });
 
             migrationBuilder.CreateTable(
@@ -580,6 +598,9 @@ namespace SGED.Migrations
         {
             migrationBuilder.DropTable(
                 name: "engenheiro");
+
+            migrationBuilder.DropTable(
+                name: "fiscal");
 
             migrationBuilder.DropTable(
                 name: "imovel");

@@ -407,6 +407,54 @@ namespace SGED.Migrations
                     b.ToTable("etapa");
                 });
 
+            modelBuilder.Entity("SGED.Models.Entities.Fiscal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("idfiscal");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CpfCNPJPessoa")
+                        .IsRequired()
+                        .HasMaxLength(18)
+                        .HasColumnType("character varying(18)")
+                        .HasColumnName("cpfcnpjpessoa");
+
+                    b.Property<string>("EmailPessoa")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("emailpessoa");
+
+                    b.Property<string>("ImagemPessoa")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("imagempessoa");
+
+                    b.Property<string>("NomePessoa")
+                        .IsRequired()
+                        .HasMaxLength(70)
+                        .HasColumnType("character varying(70)")
+                        .HasColumnName("nomepessoa");
+
+                    b.Property<string>("RgIEPessoa")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("rgiepessoa");
+
+                    b.Property<string>("TelefonePessoa")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("telefonepessoa");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("fiscal");
+                });
+
             modelBuilder.Entity("SGED.Models.Entities.Imovel", b =>
                 {
                     b.Property<int>("Id")

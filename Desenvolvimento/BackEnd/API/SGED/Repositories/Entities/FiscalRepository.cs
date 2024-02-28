@@ -46,5 +46,4 @@ public class FiscalRepository : IFiscalRepository
         await _dbContext.SaveChangesAsync();
         return fiscal;
     }
-
 }

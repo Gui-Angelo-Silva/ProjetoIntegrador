@@ -12,7 +12,7 @@ namespace SGED.Controllers
     public class FiscalController : Controller
     {
 
-        private readonly IFiscalService _FiscalService;
+        private readonly IFiscalService _fiscalService;
 
         public FiscalController(IFiscalService fiscalService)
         {
@@ -46,7 +46,7 @@ namespace SGED.Controllers
             else if (response == -2) return BadRequest("CNPJ inválido!");
             else if (response == -3) return BadRequest("Documento incompleto!");
 
-            response = fiscalDTO.RgIe(fiscalDTO.RgIEPessoa);
+            response = fiscalDTO.RgIe(fiscalDTO.RgIePessoa);
             if (response == 0) return BadRequest("Documento incorreto!");
             else if (response == -1) return BadRequest("RG inválido!");
             else if (response == -2) return BadRequest("IE inválido!");
@@ -67,7 +67,7 @@ namespace SGED.Controllers
             else if (response == -2) return BadRequest("CNPJ inválido!");
             else if (response == -3) return BadRequest("Documento incompleto!");
 
-            response = fiscalDTO.RgIe(fiscalDTO.RgIEPessoa);
+            response = fiscalDTO.RgIe(fiscalDTO.RgIePessoa);
             if (response == 0) return BadRequest("Documento incorreto!");
             else if (response == -1) return BadRequest("RG inválido!");
             else if (response == -2) return BadRequest("IE inválido!");

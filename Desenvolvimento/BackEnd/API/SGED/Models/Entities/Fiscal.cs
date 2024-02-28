@@ -11,6 +11,5 @@ namespace SGED.Models.Entities
     {
         [Column("idfiscal")]
         public int Id { get; set; }
-
     }
 }

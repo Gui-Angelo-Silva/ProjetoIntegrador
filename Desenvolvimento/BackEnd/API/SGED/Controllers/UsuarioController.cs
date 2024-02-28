@@ -30,9 +30,8 @@ namespace SGED.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UsuarioDTO>>> Get()
         {
-            var usuarios = await _usuarioService.GetAll();
-            if (usuarios == null) return NotFound("Usuarios não encontradas!");
-            return Ok(usuarios);
+            var usuariosDTO = await _usuarioService.GetAll();
+            return Ok(usuariosDTO);
         }
 
         [HttpGet("{id}", Name = "GetUsuario")]
@@ -46,57 +45,120 @@ namespace SGED.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] UsuarioDTO usuarioDTO)
         {
-            if (usuarioDTO is null) return BadRequest("Dado inválido!");
-
+            if (usuarioDTO is null) return BadRequest("Dado(s) inválido(s)!");
             usuarioDTO.EmailPessoa = usuarioDTO.EmailPessoa.ToLower();
 
-            var result = await GetEmail(0, usuarioDTO.EmailPessoa);
-            if (result) { return NotFound("O e-mail informado já existe!"); };
+            var usuariosDTO = await _usuarioService.GetAll();
 
-            if (usuarioDTO.EmailPessoa == "devops@development.com") { NotFound("O e-mail informado já existe!"); }
+            string email = "";
+            string cpfcnpj = "";
+            string rgie = "";
 
             int response = usuarioDTO.CpfCnpj(usuarioDTO.CpfCnpjPessoa);
-            if (response == 0) return BadRequest("Documento incorreto!");
-            else if (response == -1) return BadRequest("CPF inválido!");
-            else if (response == -2) return BadRequest("CNPJ inválido!");
-            else if (response == -3) return BadRequest("Documento incompleto!");
+            if (response == 0) cpfcnpj = "Documento incompleto!";
+            else if (response == -1) cpfcnpj = "CPF inválido!";
+            else if (response == -2) cpfcnpj = "CNPJ inválido!";
 
-            response = usuarioDTO.RgIe(usuarioDTO.RgIEPessoa);
-            if (response == 0) return BadRequest("Documento incorreto!");
-            else if (response == -1) return BadRequest("RG inválido!");
-            else if (response == -2) return BadRequest("IE inválido!");
-            else if (response == -3) return BadRequest("Documento incompleto!");
+            response = usuarioDTO.RgIe(usuarioDTO.RgIePessoa);
+            if (response == 0) rgie = "Documento incompleto!";
+            else if (response == -1) rgie = "RG inválido!";
+            else if (response == -2) rgie = "IE inválido!";
 
-            await _usuarioService.Create(usuarioDTO);
-            return new CreatedAtRouteResult("GetUsuario", new { id = usuarioDTO.Id }, usuarioDTO);
+            if (usuariosDTO is not null)
+            {
+                string existCpfCnpj = "";
+                string existRgIe = "";
+
+                foreach (var usuario in usuariosDTO)
+                {
+                    if (usuarioDTO.EmailPessoa == usuario.EmailPessoa) email = "O e-mail informado já existe!";
+
+                    if (usuarioDTO.CpfCnpjPessoa == usuario.CpfCnpjPessoa)
+                    {
+                        if (usuarioDTO.CpfCnpjPessoa.Length == 14) existCpfCnpj = "O CPF informado já existe!";
+                        else existCpfCnpj = "O CNPJ informado já existe!";
+                    };
+
+                    if (usuarioDTO.RgIePessoa == usuario.RgIePessoa)
+                    {
+                        if (usuarioDTO.RgIePessoa.Length == 12) existRgIe = "O RG informado já existe!";
+                        else existRgIe = "O IE informado já existe!";
+                    };
+                }
+
+                if (cpfcnpj == "") cpfcnpj = existCpfCnpj;
+                if (rgie == "") rgie = existRgIe;
+            }
+
+            if (usuarioDTO.EmailPessoa == "devops@development.com") email = "O e-mail informado já existe!";
+
+            if (email == "" && cpfcnpj == "" && rgie == "")
+            {
+                await _usuarioService.Create(usuarioDTO);
+                return new CreatedAtRouteResult("GetUsuario", new { id = usuarioDTO.Id }, usuarioDTO);
+            }
+
+            return BadRequest(new { email, cpfcnpj, rgie });
         }
 
         [HttpPut()]
         public async Task<ActionResult> Put([FromBody] UsuarioDTO usuarioDTO)
         {
-            if (usuarioDTO is null) return BadRequest("Dado inválido!");
-
+            if (usuarioDTO is null) return BadRequest("Dado(s) inválido(s)!");
             usuarioDTO.EmailPessoa = usuarioDTO.EmailPessoa.ToLower();
 
-            var result = await GetEmail(usuarioDTO.Id, usuarioDTO.EmailPessoa);
-            if (result) { return NotFound("O e-mail informado já existe!"); };
+            var usuariosDTO = await _usuarioService.GetAll();
+            usuariosDTO = usuariosDTO.Where(u => u.Id != usuarioDTO.Id);
 
-            if (usuarioDTO.EmailPessoa == "devops@development.com") { NotFound("O e-mail informado já existe!"); }
+            string email = "";
+            string cpfcnpj = "";
+            string rgie = "";
 
             int response = usuarioDTO.CpfCnpj(usuarioDTO.CpfCnpjPessoa);
-            if (response == 0) return BadRequest("Documento incorreto!");
-            else if (response == -1) return BadRequest("CPF inválido!");
-            else if (response == -2) return BadRequest("CNPJ inválido!");
-            else if (response == -3) return BadRequest("Documento incompleto!");
+            if (response == 0) cpfcnpj = "Documento incompleto!";
+            else if (response == -1) cpfcnpj = "CPF inválido!";
+            else if (response == -2) cpfcnpj = "CNPJ inválido!";
 
-            response = usuarioDTO.RgIe(usuarioDTO.RgIEPessoa);
-            if (response == 0) return BadRequest("Documento incorreto!");
-            else if (response == -1) return BadRequest("RG inválido!");
-            else if (response == -2) return BadRequest("IE inválido!");
-            else if (response == -3) return BadRequest("Documento incompleto!");
+            response = usuarioDTO.RgIe(usuarioDTO.RgIePessoa);
+            if (response == 0) rgie = "Documento incompleto!";
+            else if (response == -1) rgie = "RG inválido!";
+            else if (response == -2) rgie = "IE inválido!";
 
-            await _usuarioService.Update(usuarioDTO);
-            return new CreatedAtRouteResult("GetUsuario", new { id = usuarioDTO.Id }, usuarioDTO);
+            if (usuariosDTO is not null)
+            {
+                string existCpfCnpj = "";
+                string existRgIe = "";
+
+                foreach (var usuario in usuariosDTO)
+                {
+                    if (usuarioDTO.EmailPessoa == usuario.EmailPessoa) email = "O e-mail informado já existe!";
+
+                    if (usuarioDTO.CpfCnpjPessoa == usuario.CpfCnpjPessoa)
+                    {
+                        if (usuarioDTO.CpfCnpjPessoa.Length == 14) existCpfCnpj = "O CPF informado já existe!";
+                        else existCpfCnpj = "O CNPJ informado já existe!";
+                    };
+
+                    if (usuarioDTO.RgIePessoa == usuario.RgIePessoa)
+                    {
+                        if (usuarioDTO.RgIePessoa.Length == 12) existRgIe = "O RG informado já existe!";
+                        else existRgIe = "O IE informado já existe!";
+                    };
+                }
+
+                if (cpfcnpj == "") cpfcnpj = existCpfCnpj;
+                if (rgie == "") rgie = existRgIe;
+            }
+
+            if (usuarioDTO.EmailPessoa == "devops@development.com") email = "O e-mail informado já existe!";
+
+            if (email == "" && cpfcnpj == "" && rgie == "")
+            {
+                await _usuarioService.Update(usuarioDTO);
+                return Ok(usuarioDTO);
+            }
+
+            return BadRequest(new { email, cpfcnpj, rgie });
         }
 
         [HttpDelete("{id}")]
@@ -106,19 +168,6 @@ namespace SGED.Controllers
             if (usuarioDTO == null) return NotFound("Usuario não encontrada!");
             await _usuarioService.Remove(id);
             return Ok(usuarioDTO);
-        }
-
-        private async Task<bool> GetEmail(int idUsuario, string emailUsuario)
-        {
-            var emails = await _usuarioService.GetByEmail(idUsuario, emailUsuario);
-            foreach (var email in emails)
-            {
-                if (email.ToUpper() == emailUsuario.ToUpper())
-                {
-                    return true;
-                };
-            }
-            return false;
         }
 
     }

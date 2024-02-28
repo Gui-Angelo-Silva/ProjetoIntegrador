@@ -6,16 +6,18 @@ using System.Runtime.CompilerServices;
 
 namespace SGED.Models.Entities
 {
-    [Table("TipoProcesso")]
+    [Table("tipoprocesso")]
     public class TipoProcesso
     {
-        [Column("idTipoProcesso")]
+        [Column("idtipoprocesso")]
         public int Id { get; set; }
 
-        [Column("tipoProcesso")]
+        [Column("tipoprocesso")]
         public string NomeTipoProcesso { get; set; }
 
-        [Column("descricaoTipoProcesso")]
+        [Column("descricaotipoprocesso")]
         public string DescricaoTipoProcesso { get; set; }
+
+        public ICollection<Etapa>? Etapas { get; set; }
     }
 }

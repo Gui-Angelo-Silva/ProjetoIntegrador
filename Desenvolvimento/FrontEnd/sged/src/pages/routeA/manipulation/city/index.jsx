@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
-import axios from "axios";
 import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Select from 'react-select';
-import debounce from 'lodash.debounce';
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
 import { useMontage } from '../../../../object/modules/montage';
-import { useSession } from '../../../../object/service/session';
-import { useApi } from '../../../../object/service/api';
+import ConnectionEntity from '../../../../object/service/connection';
+import ListModule from '../../../../object/modules/list';
+import CityClass from '../../../../object/class/city';
+import SelectModule from '../../../../object/modules/select';
 
 export default function City() {
 
@@ -20,209 +20,123 @@ export default function City() {
 
     useEffect(() => {
         componentMounted();
-    }, [componentMounted]);
+    }, []);
 
-    const { getAuthConfig } = useSession();
-    const { appendRoute } = useApi();
-    const stateURL = appendRoute('Estado/');
-    const cityURL = appendRoute('Cidade/');
+    const connection = ConnectionEntity();
+    const city = CityClass();
+    const list = ListModule();
+    const listState = ListModule();
+    const selectBox = SelectModule();
 
-    const [data, setData] = useState([]);
-    const [dataState, setDataState] = useState([]);
     const [modalInsert, setModalInsert] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
     const [updateData, setUpdateData] = useState(true);
-    const [cityName, setCityName] = useState("");
-    const [idState, setIdState] = useState(dataState.length > 0 ? dataState[0].id : null);
-    const [cityId, setCityId] = useState("");
-    const [selectCity] = useState({
-        id: "",
-        nomeCidade: "",
-        idEstado: "",
-    });
+    const [inOperation, setInOperation] = useState(false);
 
-    const [errorCityName, setErrorCityName] = useState("");
+    const openCloseModalInsert = (boolean) => {
+        setModalInsert(boolean);
+        city.clearError();
 
-    const clearErrors = () => {
-        setErrorCityName('');
+        if (!boolean) {
+            city.clearData();
+        }
     };
 
-    const clearDatas = () => {
-        setCityId('');
-        setCityName('');
-        setIdState(dataState.length > 0 ? dataState[0].id : null);
-    }
+    const openCloseModalEdit = (boolean) => {
+        setModalEdit(boolean);
+        city.clearError();
 
-    const CitySelect = (city, option) => {
-        setCityId(city.id);
-        setCityName(city.nomeCidade);
-        setIdState(city.idEstado);
+        if (!boolean) {
+            city.clearData();
+        }
+    };
+
+    const openCloseModalDelete = (boolean) => {
+        setModalDelete(boolean);
+
+        if (!boolean) {
+            city.clearData();
+        }
+    };
+
+    const SelectCity = (object, option) => {
+        city.getData(object);
+        selectBox.selectOption(object.idEstado);
 
         if (option === "Editar") {
-            const foundOption = allOptions.find(option => option.value === city.idEstado);
-            if (foundOption) {
-                setSelectedOption(foundOption);
-            }
+            openCloseModalEdit(true);
+        }
+        else {
+            openCloseModalDelete(true);
+        }
+    };
 
-            openCloseModalEdit();
+    const GetState = async () => {
+        const response = await connection.objectUrl("Estado").getOrder();
+        if (response.status) {
+            listState.setList(response.data);
         } else {
-            openCloseModalDelete();
+            console.log(response.message);
         }
     };
 
-    const openCloseModalInsert = () => {
-        setModalInsert(!modalInsert);
-        clearErrors();
-
-        if (modalInsert) {
-            clearDatas();
-        }
-    };
-
-    const openCloseModalEdit = () => {
-        setModalEdit(!modalEdit);
-        clearErrors();
-
-        if (modalEdit) {
-            clearDatas();
-        }
-    };
-
-    const openCloseModalDelete = () => {
-        setModalDelete(!modalDelete);
-
-        if (!modalDelete === false) {
-            clearDatas();
-        }
-    };
-
-    const verificarDados = async () => {
-        clearErrors();
-        var status = true;
-
-        if (cityName) {
-            if (cityName.length < 3) {
-                setErrorCityName('O nome precisa ter no mínimo 3 letras!');
-                status = false;
-            }
+    const GetCity = async () => {
+        const response = await connection.objectUrl("Cidade").getOrder();
+        if (response.status) {
+            list.setList(response.data);
         } else {
-            setErrorCityName('O nome é requerido!');
-            status = false;
+            console.log(response.message);
         }
-
-        return status;
     };
 
-    const GetOrderState = async () => {
-        await axios
-            .get(stateURL, getAuthConfig())
-            .then((response) => {
-                setDataState(response.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+    const PostCity = async () => {
+        setInOperation(true);
+
+        if (city.verifyData(list.list)) {
+            const response = await connection.objectUrl("Cidade").postOrder(city);
+
+            openCloseModalInsert(!response.status);
+            setUpdateData(response.status);
+            console.log(response.message);
+            setUpdateData(true)
+        } else {
+            console.log('Dados inválidos!');
+        }
+
+        setInOperation(false);
     };
 
     const PutCity = async () => {
-        await axios
-            .get(stateURL, getAuthConfig())
-            .then((response) => {
-                setDataState(response.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }
+        setInOperation(true);
 
-    const PostOrder = async () => {
-        var response = await verificarDados();
-        if (response) {
+        if (city.verifyData(list.list)) {
+            const response = await connection.objectUrl("Cidade").putOrder(city);
 
-            await axios
-                .post(cityURL, { nomeCidade: cityName, idEstado: idState }, getAuthConfig())
-                .then((response) => {
-                    setData([...data, response.data]);
-                    openCloseModalInsert();
-                    setUpdateData(true);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-
+            openCloseModalEdit(!response.status);
+            setUpdateData(response.status);
+            console.log(response.message);
+        } else {
+            console.log('Dados inválidos!');
         }
+
+        setInOperation(false);
     };
 
-    const PutOrder = async () => {
-        var response = await verificarDados();
-        if (response) {
+    const DeleteCity = async () => {
+        setInOperation(true);
 
-            await axios
-                .put(cityURL, {
-                    id: cityId,
-                    nomeCidade: cityName,
-                    idEstado: idState,
-                }, getAuthConfig())
-                .then((response) => {
-                    setData((previousData) =>
-                        previousData.map((city) =>
-                            city.id === selectCity.id
-                                ? { ...city, nomeCidade: response.data.nomeCidade }
-                                : city
-                        )
-                    );
+        const response = await connection.objectUrl("Cidade").deleteOrder(city);
 
-                    const updateCity = response.data;
+        openCloseModalDelete(!response.status);
+        setUpdateData(response.status);
+        console.log(response.message);
 
-                    setData((prevData) => {
-                        return prevData.map((city) => {
-                            if (city.id === cityId) {
-                                return updateCity;
-                            }
-                            return city;
-                        });
-                    });
-
-                    openCloseModalEdit();
-                    setUpdateData(true);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-
-        }
+        setInOperation(false);
     };
 
-    const DeleteOrder = async () => {
-        await axios
-            .delete(cityURL + cityId, getAuthConfig())
-            .then(() => {
-                setData((previousData) =>
-                    previousData.filter((city) => city.id !== cityId)
-                );
-                PutCity();
-                openCloseModalDelete();
-                setUpdateData(true);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    };
-
-    const [cityToRender, setCityToRender] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchBy, setSearchBy] = useState('nomeCidade');
-
-    const fetchData = async () => {
-        try {
-            const response = await axios.get(cityURL, getAuthConfig());
-            setData(response.data);
-            setCityToRender(response.data);
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     const handleSearch = (searchTerm) => {
         setSearchTerm(searchTerm);
@@ -235,123 +149,58 @@ export default function City() {
     const filterCity = () => {
         const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-        if (searchTerm === '') {
-            setCityToRender(data);
+        if (!searchTerm) {
+            list.setListToRender(list.list);
         } else {
-
             if (searchBy === 'nomeEstado') {
 
-                const filteredState = dataState.filter((state) => {
+                const filteredState = listState.list.filter((state) => {
                     const stateFilter = state[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                     return stateFilter.toLowerCase().includes(searchTermNormalized.toLowerCase());
                 });
 
                 const filteredIds = filteredState.map((state) => state.id);
 
-                const filtered = data.filter((city) => {
+                const filtered = list.list.filter((city) => {
                     return filteredIds.includes(city.idEstado);
                 });
 
-                setCityToRender(filtered);
+                list.setListToRender(filtered);
 
             } else {
 
-                const filtered = data.filter((city) => {
-                    const cityNameNormalized = city.nomeCidade.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                    return cityNameNormalized.toLowerCase().includes(searchTermNormalized.toLowerCase());
-                });
-                setCityToRender(filtered);
+                list.setSearchTerm(searchTerm);
+                list.setSearchBy(searchBy);
 
             }
         }
     };
 
-    useEffect(() => {
-        if (updateData) {
-            fetchData();
-            GetOrderState();
-            clearDatas();
-            setUpdateData(false);
-
-            if (!idState && dataState.length > 0) {
-                setIdState(dataState[0].id);
-            }
-        }
-
-        const foundOption = allOptions.find(option => option.value === dataState[0].id);
-        if (foundOption && !modalEdit) {
-            setSelectedOption(foundOption);
-        }
-    }, [updateData, dataState, idState]);
-
-    useEffect(() => {
+    useEffect(() => { // Filtro especial para os dados do usuário
         filterCity();
-    }, [searchTerm, data]);
+    }, [searchTerm, searchBy, list.list]);
 
+    useEffect(() => { // Para atualizar quando uma ação é efetuada com sucesso
+        if (updateData) {
+            GetState();
+            GetCity();
 
-    const [selectedOption, setSelectedOption] = useState(null);
+            city.setIdState(listState.list[0]?.id);
 
-    const handleChange = (option) => {
-        setSelectedOption(option);
-        if (option) {
-            setIdState(option.value);
-        } else {
-            setIdState('');
+            setUpdateData(false);
         }
-    };
+    }, [updateData]);
 
-    const options = dataState.map(item => ({
-        value: item.id,
-        label: item.nomeEstado
-    }));
-
-    const allOptions = dataState.map(item => ({
-        value: item.id,
-        label: item.nomeEstado
-    }));
-
-    const filterOptions = (inputValue) => {
-        if (!inputValue) {
-            return allOptions; // Retorna todos os estados se não houver texto no campo
+    useEffect(() => { // Para atualizar as opções do Select bem como o valor padrão selecionado
+        if (!modalInsert && !modalEdit && !modalDelete) {
+            selectBox.updateOptions(listState.list, "id", "nomeEstado");
+            selectBox.selectOption(listState.list[0]?.id);
         }
+    }, [listState.list, modalInsert, modalEdit, modalDelete]);
 
-        const searchTermNormalized = inputValue.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-
-        return allOptions.filter(option =>
-            option.label.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().includes(searchTermNormalized)
-        );
-    };
-
-    const delayedSearch = debounce((inputValue) => {
-        filterOptions(inputValue);
-    }, 300);
-
-    const loadOptions = (inputValue, callback) => {
-        callback(filterOptions(inputValue));
-    };
-
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
-    const totalItems = cityToRender.length;
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-    // Função para pegar uma parte específica da lista
-    const getCurrentPageItems = (page) => {
-        const startIndex = (page - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-        return cityToRender.slice(startIndex, endIndex);
-    };
-
-    // Renderiza a lista atual com base na página atual
-    const currentCities = getCurrentPageItems(currentPage);
-
-    // Funções para navegar entre as páginas
-    const goToPage = (page) => {
-        if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page);
-        }
-    };
-
+    useEffect(() => { // Para atualizar o idEstao conforme o valor selecionado muda
+        city.setIdState(selectBox.selectedOption.value ? selectBox.selectedOption.value : '');
+    }, [selectBox.selectedOption]);
 
     return (
         <div className="flex flex-1 min-h-screen">
@@ -391,7 +240,7 @@ export default function City() {
                                 </div>
                             </div>
                             <div className="flex items-center">
-                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert()}>
+                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert(true)}>
                                     Novo <FaPlus className="inline-block" style={{ alignItems: 'center' }} />
                                 </button>
                             </div>
@@ -403,22 +252,22 @@ export default function City() {
                                 <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                             </div>
                             <ul className="w-full">
-                                {currentCities.map((city) => {
-                                    const estado = dataState.find((state) => state.id === city.idEstado);
+                                {list.currentList.map((city) => {
+                                    const estado = listState.list.find((state) => state.id === city.idEstado);
                                     return (
                                         <li className="grid grid-cols-3 w-full" key={city.id}>
                                             <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{city.nomeCidade}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{estado ? estado.nomeEstado : "Estado não encontrado"}</span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{estado ? estado.nomeEstado : "Estado não encontrado!"}</span>
                                             <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                                 <button
                                                     className=""
-                                                    onClick={() => CitySelect(city, "Editar")}
+                                                    onClick={() => SelectCity(city, "Editar")}
                                                 >
                                                     <PencilSimple size={20} className="hover:text-cyan-500" />
                                                 </button>{" "}
                                                 <button
                                                     className=""
-                                                    onClick={() => CitySelect(city, "Excluir")}
+                                                    onClick={() => SelectCity(city, "Excluir")}
                                                 >
                                                     <TrashSimple size={20} className="hover:text-red-600" />
                                                 </button>
@@ -431,16 +280,16 @@ export default function City() {
                             <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
                                 <button
                                     className=""
-                                    onClick={() => goToPage(currentPage - 1)}
+                                    onClick={() => list.goToPage(list.currentPage - 1)}
                                 >
                                     <CaretLeft size={22} className="text-[#58AFAE]" />
                                 </button>
                                 <select
                                     className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
-                                    value={currentPage}
-                                    onChange={(e) => goToPage(Number(e.target.value))}
+                                    value={list.currentPage}
+                                    onChange={(e) => list.goToPage(Number(e.target.value))}
                                 >
-                                    {[...Array(totalPages)].map((_, index) => (
+                                    {[...Array(list.totalPages)].map((_, index) => (
                                         <option key={index + 1} value={index + 1}>
                                             {index + 1}
                                         </option>
@@ -448,7 +297,7 @@ export default function City() {
                                 </select>
                                 <button
                                     className=""
-                                    onClick={() => goToPage(currentPage + 1)}
+                                    onClick={() => list.goToPage(list.currentPage + 1)}
                                 >
                                     <CaretRight size={22} className="text-[#58AFAE]" />
                                 </button>
@@ -467,26 +316,26 @@ export default function City() {
                             <input
                                 type="text"
                                 className="form-control rounded-md border-[#BCBCBC]"
-                                onChange={(e) => setCityName(e.target.value)}
+                                onChange={(e) => city.setCityName(e.target.value)}
                             />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {errorCityName}
+                                {city.errorCityName}
                             </div>
                             <br />
                             <label className="text-[#444444]">Estado:</label>
                             <br />
                             <Select
-                                value={selectedOption}
-                                onChange={handleChange}
-                                onInputChange={delayedSearch}
-                                loadOptions={loadOptions}
-                                options={options}
+                                value={selectBox.selectedOption}
+                                onChange={selectBox.handleChange}
+                                onInputChange={selectBox.delayedSearch}
+                                loadOptions={selectBox.loadOptions}
+                                options={selectBox.options}
                                 placeholder="Pesquisar estado . . ."
                                 isClearable
                                 isSearchable
                                 noOptionsMessage={() => {
-                                    if (dataState.length === 0) {
-                                        return "Nenhum estado cadastrado!";
+                                    if (listState.list.length === 0) {
+                                        return "Nenhum Estado cadastrado!";
                                     } else {
                                         return "Nenhuma opção encontrada!";
                                     }
@@ -496,11 +345,11 @@ export default function City() {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert()}>
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert(false)}>
                             Cancelar
                         </button>
-                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostOrder()}>
-                            Cadastrar
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostCity()} disabled={inOperation} >
+                            {inOperation ? 'Aguarde' : 'Cadastrar'}
                         </button>{" "}
                     </ModalFooter>
                 </Modal>
@@ -514,7 +363,7 @@ export default function City() {
                                 type="text"
                                 className="form-control rounded-md border-[#BCBCBC]"
                                 readOnly
-                                value={cityId}
+                                value={city.cityId}
                             />
                             <br />
                             <label className="text-[#444444]">Nome:</label>
@@ -522,27 +371,27 @@ export default function City() {
                                 type="text"
                                 className="form-control rounded-md border-[#BCBCBC]"
                                 name="nomeCidade"
-                                onChange={(e) => setCityName(e.target.value)}
-                                value={cityName}
+                                onChange={(e) => city.setCityName(e.target.value)}
+                                value={city.cityName}
                             />
                             <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {errorCityName}
+                                {city.errorCityName}
                             </div>
                             <br />
                             <label className="text-[#444444]">Estado:</label>
                             <br />
                             <Select
-                                value={selectedOption}
-                                onChange={handleChange}
-                                onInputChange={delayedSearch}
-                                loadOptions={loadOptions}
-                                options={options}
+                                value={selectBox.selectedOption}
+                                onChange={selectBox.handleChange}
+                                onInputChange={selectBox.delayedSearch}
+                                loadOptions={selectBox.loadOptions}
+                                options={selectBox.options}
                                 placeholder="Pesquisar estado . . ."
                                 isClearable
                                 isSearchable
                                 noOptionsMessage={() => {
-                                    if (dataState.length === 0) {
-                                        return "Nenhum estado cadastrado!";
+                                    if (listState.list.length === 0) {
+                                        return "Nenhum Estado cadastrado!";
                                     } else {
                                         return "Nenhuma opção encontrada!";
                                     }
@@ -552,11 +401,11 @@ export default function City() {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit()}>
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit(false)}>
                             Cancelar
                         </button>
-                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PutOrder()}>
-                            Atualizar
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutCity()} disabled={inOperation} >
+                            {inOperation ? 'Aguarde' : 'Atualizar'}
                         </button>{" "}
                     </ModalFooter>
                 </Modal>
@@ -566,12 +415,12 @@ export default function City() {
                         <div className="flex flex-row justify-center p-2">
                             Confirmar a exclusão desta(e) cidade:
                             <div className="text-[#059669] ml-1">
-                                {cityName}
+                                {city.cityName}
                             </div> ?
                         </div>
                         <div className="flex justify-center gap-2 pt-3">
-                            <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete()}>Cancelar</button>
-                            <button className='btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' onClick={() => DeleteOrder()}>Confirmar</button>
+                            <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete(false)}>Cancelar</button>
+                            <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteCity()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'}</button>
                         </div>
                         {/* <ModalFooter>
                     </ModalFooter> */}

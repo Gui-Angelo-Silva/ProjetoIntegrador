@@ -21,7 +21,7 @@ export default function SideBar() {
   const { clearSegment, inDevelopment } = useServer();
 
   return (
-    <div className='min-h-full' style={{ display: 'flex', width: '200px' }}>
+    <div className='flex min-h-full w-[200px] '>
       <Sidebar style={sidebarStyle}>
         <Menu
           menuItemStyles={{

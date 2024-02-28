@@ -9,6 +9,7 @@ import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icon
 
 import { useMontage } from '../../../../object/modules/montage';
 import ConnectionEntity from '../../../../object/service/connection';
+import ListModule from '../../../../object/modules/list';
 import StateClass from '../../../../object/class/state';
 
 export default function State() {
@@ -17,163 +18,116 @@ export default function State() {
 
     useEffect(() => {
         componentMounted();
-    }, [componentMounted]);
+    }, []);
 
+    const connection = ConnectionEntity();
+    const list = ListModule();
     const state = StateClass();
-    const connection = ConnectionEntity('Estado/');
 
-    const [data, setData] = useState([]);
     const [modalInsert, setModalInsert] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
     const [updateData, setUpdateData] = useState(true);
+    const [inOperation, setInOperation] = useState(false);
 
-    const Select = (object, option) => {
+    const SelectState = (object, option) => {
         state.getData(object);
 
         if (option === "Editar") {
-            openCloseModalEdit();
+            openCloseModalEdit(true);
         }
         else {
-            openCloseModalDelete();
+            openCloseModalDelete(true);
         }
     };
 
-    const openCloseModalInsert = () => {
-        setModalInsert(!modalInsert);
+    const openCloseModalInsert = (boolean) => {
+        setModalInsert(boolean);
         state.clearError();
 
-        if (modalInsert) {
+        if (!boolean) {
             state.clearData();
         }
     };
 
-    const openCloseModalEdit = () => {
-        setModalEdit(!modalEdit);
+    const openCloseModalEdit = (boolean) => {
+        setModalEdit(boolean);
         state.clearError();
 
-        if (modalEdit) {
+        if (!boolean) {
             state.clearData();
         }
     };
 
-    const openCloseModalDelete = () => {
-        setModalDelete(!modalDelete);
+    const openCloseModalDelete = (boolean) => {
+        setModalDelete(boolean);
 
-        if (modalDelete) {
+        if (!boolean) {
             state.clearData();
         }
     };
 
     const GetState = async () => {
-        const response = await connection.getOrder();
+        const response = await connection.objectUrl("Estado").getOrder();
         if (response.status) {
-            setData(response.message);
+            list.setList(response.data);
         } else {
-            console.error(response.message);
+            console.error(response.data);
         }
     };
 
     const PostState = async () => {
-        const response = await connection.postOrder(state);
-        if (response.status) {
-            openCloseModalInsert();
-            setUpdateData(true);
+        setInOperation(true);
+
+        if (state.verifyData()) {
+            const response = await connection.objectUrl("Estado").postOrder(state);
+
+            openCloseModalInsert(!response.status);
+            setUpdateData(response.status);
             console.log(response.message);
         } else {
-            console.error(response.message);
+            console.log('Dados inválidos!');
         }
+
+        setInOperation(false);
     };
 
     const PutState = async () => {
-        const response = await connection.putOrder(state);
-        if (response.status) {
-            openCloseModalEdit();
-            setUpdateData(true);
+        setInOperation(true);
+
+        if (state.verifyData()) {
+            const response = await connection.objectUrl("Estado").putOrder(state);
+
+            openCloseModalEdit(!response.status);
+            setUpdateData(response.status);
             console.log(response.message);
         } else {
-            console.error(response.message);
+            console.log('Dados inválidos!');
         }
+
+        setInOperation(false);
     };
 
     const DeleteState = async () => {
-        const response = await connection.deleteOrder(state);
-        if (response.status) {
-            openCloseModalInsert();
-            setUpdateData(true);
-            console.log(response.message);
-        } else {
-            console.error(response.message);
-        }
-    };
+        setInOperation(true);
 
-    const [stateToRender, setStateToRender] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [searchBy, setSearchBy] = useState('nomeEstado');
+        const response = await connection.objectUrl("Estado").deleteOrder(state);
 
-    const fetchData = async () => {
-        try {
-            setStateToRender(data);
-        } catch (error) {
-            console.error(error);
-        }
-    };
+        openCloseModalDelete(!response.status);
+        setUpdateData(response.status);
+        console.log(response.message);
 
-    const handleSearch = (searchTerm) => {
-        setSearchTerm(searchTerm);
-    };
-
-    const handleSearchBy = (value) => {
-        setSearchBy(value);
-    };
-
-    const filterState = () => {
-        const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-
-        if (searchTerm === '') {
-            setStateToRender(data);
-        } else {
-            const filtered = data.filter((state) => {
-                const stateNameNormalized = state[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                return stateNameNormalized.toLowerCase().includes(searchTermNormalized.toLowerCase());
-            });
-            setStateToRender(filtered);
-        }
+        setInOperation(false);
     };
 
     useEffect(() => {
         if (updateData) {
             GetState();
             setUpdateData(false);
-            fetchData();
         }
+
+        list.searchBy ? null : list.setSearchBy('nomeEstado');
     }, [updateData]);
-
-    useEffect(() => {
-        filterState();
-    }, [searchTerm, data]);
-
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
-    const totalItems = stateToRender.length;
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-    // Função para pegar uma parte específica da lista
-    const getCurrentPageItems = (page) => {
-        const startIndex = (page - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-        return stateToRender.slice(startIndex, endIndex);
-    };
-
-    // Renderiza a lista atual com base na página atual
-    const currentStates = getCurrentPageItems(currentPage);
-
-    // Funções para navegar entre as páginas
-    const goToPage = (page) => {
-        if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page);
-        }
-    };
 
     return (
         <div className="flex flex-1 min-h-screen">
@@ -203,8 +157,8 @@ export default function State() {
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                             </svg>
                                         </div>
-                                        <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar estado" required onChange={(e) => handleSearch(e.target.value)} />
-                                        <select className="appearance-none form-control rounded-md w-28 text-gray-800" onChange={(e) => handleSearchBy(e.target.value)} >
+                                        <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar estado" required onChange={(e) => list.handleSearch(e.target.value)} />
+                                        <select className="appearance-none form-control rounded-md w-28 text-gray-800" onChange={(e) => list.handleSearchBy(e.target.value)} >
                                             <option key="nomeEstado" value="nomeEstado">
                                                 Estado
                                             </option>
@@ -216,7 +170,7 @@ export default function State() {
                                 </div>
                             </div>
                             <div className="flex items-center">
-                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert()}>
+                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert(true)}>
                                     Novo <FaPlus className="inline-block" style={{ alignItems: 'center' }} />
                                 </button>
                             </div>
@@ -228,20 +182,20 @@ export default function State() {
                                 <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                             </div>
                             <ul className="w-full">
-                                {currentStates.map((object) => (
+                                {list.currentList.map((object) => (
                                     <li className="grid grid-cols-3 w-full" key={object.id}>
                                         <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeEstado}</span>
                                         <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.ufEstado}</span>
                                         <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                             <button
                                                 className=""
-                                                onClick={() => Select(object, "Editar")}
+                                                onClick={() => SelectState(object, "Editar")}
                                             >
                                                 <PencilSimple size={20} className="hover:text-cyan-500" />
                                             </button>{" "}
                                             <button
                                                 className=""
-                                                onClick={() => Select(object, "Excluir")}
+                                                onClick={() => SelectState(object, "Excluir")}
                                             >
                                                 <TrashSimple size={20} className="hover:text-red-600" />
                                             </button>
@@ -253,16 +207,16 @@ export default function State() {
                             <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
                                 <button
                                     className=""
-                                    onClick={() => goToPage(currentPage - 1)}
+                                    onClick={() => list.goToPage(list.currentPage - 1)}
                                 >
                                     <CaretLeft size={22} className="text-[#58AFAE]" />
                                 </button>
                                 <select
                                     className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
-                                    value={currentPage}
-                                    onChange={(e) => goToPage(Number(e.target.value))}
+                                    value={list.currentPage}
+                                    onChange={(e) => list.goToPage(Number(e.target.value))}
                                 >
-                                    {[...Array(totalPages)].map((_, index) => (
+                                    {[...Array(list.totalPages)].map((_, index) => (
                                         <option key={index + 1} value={index + 1}>
                                             {index + 1}
                                         </option>
@@ -270,7 +224,7 @@ export default function State() {
                                 </select>
                                 <button
                                     className=""
-                                    onClick={() => goToPage(currentPage + 1)}
+                                    onClick={() => list.goToPage(list.currentPage + 1)}
                                 >
                                     <CaretRight size={22} className="text-[#58AFAE]" />
                                 </button>
@@ -302,8 +256,8 @@ export default function State() {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert()}>Cancelar</button>
-                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostState()}>Cadastrar</button>{"  "}
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" style={{ width: '100px', height: '40px' }} onClick={() => openCloseModalInsert(false)}>Cancelar</button>
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostState()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Cadastrar'} </button>{"  "}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalEdit}>
@@ -328,25 +282,23 @@ export default function State() {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit()}>Cancelar</button>
-                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PutState()}>Atualizar</button>{"  "}
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" style={{ width: '100px', height: '40px' }} onClick={() => openCloseModalEdit(false)}>Cancelar</button>
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutState()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Atualizar'} </button>{"  "}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalDelete}>
                     <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
                     <ModalBody className="justify-center">
                         <div className="flex flex-row justify-center p-2">
-                            Confirmar a exclusão deste estado:
+                            Confirme a exclusão do Estado:
                             <div className="text-[#059669] ml-1">
                                 {state.stateName}
                             </div> ?
                         </div>
                         <div className="flex justify-center gap-2 pt-3">
-                            <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete()}>Cancelar</button>
-                            <button className='btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' onClick={() => DeleteState()}>Confirmar</button>
+                            <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" style={{ width: '100px', height: '40px' }} onClick={() => openCloseModalDelete(false)}>Cancelar</button>
+                            <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteState()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'} </button>{"  "}
                         </div>
-                        {/* <ModalFooter>
-                    </ModalFooter> */}
                     </ModalBody>
                 </Modal>
             </div>

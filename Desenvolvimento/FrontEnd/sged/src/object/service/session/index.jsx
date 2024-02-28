@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
-import axios from "axios";
 import PropTypes from 'prop-types';
-import { useApi } from '../api';
+import RequisitionClass from '../../class/requisition';
+import ConnectionEntity from '../connection';
 
 const SessionContext = createContext();
 
@@ -15,8 +15,8 @@ export const useSession = () => {
 
 export const SessionProvider = ({ children }) => {
 
-    const { appendRoute } = useApi();
-    const sessionURL = appendRoute('Login/');
+    const requisition = RequisitionClass();
+    const connection = ConnectionEntity();
 
     const defaultSession = () => {
         localStorage.setItem('token', null);
@@ -24,105 +24,87 @@ export const SessionProvider = ({ children }) => {
         localStorage.setItem('permission', null);
     };
 
-    const createSession = async (userEmail, userPassword, persistLogin) => {
-       
+    const createSession = async (object) => {
+
         var autentication = false;
 
         try {
-            const response = await axios.post(sessionURL + "Autentication", {
-                email: userEmail,
-                senha: userPassword
-            });
+            const response = await connection.objectUrl("Login").actionUrl("Autentication").postOrder(object);
 
-            if (response.status === 200) {
+            if (response.status) {
                 const data = response.data;
 
                 if (isTokenValid()) {
                     autentication = true;
 
-                    if (persistLogin) {
-                        const login = { email: userEmail, senha: userPassword };
-                        persistsLogin(login);
+                    if (object.persistLogin) {
+                        persistsLogin(object);
                     } else {
-                        localStorage.removeItem('login');
+                        localStorage.setItem('login', null);
                     }
 
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.usuario));
-
                     const acessLevel = String(data.usuario.tipoUsuarioDTO.nivelAcesso).toLowerCase();
                     localStorage.setItem('permission', acessLevel);
+
+                    updateAuthConfig();
                     return { validation: autentication, message: 'Entrada liberada.' };
                 } else {
                     return { validation: autentication, message: 'Token inválido!' };
                 }
 
             } else {
-                return { validation: autentication, message: 'Servidor offline!' };
+                return { validation: autentication, message: response.message };
             }
 
         } catch (error) {
-
-            if (error.response) {
-                return { validation: autentication, message: error.response.data.message };
-
-            } else if (error.request) {
-                return { validation: autentication, message: 'Erro na solicitação: Sem resposta do servidor!' };
-
-            } else {
-                return { validation: autentication, message: 'Erro na solicitação: Configuração de solicitação inválida!' };
-            }
+            return { validation: autentication, message: error.message };
 
         }
     };
 
-    const persistsLogin = (data) => {
-        const login = { persist: true, emailPessoa: data.email, senhaUsuario: data.senha };
+    const persistsLogin = (object) => {
+        const login = { persist: object.persistLogin, emailPessoa: object.personEmail, senhaUsuario: object.userPassword };
         localStorage.setItem('login', JSON.stringify(login));
     };
 
     const getLogin = () => {
         const login = localStorage.getItem('login');
-        return login !== "null"? login : null;
+        return login !== "null" ? JSON.parse(login) : null;
     };
 
     const getToken = () => {
         const token = localStorage.getItem('token');
-        return token !== "null"? token : null;
+        return token !== "null" ? token : null;
     };
 
     const getSession = () => {
         const session = localStorage.getItem('user');
-        return session ? JSON.parse(session) : null;
+        return session !== "null" ? JSON.parse(session) : null;
     };
 
     const getPermission = () => {
         const permission = localStorage.getItem('permission');
-        return permission !== "null"? permission : null;
+        return permission !== "null" ? permission : null;
     };
 
     const isTokenValid = async () => {
         const token = getToken();
         const user = getSession();
 
-        if (token === null || user === null) {
-            return false;
-        } else {
+        if (token !== null || user !== null) {
             try {
-                const response = await axios.post(sessionURL + "Validation", {
-                    email: user.emailPessoa,
-                    token: token
-                });
+                sessionStorage.setItem("requisition", JSON.stringify({ email: user.emailPessoa, token: token }));
+                const response = await connection.objectUrl("Login").actionUrl("Validation").postOrder(requisition);
 
-                if (response.status === 200) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return response.status;
 
             } catch (error) {
                 return false;
             }
+        } else {
+            return false;
         }
     };
 
@@ -131,24 +113,20 @@ export const SessionProvider = ({ children }) => {
 
         if (session !== null) {
             try {
-                const response = await axios.post(sessionURL + "Autentication", {
-                    email: session.emailPessoa,
-                    senha: session.senhaUsuario
-                });
-    
-                if (response.status === 200) {
+                sessionStorage.setItem("requisition", JSON.stringify({ email: session.emailPessoa, senha: session.senhaUsuario }));
+                const response = await connection.objectUrl("Login").actionUrl("Autentication").postOrder(requisition);
+
+                if (response.status) {
                     const data = response.data;
                     const acessLevel = String(data.usuario.tipoUsuarioDTO.nivelAcesso).toLowerCase();
-                    
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('permission', acessLevel);
 
-                    return true;
-    
-                } else {
-                    return false;
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.usuario));
+                    localStorage.setItem('permission', acessLevel);
                 }
-    
+
+                return response.status;
+
             } catch (error) {
                 return false;
             }
@@ -164,27 +142,13 @@ export const SessionProvider = ({ children }) => {
         else { response = await newToken(); }
 
         if (!response) { defaultSession(); }
+        else { updateAuthConfig(); }
 
         return response;
     }
 
-    const getAuthConfig = () => {
-        const token = getToken();
-
-        if (token) {
-            return {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                }
-            };
-        } else {
-            return {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            };
-        }
+    const updateAuthConfig = () => {
+        sessionStorage.setItem("token", getToken());
     };
 
     const value = {
@@ -197,8 +161,7 @@ export const SessionProvider = ({ children }) => {
         getPermission,
         isTokenValid,
         newToken,
-        verifySession,
-        getAuthConfig,
+        verifySession
     };
 
     return (
@@ -210,4 +173,4 @@ export const SessionProvider = ({ children }) => {
 
 SessionProvider.propTypes = {
     children: PropTypes.any
-  };
+};

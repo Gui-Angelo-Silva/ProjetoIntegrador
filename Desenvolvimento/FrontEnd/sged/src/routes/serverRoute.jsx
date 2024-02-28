@@ -61,7 +61,7 @@ export const ServerProvider = ({ children }) => {
         const path = window.location.pathname;
         const segments = path.split('/');
         const numSegments = segments.length;
-        const index = (numSegments - quantRemove) - 1;
+        const index = (numSegments - quantRemove);
 
         if (index > 0) {
             const newPath = buildPath(segments.slice(1, index).join('/'), null);
@@ -110,7 +110,7 @@ export const ServerProvider = ({ children }) => {
 
                 } else if (permission !== null && initialPages.includes(permissionInRoute)) {
                     clearSegment("home");
-                } else if (["notfound", "notpermission"].includes(currentPathSegments[currentPathSegments.length - 1])) {
+                } else if (["notfound", "notpermission", "development"].includes(currentPathSegments[currentPathSegments.length - 1])) {
                     clearSegment(permission !== null ? "home" : "login");
                 }
 

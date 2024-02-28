@@ -127,8 +127,8 @@ namespace SGED
             services.AddScoped<IBairroService, BairroService>();
 
             // Dependência: TipoProcesso
-            //services.AddScoped<ITipoProcessoRepository, TipoProcessoRepository>();
-            //services.AddScoped<ITipoProcessoService, TipoProcessoService>();
+            services.AddScoped<ITipoProcessoRepository, TipoProcessoRepository>();
+            services.AddScoped<ITipoProcessoService, TipoProcessoService>();
 
             // Dependência: Usuario
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
@@ -144,7 +144,27 @@ namespace SGED
 
             // Dependência: TipoLogradouro
             services.AddScoped<ITipoLogradouroRepository, TipoLogradouroRepository>();
-            services.AddScoped<ITipoLogradouroService, TipoLogradouroService>();
+
+			      // Dependência: Engenheiro
+			      services.AddScoped<IEngenheiroRepository, EngenheiroRepository>();
+			      services.AddScoped<IEngenheiroService, EngenheiroService>();
+
+            // Dependência: Logradouro
+            services.AddScoped<ILogradouroRepository, LogradouroRepository>();
+            services.AddScoped<ILogradouroService, LogradouroService>();
+
+            // Dependência: TipoDocumento
+            services.AddScoped<ITipoDocumentoRepository, TipoDocumentoRepository>();
+            services.AddScoped<ITipoDocumentoService, TipoDocumentoService>();
+
+            // Dependência: Etapa
+            services.AddScoped<IEtapaRepository, EtapaRepository>();
+            services.AddScoped<IEtapaService, EtapaService>();
+
+            // Dependência: Imóvel
+            services.AddScoped<IImovelRepository, ImovelRepository>();
+            services.AddScoped<IImovelService, ImovelService>();
+            
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

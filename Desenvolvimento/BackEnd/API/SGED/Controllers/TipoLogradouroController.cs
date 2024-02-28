@@ -20,7 +20,6 @@ namespace SGED.Controllers
 		public async Task<ActionResult<IEnumerable<TipoLogradouroDTO>>> Get()
 		{
 			var tipologradouroDTO = await _tipologradouroservice.GetAll();
-			if (tipologradouroDTO == null) return NotFound("Tipo Logradouro não encontrado!");
 			return Ok(tipologradouroDTO);
 		}
 

@@ -12,5 +12,6 @@ namespace SGED.Models.Entities
         [Column("idmunicipe")]
         public int Id { get; set; }
 
+        public ICollection<Imovel>? Imovels { get; set;}
     }
 }

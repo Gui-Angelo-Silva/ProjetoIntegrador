@@ -4,11 +4,16 @@ function StateClass() {
   const [stateName, setStateName] = useState('');
   const [stateUf, setStateUf] = useState('');
   const [stateId, setStateId] = useState('');
+
   const [errorStateName, setErrorStateName] = useState('');
   const [errorStateUf, setErrorStateUf] = useState('');
 
   function propertyName() {
-    return stateName;
+    return "Estado " + stateName;
+  }
+
+  function gender() {
+    return "o";
   }
 
   function getData(object) {
@@ -40,25 +45,31 @@ function StateClass() {
     clearError();
     let status = true;
 
+    let name = '';
+    let uf = '';
+
     if (stateName) {
       if (stateName.length < 3) {
-        setErrorStateName('O nome precisa ter no mínimo 3 letras!');
+        name = 'O nome precisa ter no mínimo 3 letras!';
         status = false;
       }
     } else {
-      setErrorStateName('O nome é requerido!');
+      name = 'O nome é requerido!';
       status = false;
     }
 
     if (stateUf) {
       if (stateUf.length < 2) {
-        setErrorStateUf('A sigla precisa ter 2 letras!');
+        uf = 'A sigla precisa ter 2 letras!';
         status = false;
       }
     } else {
-      setErrorStateUf('A sigla é requerida!');
+      uf = 'A sigla é requerida!';
       status = false;
     }
+
+    setErrorStateName(name);
+    setErrorStateUf(uf);
 
     return status;
   }
@@ -71,19 +82,27 @@ function StateClass() {
   }
 
   return {
+    // Atributos
     stateName,
     setStateName,
     stateUf,
     setStateUf,
     stateId,
+
+    // Erros
     errorStateName,
     errorStateUf,
+
+    // Funções Essencias
     propertyName,
+    gender,
     getData,
     setData,
     clearData,
     clearError,
     verifyData,
+
+    // Função de Controle
     verifyUf
   };
 }

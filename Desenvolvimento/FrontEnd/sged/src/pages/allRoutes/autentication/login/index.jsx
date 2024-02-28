@@ -6,7 +6,7 @@ import Checkbox from '@mui/material/Checkbox';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import background from '../../../../assets/imgTelaDeLogin.png';
+import background from '../../../../assets/pages/imgTelaDeLogin.png';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 //import { red } from '@mui/material/colors';
@@ -21,10 +21,11 @@ import { useMontage } from '../../../../object/modules/montage';
 import { useEffect, useState } from "react";
 import { useSession } from '../../../../object/service/session';
 import { useServer } from '../../../../routes/serverRoute';
+import LoginClass from '../../../../object/class/login';
 
 const defaultTheme = createTheme();
 
-export default function SignInSide() {
+export default function SignIn() {
 
   const { componentMounted } = useMontage();
 
@@ -32,77 +33,54 @@ export default function SignInSide() {
     componentMounted();
   }, [componentMounted]);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
-  const [userPassword, setUserPassword] = useState('');
-  const [persistLogin, setPersistLogin] = useState(false);
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState('');
   const [loginError, setLoginError] = useState('');
-  const { clearSegment, inDevelopment } = useServer();
-  const { createSession, getLogin } = useSession();
-
-  const getDataLogin = () => {
-    const data = JSON.parse(getLogin());
-    if (data !== null && data.persist) {
-      setUserEmail(data.emailPessoa);
-      setUserPassword(data.senhaUsuario);
-      setPersistLogin(true);
-    }
-  };
+  const server = useServer();
+  const session = useSession();
+  const login = LoginClass();
 
   const handlePersistLoginChange = (e) => {
     const checked = e.target.checked;
-    setPersistLogin(checked);
+    login.setPersistLogin(checked);
   };
 
   const handleSubmit = async (e) => {
-    setIsLoading(true);
-
     e.preventDefault();
-    setEmailError('');
-    setPasswordError('');
+
+    const delay = (milliseconds) => {
+      return new Promise(resolve => setTimeout(resolve, milliseconds));
+    };
+
     setLoginError('');
-    var email = '';
-    var password = '';
+    setIsLoading('Verificando Dados...');
 
-    if (!userEmail) {
-      email = 'Informe o e-mail!';
-    }
+    if (login.verifyData()) {
+      await delay(1000); setIsLoading('Criando Sessão...');
 
-    if (!userPassword) {
-      password = 'Informe a senha!';
-    }
+      const response = await session.createSession(login);
 
-    if (!email && (!userEmail.includes('@') || !userEmail.includes('.') || userEmail.lastIndexOf('.') < userEmail.indexOf('@'))) {
-      email = 'Insira um email válido!';
-    }
-
-    if (!password && userPassword.length < 6) {
-      password = 'Insira uma senha válida!';
-    }
-
-    if (!email && !password) {
-      try {
-        const loginResult = await createSession(userEmail, userPassword, persistLogin);
-        if (loginResult.validation) {
-          clearSegment("home");
-        } else {
-          setLoginError(loginResult.message);
-        }
-      } catch (error) {
-        setLoginError('Erro ao fazer login:', error);
+      if (response.validation) {
+        await delay(1000); setIsLoading('Liberando Entrada...');
+        await delay(1000); server.clearSegment("home");
+      } else {
+        setLoginError(response.message);
       }
     }
 
-    setEmailError(email);
-    setPasswordError(password);
-    setIsLoading(false);
+    setIsLoading('');
   };
 
-  const [modalOpen, setModalOpen] = useState(false);
-
   useEffect(() => {
+    const getDataLogin = () => {
+      const data = session.getLogin();
+      if (data) {
+        login.getData(data);
+      } else {
+        login.clearData();
+      }
+    };
+
     getDataLogin();
   }, []);
 
@@ -128,7 +106,7 @@ export default function SignInSide() {
             <Button
               onClick={() => {
                 setModalOpen(false);
-                setPersistLogin(true);
+                login.setPersistLogin(true);
               }}
               sx={{
                 border: 1,
@@ -147,7 +125,7 @@ export default function SignInSide() {
             <Button
               onClick={() => {
                 setModalOpen(false);
-                setPersistLogin(false);
+                login.setPersistLogin(false);
               }}
               sx={{
                 border: 1,
@@ -202,7 +180,7 @@ export default function SignInSide() {
             </Avatar> */}
 
             <Typography component="h1" variant="h5" fontSize={40} paddingBottom={5} >
-              Entrar
+              Autenticação
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }} style={{ width: 450 }}>
               <TextField
@@ -215,11 +193,11 @@ export default function SignInSide() {
                 name="email"
                 autoComplete="email"
                 autoFocus
-                onChange={(e) => setUserEmail(e.target.value)}
-                value={userEmail}
+                onChange={(e) => login.setPersonEmail(e.target.value)}
+                value={login.personEmail}
               />
               <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                {emailError}
+                {login.errorPersonEmail}
               </div>
               <TextField
                 margin="normal"
@@ -230,11 +208,11 @@ export default function SignInSide() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
-                onChange={(e) => setUserPassword(e.target.value)}
-                value={userPassword}
+                onChange={(e) => login.setUserPassword(e.target.value)}
+                value={login.userPassword}
               />
               <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                {passwordError}
+                {login.errorUserPassword}
               </div>
               <br />
               <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
@@ -242,7 +220,7 @@ export default function SignInSide() {
               </div>
               <br />
               <FormControlLabel
-                control={<Checkbox value="remember" color="primary" checked={persistLogin} />}
+                control={<Checkbox value="remember" color="primary" checked={login.persistLogin} />}
                 onChange={(e) => {
                   handlePersistLoginChange(e);
                   if (e.target.checked === true) {
@@ -252,7 +230,7 @@ export default function SignInSide() {
                 label="Lembre de mim"
               />
               <button
-                onClick={() => inDevelopment("Registro")}
+                onClick={() => server.clearSegment("register")}
                 style={{ color: 'blue', marginLeft: '150px' }}
               >
                 Não possuo conta
@@ -267,9 +245,9 @@ export default function SignInSide() {
                   }
                 }}
                 style={{}}
-                disabled={isLoading}
+                disabled={isLoading ? true : false}
               >
-                {isLoading ? 'Aguarde...' : 'Entrar'}
+                {isLoading ? isLoading : 'Entrar'}
               </Button>
             </Box>
           </Box>

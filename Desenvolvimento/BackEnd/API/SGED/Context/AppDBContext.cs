@@ -10,11 +10,12 @@ public class AppDBContext : DbContext
 	public DbSet<Estado> Estado { get; set; }
 	public DbSet<TipoUsuario> TipoUsuario { get; set; }
 	public DbSet<Cidade> Cidade { get; set; }
-    public DbSet<Bairro> Bairro { get; set; }
-    public DbSet<Usuario> Usuario { get; set; }
+  public DbSet<Bairro> Bairro { get; set; }
+  public DbSet<Usuario> Usuario { get; set; }
 	public DbSet<Municipe> Municipe { get; set; }
+  public DbSet<Fiscal> Fiscal { get; set; }
+  public DbSet<TipoLogradouro> TipoLogradouro { get; set; }
 	public DbSet<Engenheiro> Engenheiro { get; set; }
-	public DbSet<TipoLogradouro> TipoLogradouro { get; set; }
 	public DbSet<TipoProcesso> TipoProcesso { get; set; }
 	public DbSet<Logradouro> Logradouro { get; set; }
 	public DbSet<TipoDocumento> TipoDocumento { get; set; }

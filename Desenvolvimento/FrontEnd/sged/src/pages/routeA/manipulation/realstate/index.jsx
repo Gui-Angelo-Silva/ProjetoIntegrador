@@ -17,7 +17,7 @@ import SelectModule from "../../../../object/modules/select";
 import { list } from "postcss";
 
 export default function RealState() {
-    
+
     const { componentMounted } = useMontage();
 
     useEffect(() => {
@@ -62,6 +62,18 @@ export default function RealState() {
 
         if (!boolean) {
             realstate.clearData();
+        }
+    };
+
+    const SelectRealState = (object, option) => {
+        realstate.getData(object);
+        selectboxPublicPlace.selectOption(object.idLogradouro);
+        selectboxCitizen.selectOption(object.idMunicipe);
+
+        if (option === "Editar") {
+            openCloseModalEdit(true);
+        } else {
+            openCloseModalDelete(true);
         }
     };
 
@@ -217,4 +229,120 @@ export default function RealState() {
         realstate.setIdPublicPlace(selectboxPublicPlace.selectedOption.value ? selectboxPublicPlace.selectedOption.value : '');
         realstate.setIdCitizen(selectboxCitizen.selectedOption.value ? selectboxCitizen.selectedOption.value : '');
     }, [selectboxPublicPlace.selectedOption, selectboxCitizen.selectedOption]);
+
+    return (
+        <div className="flex flex-1 min-h-screen">
+            <div className="h-full w-full" style={{ display: 'flex', flexDirection: 'column' }}>
+                <NavBar />
+                <div className="flex flex-1 min-h-full">
+                    <SideBar />
+                    <div className="min-h-screen" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
+                        <br />
+                        <div className="flex flex-row">
+                        <Link to="/a/registration">
+                                <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
+                            </Link>
+                            <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
+                            <h3 className="text-2xl font-semibold text-gray-800">Imóvel</h3>
+                        </div>
+                        <div className="flex" style={{ alignItems: 'center' }}>
+                            <div className="flex justify-center items-center mx-auto">
+                                <div className="relative items-stretch self-center justify-center" style={{ width: 500 }}>
+                                    <label htmlFor="default-search" className="mb-5 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                                    <div className="flex relative border rounded-lg border-[#BCBCBC]">
+                                        <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                            <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                            </svg>
+                                        </div>
+                                        <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar imóvel" required onChange={(e) => handleSearch(e.target.value)} />
+                                        <select className="form-control rounded-md w-28 text-gray-800" onChange={(e) => handleSearchBy(e.target.value)}>
+                                            <option key="numeroImovel" value="numeroImovel">
+                                                N° Imóvel
+                                            </option>
+                                            <option key="nomePessoa" value="nomePessoa">
+                                                Munícipe
+                                            </option>
+                                            <option key="cep" value="cep">
+                                                CEP
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex items-center">
+                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert(true)}>
+                                    Novo <FaPlus className="inline-block" style={{ alignItems: 'center' }} />
+                                </button>
+                            </div>
+                        </div>
+                        <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
+                            <div className="grid grid-cols-4 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
+                                <span className="flex ml-5 text-white text-lg font-semibold">Número Imóvel</span>
+                                <span className="flex justify-center items-center text-white text-lg font-semibold">CEP</span>
+                                <span className="flex justify-center items-center text-white text-lg font-semibold">Proprietário</span>
+                                <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                            </div>
+                            <ul className="w-full">
+                                {list.currentList.map((realstate) => {
+                                    const logradouro = listPublicPlace.list.find((publicplace) => publicplace.id === realstate.idLogradouro);
+                                    const municipe = listCitizen.list.find((citizen) => citizen.id === realstate.idMunicipe)
+                                    return (
+                                        <li className="grid grid-cols-4 w-full" key={realstate.id}>
+                                            <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{realstate.numeroImovel}</span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{logradouro ? logradouro.cep : "CEP não encontrado!"}</span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{municipe ? municipe.nomePessoa : "Munícipe não encontrado"}</span>
+                                            <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                                <button
+                                                    className=""
+                                                    onClick={() => SelectRealState(realstate, "Editar")}
+                                                >
+                                                    <PencilSimple size={20} className="hover:text-cyan-500" />
+                                                </button>{" "}
+                                                <button
+                                                    className=""
+                                                    onClick={() => SelectRealState(realstate, "Excluir")}
+                                                >
+                                                    <TrashSimple size={20} className="hover:text-red-600" />
+                                                </button>
+                                            </span>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                            {/* Estilização dos botões de navegação */}
+                            <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
+                                <button
+                                    className=""
+                                    onClick={() => list.goToPage(list.currentPage - 1)}
+                                >
+                                    <CaretLeft size={22} className="text-[#58AFAE]" />
+                                </button>
+                                <select
+                                    className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
+                                    value={list.currentPage}
+                                    onChange={(e) => list.goToPage(Number(e.target.value))}
+                                >
+                                    {[...Array(list.totalPages)].map((_, index) => (
+                                        <option key={index + 1} value={index + 1}>
+                                            {index + 1}
+                                        </option>
+                                    ))}
+                                </select>
+                                <button
+                                    className=""
+                                    onClick={() => list.goToPage(list.currentPage + 1)}
+                                >
+                                    <CaretRight size={22} className="text-[#58AFAE]" />
+                                </button>
+                            </div>
+                            {/* Espaçamento abaixo dos botões */}
+                            <div className="mt-4"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    )
 }

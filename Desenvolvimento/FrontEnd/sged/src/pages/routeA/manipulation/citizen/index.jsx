@@ -203,7 +203,7 @@ export default function Citizen() {
                                     return (
                                         <li className="grid grid-cols-6 w-full" key={object.id}>
                                             <span className="flex pl-5 justify-center items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">
-                                                <img src={object.imagemPessoa ? object.imagemPessoa : defaultProfilePicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '40px', height: '40px', objectFit: 'cover', boxShadow: '0 0 0 1px black', }} />
+                                                <img src={object.imagemPessoa} style={{ cursor: 'pointer', borderRadius: '50%', width: '40px', height: '40px', objectFit: 'cover', boxShadow: '0 0 0 1px black', }} />
                                             </span>
                                             <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.nomePessoa}</span>
                                             <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.emailPessoa}</span>
@@ -395,6 +395,9 @@ export default function Citizen() {
                                         onClick={(e) => citizen.removePicture("Insert")}
                                     />
                                 )}
+                            </div>
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {citizen.errorPersonPicture}
                             </div>
                             <br />
                             <label>ID: </label><br />

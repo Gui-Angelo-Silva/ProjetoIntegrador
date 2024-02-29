@@ -245,10 +245,10 @@ export default function User() {
                     <div className="min-h-screen" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
                         <br />
                         <div className="flex flex-row">
-                        <h3 className="text-2xl font-semibold text-gray-500 pr-2" style={{ cursor: 'pointer' }} onClick={() => server.removeSegment(1)}>Cadastros</h3>
-                            <Link onClick={() => server.removeSegment(1)}>
+                            <h3 className="text-2xl font-semibold text-gray-500 pr-2" style={{ cursor: 'pointer' }} onClick={() => server.removeSegment(1)}>Cadastros</h3>
+                            {/*<Link onClick={() => server.removeSegment(1)}>
                                 <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
-                            </Link>
+                            </Link>*/}
                             <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
                             <h3 className="text-2xl font-semibold text-gray-800">Usuário</h3>
                         </div>

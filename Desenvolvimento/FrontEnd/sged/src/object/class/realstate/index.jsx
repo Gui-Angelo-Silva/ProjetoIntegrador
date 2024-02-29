@@ -45,7 +45,6 @@ function RealStateClass() {
     }
 
     function clearError() {
-        setErrorRealStateNumber('');
         setErrorIdPublicPlace('');
         setErrorIdCitizen('');
     }

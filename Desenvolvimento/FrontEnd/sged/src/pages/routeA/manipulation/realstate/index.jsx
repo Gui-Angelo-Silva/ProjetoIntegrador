@@ -122,7 +122,7 @@ export default function RealState() {
         setInOperation(true);
 
         if (realstate.verifyData(list.list)) {
-            const response = await connection.objectUrl(Imovel).putOrder(realstate);
+            const response = await connection.objectUrl("Imovel").putOrder(realstate);
             openCloseModalEdit(!response.status);
             setUpdateData(response.status);
             console.log(response.message);
@@ -341,7 +341,159 @@ export default function RealState() {
                         </div>
                     </div>
                 </div>
-
+                <Modal isOpen={modalInsert}>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Logradouro</ModalHeader>
+                    <ModalBody>
+                        <div className="form-group">
+                            <label className="text-[#444444]">Número do Imóvel: </label>
+                            <br />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => realstate.setRealStateNumber(e.target.value)} value={realstate.realStateNumber} />
+                            <br />
+                            <label className="text-[#444444]">Logradouro:</label>
+                            <br />
+                            <Select
+                                value={selectboxPublicPlace.selectedOption}
+                                onChange={selectboxPublicPlace.handleChange}
+                                onInputChange={selectboxPublicPlace.delayedSearch}
+                                loadOptions={selectboxPublicPlace.loadOptions}
+                                options={selectboxPublicPlace.options}
+                                placeholder="Pesquisar logradouro . . ."
+                                isClearable
+                                isSearchable
+                                noOptionsMessage={() => {
+                                    if (listPublicPlace.list.length === 0) {
+                                        return "Nenhum Logradouro cadastrado!";
+                                    } else {
+                                        return "Nenhuma opção encontrada!";
+                                    }
+                                }}
+                                className="style-select"
+                            />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {realstate.errorIdPublicPlace}
+                            </div>
+                            <br /><label className="text-[#444444]">Munícipe:</label>
+                            <br />
+                            <Select
+                                value={selectboxCitizen.selectedOption}
+                                onChange={selectboxCitizen.handleChange}
+                                onInputChange={selectboxCitizen.delayedSearch}
+                                loadOptions={selectboxCitizen.loadOptions}
+                                options={selectboxCitizen.options}
+                                placeholder="Pesquisar munícipe . . ."
+                                isClearable
+                                isSearchable
+                                noOptionsMessage={() => {
+                                    if (listCitizen.list.length === 0) {
+                                        return "Nenhum Munícipe cadastrado!";
+                                    } else {
+                                        return "Nenhuma opção encontrada!";
+                                    }
+                                }}
+                                className="style-select"
+                            />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {realstate.errorIdCitizen}
+                            </div>
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert(false)}>
+                            Cancelar
+                        </button>
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostRealState()} disabled={inOperation} >
+                            {inOperation ? 'Aguarde' : 'Cadastrar'}
+                        </button>{" "}
+                    </ModalFooter>
+                </Modal>
+                <Modal isOpen={modalEdit}>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Imóvel</ModalHeader>
+                    <ModalBody>
+                        <div className="form-group">
+                            <label className="text-[#444444]">ID: </label>
+                            <br />
+                            <input
+                                type="text"
+                                className="form-control rounded-md border-[#BCBCBC]"
+                                readOnly
+                                value={realstate.realStateId}
+                            />
+                            <br />
+                            <label className="text-[#444444]">Número Imóvel:</label>
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => realstate.setRealStateNumber(e.target.value)} value={realstate.realStateNumber} />
+                            <br />
+                            <label className="text-[#444444]">Logradouro:</label>
+                            <br />
+                            <Select
+                                value={selectboxPublicPlace.selectedOption}
+                                onChange={selectboxPublicPlace.handleChange}
+                                onInputChange={selectboxPublicPlace.delayedSearch}
+                                loadOptions={selectboxPublicPlace.loadOptions}
+                                options={selectboxPublicPlace.options}
+                                placeholder="Pesquisar logradouro . . ."
+                                isClearable
+                                isSearchable
+                                noOptionsMessage={() => {
+                                    if (listPublicPlace.list.length === 0) {
+                                        return "Nenhum Logradouro cadastrado!";
+                                    } else {
+                                        return "Nenhuma opção encontrada!";
+                                    }
+                                }}
+                            />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {realstate.errorIdPublicPlace}
+                            </div>
+                            <br />
+                            <label className="text-[#444444]">Munícipe:</label>
+                            <br />
+                            <Select
+                                value={selectboxCitizen.selectedOption}
+                                onChange={selectboxCitizen.handleChange}
+                                onInputChange={selectboxCitizen.delayedSearch}
+                                loadOptions={selectboxCitizen.loadOptions}
+                                options={selectboxCitizen.options}
+                                placeholder="Pesquisar munícipe . . ."
+                                isClearable
+                                isSearchable
+                                noOptionsMessage={() => {
+                                    if (listCitizen.list.length === 0) {
+                                        return "Nenhum Munícipe cadastrado!";
+                                    } else {
+                                        return "Nenhuma opção encontrada!";
+                                    }
+                                }}
+                            />
+                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                                {realstate.errorIdCitizen}
+                            </div>
+                            <br />
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit(false)}>
+                            Cancelar
+                        </button>
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutRealState()} disabled={inOperation} >
+                            {inOperation ? 'Aguarde' : 'Atualizar'}
+                        </button>{" "}
+                    </ModalFooter>
+                </Modal>
+                <Modal isOpen={modalDelete}>
+                    <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
+                    <ModalBody className="justify-center">
+                        <div className="flex flex-row justify-center p-2">
+                            Confirmar a exclusão deste Imóvel:
+                            <div className="text-[#059669] ml-1">
+                                {realstate.realStateNumber}
+                            </div> ?
+                        </div>
+                        <div className="flex justify-center gap-2 pt-3">
+                            <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete(false)}>Cancelar</button>
+                            <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteRealState()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'}</button>
+                        </div>
+                    </ModalBody>
+                </Modal>
             </div>
         </div>
     )

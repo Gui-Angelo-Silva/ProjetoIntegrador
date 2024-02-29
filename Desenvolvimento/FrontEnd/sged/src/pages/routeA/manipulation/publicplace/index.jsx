@@ -439,7 +439,7 @@ export default function PublicPlace() {
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalEdit}>
-                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Cidade</ModalHeader>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Logradouro</ModalHeader>
                     <ModalBody>
                         <div className="form-group">
                             <label className="text-[#444444]">ID: </label>

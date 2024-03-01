@@ -19,12 +19,10 @@ namespace SGED.Controllers
     {
 
         private readonly IUsuarioService _usuarioService;
-        private readonly AppDBContext _context;
 
         public UsuarioController(IUsuarioService usuarioService, AppDBContext context)
         {
             _usuarioService = usuarioService;
-            _context = context;
         }
 
         [HttpGet]

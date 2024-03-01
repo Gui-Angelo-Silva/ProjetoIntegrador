@@ -13,7 +13,8 @@ namespace SGED.DTO.Entities
 
         public string? DataHoraFechamento { get; set; }
 
-        public string? TokenSessao { get; set; }
+        [Required(ErrorMessage = "O token é requerido!")]
+        public string TokenSessao { get; set; }
 
         [Required(ErrorMessage = "O status é requerido!")]
         public Boolean StatusSessao { get; set; } = true;

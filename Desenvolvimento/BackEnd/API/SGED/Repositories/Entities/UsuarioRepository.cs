@@ -1,7 +1,10 @@
 ﻿using SGED.Context;
 using SGED.Models.Entities;
+using SGED.DTO.Entities;
 using SGED.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace SGED.Repositories.Entities;
 public class UsuarioRepository : IUsuarioRepository

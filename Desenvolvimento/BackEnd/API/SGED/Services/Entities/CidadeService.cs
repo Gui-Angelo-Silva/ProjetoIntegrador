@@ -5,13 +5,13 @@ using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
 
 namespace SGED.Services.Entities;
-public class CidadeService : ICidadeService
+public class SessaoService : ICidadeService
 {
 
     private readonly ICidadeRepository _cidadeRepository;
     private readonly IMapper _mapper;
 
-    public CidadeService(ICidadeRepository cidadeRepository, IMapper mapper)
+    public SessaoService(ICidadeRepository cidadeRepository, IMapper mapper)
     {
         _cidadeRepository = cidadeRepository;
         _mapper = mapper;

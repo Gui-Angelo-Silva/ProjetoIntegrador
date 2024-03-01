@@ -9,9 +9,10 @@ namespace SGED.Context.Builders
         {
             // Builder
             modelBuilder.Entity<Sessao>().HasKey(b => b.Id);
-            modelBuilder.Entity<Sessao>().Property(b => b.DataHoraAbertura);
+            modelBuilder.Entity<Sessao>().Property(b => b.DataHoraAbertura).IsRequired();
             modelBuilder.Entity<Sessao>().Property(b => b.DataHoraFechamento);
-            modelBuilder.Entity<Sessao>().Property(b => b.StatusSessao);
+            modelBuilder.Entity<Sessao>().Property(b => b.TokenSessao).IsRequired();
+            modelBuilder.Entity<Sessao>().Property(b => b.StatusSessao).IsRequired();
 
             // Relacionamento: Usuario -> Sessao
             modelBuilder.Entity<Usuario>().HasMany(p => p.Sessoes).WithOne(b => b.Usuario).IsRequired().OnDelete(DeleteBehavior.Cascade);

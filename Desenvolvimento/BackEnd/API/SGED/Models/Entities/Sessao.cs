@@ -17,6 +17,9 @@ namespace SGED.Models.Entities
         [Column("datahorafechamento")]
         public string? DataHoraFechamento { get; set; }
 
+        [Column("tokensessao")]
+        public string TokenSessao { get; set; }
+
         [Column("statussessao")]
         public Boolean StatusSessao { get; set; }
 

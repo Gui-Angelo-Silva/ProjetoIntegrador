@@ -25,19 +25,20 @@ namespace SGED.Controllers
         }
 
         [HttpPost("Autentication")]
-        public async Task<ActionResult> CreateSession([FromBody] AutenticationDTO autenticationDTO)
+        public async Task<ActionResult> CreateSession([FromBody] LoginDTO loginDTO)
         {
-            if (autenticationDTO is null) return BadRequest("Dado inválido!");
-            var usuarioDTO = await _usuarioService.Autentication(autenticationDTO);
+            if (loginDTO is null) return BadRequest("Dado inválido!");
+            var usuarioDTO = await _usuarioService.Autentication(loginDTO);
 
             if (usuarioDTO is not null)
             {
-                if (autenticationDTO.Email == usuarioDTO.EmailPessoa && autenticationDTO.Senha == usuarioDTO.SenhaUsuario)
+                if (loginDTO.Email == usuarioDTO.EmailPessoa && loginDTO.Senha == usuarioDTO.SenhaUsuario)
                 {
                     if (usuarioDTO.StatusUsuario)
                     {
-                        EntitySecurityDTO entitySecurity = new EntitySecurityDTO();
+                        EntitySecurityDTO entitySecurity = new();
                         var token = GenerateToken(entitySecurity.Key, entitySecurity.Issuer, entitySecurity.Audience, usuarioDTO.EmailPessoa, 1);
+
                         return Ok(new { token, usuario = usuarioDTO });
                     }
                     else {
@@ -65,14 +66,14 @@ namespace SGED.Controllers
             }
         }
 
-        private static string GenerateToken(string secretKey, string issuer, string audience, string subject, int expiryInMinutes)
+        private static string GenerateToken(string secretKey, string issuer, string audience, string subject, int expiryInHours)
         {
             var payload = new Dictionary<string, object>
             {
                 { "iss", issuer },
                 { "aud", audience },
                 { "sub", subject },
-                { "exp", DateTimeOffset.UtcNow.AddHours(expiryInMinutes).ToUnixTimeSeconds() }
+                { "exp", DateTimeOffset.UtcNow.AddHours(expiryInHours).ToUnixTimeSeconds() }
             };
 
             string token = JWT.Encode(payload, Encoding.UTF8.GetBytes(secretKey), JwsAlgorithm.HS256);

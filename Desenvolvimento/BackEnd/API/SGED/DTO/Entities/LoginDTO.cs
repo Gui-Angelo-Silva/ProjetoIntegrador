@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 
 namespace SGED.DTO.Entities
 {
-    public class AutenticationDTO
+    public class LoginDTO
     {
         [Required(ErrorMessage = "O e-mail é requerido!")]
         [EmailAddress]
@@ -18,17 +18,5 @@ namespace SGED.DTO.Entities
         [MinLength(6)]
         [MaxLength(50)]
         public string Senha { get; set; }
-
-    }
-
-    public class ValidationDTO
-    {
-        [Required(ErrorMessage = "O e-mail é requerido!")]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required(ErrorMessage = "O token é requerido!")]
-        public string Token { get; set; }
-
     }
 }

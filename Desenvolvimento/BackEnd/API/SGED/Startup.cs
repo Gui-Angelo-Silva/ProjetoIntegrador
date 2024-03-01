@@ -120,7 +120,7 @@ namespace SGED
 
             // Dependência: Cidade
             services.AddScoped<ICidadeRepository, CidadeRepository>();
-            services.AddScoped<ICidadeService, CidadeService>();
+            services.AddScoped<ICidadeService, SessaoService>();
 
             // Dependência: Bairro
             services.AddScoped<IBairroRepository, BairroRepository>();

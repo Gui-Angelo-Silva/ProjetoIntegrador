@@ -114,13 +114,13 @@ function Cards() {
         ],
         
         "Processo": [
-            {
-                onClick: () => inDevelopment("Controle de Processo"),
-                image: ImgProcesso,
-                tooltip: "Abrir a Página de Controle de Processo",
-                title: "Processo",
-                module: "Processo"
-            },
+            // {
+            //     onClick: () => inDevelopment("Controle de Processo"),
+            //     image: ImgProcesso,
+            //     tooltip: "Abrir a Página de Controle de Processo",
+            //     title: "Processo",
+            //     module: "Processo"
+            // },
             {
                 onClick: () => addSegment("typeprocess"),
                 image: ImgTipoProcesso,
@@ -141,14 +141,14 @@ function Cards() {
                 tooltip: "Abrir a Página de Controle de Tipo Documento",
                 title: "Tipo Documento",
                 module: "Processo"
-            },
-            {
-                onClick: () => inDevelopment("Controle de Documento Processo"),
-                image: ImgDocumentoProcesso,
-                tooltip: "Abrir a Página de Controle de Documento Processo",
-                title: "Doc. Processo",
-                module: "Processo"
             }
+            // {
+            //     onClick: () => inDevelopment("Controle de Documento Processo"),
+            //     image: ImgDocumentoProcesso,
+            //     tooltip: "Abrir a Página de Controle de Documento Processo",
+            //     title: "Doc. Processo",
+            //     module: "Processo"
+            // }
         ]
     }
     

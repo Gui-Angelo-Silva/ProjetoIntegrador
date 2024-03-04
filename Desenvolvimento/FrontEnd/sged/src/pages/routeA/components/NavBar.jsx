@@ -13,6 +13,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import LogoJales from '../../../assets/pages/LogoJales.png'
+import LogoProjeto from '../../../../public/logoSGED.png'
 
 import MoonIcon from '@mui/icons-material/DarkModeOutlined';
 import SunIcon from '@mui/icons-material/WbSunnyOutlined';
@@ -161,7 +162,7 @@ export default function NavBar() {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' }, marginLeft: 5 }}
           >
-            <img className='' src={LogoJales} alt="Logo de Jales"></img>
+            <img className='w-16 ' src={LogoProjeto} alt="Logo de Jales"></img>
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Typography

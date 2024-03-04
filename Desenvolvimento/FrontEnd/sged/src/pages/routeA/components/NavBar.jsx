@@ -162,7 +162,7 @@ export default function NavBar() {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' }, marginLeft: 5 }}
           >
-            <img className='w-16 ' src={LogoProjeto} alt="Logo de Jales"></img>
+            <img className='w-24 ' src={LogoJales} alt="Logo de Jales"></img>
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Typography

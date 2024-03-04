@@ -20,14 +20,14 @@ export default function Document() {
 
     return (
         <div className="flex flex-1 min-h-screen">
-            <div className="h-full w-full" style={{ display: 'flex', flexDirection: 'column' }}>
+            <div className="flex flex-col h-full w-full">
                 <NavBar />
                 <div className="flex flex-1 min-h-full">
                     <SideBar />
-                    <div className="min-h-screen" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
+                    <div className="flex-2 min-h-screen w-full ml-[80px] mr-[40px] mt-[-5px]">
                         <br />
                         <h3 className="text-2xl font-semibold text-gray-600">Processo</h3>
-                        <div className="bg-slate-200 rounded-md" style={{ marginTop: 15 }}>
+                        <div className="bg-slate-200 rounded-md mt-[15px]">
                             <h4 className="pl-4 pt-2 pb-2 text-gray-500">Funções</h4>
                         </div>
                         <div className="flex mt-10">

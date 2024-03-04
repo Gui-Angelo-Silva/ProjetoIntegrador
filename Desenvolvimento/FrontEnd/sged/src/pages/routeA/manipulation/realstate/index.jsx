@@ -232,22 +232,22 @@ export default function RealState() {
 
     return (
         <div className="flex flex-1 min-h-screen">
-            <div className="h-full w-full" style={{ display: 'flex', flexDirection: 'column' }}>
+            <div className="flex flex-col h-full w-full">
                 <NavBar />
                 <div className="flex flex-1 min-h-full">
                     <SideBar />
-                    <div className="min-h-screen" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
+                    <div className="flex-2 min-h-screen mr-[40px] ml-[80px] mt-[-5px] w-full">
                         <br />
                         <div className="flex flex-row">
-                        <Link to="/a/registration">
+                            <Link to="/a/registration">
                                 <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
                             </Link>
                             <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
                             <h3 className="text-2xl font-semibold text-gray-800">Imóvel</h3>
                         </div>
-                        <div className="flex" style={{ alignItems: 'center' }}>
+                        <div className="flex items-center">
                             <div className="flex justify-center items-center mx-auto">
-                                <div className="relative items-stretch self-center justify-center" style={{ width: 500 }}>
+                                <div className="relative items-stretch self-center justify-center w-[500px]">
                                     <label htmlFor="default-search" className="mb-5 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                                     <div className="flex relative border rounded-lg border-[#BCBCBC]">
                                         <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -369,7 +369,7 @@ export default function RealState() {
                                 }}
                                 className="style-select"
                             />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {realstate.errorIdPublicPlace}
                             </div>
                             <br /><label className="text-[#444444]">Munícipe:</label>
@@ -392,7 +392,7 @@ export default function RealState() {
                                 }}
                                 className="style-select"
                             />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {realstate.errorIdCitizen}
                             </div>
                         </div>
@@ -441,7 +441,7 @@ export default function RealState() {
                                     }
                                 }}
                             />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {realstate.errorIdPublicPlace}
                             </div>
                             <br />
@@ -464,7 +464,7 @@ export default function RealState() {
                                     }
                                 }}
                             />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {realstate.errorIdCitizen}
                             </div>
                             <br />

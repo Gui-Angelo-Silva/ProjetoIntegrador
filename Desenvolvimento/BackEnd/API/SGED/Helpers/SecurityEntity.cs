@@ -6,9 +6,9 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace SGED.DTO.Entities
+namespace SGED.Helpers
 {
-    public class EntitySecurityDTO
+    public class SecurityEntity
     {
         public string Issuer { get; } = "Server API";
         public string Audience { get; } = "WebSite";

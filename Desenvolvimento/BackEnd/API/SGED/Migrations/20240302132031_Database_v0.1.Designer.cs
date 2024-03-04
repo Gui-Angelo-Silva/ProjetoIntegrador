@@ -11,7 +11,7 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240301171539_Database_v0.1")]
+    [Migration("20240302132031_Database_v0.1")]
     partial class Database_v01
     {
         /// <inheritdoc />
@@ -587,14 +587,14 @@ namespace SGED.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DataHoraAbertura")
+                    b.Property<string>("DataHoraEncerramento")
+                        .HasColumnType("text")
+                        .HasColumnName("datahorafechamento");
+
+                    b.Property<string>("DataHoraInicio")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("datahoraabertura");
-
-                    b.Property<string>("DataHoraFechamento")
-                        .HasColumnType("text")
-                        .HasColumnName("datahorafechamento");
 
                     b.Property<int>("IdUsuario")
                         .HasColumnType("integer");
@@ -603,12 +603,14 @@ namespace SGED.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("statussessao");
 
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("integer");
+                    b.Property<string>("TokenSessao")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("tokensessao");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UsuarioId");
+                    b.HasIndex("IdUsuario");
 
                     b.ToTable("sessao");
                 });
@@ -2002,7 +2004,7 @@ namespace SGED.Migrations
                 {
                     b.HasOne("SGED.Models.Entities.Usuario", "Usuario")
                         .WithMany("Sessoes")
-                        .HasForeignKey("UsuarioId")
+                        .HasForeignKey("IdUsuario")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

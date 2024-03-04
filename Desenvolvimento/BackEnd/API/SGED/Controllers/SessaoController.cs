@@ -9,6 +9,8 @@ using System.Security.Claims;
 using System.Text;
 using Newtonsoft.Json;
 using System.Diagnostics.Eventing.Reader;
+using MySqlX.XDevAPI;
+using SGED.Services.Entities;
 
 namespace SGED.Controllers
 {
@@ -17,119 +19,163 @@ namespace SGED.Controllers
     [ApiController]
     public class SessaoController : Controller
     {
+        private readonly ISessaoService _sessaoService;
         private readonly IUsuarioService _usuarioService;
 
-        public SessaoController(IUsuarioService usuarioService)
+        public SessaoController(ISessaoService sessaoService, IUsuarioService usuarioService)
         {
+            _sessaoService = sessaoService;
             _usuarioService = usuarioService;
+        }
+
+        [HttpGet("GetOnline")]
+        public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetOnline()
+        {
+            var usuariosDTO = await _sessaoService.GetOnlineUser();
+            return Ok(usuariosDTO);
+        }
+
+        [HttpGet("GetOffline")]
+        public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetOffline()
+        {
+            var usuariosDTO = await _sessaoService.GetOfflineUser();
+            return Ok(usuariosDTO);
+        }
+
+        [HttpGet("GetUser")]
+        public async Task<ActionResult<UsuarioDTO>> GetUser(int id)
+        {
+            var usuarioDTO = await _sessaoService.GetUser(id);
+            if (usuarioDTO is null) return Unauthorized(new { status = false, response = "Usuário não encontrado!" });
+            else return Ok(new { status = true, response = usuarioDTO });
         }
 
         [HttpPost("Autentication")]
         public async Task<ActionResult> CreateSession([FromBody] LoginDTO loginDTO)
         {
-            if (loginDTO is null) return BadRequest("Dado inválido!");
-            var usuarioDTO = await _usuarioService.Autentication(loginDTO);
+            if (loginDTO is null) return BadRequest(new { status = false, response = "Dados inválidos!" });
+            var usuarioDTO = await _usuarioService.Login(loginDTO);
 
             if (usuarioDTO is not null)
             {
-                if (loginDTO.Email == usuarioDTO.EmailPessoa && loginDTO.Senha == usuarioDTO.SenhaUsuario)
+                var ultimaSessao = await _sessaoService.GetLastSession(usuarioDTO.Id);
+                SessaoDTO sessaoDTO = new()
                 {
-                    if (usuarioDTO.StatusUsuario)
-                    {
-                        EntitySecurityDTO entitySecurity = new();
-                        var token = GenerateToken(entitySecurity.Key, entitySecurity.Issuer, entitySecurity.Audience, usuarioDTO.EmailPessoa, 1);
+                    IdUsuario = usuarioDTO.Id,
+                    DataHoraInicio = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"),
+                    StatusSessao = true,
+                    TokenSessao = SessaoDTO.GenerateToken(usuarioDTO.EmailPessoa)
+                };
 
-                        return Ok(new { token, usuario = usuarioDTO });
-                    }
-                    else {
-                        return Unauthorized(new { message = "O usuário " + usuarioDTO.NomePessoa + " está inativo!" });
+                if (ultimaSessao is null || !ultimaSessao.StatusSessao)
+                {
+                    //await _sessaoService.Remove(ultimaSessao.Id);
+
+                    await _sessaoService.Create(sessaoDTO);
+                    return Ok(new { status = true, response = new { id = sessaoDTO.Id, email = usuarioDTO.EmailPessoa }});
+                }
+                else if (ultimaSessao.StatusSessao)
+                { 
+                    if (sessaoDTO.IdUsuario != 1) return Unauthorized(new { status = "waiting", response = "Já existe uma sessão aberta!" });
+                    else
+                    {
+                        await _sessaoService.Create(sessaoDTO);
+                        return Ok(new { status = true, response = new { id = sessaoDTO.Id, email = usuarioDTO.EmailPessoa } });
                     }
                 }
             }
 
-            return Unauthorized(new { message = "E-mail ou senha incorretos!" });
+            return Unauthorized(new { status = false, response = "E-mail ou senha incorretos!" });
         }
 
-        [HttpPost("Validation")]
-        public ActionResult ValidateSession([FromBody] ValidationDTO validationDTO)
+        [HttpPut("Validation")]
+        public async Task<IActionResult> ValidateSession(int id, string email)
         {
-            if (validationDTO is null) return BadRequest(new { validation = "false", message = "Dado inválido!" });
+            var sessaoDTO = await _sessaoService.GetById(id);
+            if (sessaoDTO is null) return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
 
-            EntitySecurityDTO entitySecurityDTO = new EntitySecurityDTO();
-            if (ValidateToken(validationDTO.Token, entitySecurityDTO.Issuer, entitySecurityDTO.Audience, validationDTO.Email))
+            var status = SessaoDTO.ValidateToken(sessaoDTO.TokenSessao, email);
+
+            if (status)
             {
-                return Ok(new { validation = "true" });
+                sessaoDTO.TokenSessao = SessaoDTO.GenerateToken(email); 
+                await _sessaoService.Update(sessaoDTO);
+
+                return Ok(new { status = true, response = "Sessão atualizada!" });
             }
             else
             {
-                return Unauthorized(new { validation = "false", message = "Acesso negado!" });
+                sessaoDTO.TokenSessao = "";
+                sessaoDTO.StatusSessao = false;
+                sessaoDTO.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                await _sessaoService.Update(sessaoDTO);
+
+                return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
             }
         }
 
-        private static string GenerateToken(string secretKey, string issuer, string audience, string subject, int expiryInHours)
+        [HttpPut("Close")]
+        public async Task<IActionResult> CloseSession(int id)
         {
-            var payload = new Dictionary<string, object>
-            {
-                { "iss", issuer },
-                { "aud", audience },
-                { "sub", subject },
-                { "exp", DateTimeOffset.UtcNow.AddHours(expiryInHours).ToUnixTimeSeconds() }
-            };
+            var sessaoDTO = await _sessaoService.GetById(id);
+            if (sessaoDTO is null) return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
 
-            string token = JWT.Encode(payload, Encoding.UTF8.GetBytes(secretKey), JwsAlgorithm.HS256);
-            return token;
+            sessaoDTO.TokenSessao = "";
+            sessaoDTO.StatusSessao = false;
+            sessaoDTO.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+            await _sessaoService.Update(sessaoDTO);
+
+            return Ok(new { status = true, response = "Sessão encerrada com sucesso!" });
         }
 
-        private static bool ValidateToken(string token, string issuer, string audience, string expectedEmail)
+
+
+
+
+
+
+
+
+        [HttpGet("GetAllSessions")]
+        public async Task<ActionResult<IEnumerable<SessaoDTO>>> GetAllSessions()
         {
-            // Passo 1: Verificar se o token tem três partes
-            string[] tokenParts = token.Split('.');
-            if (tokenParts.Length != 3)
-            {
-                return false;
-            }
+            var sessoesDTO = await _sessaoService.GetAll();
+            return Ok(sessoesDTO);
+        }
 
-            try
-            {
-                // Passo 2: Decodificar o token
-                string decodedToken = Encoding.UTF8.GetString(Base64Url.Decode(tokenParts[1]));
+        [HttpGet("GetAllOpenSessions")]
+        public async Task<ActionResult<IEnumerable<SessaoDTO>>> GetAllOpenSessions()
+        {
+            var sessoesDTO = await _sessaoService.GetOpenSessions();
+            return Ok(sessoesDTO);
+        }
 
-                // Passo 3: Verificar iss, aud e sub
-                var payload = JsonConvert.DeserializeObject<Dictionary<string, object>>(decodedToken);
-                if (!payload.TryGetValue("iss", out object issuerClaim) ||
-                    !payload.TryGetValue("aud", out object audienceClaim) ||
-                    !payload.TryGetValue("sub", out object subjectClaim))
-                {
-                    return false;
-                }
+        [HttpGet("GetAllCloseSessions")]
+        public async Task<ActionResult<IEnumerable<SessaoDTO>>> GetAllCloseSessions()
+        {
+            var sessoesDTO = await _sessaoService.GetCloseSessions();
+            return Ok(sessoesDTO);
+        }
 
-                if (issuerClaim.ToString() != issuer || audienceClaim.ToString() != audience || subjectClaim.ToString() != expectedEmail)
-                {
-                    return false;
-                }
+        [HttpGet("GetSession")]
+        public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetSession(int id, string email)
+        {
+            var sessaoDTO = await _sessaoService.GetById(id);
+            if (sessaoDTO is null) return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
 
-                // Passo 4: Verificar se o tempo expirou
-                if (payload.TryGetValue("exp", out object expirationClaim))
-                {
-                    long expirationTime = long.Parse(expirationClaim.ToString());
-                    var expirationDateTime = DateTimeOffset.FromUnixTimeSeconds(expirationTime).UtcDateTime;
-                    if (expirationDateTime < DateTime.UtcNow)
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    return false;
-                }
+            var status = SessaoDTO.ValidateTokenByEmail(sessaoDTO.TokenSessao, email);
 
-                // Passo 5: Se tudo estiver certo
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            if (status) return Ok(new { status = true, response = sessaoDTO });
+            else return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
+        }
+
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var sessaoDTO = await _sessaoService.GetById(id);
+            if (sessaoDTO is null || sessaoDTO.IdUsuario == 1) return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
+            await _sessaoService.Remove(id);
+            return Ok(new { status = true, response = "Sessão removida com sucesso!" });
         }
     }
 }

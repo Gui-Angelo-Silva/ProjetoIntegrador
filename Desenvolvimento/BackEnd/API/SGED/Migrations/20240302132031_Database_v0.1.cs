@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class addFiscal : Migration
+    public partial class Database_v01 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -232,6 +232,29 @@ namespace SGED.Migrations
                         column: x => x.IdEtapa,
                         principalTable: "etapa",
                         principalColumn: "idetapa",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "sessao",
+                columns: table => new
+                {
+                    idsessao = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    datahoraabertura = table.Column<string>(type: "text", nullable: false),
+                    datahorafechamento = table.Column<string>(type: "text", nullable: true),
+                    tokensessao = table.Column<string>(type: "text", nullable: false),
+                    statussessao = table.Column<bool>(type: "boolean", nullable: false),
+                    IdUsuario = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_sessao", x => x.idsessao);
+                    table.ForeignKey(
+                        name: "FK_sessao_usuario_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalTable: "usuario",
+                        principalColumn: "idusuario",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -583,6 +606,11 @@ namespace SGED.Migrations
                 column: "IdTipoLogradouro");
 
             migrationBuilder.CreateIndex(
+                name: "IX_sessao_IdUsuario",
+                table: "sessao",
+                column: "IdUsuario");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TipoDocumento_IdEtapa",
                 table: "TipoDocumento",
                 column: "IdEtapa");
@@ -606,10 +634,10 @@ namespace SGED.Migrations
                 name: "imovel");
 
             migrationBuilder.DropTable(
-                name: "TipoDocumento");
+                name: "sessao");
 
             migrationBuilder.DropTable(
-                name: "usuario");
+                name: "TipoDocumento");
 
             migrationBuilder.DropTable(
                 name: "logradouro");
@@ -618,16 +646,19 @@ namespace SGED.Migrations
                 name: "municipe");
 
             migrationBuilder.DropTable(
-                name: "etapa");
+                name: "usuario");
 
             migrationBuilder.DropTable(
-                name: "tipousuario");
+                name: "etapa");
 
             migrationBuilder.DropTable(
                 name: "bairro");
 
             migrationBuilder.DropTable(
                 name: "tipologradouro");
+
+            migrationBuilder.DropTable(
+                name: "tipousuario");
 
             migrationBuilder.DropTable(
                 name: "tipoprocesso");

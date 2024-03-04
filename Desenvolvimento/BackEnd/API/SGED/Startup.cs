@@ -16,7 +16,8 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using System.Text;
 using Swashbuckle.AspNetCore.SwaggerUI;
-using SGED.DTO.Entities;
+using SGED.Helpers;
+using SGED.Services.ServerTasks;
 
 namespace SGED
 {
@@ -72,16 +73,16 @@ namespace SGED
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    EntitySecurityDTO entitySecurity = new EntitySecurityDTO();
+                    SecurityEntity securityEntity = new SecurityEntity();
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = entitySecurity.Issuer,
-                        ValidAudience = entitySecurity.Audience,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(entitySecurity.Key)),
+                        ValidIssuer = securityEntity.Issuer,
+                        ValidAudience = securityEntity.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityEntity.Key)),
                     };
                 });
 
@@ -110,29 +111,7 @@ namespace SGED
 
             // Injeção de dependências
 
-            // Dependência: Estado
-            services.AddScoped<IEstadoRepository, EstadoRepository>();
-            services.AddScoped<IEstadoService, EstadoService>();
-
-            // Dependência: TipoUsuario
-            services.AddScoped<ITipoUsuarioRepository, TipoUsuarioRepository>();
-            services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
-
-            // Dependência: Cidade
-            services.AddScoped<ICidadeRepository, CidadeRepository>();
-            services.AddScoped<ICidadeService, SessaoService>();
-
-            // Dependência: Bairro
-            services.AddScoped<IBairroRepository, BairroRepository>();
-            services.AddScoped<IBairroService, BairroService>();
-
-            // Dependência: TipoProcesso
-            services.AddScoped<ITipoProcessoRepository, TipoProcessoRepository>();
-            services.AddScoped<ITipoProcessoService, TipoProcessoService>();
-
-            // Dependência: Usuario
-            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-            services.AddScoped<IUsuarioService, UsuarioService>();
+            // Conjunto: Pessoa
 
             // Dependência: Municipe
             services.AddScoped<IMunicipeRepository, MunicipeRepository>();
@@ -142,30 +121,70 @@ namespace SGED
             services.AddScoped<IFiscalRepository, FiscalRepository>();
             services.AddScoped<IFiscalService, FiscalService>();
 
+            // Dependência: Engenheiro
+            services.AddScoped<IEngenheiroRepository, EngenheiroRepository>();
+            services.AddScoped<IEngenheiroService, EngenheiroService>();
+
+            // Dependência: TipoUsuário
+            services.AddScoped<ITipoUsuarioRepository, TipoUsuarioRepository>();
+            services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
+
+            // Dependência: Usuário
+            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+            services.AddScoped<IUsuarioService, UsuarioService>();
+
+            // Dependência: Sessão
+            services.AddScoped<ISessaoRepository, SessaoRepository>();
+            services.AddScoped<ISessaoService, SessaoService>();
+
+
+            // Conjunto: Imóvel
+
+            // Dependência: Estado
+            services.AddScoped<IEstadoRepository, EstadoRepository>();
+            services.AddScoped<IEstadoService, EstadoService>();
+
+            // Dependência: Cidade
+            services.AddScoped<ICidadeRepository, CidadeRepository>();
+            services.AddScoped<ICidadeService, CidadeService>();
+
+            // Dependência: Bairro
+            services.AddScoped<IBairroRepository, BairroRepository>();
+            services.AddScoped<IBairroService, BairroService>();
+
             // Dependência: TipoLogradouro
             services.AddScoped<ITipoLogradouroRepository, TipoLogradouroRepository>();
             services.AddScoped<ITipoLogradouroService, TipoLogradouroService>();
-
-			// Dependência: Engenheiro
-			services.AddScoped<IEngenheiroRepository, EngenheiroRepository>();
-			services.AddScoped<IEngenheiroService, EngenheiroService>();
 
             // Dependência: Logradouro
             services.AddScoped<ILogradouroRepository, LogradouroRepository>();
             services.AddScoped<ILogradouroService, LogradouroService>();
 
-            // Dependência: TipoDocumento
-            services.AddScoped<ITipoDocumentoRepository, TipoDocumentoRepository>();
-            services.AddScoped<ITipoDocumentoService, TipoDocumentoService>();
+            // Dependência: Imóvel
+            services.AddScoped<IImovelRepository, ImovelRepository>();
+            services.AddScoped<IImovelService, ImovelService>();
+
+
+            // Conjunto: Processo
+
+            // Dependência: TipoProcesso
+            services.AddScoped<ITipoProcessoRepository, TipoProcessoRepository>();
+            services.AddScoped<ITipoProcessoService, TipoProcessoService>();
 
             // Dependência: Etapa
             services.AddScoped<IEtapaRepository, EtapaRepository>();
             services.AddScoped<IEtapaService, EtapaService>();
 
-            // Dependência: Imóvel
-            services.AddScoped<IImovelRepository, ImovelRepository>();
-            services.AddScoped<IImovelService, ImovelService>();
-            
+            // Dependência: TipoDocumento
+            services.AddScoped<ITipoDocumentoRepository, TipoDocumentoRepository>();
+            services.AddScoped<ITipoDocumentoService, TipoDocumentoService>();
+
+
+            // Conjunto: Servidor
+
+            // Tasks
+            services.AddHostedService<SessionCleanupService>();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

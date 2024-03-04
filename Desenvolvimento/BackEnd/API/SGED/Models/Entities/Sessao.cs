@@ -12,10 +12,10 @@ namespace SGED.Models.Entities
         public int Id { get; set; }
 
         [Column("datahoraabertura")]
-        public string DataHoraAbertura { get; set; }
+        public string DataHoraInicio { get; set; }
 
         [Column("datahorafechamento")]
-        public string? DataHoraFechamento { get; set; }
+        public string? DataHoraEncerramento { get; set; }
 
         [Column("tokensessao")]
         public string TokenSessao { get; set; }

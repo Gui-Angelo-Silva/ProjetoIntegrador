@@ -53,10 +53,10 @@ public class UsuarioService : IUsuarioService
         return usuarios.Select(u => u.EmailPessoa).ToList();
     }
 
-    public async Task<UsuarioDTO> Autentication(AutenticationDTO autenticationDTO)
+    public async Task<UsuarioDTO> Login(LoginDTO loginDTO)
     {
-        var autentication = _mapper.Map<Autentication>(autenticationDTO);
-        var usuario = await _usuarioRepository.Autentication(autentication);
+        var login = _mapper.Map<Login>(loginDTO);
+        var usuario = await _usuarioRepository.Login(login);
 
         UsuarioDTO usuarioDTO = _mapper.Map<UsuarioDTO>(usuario);
         if (usuarioDTO != null) { usuarioDTO.TipoUsuarioDTO = _mapper.Map<TipoUsuarioDTO>(usuario.TipoUsuario); }

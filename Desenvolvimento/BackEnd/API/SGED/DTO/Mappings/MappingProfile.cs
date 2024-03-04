@@ -8,6 +8,8 @@ namespace SGED.DTO.Mappings
     {
         public MappingProfile()
         {
+            // Classes do Sistema:
+
             CreateMap<EstadoDTO, Estado>();
             CreateMap<Estado, EstadoDTO>().ReverseMap();
 
@@ -28,9 +30,6 @@ namespace SGED.DTO.Mappings
 
             CreateMap<UsuarioDTO, Usuario>();
             CreateMap<Usuario, UsuarioDTO>().ReverseMap();
-
-            CreateMap<AutenticationDTO, Autentication>();
-            CreateMap<Autentication, AutenticationDTO>().ReverseMap();
 
             CreateMap<MunicipeDTO, Municipe>();
             CreateMap<Municipe, MunicipeDTO>().ReverseMap();
@@ -54,7 +53,16 @@ namespace SGED.DTO.Mappings
             CreateMap<Etapa, EtapaDTO>().ReverseMap();  
 
             CreateMap<ImovelDTO, Imovel>(); 
-            CreateMap<Imovel, ImovelDTO>().ReverseMap();    
+            CreateMap<Imovel, ImovelDTO>().ReverseMap();
+
+
+            // Objetos do Servidor:
+
+            CreateMap<LoginDTO, Login>();
+            CreateMap<Login, LoginDTO>().ReverseMap();
+
+            CreateMap<SessaoDTO, Sessao>();
+            CreateMap<Sessao, SessaoDTO>().ReverseMap();
         }
     }
 }

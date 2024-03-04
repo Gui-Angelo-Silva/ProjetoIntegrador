@@ -19,23 +19,22 @@ public class UsuarioRepository : IUsuarioRepository
 
     public async Task<IEnumerable<Usuario>> GetAll()
     {
-        return await _dbContext.Usuario.Where(objeto => objeto.EmailPessoa != "devops@development.com").ToListAsync();
-        //return await _dbContext.Usuario.Where(objeto => objeto.EmailPessoa != "devops@development.com").Include(objeto => objeto.TipoUsuario).ToListAsync();
+        return await _dbContext.Usuario.Where(objeto => objeto.Id != 1).ToListAsync();
     }
 
     public async Task<Usuario> GetById(int id)
     {
-        return await _dbContext.Usuario.Where(objeto => objeto.Id == id && objeto.EmailPessoa != "devops@development.com").Include(objeto => objeto.TipoUsuario).FirstOrDefaultAsync();
+        return await _dbContext.Usuario.Where(objeto => objeto.Id == id && objeto.Id != 1).Include(objeto => objeto.TipoUsuario).FirstOrDefaultAsync();
     }
 
     public async Task<IEnumerable<Usuario>> GetByEmail(int id, string email)
     {
-        return await _dbContext.Usuario.Where(objeto => objeto.Id != id && objeto.EmailPessoa.Contains(email) && objeto.EmailPessoa != "devops@development.com").ToListAsync();
+        return await _dbContext.Usuario.Where(objeto => objeto.Id != id && objeto.EmailPessoa.Contains(email) && objeto.Id != 1).ToListAsync();
     }
 
-    public async Task<Usuario> Autentication(Autentication autentication)
+    public async Task<Usuario> Login(Login login)
     {
-        return await _dbContext.Usuario.Where(objeto => objeto.EmailPessoa == autentication.Email && objeto.SenhaUsuario == autentication.Senha).Include(objeto => objeto.TipoUsuario).FirstOrDefaultAsync();
+        return await _dbContext.Usuario.Where(objeto => objeto.EmailPessoa == login.Email && objeto.SenhaUsuario == login.Senha).Include(objeto => objeto.TipoUsuario).FirstOrDefaultAsync();
     }
 
     public async Task<Usuario> Create(Usuario usuario)

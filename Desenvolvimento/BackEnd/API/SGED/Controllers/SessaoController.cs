@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using System.Diagnostics.Eventing.Reader;
 using MySqlX.XDevAPI;
 using SGED.Services.Entities;
+using SGED.Services.Server.Functions;
 
 namespace SGED.Controllers
 {

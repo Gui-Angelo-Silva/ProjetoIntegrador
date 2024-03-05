@@ -1,18 +1,7 @@
-﻿using AutoMapper;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
-using SGED.DTO.Entities;
-using SGED.Repositories.Entities;
+﻿using SGED.DTO.Entities;
 using SGED.Repositories.Interfaces;
-using SGED.Services.Interfaces;
-using System;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Jose;
 
-namespace SGED.Services.ServerTasks
+namespace SGED.Services.Server.Tasks
 
 {
     public class SessionCleanupService : BackgroundService

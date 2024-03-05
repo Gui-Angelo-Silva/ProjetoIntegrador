@@ -17,7 +17,7 @@ using System.Text.Json.Serialization;
 using System.Text;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using SGED.Helpers;
-using SGED.Services.ServerTasks;
+using SGED.Services.Server.Tasks;
 
 namespace SGED
 {

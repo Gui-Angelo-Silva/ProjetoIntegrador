@@ -6,6 +6,7 @@ using System.Reflection.Metadata.Ecma335;
 using Npgsql;
 using SGED.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
+using SGED.Services.Server.Functions;
 
 namespace SGED.Controllers
 {
@@ -24,6 +25,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet(Name = "GetEstados")]
+        [Criteria("A")]
         public async Task<ActionResult<IEnumerable<EstadoDTO>>> GetAll()
         {
             var estadosDTO = await _estadoService.GetAll();
@@ -31,6 +33,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("Id/{id}", Name = "GetById")]
+        [Criteria("A")]
         public async Task<ActionResult<EstadoDTO>> GetId(int id)
         {
             var estadoDTO = await _estadoService.GetById(id);
@@ -39,6 +42,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("Name/{nome}", Name = "GetByName")]
+        [Criteria("A")]
         public async Task<ActionResult<IEnumerable<EstadoDTO>>> GetName(string nome)
         {
             var estadosDTO = await _estadoService.GetByName(nome);
@@ -47,9 +51,14 @@ namespace SGED.Controllers
         }
 
         [HttpPost]
+        [Criteria("A")]
         public async Task<ActionResult> Post([FromBody] EstadoDTO estadoDTO)
         {
             if (estadoDTO is null) return BadRequest("Dado inválido!");
+
+            AuditoriaDTO auditoriaDTO = new();
+            auditoriaDTO.IdUsuario = HttpContext.Items["IdUsuario"];
+            auditoriaDTO.
 
             var estadosDTO = await _estadoService.GetByName(estadoDTO.NomeEstado);
 
@@ -66,6 +75,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [Criteria("A")]
         public async Task<ActionResult> Put([FromBody] EstadoDTO estadoDTO)
         {
             if (estadoDTO is null) return BadRequest("Dado inválido!");
@@ -74,6 +84,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Criteria("A")]
         public async Task<ActionResult<EstadoDTO>> Delete(int id)
         {
             var estadoDTO = await _estadoService.GetById(id);

@@ -136,7 +136,7 @@ export default function TypeUser() {
                 <NavBar />
                 <div className="flex flex-1 min-h-full">
                     <SideBar />
-                    <div className="min-h-screen" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
+                    <div className="flex-2 min-h-screen mr-[40px] ml-[80px] mt-[-5px] w-full">
                         <br />
                         <div className="flex flex-row">
                             <Link to="/a/registration">
@@ -148,9 +148,9 @@ export default function TypeUser() {
                         {/* <div className="bg-slate-200 rounded-md mb-10" style={{ marginTop: 15 }}>
                                 <h4 className="pl-4 pt-2 pb-2 text-gray-500">Funções</h4>
                             </div> */}
-                        <div className="flex" style={{ alignItems: 'center' }}>
+                        <div className="flex items-center">
                             <div className="flex justify-center items-center mx-auto">
-                                <div className="relative items-stretch self-center justify-center" style={{ width: 500 }}>
+                                <div className="relative items-stretch self-center justify-center w-[500px]">
                                     <label htmlFor="default-search" className="mb-5 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                                     <div className="flex relative border rounded-lg border-[#BCBCBC]">
                                         <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -174,8 +174,8 @@ export default function TypeUser() {
                                 </div>
                             </div>
                             <div className="flex items-center">
-                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert(true)}>
-                                    Novo <FaPlus className="inline-block" style={{ alignItems: 'center' }} />
+                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 bg-[#004C57]" onClick={() => openCloseModalInsert(true)}>
+                                    Novo <FaPlus className="inline-block items-baseline" />
                                 </button>
                             </div>
                         </div>
@@ -247,7 +247,7 @@ export default function TypeUser() {
                             <label className="text-[#444444]">Nome: </label>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typeuser.setTypeUserName(e.target.value)} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {typeuser.errorTypeUserName}
                             </div>
                             <br />
@@ -268,7 +268,7 @@ export default function TypeUser() {
                             <label>Descrição:</label>
                             <br />
                             <textarea type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typeuser.setTypeUserDescription(e.target.value)} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {typeuser.errorTypeUserDescrition}
                             </div>
                             <br />
@@ -287,7 +287,7 @@ export default function TypeUser() {
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={typeuser.typeUserId} /> <br />
                             <label className="text-[#444444]">Nome:</label>
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomeTipoUsuario" onChange={(e) => typeuser.setTypeUserName(e.target.value)} value={typeuser.typeUserName} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {typeuser.errorTypeUserName}
                             </div>
                             <br />
@@ -302,7 +302,7 @@ export default function TypeUser() {
                             <label className="text-[#444444]">Descrição:</label>
                             <br />
                             <textarea type="text" className="form-control rounded-md border-[#BCBCBC]" name="descricaoTipoUsuario" onChange={(e) => typeuser.setTypeUserDescription(e.target.value)} value={typeuser.typeUserDescription} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {typeuser.errorTypeUserDescrition}
                             </div>
                             <br />

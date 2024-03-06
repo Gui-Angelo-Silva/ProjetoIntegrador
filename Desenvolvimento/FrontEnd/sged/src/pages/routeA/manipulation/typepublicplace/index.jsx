@@ -131,11 +131,11 @@ export default function TypePublicPlace() {
 
     return (
         <div className="flex flex-1 min-h-screen">
-            <div className="h-full w-full" style={{ display: 'flex', flexDirection: 'column' }}>
+            <div className="flex flex-col h-full w-full">
                 <NavBar />
                 <div className="flex flex-1 min-h-full">
                     <SideBar />
-                    <div className="min-h-screen" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
+                    <div className="flex-2 min-h-screen mr-[40px] ml-[80px] mt-[-5px] w-full">
                         <br />
                         <div className="flex flex-row">
                             <Link to="/a/registration">
@@ -238,14 +238,14 @@ export default function TypePublicPlace() {
                             <label className="text-[#444444]">Código Informativo: </label>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typepublicplace.verifyIc(e.target.value.toUpperCase())} value={typepublicplace.typePublicPlaceIc} maxLength={3}/>
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {typepublicplace.errorTypePublicPlaceIc}
                             </div>
                             <br />
                             <label className="text-[#444444]">Descrição:</label>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typepublicplace.setTypePublicPlaceDescription(e.target.value)} value={typepublicplace.typePublicPlaceDescription} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {typepublicplace.errorTypePublicPlaceDescription}
                             </div>
                             <br />
@@ -261,17 +261,18 @@ export default function TypePublicPlace() {
                     <ModalBody>
                         <div className="form-group">
                             <label className="text-[#444444]">ID: </label><br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={typepublicplace.typePublicPlaceId} /> <br />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={typepublicplace.typePublicPlaceId} /> 
+                            <br />
                             <label className="text-[#444444]">Código Informativo:</label>
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="codigoInformativo" onChange={(e) => typepublicplace.verifyIc(e.target.value.toUpperCase())} value={typepublicplace.typePublicPlaceIc} maxLength={3} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {typepublicplace.errorTypePublicPlaceIc}
                             </div>
                             <br />
                             <label className="text-[#444444]">Sigla:</label>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="descricao" onChange={(e) => typepublicplace.setTypePublicPlaceDescription(e.target.value)} value={typepublicplace.typePublicPlaceDescription}/>
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {typepublicplace.errorTypePublicPlaceDescription}
                             </div>
                             <br />

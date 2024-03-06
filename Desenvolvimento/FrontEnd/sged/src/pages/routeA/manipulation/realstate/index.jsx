@@ -271,8 +271,8 @@ export default function RealState() {
                                 </div>
                             </div>
                             <div className="flex items-center">
-                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert(true)}>
-                                    Novo <FaPlus className="inline-block" style={{ alignItems: 'center' }} />
+                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 bg-[#004C57]" onClick={() => openCloseModalInsert(true)}>
+                                    Novo <FaPlus className="inline-block items-center" />
                                 </button>
                             </div>
                         </div>

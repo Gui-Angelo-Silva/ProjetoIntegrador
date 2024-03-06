@@ -339,7 +339,7 @@ export default function TypeDocument() {
                                 isClearable
                                 isSearchable
                                 noOptionsMessage={() => {
-                                    if (listState.list.length === 0) {
+                                    if (listStage.list.length === 0) {
                                         return "Nenhum Etapa cadastrado!";
                                     } else {
                                         return "Nenhuma opção encontrada!";

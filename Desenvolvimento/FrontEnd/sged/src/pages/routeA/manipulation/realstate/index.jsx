@@ -342,7 +342,7 @@ export default function RealState() {
                     </div>
                 </div>
                 <Modal isOpen={modalInsert}>
-                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Logradouro</ModalHeader>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Imóvel</ModalHeader>
                     <ModalBody>
                         <div className="form-group">
                             <label className="text-[#444444]">Número do Imóvel: </label>

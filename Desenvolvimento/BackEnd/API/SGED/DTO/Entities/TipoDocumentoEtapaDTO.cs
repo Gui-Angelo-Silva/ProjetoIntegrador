@@ -6,14 +6,14 @@ using System.Text.Json.Serialization;
 
 namespace SGED.DTO.Entities
 {
-    public class TipoProcessoEtapaDTO
+    public class TipoDocumentoEtapaDTO
     {
         public int Id { get; set; }
 
         [JsonIgnore]
-        public TipoProcessoDTO? TipoProcessoDTO { get; set; }
+        public TipoDocumentoDTO? TipoDocumentoDTO { get; set; }
 
-        [Required(ErrorMessage = "O TipoProcesso é requerido!")]
+        [Required(ErrorMessage = "O Tipo Processo é requerido!")]
         public int IdTipoProcesso { get; set; }
 		public Etapa? Etapa { get; set; }
 

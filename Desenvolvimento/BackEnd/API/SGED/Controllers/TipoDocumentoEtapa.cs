@@ -11,25 +11,25 @@ namespace SGED.Controllers
     [Route("api/[controller]")]
     [ApiController]
     //[Authorize("ApiScope")]
-    public class TipoProcessoEtapa : Controller
+    public class TipoDocumentoEtapa : Controller
     {
 
-        private readonly ITipoProcessoEtapaService _TipoProcessoEtapaService;
+        private readonly ITipoDocumentoEtapaService _TipoProcessoEtapaService;
 
-        public TipoProcessoEtapa(ITipoProcessoEtapaService TipoProcessoEtapaService)
+        public TipoDocumentoEtapa(ITipoDocumentoEtapaService TipoProcessoEtapaService)
         {
 			_TipoProcessoEtapaService = TipoProcessoEtapaService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TipoProcessoEtapaDTO>>> Get()
+        public async Task<ActionResult<IEnumerable<TipoDocumentoEtapaDTO>>> Get()
         {
             var tipoProcessoEtapaDTO = await _TipoProcessoEtapaService.GetAll();
             return Ok(tipoProcessoEtapasDTO);
         }
 
-        [HttpGet("{id}", Name = "GetBairro")]
-        public async Task<ActionResult<TipoProcessoEtapaDTO>> Get(int id)
+        [HttpGet("{id}", Name = "GetTipoDocumentoEtapa")]
+        public async Task<ActionResult<TipoDocumentoEtapaDTO>> Get(int id)
         {
             var TipoProcessoEtapaDTO = await _TipoProcessoEtapaService.GetById(id);
             if (TipoProcessoEtapaDTO == null) return NotFound("TipoProcessoEtapa não encontrado");
@@ -37,7 +37,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] TipoProcessoEtapaDTO TipoProcessoEtapaDTO)
+        public async Task<ActionResult> Post([FromBody] TipoDocumentoEtapaDTO TipoProcessoEtapaDTO)
         {
             if (TipoProcessoEtapaDTO is null) return BadRequest("Dado inválido!");
             await _TipoProcessoEtapaService.Create(TipoProcessoEtapaDTO);
@@ -45,15 +45,15 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
-        public async Task<ActionResult> Put([FromBody] TipoProcessoEtapaDTO TipoProcessoEtapaDTO)
+        public async Task<ActionResult> Put([FromBody] TipoDocumentoEtapaDTO TipoProcessoEtapaDTO)
         {
             if (TipoProcessoEtapaDTO is null) return BadRequest("Dado invalido!");
-            await _BairroService.Update(TipoProcessoEtapaDTO);
+            await _TipoProcessoEtapaService.Update(TipoProcessoEtapaDTO);
             return Ok(TipoProcessoEtapaDTO);
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<TipoProcessoEtapaDTO>> Delete(int id)
+        public async Task<ActionResult<TipoDocumentoEtapaDTO>> Delete(int id)
         {
             var TipoProcessoEtapaDTO = await _TipoProcessoEtapaService.GetById(id);
             if (TipoProcessoEtapaDTO == null) return NotFound("TipoProcessoEtapa não econtrado!");

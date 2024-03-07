@@ -6,10 +6,10 @@ using System.Runtime.CompilerServices;
 
 namespace SGED.Models.Entities
 {
-    [Table("tipoprocessoetapa")]
-    public class TipoProcessoEtapa
+    [Table("tipodocumentoetapa")]
+    public class TipoDocumentoEtapa
     {
-        [Column("idtipoprocessoetapa")]
+        [Column("tipodocumentoetapa")]
         public int Id { get; set; }
 
         public TipoProcesso? TipoProcesso { get; set; }

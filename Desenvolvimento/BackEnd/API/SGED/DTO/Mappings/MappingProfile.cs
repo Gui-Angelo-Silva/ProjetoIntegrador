@@ -44,7 +44,10 @@ namespace SGED.DTO.Mappings
             CreateMap<TipoProcessoDTO, TipoProcesso>();
             CreateMap<TipoProcesso, TipoProcessoDTO>().ReverseMap();
 
-            CreateMap<LogradouroDTO, Logradouro>();
+			CreateMap<TipoDocumentoEtapaDTO, TipoDocumentoEtapa>();
+			CreateMap<TipoDocumentoEtapa, TipoDocumentoEtapaDTO>().ReverseMap();
+
+			CreateMap<LogradouroDTO, Logradouro>();
             CreateMap<Logradouro, LogradouroDTO>().ReverseMap();
 
             CreateMap<TipoDocumentoDTO, TipoDocumento>();   

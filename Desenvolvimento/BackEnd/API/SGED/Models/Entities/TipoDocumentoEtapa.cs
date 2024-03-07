@@ -21,8 +21,5 @@ namespace SGED.Models.Entities
 
 		[ForeignKey("idetapa")]
 		public int IdEtapa { get; set; }
-
-		public ICollection<Etapa>? Etapas { get; set; }
-		public ICollection<TipoDocumento>? TipoDocumentos { get; set; }
 	}
 }

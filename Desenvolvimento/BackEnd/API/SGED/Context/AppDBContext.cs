@@ -38,10 +38,10 @@ public class AppDBContext : DbContext
 		modelBuilder.Entity<TipoDocumentoEtapa>().HasKey(b => b.IdEtapa);
 
 		// Relacionamento: TipoDocumentoEtapa -> Etapa
-		modelBuilder.Entity<TipoDocumentoEtapa>().HasMany(p => p.Etapas).WithOne(b => b.TipoDocumentoEtapa).IsRequired().OnDelete(DeleteBehavior.Cascade);
+		modelBuilder.Entity<Etapa>().HasMany(p => p.TipoDocumentoEtapas).WithOne(b => b.Etapa).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
 		// Relacionamento: TipoDocumentoEtapa -> TipoDocumento
-		modelBuilder.Entity<TipoDocumentoEtapa>().HasMany(p => p.TipoDocumentos).WithOne(b => b.TipoDocumentoEtapa).IsRequired().OnDelete(DeleteBehavior.Cascade);
+		modelBuilder.Entity<TipoDocumento>().HasMany(p => p.TipoDocumentoEtapas).WithOne(b => b.TipoDocumento).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
 		// Builder: Etapa
 		modelBuilder.Entity<Etapa>().HasKey(b => b.Id);
@@ -56,10 +56,6 @@ public class AppDBContext : DbContext
 		modelBuilder.Entity<TipoDocumento>().HasKey(b => b.Id);
 		modelBuilder.Entity<TipoDocumento>().Property(b => b.NomeTipoDocumento).HasMaxLength(30).IsRequired();
 		modelBuilder.Entity<TipoDocumento>().Property(b => b.DescricaoTipoDocumento).HasMaxLength(450).IsRequired();
-		modelBuilder.Entity<TipoDocumento>().HasOne(b => b.Etapa).WithMany().HasForeignKey(b => b.IdEtapa);
-
-		// Relacionamento: Etapa -> TipoDocumento
-		modelBuilder.Entity<Etapa>().HasMany(p => p.TipoDocumento).WithOne(b => b.Etapa).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
 		// Builder: Estado
 		modelBuilder.Entity<Estado>().HasKey(b => b.Id);

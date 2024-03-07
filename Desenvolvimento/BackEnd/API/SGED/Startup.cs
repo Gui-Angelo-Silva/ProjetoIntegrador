@@ -72,7 +72,7 @@ namespace SGED
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    EntitySecurityDTO entitySecurity = new EntitySecurityDTO();
+                    EntitySecurityDTO entitySecurity = new();
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,

@@ -29,7 +29,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id}", Name = "GetBairro")]
-        public async Task<ActionResult<BairroDTO>> Get(int id)
+        public async Task<ActionResult<TipoProcessoEtapaDTO>> Get(int id)
         {
             var TipoProcessoEtapaDTO = await _TipoProcessoEtapaService.GetById(id);
             if (TipoProcessoEtapaDTO == null) return NotFound("TipoProcessoEtapa não encontrado");
@@ -47,9 +47,9 @@ namespace SGED.Controllers
         [HttpPut()]
         public async Task<ActionResult> Put([FromBody] TipoProcessoEtapaDTO TipoProcessoEtapaDTO)
         {
-            if (BairroDTO is null) return BadRequest("Dado invalido!");
-            await _BairroService.Update(BairroDTO);
-            return Ok(BairroDTO);
+            if (TipoProcessoEtapaDTO is null) return BadRequest("Dado invalido!");
+            await _BairroService.Update(TipoProcessoEtapaDTO);
+            return Ok(TipoProcessoEtapaDTO);
         }
 
         [HttpDelete("{id}")]

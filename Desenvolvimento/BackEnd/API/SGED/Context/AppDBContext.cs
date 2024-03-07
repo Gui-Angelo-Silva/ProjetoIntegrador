@@ -15,6 +15,7 @@ public class AppDBContext : DbContext
 	public DbSet<Municipe> Municipe { get; set; }
 	public DbSet<Fiscal> Fiscal { get; set; }
 	public DbSet<TipoLogradouro> TipoLogradouro { get; set; }
+	public DbSet<TipoProcessoEtapa> TipoProcessoEtapa { get; set; }
 	public DbSet<Engenheiro> Engenheiro { get; set; }
 	public DbSet<TipoProcesso> TipoProcesso { get; set; }
 	public DbSet<Logradouro> Logradouro { get; set; }
@@ -29,6 +30,17 @@ public class AppDBContext : DbContext
 		modelBuilder.Entity<TipoProcesso>().HasKey(b => b.Id);
 		modelBuilder.Entity<TipoProcesso>().Property(b => b.NomeTipoProcesso).HasMaxLength(100).IsRequired();
 		modelBuilder.Entity<TipoProcesso>().Property(b => b.DescricaoTipoProcesso).HasMaxLength(100).IsRequired();
+
+		// Builder: TipoProcessoEtapa
+		modelBuilder.Entity<TipoProcessoEtapa>().HasKey(b => b.Id);
+		modelBuilder.Entity<TipoProcessoEtapa>().HasKey(b => b.IdTipoProcesso);
+		modelBuilder.Entity<TipoProcessoEtapa>().HasKey(b => b.IdEtapa);
+
+		// Relacionamento: TipoProcessoEtapa -> Etapa
+		modelBuilder.Entity<TipoProcesso>().HasMany(p => p.Etapas).WithOne(b => b.TipoProcessoEtapa).IsRequired().OnDelete(DeleteBehavior.Cascade);
+
+		// Relacionamento: TipoProcessoEtapa -> TipoProcesso
+		modelBuilder.Entity<TipoProcesso>().HasMany(p => p.TipoProcessos).WithOne(b => b.TipoProcessoEtapa).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
 		// Builder: Etapa
 		modelBuilder.Entity<Etapa>().HasKey(b => b.Id);

@@ -12,14 +12,17 @@ namespace SGED.Models.Entities
         [Column("tipodocumentoetapa")]
         public int Id { get; set; }
 
-        public TipoProcesso? TipoProcesso { get; set; }
+        public TipoDocumento? TipoDocumento { get; set; }
 
-        [ForeignKey("idtipoprocesso")]
-        public int IdTipoProcesso { get; set; }
+        [ForeignKey("idtipodocumento")]
+        public int IdTipoDocumento { get; set; }
 
 		public Etapa? Etapa { get; set; }
 
 		[ForeignKey("idetapa")]
 		public int IdEtapa { get; set; }
+
+		public ICollection<Etapa>? Etapas { get; set; }
+		public ICollection<TipoDocumento>? TipoDocumentos { get; set; }
 	}
 }

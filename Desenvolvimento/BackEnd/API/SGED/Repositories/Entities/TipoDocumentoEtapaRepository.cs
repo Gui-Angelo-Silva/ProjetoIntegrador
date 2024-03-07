@@ -19,44 +19,35 @@ public class TipoDocumentoEtapaRepository : ITipoDocumentoEtapaRepository
 
     public async Task<IEnumerable<TipoDocumentoEtapa>> GetAll()
     {
-        return await _dbContext.TipoDocumentoEtapa.Include(objeto => objeto.TipoDocumento).ToListAsync();
-    }
+        return await _dbContext.TipoDocumentoEtapa.Include(objeto => objeto.Etapa).Include(objeto => objeto.TipoDocumento).ToListAsync();
+	}
 
     public async Task<TipoDocumentoEtapa> GetById(int id)
     {
-        return await _dbContext.TipoDocumentoEtapa.Include(objeto => objeto.TipoDocumento).Where(b => b.Id == id).FirstOrDefaultAsync();
+        return await _dbContext.TipoDocumentoEtapa.Include(objeto => objeto.Etapa).Include(objeto => objeto.TipoDocumento).Where(b => b.Id == id).FirstOrDefaultAsync();
     }
-    public async Task<IEnumerable<TipoDocumentoEtapa>> GetAll()
+
+
+    public async Task<TipoDocumentoEtapa> Create(TipoDocumentoEtapa TipoDocumentoEtapa)
     {
-        return await _dbContext.TipoDocumentoEtapa.Include(objeto => objeto.Etapa).ToListAsync();
+        _dbContext.TipoDocumentoEtapa.Add(TipoDocumentoEtapa);
+        await _dbContext.SaveChangesAsync();
+        return TipoDocumentoEtapa;
     }
 
-    public async Task<TipoDocumentoEtapa> GetByIdEtapa(int id)
+    public async Task<TipoDocumentoEtapa> Update(TipoDocumentoEtapa TipoDocumentoEtapa)
     {
-        return await _dbContext.TipoDocumentoEtapa.Include(objeto => objeto.Etapa).Where(b => b.Id == id).FirstOrDefaultAsync();
-
-
-        public async Task<TipoDocumentoEtapa> Create(TipoDocumentoEtapa TipoDocumentoEtapa)
-        {
-            _dbContext.TipoDocumentoEtapa.Add(TipoDocumentoEtapa);
-            await _dbContext.SaveChangesAsync();
-            return TipoDocumentoEtapa;
-        }
-
-        public async Task<TipoDocumentoEtapa> Update(TipoDocumentoEtapa TipoDocumentoEtapa)
-        {
-            _dbContext.Entry(TipoDocumentoEtapa).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
-            return TipoDocumentoEtapa;
-        }
-
-        public async Task<TipoDocumentoEtapa> Delete(int id)
-        {
-            var TipoDocumentoEtapa = await GetById(id);
-            _dbContext.TipoDocumentoEtapa.Remove(TipoDocumentoEtapa);
-            await _dbContext.SaveChangesAsync();
-            return TipoDocumentoEtapa;
-        }
-
+        _dbContext.Entry(TipoDocumentoEtapa).State = EntityState.Modified;
+        await _dbContext.SaveChangesAsync();
+        return TipoDocumentoEtapa;
     }
+
+    public async Task<TipoDocumentoEtapa> Delete(int id)
+    {
+        var TipoDocumentoEtapa = await GetById(id);
+        _dbContext.TipoDocumentoEtapa.Remove(TipoDocumentoEtapa);
+        await _dbContext.SaveChangesAsync();
+        return TipoDocumentoEtapa;
+    }
+
 }

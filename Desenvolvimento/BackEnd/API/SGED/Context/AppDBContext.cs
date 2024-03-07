@@ -16,7 +16,7 @@ public class AppDBContext : DbContext
 	public DbSet<Municipe> Municipe { get; set; }
 	public DbSet<Fiscal> Fiscal { get; set; }
 	public DbSet<TipoLogradouro> TipoLogradouro { get; set; }
-	public DbSet<Controllers.TipoDocumentoEtapa> TipoDocumentoEtapa { get; set; }
+	public DbSet<TipoDocumentoEtapa> TipoDocumentoEtapa { get; set; }
 	public DbSet<Engenheiro> Engenheiro { get; set; }
 	public DbSet<TipoProcesso> TipoProcesso { get; set; }
 	public DbSet<Logradouro> Logradouro { get; set; }
@@ -32,16 +32,16 @@ public class AppDBContext : DbContext
 		modelBuilder.Entity<TipoProcesso>().Property(b => b.NomeTipoProcesso).HasMaxLength(100).IsRequired();
 		modelBuilder.Entity<TipoProcesso>().Property(b => b.DescricaoTipoProcesso).HasMaxLength(100).IsRequired();
 
-		// Builder: TipoProcessoEtapa
-		modelBuilder.Entity<Models.Entities.TipoDocumentoEtapa>().HasKey(b => b.Id);
-		modelBuilder.Entity<Models.Entities.TipoDocumentoEtapa>().HasKey(b => b.IdTipoProcesso);
-		modelBuilder.Entity<Models.Entities.TipoDocumentoEtapa>().HasKey(b => b.IdEtapa);
+		// Builder: TipoDocumentoEtapa
+		modelBuilder.Entity<TipoDocumentoEtapa>().HasKey(b => b.Id);
+		modelBuilder.Entity<TipoDocumentoEtapa>().HasKey(b => b.IdTipoDocumento);
+		modelBuilder.Entity<TipoDocumentoEtapa>().HasKey(b => b.IdEtapa);
 
 		// Relacionamento: TipoDocumentoEtapa -> Etapa
-		modelBuilder.Entity<TipoProcesso>().HasMany(p => p.Etapas).WithOne(b => b.TipoDocumentoEtapa).IsRequired().OnDelete(DeleteBehavior.Cascade);
+		modelBuilder.Entity<TipoDocumentoEtapa>().HasMany(p => p.Etapas).WithOne(b => b.TipoDocumentoEtapa).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
-		// Relacionamento: TipoDocumentoEtapa -> TipoProcesso
-		modelBuilder.Entity<TipoProcesso>().HasMany(p => p.TipoProcessos).WithOne(b => b.TipoDocumentoEtapa).IsRequired().OnDelete(DeleteBehavior.Cascade);
+		// Relacionamento: TipoDocumentoEtapa -> TipoDocumento
+		modelBuilder.Entity<TipoDocumentoEtapa>().HasMany(p => p.TipoDocumentos).WithOne(b => b.TipoDocumentoEtapa).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
 		// Builder: Etapa
 		modelBuilder.Entity<Etapa>().HasKey(b => b.Id);

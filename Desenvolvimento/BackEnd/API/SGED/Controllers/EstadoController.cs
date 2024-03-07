@@ -57,8 +57,10 @@ namespace SGED.Controllers
             if (estadoDTO is null) return BadRequest("Dado inválido!");
 
             AuditoriaDTO auditoriaDTO = new();
-            auditoriaDTO.IdUsuario = HttpContext.Items["IdUsuario"];
-            auditoriaDTO.
+            auditoriaDTO.IdUsuario = (int)HttpContext.Items["IdUsuario"];
+
+            List<EstadoDTO> estados = new() { estadoDTO };
+            auditoriaDTO.ConverttoStringList(estados);
 
             var estadosDTO = await _estadoService.GetByName(estadoDTO.NomeEstado);
 

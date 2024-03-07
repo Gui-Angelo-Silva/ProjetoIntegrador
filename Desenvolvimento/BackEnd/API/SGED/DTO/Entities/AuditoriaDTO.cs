@@ -5,6 +5,8 @@ using System.Text;
 using System.Text.Json.Serialization;
 using SGED.Helpers;
 using Newtonsoft.Json;
+using System.Reflection;
+using Humanizer;
 
 namespace SGED.DTO.Entities
 {
@@ -25,32 +27,50 @@ namespace SGED.DTO.Entities
         public string DataHoraAcao { get; set; }
 
         [Required(ErrorMessage = "O objeto da ação é requerido!")]
-        public ICollection<UsuarioDTO>? ObjetoDTO { get; set; }
-
-        public T Value
-        {
-            get
-            {
-                // Obter o tipo apropriado com base na tabela
-                var type = typeof(T);
-                var assembly = type.Assembly;
-                var objectType = assembly.GetType(TabelaAfetada + "DTO");
-
-                // Desserializar o valor para o tipo apropriado
-                return (T)JsonConvert.DeserializeObject(_valueAsJson, objectType);
-            }
-            set
-            {
-                _valueAsJson = JsonConvert.SerializeObject(value);
-            }
-        }
-        private string _valueAsJson;
+        public List<string> ObjetoDTO { get; set; }
 
 
         //[JsonIgnore]
         public UsuarioDTO? UsuarioDTO { get; set; }
 
         public int IdUsuario { get; set; }
+
+
+
+        public void ConverttoStringList<T>(List<T> objetosDTO)
+        {
+            if (objetosDTO != null)
+            {
+                ObjetoDTO = objetosDTO.Select(dto => dto.ToString()).ToList();
+            }
+        }
+
+        public List<T> ConverttoDTOList<T>()
+        {
+            // Verifica se a lista de strings e o tipo T não são nulos
+            if (ObjetoDTO != null && !string.IsNullOrEmpty(TabelaAfetada))
+            {
+                // Monta o nome do tipo adicionando "DTO" ao final
+                string typeObject = TabelaAfetada + "DTO";
+
+                // Obtém o tipo com o nome construído
+                Type dtoType = Type.GetType(typeObject);
+
+                if (dtoType != null)
+                {
+                    // Converte as strings de ObjetoDTO para objetos do tipo T
+                    return ObjetoDTO.Select(dtoString => (T)Convert.ChangeType(dtoString, dtoType)).ToList();
+                }
+                else
+                {
+                    throw new InvalidOperationException("Tipo de DTO não encontrado!");
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("A lista de strings ou o nome da tabela está vazia!");
+            }
+        }
 
     }
 }

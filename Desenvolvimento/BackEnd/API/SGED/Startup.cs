@@ -18,6 +18,7 @@ using System.Text;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using SGED.Helpers;
 using SGED.Services.Server.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SGED
 {
@@ -189,6 +190,9 @@ namespace SGED
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMiddleware<ValidateSessionService>();
+            app.UseMiddleware<AuthorizationMiddleware>();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

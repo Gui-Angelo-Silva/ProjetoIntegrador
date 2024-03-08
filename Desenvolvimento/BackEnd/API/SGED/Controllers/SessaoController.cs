@@ -12,6 +12,8 @@ using System.Diagnostics.Eventing.Reader;
 using MySqlX.XDevAPI;
 using SGED.Services.Entities;
 using SGED.Services.Server.Functions;
+using Microsoft.AspNetCore.Authorization;
+using SGED.Services.Server.Tasks;
 
 namespace SGED.Controllers
 {
@@ -52,6 +54,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost("Autentication")]
+        [Anonymous]
         public async Task<ActionResult> CreateSession([FromBody] LoginDTO loginDTO)
         {
             if (loginDTO is null) return BadRequest(new { status = false, response = "Dados inválidos!" });

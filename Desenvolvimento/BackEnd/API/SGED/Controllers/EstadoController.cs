@@ -25,7 +25,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet(Name = "GetEstados")]
-        [Criteria("A")]
+        [Authorization("A")]
         public async Task<ActionResult<IEnumerable<EstadoDTO>>> GetAll()
         {
             var estadosDTO = await _estadoService.GetAll();
@@ -33,7 +33,6 @@ namespace SGED.Controllers
         }
 
         [HttpGet("Id/{id}", Name = "GetById")]
-        [Criteria("A")]
         public async Task<ActionResult<EstadoDTO>> GetId(int id)
         {
             var estadoDTO = await _estadoService.GetById(id);
@@ -42,7 +41,6 @@ namespace SGED.Controllers
         }
 
         [HttpGet("Name/{nome}", Name = "GetByName")]
-        [Criteria("A")]
         public async Task<ActionResult<IEnumerable<EstadoDTO>>> GetName(string nome)
         {
             var estadosDTO = await _estadoService.GetByName(nome);
@@ -51,12 +49,12 @@ namespace SGED.Controllers
         }
 
         [HttpPost]
-        [Criteria("A")]
+        //[Authorization("A")]
         public async Task<ActionResult> Post([FromBody] EstadoDTO estadoDTO)
         {
             if (estadoDTO is null) return BadRequest("Dado inválido!");
 
-            AuditoriaDTO auditoriaDTO = new();
+            /*AuditoriaDTO auditoriaDTO = new();
             auditoriaDTO.IdUsuario = (int)HttpContext.Items["IdUsuario"];
 
             List<EstadoDTO> estados = new() { estadoDTO };
@@ -70,14 +68,13 @@ namespace SGED.Controllers
                 {
                     return NotFound("Já existe o Estado " + estadoDTO.NomeEstado + " cadastrado.");
                 }
-            }
+            }*/
 
             await _estadoService.Create(estadoDTO);
             return new CreatedAtRouteResult("GetById", new { id = estadoDTO.Id }, estadoDTO);
         }
 
         [HttpPut()]
-        [Criteria("A")]
         public async Task<ActionResult> Put([FromBody] EstadoDTO estadoDTO)
         {
             if (estadoDTO is null) return BadRequest("Dado inválido!");
@@ -86,7 +83,6 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Criteria("A")]
         public async Task<ActionResult<EstadoDTO>> Delete(int id)
         {
             var estadoDTO = await _estadoService.GetById(id);

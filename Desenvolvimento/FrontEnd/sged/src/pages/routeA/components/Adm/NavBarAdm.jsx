@@ -27,10 +27,7 @@ export default function NavBarAdm() {
     }, []);
 
     return (
-        <div className="inline-flex fixed items-center w-full bg-[#2D636B] h-[50px] sm:h-[65px] drop-shadow-lg">
-            <div className="ml-6 p-1 sm:ml-16">
-                <img src={LogoJales} alt="" className="w-[85px] sm:w-[95px]" />
-            </div>
+        <div className="inline-flex items-center w-full bg-[#2D636B] h-[50px] sm:h-[65px]">
             <div className="flex justify-end items-center w-full gap-2 pr-2">
                 <div className="text-base sm:text-lg text-white">
                     Olá, administrador!

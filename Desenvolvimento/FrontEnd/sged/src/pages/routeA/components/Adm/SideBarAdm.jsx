@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import LogoJales from "../../../../assets/pages/LogoJales.png"
 import IconHomePage from "../../../../assets/sidebar/IconHomePage";
 import IconSecretary from "../../../../assets/sidebar/IconSecretary";
 import IconPerson from "../../../../assets/sidebar/IconPerson";
@@ -13,8 +14,11 @@ export default function SideBarAdm() {
     };
 
     return (
-        <div className="w-[100px] sm:w-[200px] md:w-[250px] lg::w-[260px] fixed h-full bg-red-500 border-r-2 border-b-[#e3e3e3] text-[#787878]">
-            <div className="mt-[50px] sm:mt-[65px]">
+        <div className="w-[100px] sm:w-[200px] md:w-[250px] lg:w-[260px] fixed h-full bg-red-500 text-[#787878]">
+            <div className="">
+                <div className="inline-flex items-center justify-center h-[50px] sm:h-[65px] bg-[#2D636B] w-full">
+                    <img src={LogoJales} alt="" className="w-[65px] sm:w-[90px]" />
+                </div>
                 <div className={`inline-flex w-full items-center gap-2 bg-[#f6f6f6] p-2 border-b-2 border-b-[#e3e3e3] cursor-pointer ${isHovered ? 'hover:bg-[#58afae] hover:text-white' : ''}`} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
                     <IconHomePage estilization="fill-current w-6 h-6" /> Página Inicial
                 </div>

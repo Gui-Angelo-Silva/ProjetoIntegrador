@@ -2,6 +2,7 @@ import { useMontage } from '../../../../object/modules/montage';
 import { useServer } from "../../../../routes/serverRoute";
 import SideBarAdm from '../../components/Adm/SideBarAdm';
 import NavBarAdm from '../../components/Adm/NavBarAdm';
+import Content from '../../components/Adm/Content';
 import React, { useState, useEffect } from "react";
 
 export default function Registrations() {
@@ -17,7 +18,7 @@ export default function Registrations() {
     return (
         <div className='flex'>
             <SideBarAdm />
-            <NavBarAdm />
+            <Content />
         </div>
     );
 }

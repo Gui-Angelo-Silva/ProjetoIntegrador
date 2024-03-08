@@ -22,6 +22,8 @@ namespace SGED.DTO.Entities
         [Required(ErrorMessage = "O status é requerido!")]
         public Boolean StatusSessao { get; set; }
 
+        public string NivelAcesso { get; set; }
+
 
         //[JsonIgnore]
         public UsuarioDTO? UsuarioDTO { get; set; }

@@ -65,7 +65,8 @@ namespace SGED.Controllers
                     IdUsuario = usuarioDTO.Id,
                     DataHoraInicio = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"),
                     StatusSessao = true,
-                    TokenSessao = SessaoDTO.GenerateToken(usuarioDTO.EmailPessoa)
+                    TokenSessao = SessaoDTO.GenerateToken(usuarioDTO.EmailPessoa),
+                    NivelAcesso = usuarioDTO.TipoUsuarioDTO.NivelAcesso
                 };
 
                 if (ultimaSessao is null || !ultimaSessao.StatusSessao)
@@ -111,7 +112,7 @@ namespace SGED.Controllers
                 sessaoDTO.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
                 await _sessaoService.Update(sessaoDTO);
 
-                return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
+                return Unauthorized(new { status = false, response = "Sessão expirada!" });
             }
         }
 

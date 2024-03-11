@@ -132,7 +132,7 @@ namespace SGED
 
 			// Dependência: TipoDocumentoEtapa
 			services.AddScoped<ITipoDocumentoEtapaRepository, TipoDocumentoEtapaRepository>();
-			services.AddScoped<ITipoDocumentoEtapaService, ITipoDocumentoEtapaService>();
+			services.AddScoped<ITipoDocumentoEtapaService, TipoDocumentoEtapaService>();
 
 			// Dependência: Usuario
 			services.AddScoped<IUsuarioRepository, UsuarioRepository>();

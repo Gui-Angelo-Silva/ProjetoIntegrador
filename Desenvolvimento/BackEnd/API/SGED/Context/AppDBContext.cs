@@ -1,5 +1,6 @@
 ﻿using SGED.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using SGED.Controllers;
 
 namespace SGED.Context;
 public class AppDBContext : DbContext
@@ -15,6 +16,7 @@ public class AppDBContext : DbContext
 	public DbSet<Municipe> Municipe { get; set; }
 	public DbSet<Fiscal> Fiscal { get; set; }
 	public DbSet<TipoLogradouro> TipoLogradouro { get; set; }
+	public DbSet<TipoDocumentoEtapa> TipoDocumentoEtapa { get; set; }
 	public DbSet<Engenheiro> Engenheiro { get; set; }
 	public DbSet<TipoProcesso> TipoProcesso { get; set; }
 	public DbSet<Logradouro> Logradouro { get; set; }
@@ -30,6 +32,17 @@ public class AppDBContext : DbContext
 		modelBuilder.Entity<TipoProcesso>().Property(b => b.NomeTipoProcesso).HasMaxLength(100).IsRequired();
 		modelBuilder.Entity<TipoProcesso>().Property(b => b.DescricaoTipoProcesso).HasMaxLength(100).IsRequired();
 
+		// Builder: TipoDocumentoEtapa
+		modelBuilder.Entity<TipoDocumentoEtapa>().HasKey(b => b.Id);
+		modelBuilder.Entity<TipoDocumentoEtapa>().HasKey(b => b.IdTipoDocumento);
+		modelBuilder.Entity<TipoDocumentoEtapa>().HasKey(b => b.IdEtapa);
+
+		// Relacionamento: TipoDocumentoEtapa -> Etapa
+		modelBuilder.Entity<Etapa>().HasMany(p => p.TipoDocumentoEtapas).WithOne(b => b.Etapa).IsRequired().OnDelete(DeleteBehavior.Cascade);
+
+		// Relacionamento: TipoDocumentoEtapa -> TipoDocumento
+		modelBuilder.Entity<TipoDocumento>().HasMany(p => p.TipoDocumentoEtapas).WithOne(b => b.TipoDocumento).IsRequired().OnDelete(DeleteBehavior.Cascade);
+
 		// Builder: Etapa
 		modelBuilder.Entity<Etapa>().HasKey(b => b.Id);
 		modelBuilder.Entity<Etapa>().Property(b => b.NomeEtapa).HasMaxLength(50).IsRequired();
@@ -43,10 +56,6 @@ public class AppDBContext : DbContext
 		modelBuilder.Entity<TipoDocumento>().HasKey(b => b.Id);
 		modelBuilder.Entity<TipoDocumento>().Property(b => b.NomeTipoDocumento).HasMaxLength(30).IsRequired();
 		modelBuilder.Entity<TipoDocumento>().Property(b => b.DescricaoTipoDocumento).HasMaxLength(450).IsRequired();
-		modelBuilder.Entity<TipoDocumento>().HasOne(b => b.Etapa).WithMany().HasForeignKey(b => b.IdEtapa);
-
-		// Relacionamento: Etapa -> TipoDocumento
-		modelBuilder.Entity<Etapa>().HasMany(p => p.TipoDocumento).WithOne(b => b.Etapa).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
 		// Builder: Estado
 		modelBuilder.Entity<Estado>().HasKey(b => b.Id);

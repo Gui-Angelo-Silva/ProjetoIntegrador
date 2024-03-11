@@ -72,7 +72,7 @@ namespace SGED
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    EntitySecurityDTO entitySecurity = new EntitySecurityDTO();
+                    EntitySecurityDTO entitySecurity = new();
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
@@ -130,8 +130,12 @@ namespace SGED
             services.AddScoped<ITipoProcessoRepository, TipoProcessoRepository>();
             services.AddScoped<ITipoProcessoService, TipoProcessoService>();
 
-            // Dependência: Usuario
-            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+			// Dependência: TipoDocumentoEtapa
+			services.AddScoped<ITipoDocumentoEtapaRepository, TipoDocumentoEtapaRepository>();
+			services.AddScoped<ITipoDocumentoEtapaService, TipoDocumentoEtapaService>();
+
+			// Dependência: Usuario
+			services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped<IUsuarioService, UsuarioService>();
 
             // Dependência: Municipe

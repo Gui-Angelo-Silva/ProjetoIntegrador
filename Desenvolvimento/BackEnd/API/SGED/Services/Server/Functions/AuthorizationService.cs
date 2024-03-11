@@ -23,12 +23,12 @@ namespace SGED.Services.Server.Functions
         }
     }
 
-    public class AuthorizationMiddleware
+    public class AuthorizationService
     {
         private readonly ITipoUsuarioRepository _tipoUsuarioRepository;
         private readonly RequestDelegate _next;
 
-        public AuthorizationMiddleware(RequestDelegate next, ITipoUsuarioRepository tipoUsuarioRepository)
+        public AuthorizationService(RequestDelegate next, ITipoUsuarioRepository tipoUsuarioRepository)
         {
             _next = next ?? throw new ArgumentNullException(nameof(next));
             _tipoUsuarioRepository = tipoUsuarioRepository ?? throw new ArgumentNullException(nameof(tipoUsuarioRepository));

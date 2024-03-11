@@ -13,7 +13,7 @@ using MySqlX.XDevAPI;
 using SGED.Services.Entities;
 using SGED.Services.Server.Functions;
 using Microsoft.AspNetCore.Authorization;
-using SGED.Services.Server.Tasks;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {

@@ -19,6 +19,11 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 using SGED.Helpers;
 using SGED.Services.Server.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using SGED.Services.Server.Attributes;
+using System.Reflection;
+using Microsoft.AspNetCore.Mvc;
+using SGED.Services.Server.Filter;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace SGED
 {
@@ -186,13 +191,13 @@ namespace SGED
             // Tasks
             services.AddHostedService<SessionCleanupService>();
 
+            // Filtro
+            services.AddScoped<ExtractFilter>();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseMiddleware<ValidateSessionService>();
-            app.UseMiddleware<AuthorizationMiddleware>();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -227,6 +232,53 @@ namespace SGED
             app.UseAuthorization();
 
             app.UseCors("MyPolicy");
+
+            // Middleware para autenticação
+            app.UseAuthentication();
+
+            // Middleware para autorização
+            app.UseAuthorization();
+
+            // Middleware para verificar se o método é anônimo e aplicar os middlewares relevantes
+            app.Use(async (context, next) =>
+            {
+                // Verifica se a requisição é para a API
+                if (context.Request.Path.StartsWithSegments("/api"))
+                {
+                    // Obtém o atributo AnonymousAttribute do endpoint
+                    var attribute = context.GetEndpoint()?.Metadata.GetMetadata<AnonymousAttribute>();
+
+                    // Se o atributo AnonymousAttribute não estiver presente, aplica o middleware
+                    if (attribute == null)
+                    {
+                        // Cria um pipeline para validação de sessão e autorização
+                        var validateAndAuthorizePipeline = new ApplicationBuilder(app.ApplicationServices);
+
+                        // Adiciona os middlewares de validação de sessão e autorização ao pipeline criado
+                        validateAndAuthorizePipeline.UseMiddleware<ValidateSessionService>();
+                        validateAndAuthorizePipeline.UseMiddleware<AuthorizationMiddleware>();
+
+                        // Executa o pipeline de validação de sessão e autorização
+                        await validateAndAuthorizePipeline.Build()(context);
+
+                        // Verifica se a resposta foi enviada pelo pipeline de validação de sessão e autorização
+                        if (context.Response.HasStarted) return;
+                    }
+
+                    // Se o método HTTP não for GET, executa o serviço CustomHandler
+                    if (context.Request.Method != "GET")
+                    {
+                        /*
+                          queria executar um serviço que efetue as seguintes instruções:
+                            - pegue o dado "object" passado no json da requisição;
+                            - indentifique qual método http foi requisitado;
+                            - passe o "object" extraído ao parâmetro do método (preenchendo o método);  
+                        */
+                    }
+                }
+
+                await next();
+            });
 
             app.UseEndpoints(endpoints =>
             {

@@ -24,6 +24,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using SGED.Services.Server.Filter;
 using Microsoft.AspNetCore.Mvc.Filters;
+using SGED.Services.Server.Functions;
 
 namespace SGED
 {
@@ -187,13 +188,10 @@ namespace SGED
 
 
             // Conjunto: Servidor
-
             // Tasks
             services.AddHostedService<SessionCleanupService>();
 
-            // Filtro
-            services.AddScoped<ExtractFilter>();
-
+            //services.AddTransient<ExtractFilterMiddleware>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -233,11 +231,7 @@ namespace SGED
 
             app.UseCors("MyPolicy");
 
-            // Middleware para autenticação
-            app.UseAuthentication();
-
-            // Middleware para autorização
-            app.UseAuthorization();
+            //app.UseMiddleware<ExtractFilterMiddleware>();
 
             // Middleware para verificar se o método é anônimo e aplicar os middlewares relevantes
             app.Use(async (context, next) =>
@@ -248,32 +242,28 @@ namespace SGED
                     // Obtém o atributo AnonymousAttribute do endpoint
                     var attribute = context.GetEndpoint()?.Metadata.GetMetadata<AnonymousAttribute>();
 
+                    // Cria uma pipeline
+                    var validateAndAuthorizePipeline = new ApplicationBuilder(app.ApplicationServices);
+
                     // Se o atributo AnonymousAttribute não estiver presente, aplica o middleware
                     if (attribute == null)
                     {
-                        // Cria um pipeline para validação de sessão e autorização
-                        var validateAndAuthorizePipeline = new ApplicationBuilder(app.ApplicationServices);
-
                         // Adiciona os middlewares de validação de sessão e autorização ao pipeline criado
                         validateAndAuthorizePipeline.UseMiddleware<ValidateSessionService>();
+                        await validateAndAuthorizePipeline.Build()(context); if (context.Response.StatusCode != StatusCodes.Status200OK) return;
+
                         validateAndAuthorizePipeline.UseMiddleware<AuthorizationMiddleware>();
-
-                        // Executa o pipeline de validação de sessão e autorização
-                        await validateAndAuthorizePipeline.Build()(context);
-
-                        // Verifica se a resposta foi enviada pelo pipeline de validação de sessão e autorização
-                        if (context.Response.HasStarted) return;
+                        await validateAndAuthorizePipeline.Build()(context); if (context.Response.StatusCode != StatusCodes.Status200OK) return;
                     }
 
-                    // Se o método HTTP não for GET, executa o serviço CustomHandler
+                    // Se o método HTTP não for GET, executa o Extract
                     if (context.Request.Method != "GET")
                     {
-                        /*
-                          queria executar um serviço que efetue as seguintes instruções:
-                            - pegue o dado "object" passado no json da requisição;
-                            - indentifique qual método http foi requisitado;
-                            - passe o "object" extraído ao parâmetro do método (preenchendo o método);  
-                        */
+                        // Adiciona o middleware de Extração de Dados
+                        await context.RequestServices.GetService<ExtractFilterMiddleware>().Invoke(context);
+
+                        // Verifica se o middleware de extração bloqueou a solicitação
+                        if (context.Response.StatusCode != StatusCodes.Status200OK) return;
                     }
                 }
 

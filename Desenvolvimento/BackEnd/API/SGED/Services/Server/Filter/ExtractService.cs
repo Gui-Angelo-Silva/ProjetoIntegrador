@@ -11,77 +11,88 @@ using MySqlX.XDevAPI;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using System.Reflection;
 
 namespace SGED.Services.Server.Filter
 {
-    public class ExtractFilterService
+    public class ExtractFilterMiddleware
     {
         private readonly RequestDelegate _next;
 
-        public ExtractFilterService(RequestDelegate next)
+        public ExtractFilterMiddleware(RequestDelegate next)
         {
-            _next = next;
+            _next = next ?? throw new ArgumentNullException(nameof(next));
         }
 
-        public async Task InvokeAsync(HttpContext context)
+        public async Task Invoke(HttpContext context)
         {
-            // Verificar se a solicitação tem corpo
-            if (context.Request.HasJsonContentType() && context.Request.ContentLength > 0)
+            // Verifica se o corpo da solicitação contém dados JSON
+            if (context.Request.ContentType != null && context.Request.ContentType.ToLower().Contains("application/json"))
             {
-                // Lendo o corpo da solicitação
-                string requestBody;
-                using (var reader = new StreamReader(context.Request.Body, Encoding.UTF8))
-                {
-                    requestBody = await reader.ReadToEndAsync();
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                context.Response.ContentType = "application/json";
 
-                    // Definindo o ponteiro do stream novamente para o início
-                    context.Request.Body.Position = 0;
+                // Lê o corpo da solicitação como uma string
+                string requestBody;
+                using (var streamReader = new StreamReader(context.Request.Body, Encoding.UTF8))
+                {
+                    requestBody = await streamReader.ReadToEndAsync();
                 }
 
-                // Convertendo o corpo da solicitação para um objeto JSON
-                var requestJson = JsonConvert.DeserializeObject<Dictionary<string, object>>(requestBody);
+                // Converte a string do corpo da solicitação em objeto JSON
+                dynamic jsonData = JsonConvert.DeserializeObject(requestBody);
 
-                // Buscar o objeto marcado como "object"
-                if (requestJson.TryGetValue("object", out object obj))
+                // Verifica se o campo "object" existe no JSON recebido
+                // Verifica se o campo "object" existe no JSON recebido
+                if (jsonData != null && jsonData["object"] != null)
                 {
-                    // Aqui você tem o objeto "object"
-                    var requestData = obj;
-
-                    // Identificar o controlador e a ação atual
-                    var routeData = context.GetRouteData();
-                    var controllerName = routeData.Values["controller"]?.ToString();
-                    var actionName = routeData.Values["action"]?.ToString();
-
-                    // Verificar se controlador e ação foram identificados
-                    if (!string.IsNullOrEmpty(controllerName) && !string.IsNullOrEmpty(actionName))
+                    // Se o método HTTP da solicitação foi identificado
+                    if (!string.IsNullOrEmpty(context.Request.Method))
                     {
-                        // Obter o método correspondente no controlador atual
-                        var controllerType = Type.GetType($"SeuNamespace.{controllerName}Controller");
-                        var methodInfo = controllerType.GetMethod(actionName);
+                        // Obtém informações sobre o método a ser invocado
+                        MethodInfo methodInfo = _next.GetMethodInfo();
+                        ParameterInfo[] parameters = methodInfo.GetParameters();
+                        object[] arguments = new object[parameters.Length];
 
-                        // Verificar se o método foi encontrado
-                        if (methodInfo != null)
+                        // Preenche todos os parâmetros do método com os dados do objeto JSON
+                        for (int i = 0; i < parameters.Length; i++)
                         {
-                            // Obter parâmetros do método
-                            var parameters = methodInfo.GetParameters();
-
-                            // Verificar se há um parâmetro que corresponda ao tipo do objeto
-                            var parameterType = parameters.FirstOrDefault()?.ParameterType;
-                            if (parameterType != null && parameterType.IsAssignableFrom(requestData.GetType()))
-                            {
-                                // Criar uma instância do controlador
-                                var controllerInstance = Activator.CreateInstance(controllerType);
-
-                                // Invocar o método com o objeto como parâmetro
-                                methodInfo.Invoke(controllerInstance, new object[] { requestData });
-                            }
+                            arguments[i] = jsonData["object"];
                         }
+
+                        // Invoca o próximo delegado com os argumentos preenchidos
+                        await _next(context);
+                    }
+                    else
+                    {
+                        // Se o método HTTP não foi identificado, retorna "Negado"
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        context.Response.ContentType = "application/json";
+                        var response = new { statusRequest = "Erro: Não foi possível identificar o método da solicitado." };
+                        await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
+                        return;
                     }
                 }
+                else
+                {
+                    // Se "object" não existir, retorna "Negado"
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    context.Response.ContentType = "application/json";
+                    var response = new { statusRequest = "Erro: Não foi informado os dados na requisição!" };
+                    await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
+                    return;
+                }
             }
-
-            // Chamar o próximo middleware no pipeline
-            await _next(context);
+            else
+            {
+                // Se o corpo da solicitação não for JSON, retorna "Negado"
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                context.Response.ContentType = "application/json";
+                var response = new { statusRequest = "Erro: Formato de dados inválido!." };
+                await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
+                return;
+            }
         }
     }
 }

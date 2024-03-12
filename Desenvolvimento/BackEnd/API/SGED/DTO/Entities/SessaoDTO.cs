@@ -40,7 +40,7 @@ namespace SGED.DTO.Entities
                 { "iss", securityEntity.Issuer },
                 { "aud", securityEntity.Audience },
                 { "sub", subject },
-                { "exp", DateTimeOffset.UtcNow.AddMinutes(1).ToUnixTimeSeconds() }
+                { "exp", DateTimeOffset.UtcNow.AddMinutes(60).ToUnixTimeSeconds() }
             };
 
             string token = JWT.Encode(payload, Encoding.UTF8.GetBytes(securityEntity.Key), JwsAlgorithm.HS256);

@@ -14,6 +14,7 @@ using SGED.Services.Entities;
 using SGED.Services.Server.Functions;
 using Microsoft.AspNetCore.Authorization;
 using SGED.Services.Server.Attributes;
+using SGED.Helpers;
 
 namespace SGED.Controllers
 {
@@ -77,7 +78,8 @@ namespace SGED.Controllers
                     //await _sessaoService.Remove(ultimaSessao.Id);
 
                     await _sessaoService.Create(sessaoDTO);
-                    return Ok(new { status = true, response = new { id = sessaoDTO.Id, email = usuarioDTO.EmailPessoa }});
+                    DataSession session = new DataSession(); session.Id = sessaoDTO.Id; session.EmailPessoa = usuarioDTO.EmailPessoa;
+                    return Ok(new { status = true, response = session});
                 }
                 else if (ultimaSessao.StatusSessao)
                 { 

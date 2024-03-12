@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json.Linq;
+using SGED.Services.Server.Filter;
 
 namespace SGED.Services.Server.Tasks
 
@@ -29,16 +31,25 @@ namespace SGED.Services.Server.Tasks
             var _sessaoRepository = scope.ServiceProvider.GetRequiredService<ISessaoRepository>();
             var _usuarioRepository = scope.ServiceProvider.GetRequiredService<IUsuarioRepository>();
 
-            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            context.Response.ContentType = "application/json";
-
-            // Verifica se a sessão está presente na requisição
-            if (context.Request.Headers.TryGetValue("session", out var sessionHeader))
+            string requestBody;
+            using (var reader = new StreamReader(context.Request.Body))
             {
-                var sessionJson = sessionHeader.FirstOrDefault();
+                requestBody = await reader.ReadToEndAsync();
+            }
 
-                // Deserializa a string do cabeçalho para o tipo DataSession
-                var dataSession = JsonConvert.DeserializeObject<DataSession>(sessionJson);
+            // Analisa o JSON
+            var jsonObject = JObject.Parse(requestBody);
+
+            // Obtém o valor do campo "object"
+            var session = jsonObject["session"];
+
+            if (session != null)
+            {
+                // Converte o objeto JSON em uma string
+                var sessionString = session.ToString();
+
+                // Desserializa a string para o tipo DataSession
+                var dataSession = JsonConvert.DeserializeObject<DataSession>(sessionString);
 
                 var sessao = await _sessaoRepository.GetById(dataSession.Id);
 
@@ -50,7 +61,7 @@ namespace SGED.Services.Server.Tasks
                     return;
                 }
 
-                else if (sessao.StatusSessao || SessaoDTO.ValidateToken(sessao.TokenSessao, sessao.Usuario.EmailPessoa))
+                else if (!sessao.StatusSessao || !SessaoDTO.ValidateToken(sessao.TokenSessao, sessao.Usuario.EmailPessoa))
                 {
                     // Sessão inválida
                     sessao.TokenSessao = "";
@@ -58,6 +69,8 @@ namespace SGED.Services.Server.Tasks
                     sessao.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
                     await _sessaoRepository.Update(sessao);
 
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    context.Response.ContentType = "application/json";
                     var responseJson = "{\"error\": \"Sessão inválida!\"}";
                     await context.Response.WriteAsync(responseJson);
                     return;
@@ -70,7 +83,6 @@ namespace SGED.Services.Server.Tasks
                 context.Items.Remove("Session");
                 context.Items["User"] = sessao.Usuario;
                 await _next(context);
-                return;
             }
             else
             {

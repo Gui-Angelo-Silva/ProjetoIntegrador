@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using SGED.Models.Entities;
 using MySqlX.XDevAPI;
+using SGED.Services.Server.Tasks;
 
 namespace SGED.Services.Server.Functions
 

@@ -30,9 +30,6 @@ namespace SGED.Services.Server.Filter
             // Verifica se o corpo da solicitação contém dados JSON
             if (context.Request.ContentType != null && context.Request.ContentType.ToLower().Contains("application/json"))
             {
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                context.Response.ContentType = "application/json";
-
                 // Lê o corpo da solicitação como uma string
                 string requestBody;
                 using (var streamReader = new StreamReader(context.Request.Body, Encoding.UTF8))
@@ -69,7 +66,7 @@ namespace SGED.Services.Server.Filter
                         // Se o método HTTP não foi identificado, retorna "Negado"
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         context.Response.ContentType = "application/json";
-                        var response = new { statusRequest = "Erro: Não foi possível identificar o método da solicitado." };
+                        var response = new { statusRequest = "Erro: Não foi possível identificar o método da solicitado!" };
                         await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
                         return;
                     }
@@ -89,7 +86,7 @@ namespace SGED.Services.Server.Filter
                 // Se o corpo da solicitação não for JSON, retorna "Negado"
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 context.Response.ContentType = "application/json";
-                var response = new { statusRequest = "Erro: Formato de dados inválido!." };
+                var response = new { statusRequest = "Erro: Formato de dados inválido!" };
                 await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
                 return;
             }

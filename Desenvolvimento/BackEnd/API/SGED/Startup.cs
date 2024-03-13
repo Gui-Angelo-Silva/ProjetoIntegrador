@@ -191,7 +191,7 @@ namespace SGED
             // Tasks
             services.AddHostedService<SessionCleanupService>();
 
-            //services.AddTransient<ExtractFilterMiddleware>();
+            //services.AddSingleton<ExtractFilterMiddleware>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -229,9 +229,14 @@ namespace SGED
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseCors("MyPolicy");
+            // Middleware ExtractFilterMiddleware
+            app.Use((context, next) =>
+            {
+                var middleware = new ExtractFilterMiddleware(next);
+                return middleware.Invoke(context);
+            });
 
-            //app.UseMiddleware<ExtractFilterMiddleware>();
+            app.UseCors("MyPolicy");
 
             // Middleware para verificar se o método é anônimo e aplicar os middlewares relevantes
             app.Use(async (context, next) =>
@@ -239,28 +244,13 @@ namespace SGED
                 // Verifica se a requisição é para a API
                 if (context.Request.Path.StartsWithSegments("/api"))
                 {
-                    // Obtém o atributo AnonymousAttribute do endpoint
-                    var attribute = context.GetEndpoint()?.Metadata.GetMetadata<AnonymousAttribute>();
-
-                    // Cria uma pipeline
-                    var validateAndAuthorizePipeline = new ApplicationBuilder(app.ApplicationServices);
-
-                    // Se o atributo AnonymousAttribute não estiver presente, aplica o middleware
-                    if (attribute == null)
-                    {
-                        // Adiciona os middlewares de validação de sessão e autorização ao pipeline criado
-                        validateAndAuthorizePipeline.UseMiddleware<ValidateSessionService>();
-                        await validateAndAuthorizePipeline.Build()(context); if (context.Response.StatusCode != StatusCodes.Status200OK) return;
-
-                        validateAndAuthorizePipeline.UseMiddleware<AuthorizationMiddleware>();
-                        await validateAndAuthorizePipeline.Build()(context); if (context.Response.StatusCode != StatusCodes.Status200OK) return;
-                    }
 
                     // Se o método HTTP não for GET, executa o Extract
                     if (context.Request.Method != "GET")
                     {
                         // Adiciona o middleware de Extração de Dados
-                        await context.RequestServices.GetService<ExtractFilterMiddleware>().Invoke(context);
+                        var extractFilterMiddleware = app.ApplicationServices.GetService<ExtractFilterMiddleware>();
+                        await extractFilterMiddleware.Invoke(context); // ERRO AQUI
 
                         // Verifica se o middleware de extração bloqueou a solicitação
                         if (context.Response.StatusCode != StatusCodes.Status200OK) return;

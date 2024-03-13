@@ -229,33 +229,17 @@ namespace SGED
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // Middleware ExtractFilterMiddleware
-            app.Use((context, next) =>
-            {
-                var middleware = new ExtractFilterMiddleware(next);
-                return middleware.Invoke(context);
-            });
-
             app.UseCors("MyPolicy");
 
-            // Middleware para verificar se o método é anônimo e aplicar os middlewares relevantes
+            // Middleware ExtractFilterMiddleware
+            app.UseWhen(context => context.Request.Method != "GET", appBuilder =>
+            {
+                appBuilder.UseMiddleware<ExtractFilterMiddleware>();
+            });
+
             app.Use(async (context, next) =>
             {
-                // Verifica se a requisição é para a API
-                if (context.Request.Path.StartsWithSegments("/api"))
-                {
-
-                    // Se o método HTTP não for GET, executa o Extract
-                    if (context.Request.Method != "GET")
-                    {
-                        // Adiciona o middleware de Extração de Dados
-                        var extractFilterMiddleware = app.ApplicationServices.GetService<ExtractFilterMiddleware>();
-                        await extractFilterMiddleware.Invoke(context); // ERRO AQUI
-
-                        // Verifica se o middleware de extração bloqueou a solicitação
-                        if (context.Response.StatusCode != StatusCodes.Status200OK) return;
-                    }
-                }
+                if (context.Response.StatusCode == StatusCodes.Status401Unauthorized) return;
 
                 await next();
             });

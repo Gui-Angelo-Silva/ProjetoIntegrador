@@ -28,7 +28,7 @@ namespace SGED.Services.Server.Filter
         public async Task Invoke(HttpContext context)
         {
             // Verifica se o corpo da solicitação contém dados JSON
-            if (context.Request.ContentType != null && context.Request.ContentType.ToLower().Contains("application/json"))
+            if (context.Request.ContentType != null && context.Request.ContentType.Contains("application/json"))
             {
                 // Lê o corpo da solicitação como uma string
                 string requestBody;
@@ -47,18 +47,9 @@ namespace SGED.Services.Server.Filter
                     // Se o método HTTP da solicitação foi identificado
                     if (!string.IsNullOrEmpty(context.Request.Method))
                     {
-                        // Obtém informações sobre o método a ser invocado
-                        MethodInfo methodInfo = _next.GetMethodInfo();
-                        ParameterInfo[] parameters = methodInfo.GetParameters();
-                        object[] arguments = new object[parameters.Length];
-
-                        // Preenche todos os parâmetros do método com os dados do objeto JSON
-                        for (int i = 0; i < parameters.Length; i++)
-                        {
-                            arguments[i] = jsonData["object"];
-                        }
-
-                        // Invoca o próximo delegado com os argumentos preenchidos
+                        // Cria um novo objeto JSON apenas com o conteúdo dentro da chave "object"
+                        JObject newJsonData = new JObject(jsonData["object"]);
+                        context.Request.Body = new MemoryStream(Encoding.UTF8.GetBytes(newJsonData.ToString()));
                         await _next(context);
                     }
                     else

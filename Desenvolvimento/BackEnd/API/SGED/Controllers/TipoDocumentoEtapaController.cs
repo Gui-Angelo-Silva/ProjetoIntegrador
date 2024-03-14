@@ -60,5 +60,21 @@ namespace SGED.Controllers
             await _TipoDocumentoEtapaService.Remove(id);
             return Ok(TipoDocumentoEtapaDTO);
         }
+
+        [HttpGet("Related/{IdEtapa}")]
+        public async Task<ActionResult<TipoDocumentoDTO>> GetTypeDocumentsRelatedToStage(int IdEtapa)
+        {
+            if (IdEtapa <= 0) return BadRequest("Dado inválido!");
+            var tipoDocumentosRelacionados = await _TipoDocumentoEtapaService.GetTypeDocumentsRelatedToStage(IdEtapa);
+            return Ok(tipoDocumentosRelacionados);
+        }
+
+        [HttpGet("NotRelated/{IdEtapa}")]
+        public async Task<ActionResult<TipoDocumentoDTO>> GetTypeDocumentsNoRelatedToStage(int IdEtapa)
+        {
+            if (IdEtapa <= 0) return BadRequest("Dado inválido!");
+            var tipoDocumentosNaoRelacionados = await _TipoDocumentoEtapaService.GetTypeDocumentsNoRelatedToStage(IdEtapa);
+            return Ok(tipoDocumentosNaoRelacionados);
+        }
     }
 }

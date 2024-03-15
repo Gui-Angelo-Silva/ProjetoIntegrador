@@ -20,7 +20,7 @@ public class TipoDocumentoEtapaRepository : ITipoDocumentoEtapaRepository
     public async Task<IEnumerable<TipoDocumentoEtapa>> GetAll()
     {
         return await _dbContext.TipoDocumentoEtapa.Include(objeto => objeto.Etapa).Include(objeto => objeto.TipoDocumento).ToListAsync();
-	}
+    }
 
     public async Task<TipoDocumentoEtapa> GetById(int id)
     {
@@ -49,5 +49,30 @@ public class TipoDocumentoEtapaRepository : ITipoDocumentoEtapaRepository
         await _dbContext.SaveChangesAsync();
         return TipoDocumentoEtapa;
     }
+
+
+    public async Task<IEnumerable<TipoDocumento>> GetTypeDocumentsRelatedToStage(int IdEtapa)
+    {
+        var tipoDocumentoIdsRelacionados = await _dbContext.TipoDocumentoEtapa
+                                                            .Where(td => td.IdEtapa == IdEtapa)
+                                                            .Select(td => td.IdTipoDocumento)
+                                                            .ToListAsync();
+
+        return await _dbContext.TipoDocumento.Where(td => tipoDocumentoIdsRelacionados.Contains(td.Id))
+                                              .ToListAsync();
+    }
+
+
+    public async Task<IEnumerable<TipoDocumento>> GetTypeDocumentsNoRelatedToStage(int IdEtapa)
+    {
+        var tipoDocumentoIdsRelacionados = await _dbContext.TipoDocumentoEtapa
+                                                            .Where(td => td.IdEtapa == IdEtapa)
+                                                            .Select(td => td.IdTipoDocumento)
+                                                            .ToListAsync();
+
+        return await _dbContext.TipoDocumento.Where(td => !tipoDocumentoIdsRelacionados.Contains(td.Id))
+                                              .ToListAsync();
+    }
+
 
 }

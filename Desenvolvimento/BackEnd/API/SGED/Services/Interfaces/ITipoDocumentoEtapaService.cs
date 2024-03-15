@@ -9,5 +9,8 @@ namespace SGED.Services.Interfaces
         Task Create(TipoDocumentoEtapaDTO TipoDocumentoEtapaDTO);
         Task Update(TipoDocumentoEtapaDTO TipoDocumentoEtapaDTO);
         Task Remove(int id);
+
+        Task<IEnumerable<TipoDocumentoDTO>> GetTypeDocumentsRelatedToStage(int IdEtapa);
+        Task<IEnumerable<TipoDocumentoDTO>> GetTypeDocumentsNoRelatedToStage(int IdEtapa);
     }
 }

@@ -210,81 +210,178 @@ export default function TypeDocument() {
                     <SideBar />
                     <div className="flex-2 min-h-screen mr-[40px] ml-[80px] mt-[-5px] w-full">
                         <br />
-                        <div className="flex flex-row">
+                        <div className="flex flex-row mb-4">
                             <Link to="/a/registration">
                                 <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
                             </Link>
                             <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
                             <h3 className="text-2xl font-semibold text-gray-700">Tipo Documento p/ Etapa</h3>
                         </div>
-                        <div className="grid grid-cols-3 w-full mt-6">
-                            <div className="flex flex-col pr-6">
-                                <div className="text-gray-600 text-lg mb-1">Tipo Documento:</div>
-                                <input type="text" className="form-control rounded-[4px] border-[#d9d9d9] mb-3 h-[38px] hover:border-[#b3b3b3]" onChange={(e) => typedocument.setTypeDocumentName(e.target.value)} />
-                                <div className="text-sm text-red-600">
-                                    {typedocument.errorTypeDocumentName}
-                                </div>
-                                <div className="text-gray-600 text-lg mb-1">Descrição:</div>
-                                <textarea className="form-control rounded-md border-[#d9d9d9] hover:border-[#b3b3b3]" rows={4} onChange={(e) => typedocument.setTypeDocumentName(e.target.value)} />
-                                <div className="text-sm text-red-600">
-                                    {typedocument.errorTypeDocumentName}
-                                </div>
-                            </div>
-                            <div className="flex flex-col pr-6">
-                                <div className="text-gray-600 text-lg mb-1">Tipo Processo:</div>
-                                <Select
-                                    value={selectBox.selectedOption}
-                                    onChange={selectBox.handleChange}
-                                    onInputChange={selectBox.delayedSearch}
-                                    loadOptions={selectBox.loadOptions}
-                                    options={selectBox.options}
-                                    placeholder="Pesquisar etapa . . ."
-                                    isClearable
-                                    isSearchable
-                                    noOptionsMessage={() => {
-                                        if (listStage.list.length === 0) {
-                                            return "Nenhum Etapa cadastrado!";
-                                        } else {
-                                            return "Nenhuma opção encontrada!";
-                                        }
-                                    }}
-                                    className="style-select rounded-md border-[#d9d9d9] mb-3"
-                                />
-                                <div className="text-gray-600 text-lg mb-1">Etapa:</div>
-                                <Select
-                                    value={selectBox.selectedOption}
-                                    onChange={selectBox.handleChange}
-                                    onInputChange={selectBox.delayedSearch}
-                                    loadOptions={selectBox.loadOptions}
-                                    options={selectBox.options}
-                                    placeholder="Pesquisar etapa . . ."
-                                    isClearable
-                                    isSearchable
-                                    noOptionsMessage={() => {
-                                        if (listStage.list.length === 0) {
-                                            return "Nenhum Etapa cadastrado!";
-                                        } else {
-                                            return "Nenhuma opção encontrada!";
-                                        }
-                                    }}
-                                    className="style-select rounded-md border-[#d9d9d9]"
-                                />
-                                <div className="flex justify-end h-full items-end">
-                                    <button 
-                                        className="inline-flex justify-center items-center rounded-md border-1 border-[#005A66] text-[#005A66] px-2 py-1 hover:text-white hover:bg-[#005A66]">
-                                        <FloppyDisk size={20} />
-                                        Cadastrar
-                                    </button>
+                        <div className="grid grid-cols-2">
+                            <div className="w-full">
+                                <div className="w-[450px]">
+                                    <div className="text-gray-600 text-lg mb-1">Tipo Processo:</div>
+                                    <Select
+                                        value={selectBox.selectedOption}
+                                        onChange={selectBox.handleChange}
+                                        onInputChange={selectBox.delayedSearch}
+                                        loadOptions={selectBox.loadOptions}
+                                        options={selectBox.options}
+                                        placeholder="Pesquisar tipo processo . . ."
+                                        isClearable
+                                        isSearchable
+                                        noOptionsMessage={() => {
+                                            if (listStage.list.length === 0) {
+                                                return "Nenhum TipoProcesso cadastrado!";
+                                            } else {
+                                                return "Nenhuma opção encontrada!";
+                                            }
+                                        }}
+                                        className="style-select rounded-md border-[#d9d9d9] mb-3"
+                                    />
+                                    <div className="text-gray-600 text-lg mb-1">Etapa:</div>
+                                    <Select
+                                        value={selectBox.selectedOption}
+                                        onChange={selectBox.handleChange}
+                                        onInputChange={selectBox.delayedSearch}
+                                        loadOptions={selectBox.loadOptions}
+                                        options={selectBox.options}
+                                        placeholder="Pesquisar etapa . . ."
+                                        isClearable
+                                        isSearchable
+                                        noOptionsMessage={() => {
+                                            if (listStage.list.length === 0) {
+                                                return "Nenhuma Etapa cadastrado!";
+                                            } else {
+                                                return "Nenhuma opção encontrada!";
+                                            }
+                                        }}
+                                        className="style-select rounded-md border-[#d9d9d9]"
+                                    />
                                 </div>
                             </div>
-                            <div className="w-full h-full rounded-[20px] border-1 border-[#C8E5E5]">
-                                <div className="grid grid-cols-2 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                    <span className="flex ml-5 text-white text-base font-semibold">Tipo Documento</span>
-                                    <span className="flex justify-center items-center text-white text-base font-semibold">Descrição</span>
+                            <div className="w-full">
+                                <div className="grid grid-rows-4">
+                                    <div className="w-full rounded-[20px] border-1 row-span-3 border-[#C8E5E5]">
+                                        <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
+                                            <span className="flex ml-5 text-white text-lg font-semibold">Tipo Documento</span>
+                                            <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
+                                            <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                                        </div>
+                                        <ul className="w-full">
+                                            {list.currentList.map((object) => {
+                                                const etapa = listStage.list.find((stage) => stage.id === object.idEtapa);
+                                                return (
+                                                    <li className="grid grid-cols-3 w-full" key={object.id}>
+                                                        <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</span>
+                                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{etapa ? etapa.nomeEtapa : "Etapa não encontrada!"}</span>
+                                                        <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                                            <button
+                                                                className=""
+                                                                onClick={() => SelectTypeDocument(object, "Editar")}
+                                                            >
+                                                                <PencilSimple size={20} className="hover:text-cyan-500" />
+                                                            </button>{" "}
+                                                            <button
+                                                                className=""
+                                                                onClick={() => SelectTypeDocument(object, "Excluir")}
+                                                            >
+                                                                <TrashSimple size={20} className="hover:text-red-600" />
+                                                            </button>
+                                                        </span>
+                                                    </li>
+                                                )
+                                            })}
+                                        </ul>
+                                        {/* Estilização dos botões de navegação */}
+                                        <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
+                                            <button
+                                                className=""
+                                                onClick={() => list.goToPage(list.currentPage - 1)}
+                                            >
+                                                <CaretLeft size={22} className="text-[#58AFAE]" />
+                                            </button>
+                                            <select
+                                                className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
+                                                value={list.currentPage}
+                                                onChange={(e) => list.goToPage(Number(e.target.value))}
+                                            >
+                                                {[...Array(list.totalPages)].map((_, index) => (
+                                                    <option key={index + 1} value={index + 1}>
+                                                        {index + 1}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <button
+                                                className=""
+                                                onClick={() => list.goToPage(list.currentPage + 1)}
+                                            >
+                                                <CaretRight size={22} className="text-[#58AFAE]" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-4">
+                                        <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
+                                            <span className="flex ml-5 text-white text-lg font-semibold">Etapa</span>
+                                            <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
+                                            <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                                        </div>
+                                        <ul className="w-full">
+                                            {list.currentList.map((object) => {
+                                                const etapa = listStage.list.find((stage) => stage.id === object.idEtapa);
+                                                return (
+                                                    <li className="grid grid-cols-3 w-full" key={object.id}>
+                                                        <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</span>
+                                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{etapa ? etapa.nomeEtapa : "Etapa não encontrada!"}</span>
+                                                        <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                                            <button
+                                                                className=""
+                                                                onClick={() => SelectTypeDocument(object, "Editar")}
+                                                            >
+                                                                <PencilSimple size={20} className="hover:text-cyan-500" />
+                                                            </button>{" "}
+                                                            <button
+                                                                className=""
+                                                                onClick={() => SelectTypeDocument(object, "Excluir")}
+                                                            >
+                                                                <TrashSimple size={20} className="hover:text-red-600" />
+                                                            </button>
+                                                        </span>
+                                                    </li>
+                                                )
+                                            })}
+                                        </ul>
+                                        {/* Estilização dos botões de navegação */}
+                                        <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
+                                            <button
+                                                className=""
+                                                onClick={() => list.goToPage(list.currentPage - 1)}
+                                            >
+                                                <CaretLeft size={22} className="text-[#58AFAE]" />
+                                            </button>
+                                            <select
+                                                className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
+                                                value={list.currentPage}
+                                                onChange={(e) => list.goToPage(Number(e.target.value))}
+                                            >
+                                                {[...Array(list.totalPages)].map((_, index) => (
+                                                    <option key={index + 1} value={index + 1}>
+                                                        {index + 1}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <button
+                                                className=""
+                                                onClick={() => list.goToPage(list.currentPage + 1)}
+                                            >
+                                                <CaretRight size={22} className="text-[#58AFAE]" />
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
+                        {/* <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-4 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
                                 <span className="flex ml-5 text-white text-lg font-semibold">Nome</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
@@ -317,7 +414,7 @@ export default function TypeDocument() {
                                     )
                                 })}
                             </ul>
-                            {/* Estilização dos botões de navegação */}
+                            {/* Estilização dos botões de navegação 
                             <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
                                 <button
                                     className=""
@@ -343,119 +440,11 @@ export default function TypeDocument() {
                                     <CaretRight size={22} className="text-[#58AFAE]" />
                                 </button>
                             </div>
-                            {/* Espaçamento abaixo dos botões */}
+                            {/* Espaçamento abaixo dos botões 
                             <div className="mt-4"></div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
-                <Modal isOpen={modalInsert} >
-                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Tipo de Documento</ModalHeader>
-                    <ModalBody>
-                        <div className="form-group">
-                            <label className="text-[#444444]">Nome: </label>
-                            <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typedocument.setTypeDocumentName(e.target.value)} />
-                            <div className="text-sm text-red-600">
-                                {typedocument.errorTypeDocumentName}
-                            </div>
-                            <br />
-                            <label className="text-[#444444]">Descrição:</label>
-                            <br />
-                            <textarea className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typedocument.setTypeDocumentDescription(e.target.value)} />
-                            <div className="text-sm text-red-600">
-                                {typedocument.errorTypeDocumentDescription}
-                            </div>
-                            <br />
-                            <label className="text-[#444444]">Etapa:</label>
-                            <br />
-                            <Select
-                                value={selectBox.selectedOption}
-                                onChange={selectBox.handleChange}
-                                onInputChange={selectBox.delayedSearch}
-                                loadOptions={selectBox.loadOptions}
-                                options={selectBox.options}
-                                placeholder="Pesquisar etapa . . ."
-                                isClearable
-                                isSearchable
-                                noOptionsMessage={() => {
-                                    if (listStage.list.length === 0) {
-                                        return "Nenhum Etapa cadastrado!";
-                                    } else {
-                                        return "Nenhuma opção encontrada!";
-                                    }
-                                }}
-                                className="style-select"
-                            />
-                            <br />
-                        </div>
-                    </ModalBody>
-                    <ModalFooter>
-                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white w-[100px] h-[40px]" onClick={() => openCloseModalInsert(false)}>Cancelar</button>
-                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostTypeDocument()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Cadastrar'} </button>{"  "}
-                    </ModalFooter>
-                </Modal>
-                <Modal isOpen={modalEdit}>
-                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC]">Editar Tipo de Documento</ModalHeader>
-                    <ModalBody>
-                        <div className="form-group">
-                            <label className="text-[#444444]">ID: </label><br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={typedocument.typeDocumentId} /> <br />
-                            <label className="text-[#444444]">Nome:</label>
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomeTipoLogradouro" onChange={(e) => typedocument.setTypeDocumentName(e.target.value)} value={typedocument.typeDocumentName} />
-                            <div className="text-sm text-red-600">
-                                {typedocument.errorTypeDocumentName}
-                            </div>
-                            <br />
-                            <label className="text-[#444444]">Descrição:</label>
-                            <br />
-                            <textarea className="form-control rounded-md border-[#BCBCBC]" name="descricaoTipoLogradouro" onChange={(e) => typedocument.setTypeDocumentDescription(e.target.value)} value={typedocument.typeDocumentDescription} />
-                            <div className="text-sm text-red-600">
-                                {typedocument.errorTypeDocumentDescription}
-                            </div>
-                            <br />
-                            <label className="text-[#444444]">Etapa:</label>
-                            <br />
-                            <Select
-                                value={selectBox.selectedOption}
-                                onChange={selectBox.handleChange}
-                                onInputChange={selectBox.delayedSearch}
-                                loadOptions={selectBox.loadOptions}
-                                options={selectBox.options}
-                                placeholder="Pesquisar etapa . . ."
-                                isClearable
-                                isSearchable
-                                noOptionsMessage={() => {
-                                    if (listState.list.length === 0) {
-                                        return "Nenhum Etapa cadastrado!";
-                                    } else {
-                                        return "Nenhuma opção encontrada!";
-                                    }
-                                }}
-                                className="style-select"
-                            />
-                            <br />
-                        </div>
-                    </ModalBody>
-                    <ModalFooter>
-                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white w-[100px] h-[40px]" onClick={() => openCloseModalEdit(false)}>Cancelar</button>
-                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutTypeDocument()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Atualizar'} </button>{"  "}
-                    </ModalFooter>
-                </Modal>
-                <Modal isOpen={modalDelete}>
-                    <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
-                    <ModalBody className="justify-center">
-                        <div className="flex flex-row justify-center p-2">
-                            Confirme a exclusão deste Tipo de Documento:
-                            <div className="text-[#059669] ml-1">
-                                {typedocument.typeDocumentName}
-                            </div> ?
-                        </div>
-                        <div className="flex justify-center gap-2 pt-3">
-                            <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white w-[100px] h-[40px]" onClick={() => openCloseModalDelete(false)}>Cancelar</button>
-                            <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteTypeDocument()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'} </button>{"  "}
-                        </div>
-                    </ModalBody>
-                </Modal>
             </div>
         </div>
     );

@@ -34,8 +34,8 @@ public class AppDBContext : DbContext
 
 		// Builder: TipoDocumentoEtapa
 		modelBuilder.Entity<TipoDocumentoEtapa>().HasKey(b => b.Id);
-		modelBuilder.Entity<TipoDocumentoEtapa>().HasKey(b => b.IdTipoDocumento);
-		modelBuilder.Entity<TipoDocumentoEtapa>().HasKey(b => b.IdEtapa);
+		modelBuilder.Entity<TipoDocumentoEtapa>().HasOne(b => b.Etapa).WithMany().HasForeignKey(b => b.IdEtapa);
+		modelBuilder.Entity<TipoDocumentoEtapa>().HasOne(b => b.TipoDocumento).WithMany().HasForeignKey(b => b.IdTipoDocumento);
 
 		// Relacionamento: TipoDocumentoEtapa -> Etapa
 		modelBuilder.Entity<Etapa>().HasMany(p => p.TipoDocumentoEtapas).WithOne(b => b.Etapa).IsRequired().OnDelete(DeleteBehavior.Cascade);

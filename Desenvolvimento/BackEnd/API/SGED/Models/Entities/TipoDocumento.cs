@@ -2,7 +2,7 @@
 
 namespace SGED.Models.Entities
 {
-    [Table("TipoDocumento")]
+    [Table("tipodocumento")]
     public class TipoDocumento
     {
         [Column("idTipoDocumento")]

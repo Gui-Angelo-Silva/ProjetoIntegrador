@@ -13,9 +13,11 @@ namespace SGED.DTO.Entities
         [JsonIgnore]
         public TipoDocumentoDTO? TipoDocumentoDTO { get; set; }
 
-        [Required(ErrorMessage = "O Tipo Processo é requerido!")]
-        public int IdTipoProcesso { get; set; }
-		public Etapa? Etapa { get; set; }
+        [Required(ErrorMessage = "O Tipo Documento é requerido!")]
+        public int IdTipoDocumento { get; set; }
+
+		[JsonIgnore]
+		public Etapa? EtapaDTO { get; set; }
 
 		[Required(ErrorMessage = "A Etapa é requerida!")]
 		public int IdEtapa { get; set; }

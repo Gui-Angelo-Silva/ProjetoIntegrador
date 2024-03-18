@@ -9,5 +9,6 @@ namespace SGED.Repositories.Interfaces
 		Task<Etapa> Create(Etapa etapa);
 		Task<Etapa> Update(Etapa etapa);
 		Task<Etapa> Delete(int id);
+		Task<IEnumerable<Etapa>> GetStagesRelatedToTypeProcess(int idTipoProcesso);
 	}
 }

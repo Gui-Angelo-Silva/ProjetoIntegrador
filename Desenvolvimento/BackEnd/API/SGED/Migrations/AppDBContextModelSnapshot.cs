@@ -590,9 +590,6 @@ namespace SGED.Migrations
                         .HasColumnType("character varying(450)")
                         .HasColumnName("descricaoTipoDocumento");
 
-                    b.Property<int>("IdEtapa")
-                        .HasColumnType("integer");
-
                     b.Property<string>("NomeTipoDocumento")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -601,9 +598,31 @@ namespace SGED.Migrations
 
                     b.HasKey("Id");
 
+                    b.ToTable("tipodocumento");
+                });
+
+            modelBuilder.Entity("SGED.Models.Entities.TipoDocumentoEtapa", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("tipodocumentoetapa");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("IdEtapa")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("IdTipoDocumento")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
                     b.HasIndex("IdEtapa");
 
-                    b.ToTable("TipoDocumento");
+                    b.HasIndex("IdTipoDocumento");
+
+                    b.ToTable("tipodocumentoetapa");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.TipoLogradouro", b =>
@@ -1960,15 +1979,23 @@ namespace SGED.Migrations
                     b.Navigation("TipoLogradouro");
                 });
 
-            modelBuilder.Entity("SGED.Models.Entities.TipoDocumento", b =>
+            modelBuilder.Entity("SGED.Models.Entities.TipoDocumentoEtapa", b =>
                 {
                     b.HasOne("SGED.Models.Entities.Etapa", "Etapa")
-                        .WithMany("TipoDocumento")
+                        .WithMany("TipoDocumentoEtapas")
                         .HasForeignKey("IdEtapa")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SGED.Models.Entities.TipoDocumento", "TipoDocumento")
+                        .WithMany("TipoDocumentoEtapas")
+                        .HasForeignKey("IdTipoDocumento")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Etapa");
+
+                    b.Navigation("TipoDocumento");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.Usuario", b =>
@@ -1999,7 +2026,7 @@ namespace SGED.Migrations
 
             modelBuilder.Entity("SGED.Models.Entities.Etapa", b =>
                 {
-                    b.Navigation("TipoDocumento");
+                    b.Navigation("TipoDocumentoEtapas");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.Logradouro", b =>
@@ -2010,6 +2037,11 @@ namespace SGED.Migrations
             modelBuilder.Entity("SGED.Models.Entities.Municipe", b =>
                 {
                     b.Navigation("Imovels");
+                });
+
+            modelBuilder.Entity("SGED.Models.Entities.TipoDocumento", b =>
+                {
+                    b.Navigation("TipoDocumentoEtapas");
                 });
 
             modelBuilder.Entity("SGED.Models.Entities.TipoLogradouro", b =>

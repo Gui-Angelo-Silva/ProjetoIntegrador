@@ -13,6 +13,8 @@ import ConnectionEntity from "../../../../object/service/connection";
 import ListModule from "../../../../object/modules/list";
 import TypeDocumentClass from "../../../../object/class/typedocument";
 import SelectModule from '../../../../object/modules/select';
+import SidebarAdm from '../../components/Adm/SideBarAdm';
+import NavBarAdm from '../../components/Adm/NavBarAdm';
 
 export default function TypeDocument() {
 
@@ -24,9 +26,13 @@ export default function TypeDocument() {
 
     const connection = ConnectionEntity();
     const typedocument = TypeDocumentClass();
-    const list = ListModule();
+    const listTypeProcess = ListModule();
     const listStage = ListModule();
-    const selectBox = SelectModule();
+    const listTypeDocumentRelated = ListModule();
+    const listTypeDocumentNoRelated = ListModule();
+    const selectBoxTypeProcess = SelectModule();
+    const selectBoxStage = SelectModule();
+    const selectBoxTypeDocument = SelectModule();
 
     const [modalInsert, setModalInsert] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
@@ -70,8 +76,17 @@ export default function TypeDocument() {
         }
     };
 
+    const GetTypeProcess = async () => {
+        const response = await connection.objectUrl("TipoProcesso").getOrder();
+        if (response.status) {
+            listTypeProcess.setList(response.data);
+        } else {
+            console.error(response.data);
+        }
+    };
+
     const GetStage = async () => {
-        const response = await connection.objectUrl("Etapa").getOrder();
+        const response = await connection.objectUrl("Etapa").actionUrl(`GetRelatedToTypeProcess/${selectBoxTypeProcess.selectedOption.value}`).getOrder();
         if (response.status) {
             listStage.setList(response.data);
         } else {
@@ -79,10 +94,19 @@ export default function TypeDocument() {
         }
     }
 
-    const GetTypeDocument = async () => {
-        const response = await connection.objectUrl("TipoDocumento").getOrder();
+    const GetTypeDocumentRelated = async () => {
+        const response = await connection.objectUrl("TipoDocumentoEtapa").actionUrl(`Related/${selectBoxStage.selectedOption.value}`).getOrder();
         if (response.status) {
-            list.setList(response.data);
+            listTypeDocumentRelated.setList(response.data);
+        } else {
+            console.error(response.data);
+        }
+    };
+
+    const GetTypeDocumentNoRelated = async () => {
+        const response = await connection.objectUrl("TipoDocumentoEtapa").actionUrl(`NoRelated/${selectBoxStage.selectedOption.value}`).getOrder();
+        if (response.status) {
+            listTypeDocumentNoRelated.setList(response.data);
         } else {
             console.error(response.data);
         }
@@ -147,45 +171,42 @@ export default function TypeDocument() {
         const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
         if (!searchTerm) {
-            list.setListToRender(list.list);
+            listTypeProcess.setListToRender(listTypeProcess.list);
         } else {
             if (searchBy === 'nomeEtapa') {
-                const filteredStage = listStage.list.filter((stage) => {
+                const filteredStage = listStage.listTypeProcess.filter((stage) => {
                     const stageFilter = stage[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                     return stageFilter.toLowerCase().includes(searchTermNormalized.toLowerCase());
                 });
 
                 const filteredIds = filteredStage.map((stage) => stage.id);
 
-                const filtered = list.list.filter((typedocument) => {
+                const filtered = listTypeProcess.listTypeProcess.filter((typedocument) => {
                     return filteredIds.includes(typedocument.idEtapa);
                 });
 
-                list.setListToRender(filtered);
+                listTypeProcess.setListToRender(filtered);
             } else if (searchBy === 'descricaoTipoDocumento') {
-                const filtered = list.list.filter((typedocument) => {
+                const filtered = listTypeProcess.listTypeProcess.filter((typedocument) => {
                     const typedocumentFilter = typedocument[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                     return typedocumentFilter.toLowerCase().includes(searchTermNormalized.toLowerCase());
                 });
 
-                list.setListToRender(filtered);
+                listTypeProcess.setListToRender(filtered);
             } else {
-                list.setSearchTerm(searchTerm);
-                list.setSearchBy(searchBy);
+                listTypeProcess.setSearchTerm(searchTerm);
+                listTypeProcess.setSearchBy(searchBy);
             }
         }
     };
 
     useEffect(() => {
         filterTypeDocument();
-    }, [searchTerm, searchBy, list.list]);
+    }, [searchTerm, searchBy, listTypeProcess.list]);
 
     useEffect(() => {
         if (updateData) {
-            GetTypeDocument();
-            GetStage();
-
-            typedocument.setIdStage(listStage.list[0]?.id);
+            GetTypeProcess();
 
             setUpdateData(false);
         }
@@ -193,18 +214,37 @@ export default function TypeDocument() {
 
     useEffect(() => {
         if (!modalInsert && !modalEdit && !modalDelete) {
-            selectBox.updateOptions(listStage.list, "id", "nomeEtapa");
-            selectBox.selectOption(listStage.list[0]?.id);
+            selectBoxTypeProcess.updateOptions(listTypeProcess.list, "id", "nomeTipoProcesso");
+            selectBoxTypeProcess.selectOption(listTypeProcess.list[0]?.id);
         }
-    }, [listStage.list, modalInsert, modalEdit, modalDelete]);
+    }, [listTypeProcess.list, modalInsert, modalEdit, modalDelete]);
 
     useEffect(() => {
-        typedocument.setIdStage(selectBox.selectedOption.value ? selectBox.selectedOption.value : '');
-    }, [selectBox.selectedOption]);
+        listStage.setList([]);
+        listTypeDocumentNoRelated.setList([]);
+        listTypeDocumentRelated.setList([]);
+
+        if (selectBoxTypeProcess.selectedOption.value) {
+            GetStage();
+        }
+    }, [selectBoxTypeProcess.selectedOption]);
+
+    useEffect(() => {
+        selectBoxStage.updateOptions(listStage.list, "id", "nomeEtapa");
+        selectBoxStage.selectOption(listStage.list[0]?.id);
+    }, [listStage.list]);
+
+    useEffect(() => {
+        if (selectBoxStage.selectedOption.value) {
+            GetTypeDocumentNoRelated();
+            GetTypeDocumentRelated();
+        }
+    }, [selectBoxStage.selectedOption]);
 
     return (
         <div className="flex flex-1 min-h-screen">
             <div className="flex flex-col h-full w-full">
+                {/* <NavBar /> */}
                 <NavBar />
                 <div className="flex flex-1 min-h-full">
                     <SideBar />
@@ -222,17 +262,17 @@ export default function TypeDocument() {
                                 <div className="w-[450px]">
                                     <div className="text-gray-600 text-lg mb-1">Tipo Processo:</div>
                                     <Select
-                                        value={selectBox.selectedOption}
-                                        onChange={selectBox.handleChange}
-                                        onInputChange={selectBox.delayedSearch}
-                                        loadOptions={selectBox.loadOptions}
-                                        options={selectBox.options}
+                                        value={selectBoxTypeProcess.selectedOption}
+                                        onChange={selectBoxTypeProcess.handleChange}
+                                        onInputChange={selectBoxTypeProcess.delayedSearch}
+                                        loadOptions={selectBoxTypeProcess.loadOptions}
+                                        options={selectBoxTypeProcess.options}
                                         placeholder="Pesquisar tipo processo . . ."
                                         isClearable
                                         isSearchable
                                         noOptionsMessage={() => {
-                                            if (listStage.list.length === 0) {
-                                                return "Nenhum TipoProcesso cadastrado!";
+                                            if (listTypeProcess.listTypeProcess.length === 0) {
+                                                return "Nenhum Tipo Processo cadastrado!";
                                             } else {
                                                 return "Nenhuma opção encontrada!";
                                             }
@@ -241,16 +281,16 @@ export default function TypeDocument() {
                                     />
                                     <div className="text-gray-600 text-lg mb-1">Etapa:</div>
                                     <Select
-                                        value={selectBox.selectedOption}
-                                        onChange={selectBox.handleChange}
-                                        onInputChange={selectBox.delayedSearch}
-                                        loadOptions={selectBox.loadOptions}
-                                        options={selectBox.options}
+                                        value={selectBoxStage.selectedOption}
+                                        onChange={selectBoxStage.handleChange}
+                                        onInputChange={selectBoxStage.delayedSearch}
+                                        loadOptions={selectBoxStage.loadOptions}
+                                        options={selectBoxStage.options}
                                         placeholder="Pesquisar etapa . . ."
                                         isClearable
                                         isSearchable
                                         noOptionsMessage={() => {
-                                            if (listStage.list.length === 0) {
+                                            if (listStage.listTypeProcess.length === 0) {
                                                 return "Nenhuma Etapa cadastrado!";
                                             } else {
                                                 return "Nenhuma opção encontrada!";
@@ -261,20 +301,19 @@ export default function TypeDocument() {
                                 </div>
                             </div>
                             <div className="w-full">
-                                <div className="grid grid-rows-4">
-                                    <div className="w-full rounded-[20px] border-1 row-span-3 border-[#C8E5E5]">
+                                <div className="grid grid-rows-2">
+                                    <div className="w-full rounded-[20px] border-1 border-[#C8E5E5]">
                                         <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
                                             <span className="flex ml-5 text-white text-lg font-semibold">Tipo Documento</span>
                                             <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
                                             <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                                         </div>
                                         <ul className="w-full">
-                                            {list.currentList.map((object) => {
-                                                const etapa = listStage.list.find((stage) => stage.id === object.idEtapa);
+                                            {listTypeDocumentNoRelated.currentList.map((object) => {
                                                 return (
                                                     <li className="grid grid-cols-3 w-full" key={object.id}>
                                                         <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</span>
-                                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{etapa ? etapa.nomeEtapa : "Etapa não encontrada!"}</span>
+                                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoDocumento}</span>
                                                         <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                                             <button
                                                                 className=""
@@ -297,16 +336,16 @@ export default function TypeDocument() {
                                         <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
                                             <button
                                                 className=""
-                                                onClick={() => list.goToPage(list.currentPage - 1)}
+                                                onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage - 1)}
                                             >
                                                 <CaretLeft size={22} className="text-[#58AFAE]" />
                                             </button>
                                             <select
                                                 className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
-                                                value={list.currentPage}
-                                                onChange={(e) => list.goToPage(Number(e.target.value))}
+                                                value={listTypeProcess.currentPage}
+                                                onChange={(e) => listTypeProcess.goToPage(Number(e.target.value))}
                                             >
-                                                {[...Array(list.totalPages)].map((_, index) => (
+                                                {[...Array(listTypeProcess.totalPages)].map((_, index) => (
                                                     <option key={index + 1} value={index + 1}>
                                                         {index + 1}
                                                     </option>
@@ -314,7 +353,7 @@ export default function TypeDocument() {
                                             </select>
                                             <button
                                                 className=""
-                                                onClick={() => list.goToPage(list.currentPage + 1)}
+                                                onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage + 1)}
                                             >
                                                 <CaretRight size={22} className="text-[#58AFAE]" />
                                             </button>
@@ -327,12 +366,11 @@ export default function TypeDocument() {
                                             <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                                         </div>
                                         <ul className="w-full">
-                                            {list.currentList.map((object) => {
-                                                const etapa = listStage.list.find((stage) => stage.id === object.idEtapa);
+                                            {listTypeDocumentRelated.currentList.map((object) => {
                                                 return (
                                                     <li className="grid grid-cols-3 w-full" key={object.id}>
                                                         <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</span>
-                                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{etapa ? etapa.nomeEtapa : "Etapa não encontrada!"}</span>
+                                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoDocumento}</span>
                                                         <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                                             <button
                                                                 className=""
@@ -355,16 +393,16 @@ export default function TypeDocument() {
                                         <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
                                             <button
                                                 className=""
-                                                onClick={() => list.goToPage(list.currentPage - 1)}
+                                                onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage - 1)}
                                             >
                                                 <CaretLeft size={22} className="text-[#58AFAE]" />
                                             </button>
                                             <select
                                                 className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
-                                                value={list.currentPage}
-                                                onChange={(e) => list.goToPage(Number(e.target.value))}
+                                                value={listTypeProcess.currentPage}
+                                                onChange={(e) => listTypeProcess.goToPage(Number(e.target.value))}
                                             >
-                                                {[...Array(list.totalPages)].map((_, index) => (
+                                                {[...Array(listTypeProcess.totalPages)].map((_, index) => (
                                                     <option key={index + 1} value={index + 1}>
                                                         {index + 1}
                                                     </option>
@@ -372,7 +410,7 @@ export default function TypeDocument() {
                                             </select>
                                             <button
                                                 className=""
-                                                onClick={() => list.goToPage(list.currentPage + 1)}
+                                                onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage + 1)}
                                             >
                                                 <CaretRight size={22} className="text-[#58AFAE]" />
                                             </button>
@@ -389,8 +427,8 @@ export default function TypeDocument() {
                                 <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                             </div>
                             <ul className="w-full">
-                                {list.currentList.map((object) => {
-                                    const etapa = listStage.list.find((stage) => stage.id === object.idEtapa);
+                                {listTypeProcess.currentlistTypeProcess.map((object) => {
+                                    const etapa = listStage.listTypeProcess.find((stage) => stage.id === object.idEtapa);
                                     return (
                                         <li className="grid grid-cols-4 w-full" key={object.id}>
                                             <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</span>
@@ -418,16 +456,16 @@ export default function TypeDocument() {
                             <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
                                 <button
                                     className=""
-                                    onClick={() => list.goToPage(list.currentPage - 1)}
+                                    onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage - 1)}
                                 >
                                     <CaretLeft size={22} className="text-[#58AFAE]" />
                                 </button>
                                 <select
                                     className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
-                                    value={list.currentPage}
-                                    onChange={(e) => list.goToPage(Number(e.target.value))}
+                                    value={listTypeProcess.currentPage}
+                                    onChange={(e) => listTypeProcess.goToPage(Number(e.target.value))}
                                 >
-                                    {[...Array(list.totalPages)].map((_, index) => (
+                                    {[...Array(listTypeProcess.totalPages)].map((_, index) => (
                                         <option key={index + 1} value={index + 1}>
                                             {index + 1}
                                         </option>
@@ -435,7 +473,7 @@ export default function TypeDocument() {
                                 </select>
                                 <button
                                     className=""
-                                    onClick={() => list.goToPage(list.currentPage + 1)}
+                                    onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage + 1)}
                                 >
                                     <CaretRight size={22} className="text-[#58AFAE]" />
                                 </button>

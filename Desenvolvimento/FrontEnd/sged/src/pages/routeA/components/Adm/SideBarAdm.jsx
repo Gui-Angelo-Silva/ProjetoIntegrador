@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import LogoJales from "../../../../assets/pages/LogoJales.png"
 import IconHomePage from "../../../../assets/sidebar/IconHomePage";
 import IconSecretary from "../../../../assets/sidebar/IconSecretary";
@@ -14,7 +14,7 @@ export default function SideBarAdm() {
     };
 
     return (
-        <div className="w-[100px] sm:w-[200px] md:w-[250px] lg:w-[260px] fixed h-full bg-red-500 text-[#787878]">
+        <div className="w-[100px] sm:w-[200px] md:w-[250px] lg:w-[260px] fixed h-full bg-[#ddd] text-[#787878]">
             <div className="">
                 <div className="inline-flex items-center justify-center h-[50px] sm:h-[65px] bg-[#2D636B] w-full">
                     <img src={LogoJales} alt="" className="w-[65px] sm:w-[90px]" />
@@ -45,4 +45,4 @@ export default function SideBarAdm() {
             </div>
         </div>
     )
-}; 
+}

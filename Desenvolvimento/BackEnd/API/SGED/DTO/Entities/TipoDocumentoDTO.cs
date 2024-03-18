@@ -19,10 +19,5 @@ namespace SGED.DTO.Entities
 		[MaxLength(450)]
 		public string DescricaoTipoDocumento { get; set; }
 
-		[JsonIgnore]
-		public EtapaDTO? EtapaDTO { get; set; }
-
-		[Required(ErrorMessage = "A etapa é requerida!")]
-		public int IdEtapa { get; set; }
 	}
 }

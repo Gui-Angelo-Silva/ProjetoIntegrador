@@ -47,5 +47,12 @@ namespace SGED.Services.Entities
 			await _etaparepository.Delete(id);
 		}
 
+
+		public async Task<IEnumerable<EtapaDTO>> GetStagesRelatedToTypeProcess(int idTipoProcesso)
+		{
+			var etapa = await _etaparepository.GetStagesRelatedToTypeProcess(idTipoProcesso);
+			return _mapper.Map<IEnumerable<EtapaDTO>>(etapa);
+		}
+
 	}
 }

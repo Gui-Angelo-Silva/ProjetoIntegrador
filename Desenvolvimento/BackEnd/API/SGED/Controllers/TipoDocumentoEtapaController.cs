@@ -69,7 +69,7 @@ namespace SGED.Controllers
             return Ok(tipoDocumentosRelacionados);
         }
 
-        [HttpGet("NotRelated/{IdEtapa}")]
+        [HttpGet("NoRelated/{IdEtapa}")]
         public async Task<ActionResult<TipoDocumentoDTO>> GetTypeDocumentsNoRelatedToStage(int IdEtapa)
         {
             if (IdEtapa <= 0) return BadRequest("Dado inválido!");

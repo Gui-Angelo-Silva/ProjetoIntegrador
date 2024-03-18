@@ -224,16 +224,17 @@ namespace SGED
 
             app.UseCors("MyPolicy");
 
-            /*app.UseWhen(context => context.Request.Path.StartsWithSegments("/api") && context.GetEndpoint()?.Metadata.GetMetadata<AnonymousAttribute>() == null,
+            app.UseWhen(context => context.Request.Path.StartsWithSegments("/api") && context.GetEndpoint()?.Metadata.GetMetadata<AnonymousAttribute>() == null,
             appBuilder =>
             {
                 appBuilder.UseValidateSessionMiddleware();
-                appBuilder.UseUpdateAuthorizeMiddleware();
+                //appBuilder.UseUpdateAuthorizeMiddleware();
             });
 
             // Verifica se o status da resposta é 401 após a execução dos dois middlewares
             app.Use(async (context, next) =>
             {
+                /*
                 // Acessa o valor do cabeçalho de autorização
                 var authorizationHeaderValue = context.Request.Headers["Authorization"];
 
@@ -246,13 +247,13 @@ namespace SGED
 
                 // Retorna para interromper a execução do pipeline de middleware
                 return;
-
+                */
 
                 // Verifica se o status da resposta é 401 (Não Autorizado)
                 if (context.Response.StatusCode == StatusCodes.Status401Unauthorized) return;
 
                 await next(context);
-            });*/
+            });
 
             app.UseEndpoints(endpoints =>
             {

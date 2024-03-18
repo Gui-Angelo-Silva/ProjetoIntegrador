@@ -37,7 +37,6 @@ namespace SGED.Services.Server.Tasks
                             // Se o token for inválido, atualizar o status da sessão no banco de dados
                             if (!statusToken)
                             {
-                                sessao.TokenSessao = "";
                                 sessao.StatusSessao = false;
                                 sessao.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
 

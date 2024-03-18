@@ -28,40 +28,67 @@ namespace SGED.Services.Server.Middleware
             if (context.Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues value))
             {
                 var authorizationHeader = value.ToString();
-                var token = authorizationHeader.StartsWith("Bearer ") ? authorizationHeader.Substring("Bearer ".Length) : authorizationHeader;
+                var tokenParts = authorizationHeader.Split(' ');
 
-                var sessao = await _sessaoRepository.GetByToken(token);
-
-                if (sessao is null)
+                if (tokenParts.Length == 2)
                 {
-                    context.Response.Headers.Remove("Authorization");
+                    var validTypes = new List<string> { "Front", "Back" };
+                    var tokenType = tokenParts[0];
+                    var token = tokenParts[1];
 
-                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    context.Response.ContentType = "text/plain";
-                    await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = "Erro: Sessão não encontrada!" }));
-                }
-                else if (!sessao.StatusSessao || !SessaoDTO.ValidateToken(sessao.TokenSessao, sessao.EmailPessoa))
-                {
-                    context.Response.Headers.Remove("Authorization");
+                    if (!validTypes.Contains(tokenType))
+                    {
+                        context.Response.Headers.Remove("Authorization");
 
-                    sessao.TokenSessao = "";
-                    sessao.StatusSessao = false;
-                    sessao.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-                    await _sessaoRepository.Update(sessao);
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        context.Response.ContentType = "text/plain";
+                        await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = "Erro: Token inválido!" }));
+                        return;
+                    }
 
-                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    context.Response.ContentType = "text/plain";
-                    await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = "Erro: Sessão expirada!" }));
+                    var sessao = await _sessaoRepository.GetByToken(token);
+
+                    if (sessao is null)
+                    {
+                        context.Response.Headers.Remove("Authorization");
+
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        context.Response.ContentType = "text/plain";
+                        await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = "Erro: Sessão não encontrada!" }));
+                        return;
+                    }
+                    else if (!sessao.StatusSessao || !SessaoDTO.ValidateToken(sessao.TokenSessao, sessao.EmailPessoa))
+                    {
+                        context.Response.Headers.Remove("Authorization");
+
+                        sessao.StatusSessao = false;
+                        sessao.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                        await _sessaoRepository.Update(sessao);
+
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        context.Response.ContentType = "text/plain";
+                        await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = "Erro: Sessão expirada!" }));
+                        return;
+                    }
+                    else if (tokenType == "Front")
+                    {
+                        sessao.TokenSessao = SessaoDTO.GenerateToken(sessao.EmailPessoa);
+                        await _sessaoRepository.Update(sessao);
+
+                        /*context.Request.Headers.Remove("Authorization");
+                        context.Request.Headers.Add("Authorization", "Bearer " + sessao.TokenSessao);*/
+
+                        context.Request.Headers["Authorization"] = $"Front {sessao.TokenSessao}";
+                    }
                 }
                 else
                 {
-                    sessao.TokenSessao = SessaoDTO.GenerateToken(sessao.EmailPessoa);
-                    await _sessaoRepository.Update(sessao);
+                    context.Response.Headers.Remove("Authorization");
 
-                    /*context.Request.Headers.Remove("Authorization");
-                    context.Request.Headers.Add("Authorization", "Bearer " + sessao.TokenSessao);*/
-
-                    context.Request.Headers["Authorization"] = $"Bearer {sessao.TokenSessao}";
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    context.Response.ContentType = "text/plain";
+                    await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = "Erro: Token inválido!" }));
+                    return;
                 }
             }
             else
@@ -69,10 +96,12 @@ namespace SGED.Services.Server.Middleware
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 context.Response.ContentType = "text/plain";
                 await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = "Token não informado!" }));
+                return;
             }
 
             await _next(context);
         }
+
     }
 
     public static class ValidateSessionMiddlewareExtensions

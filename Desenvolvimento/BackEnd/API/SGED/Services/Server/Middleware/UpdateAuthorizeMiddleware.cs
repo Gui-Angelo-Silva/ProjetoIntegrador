@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
 using System.Threading.Tasks;
@@ -17,18 +18,32 @@ namespace SGED.Services.Server.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
-            if (!string.IsNullOrEmpty(context.Request.Headers["Authorization"]))
+            var authorizationHeader = context.Request.Headers["Authorization"];
+            var swaggerAuthorizeValue = string.Empty;
+
+            // Verifica se há uma sessão/token configurado e se um token foi passado no header
+            if (!string.IsNullOrEmpty(authorizationHeader))
             {
-                // Atualiza o valor do token no botão "Available authorizations" no Swagger UI
-                var token = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-                var updatedToken = $"Bearer {token}";
-                context.Response.Headers["Available-Authorizations"] = updatedToken;
+                swaggerAuthorizeValue = authorizationHeader.ToString();
             }
-            else
+
+            // Atualiza o valor do botão "Authorize" do Swagger
+            var swaggerAuthorizeObject = new
             {
-                // Limpa o botão "Available-Authorizations" no Swagger para indicar que a sessão foi encerrada
-                context.Response.Headers.Remove("Available-Authorizations");
-            }
+                AvailableAuthorizations = new
+                {
+                    Bearer = new
+                    {
+                        Description = "Enter 'Bearer' [space] your token",
+                        In = "header",
+                        Name = "Authorization",
+                        Value = swaggerAuthorizeValue
+                    }
+                }
+            };
+
+            // Atualiza o valor do botão "Authorize" no contexto da requisição
+            context.Items["SwaggerAuthorizeValue"] = JsonConvert.SerializeObject(swaggerAuthorizeObject);
 
             await _next(context);
         }

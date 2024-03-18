@@ -29,11 +29,11 @@ public class AppDBContext : DbContext
     public DbSet<TipoProcesso> TipoProcesso { get; set; }
     public DbSet<Etapa> Etapa { get; set; }
     public DbSet<TipoDocumento> TipoDocumento { get; set; }
+    public DbSet<TipoDocumentoEtapa> TipoDocumentoEtapa { get; set; }
 
-
-	// Fluent API
-	protected override void OnModelCreating(ModelBuilder modelBuilder)
-	{
+    // Fluent API
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
         base.OnModelCreating(modelBuilder);
 
         // Builders: Conjunto Pessoa
@@ -56,5 +56,6 @@ public class AppDBContext : DbContext
         TipoProcessoBuilder.Build(modelBuilder);
         EtapaBuilder.Build(modelBuilder);
         TipoDocumentoBuilder.Build(modelBuilder);
+        TipoDocumentoEtapaBuilder.Build(modelBuilder);
     }
 }

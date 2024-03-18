@@ -26,27 +26,33 @@ public class SessaoRepository : ISessaoRepository
 
     public async Task<IEnumerable<Sessao>> GetOpenSessions()
     {
-        return await _dbContext.Sessao.Where(objeto => objeto.StatusSessao).Include(objeto => objeto.Usuario).ToListAsync();
+        return await _dbContext.Sessao.Where(sessao => sessao.StatusSessao).Include(sessao => sessao.Usuario).ToListAsync();
     }
 
     public async Task<IEnumerable<Sessao>> GetCloseSessions()
     {
-        return await _dbContext.Sessao.Where(objeto => !objeto.StatusSessao).ToListAsync();
+        return await _dbContext.Sessao.Where(sessao => !sessao.StatusSessao).ToListAsync();
     }
 
     public async Task<Sessao> GetLastSession(int id)
     {
-        return await _dbContext.Sessao.Where(objeto => objeto.IdUsuario == id).OrderByDescending(objeto => objeto.Id).FirstOrDefaultAsync(); ;
+        return await _dbContext.Sessao.Where(sessao => sessao.IdUsuario == id).OrderByDescending(sessao => sessao.Id).FirstOrDefaultAsync();
     }
 
     public async Task<Sessao> GetById(int id)
     {
-        return await _dbContext.Sessao.Where(objeto => objeto.Id == id).Include(objeto => objeto.Usuario).ThenInclude(usuario => usuario.TipoUsuario).FirstOrDefaultAsync();
+        // return await _dbContext.Sessao.Where(sessao => sessao.Id == id).Include(sessao => sessao.Usuario).ThenInclude(usuario => usuario.TipoUsuario).FirstOrDefaultAsync();
+        return await _dbContext.Sessao.Where(sessao => sessao.Id == id).FirstOrDefaultAsync();
+    }
+
+    public async Task<Sessao> GetByToken(string token)
+    {
+        return await _dbContext.Sessao.Where(sessao => sessao.TokenSessao == token).FirstOrDefaultAsync();
     }
 
     public async Task<Usuario> GetUser(int id)
     {
-        return await _dbContext.Sessao.Where(s => s.Id == id).Select(s => s.Usuario).FirstOrDefaultAsync();
+        return await _dbContext.Sessao.Where(sessao => sessao.Id == id).Select(sessao => sessao.Usuario).FirstOrDefaultAsync();
     }
 
     public async Task<Sessao> Create(Sessao sessao)
@@ -72,25 +78,24 @@ public class SessaoRepository : ISessaoRepository
         return sessao;
     }
 
-
-    public async Task<IEnumerable<Usuario>> GetOnlineUser()
+    public async Task<IEnumerable<Usuario>> GetOnlineUsers()
     {
         return await _dbContext.Usuario.GroupJoin(
             _dbContext.Sessao,
             usuario => usuario.Id,
             sessao => sessao.IdUsuario,
             (usuario, sessoes) => new { Usuario = usuario, UltimaSessao = sessoes.OrderByDescending(s => s.Id).FirstOrDefault() }
-        ).Where(u => u.Usuario.Id != 1 && (u.UltimaSessao != null && u.UltimaSessao.StatusSessao)).Select(u => u.Usuario).ToListAsync();
+        ).Where(sessao => sessao.Usuario.Id != 1 && (sessao.UltimaSessao != null && sessao.UltimaSessao.StatusSessao)).Select(sessao => sessao.Usuario).ToListAsync();
     }
 
-    public async Task<IEnumerable<Usuario>> GetOfflineUser()
+    public async Task<IEnumerable<Usuario>> GetOfflineUsers()
     {
         return await _dbContext.Usuario.GroupJoin(
             _dbContext.Sessao,
             usuario => usuario.Id,
             sessao => sessao.IdUsuario,
             (usuario, sessoes) => new { Usuario = usuario, UltimaSessao = sessoes.OrderByDescending(s => s.Id).FirstOrDefault() }
-        ).Where(objeto => objeto.Usuario.Id != 1 && (objeto.UltimaSessao == null || !objeto.UltimaSessao.StatusSessao)).Select(objeto => objeto.Usuario).ToListAsync();
+        ).Where(sessao => sessao.Usuario.Id != 1 && (sessao.UltimaSessao == null || !sessao.UltimaSessao.StatusSessao)).Select(sessao => sessao.Usuario).ToListAsync();
     }
 
 }

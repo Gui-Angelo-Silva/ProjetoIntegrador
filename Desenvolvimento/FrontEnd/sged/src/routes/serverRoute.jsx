@@ -71,7 +71,7 @@ export const ServerProvider = ({ children }) => {
         }
     }, []);
 
-    useEffect(() => {
+    /*useEffect(() => {
         const currentPathSegments = window.location.pathname.split('/');
         const permissionInRoute = currentPathSegments[1]?.toLowerCase();
         const typerPermissions = ["a", "b", "c", "d"];
@@ -155,7 +155,7 @@ export const ServerProvider = ({ children }) => {
             isExecuting = false;
         };
 
-    }, [liberateNavigate, componentMontage]);
+    }, [liberateNavigate, componentMontage]);*/
 
     return (
         <ServerContext.Provider value={{ inDevelopment, addSegment, clearSegment, removeSegment }}>

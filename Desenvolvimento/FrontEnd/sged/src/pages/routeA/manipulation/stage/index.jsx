@@ -205,11 +205,11 @@ export default function Stage() {
 
     return (
         <div className="flex flex-1 min-h-screen">
-            <div className="h-full w-full" style={{ display: 'flex', flexDirection: 'column' }}>
+            <div className="flex flex-col h-full w-full">
                 <NavBar />
                 <div className="flex flex-1 min-h-full">
                     <SideBar />
-                    <div className="min-h-screen" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
+                    <div className="flex-2 min-h-screen mr-[40px] ml-[80px] mt-[-5px] w-full">
                         <br />
                         <div className="flex flex-row">
                             <Link to="/a/registration">
@@ -218,9 +218,9 @@ export default function Stage() {
                             <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
                             <h3 className="text-2xl font-semibold text-gray-800">Etapa</h3>
                         </div>
-                        <div className="flex" style={{ alignItems: 'center' }}>
+                        <div className="flex items-center">
                             <div className="flex justify-center items-center mx-auto">
-                                <div className="relative items-stretch self-center justify-center" style={{ width: 500 }}>
+                                <div className="relative items-stretch self-center justify-center w-[500px]">
                                     <label htmlFor="default-search" className="mb-5 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                                     <div className="flex relative border rounded-lg border-[#BCBCBC]">
                                         <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -241,8 +241,9 @@ export default function Stage() {
                                 </div>
                             </div>
                             <div className="flex items-center">
-                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert(true)}>
-                                    Novo <FaPlus className="inline-block" style={{ alignItems: 'center' }} />
+                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 bg-[#004C57]" 
+                                    onClick={() => openCloseModalInsert(true)}>
+                                    Novo <FaPlus className="inline-block items-center"/>
                                 </button>
                             </div>
                         </div>
@@ -320,7 +321,7 @@ export default function Stage() {
                                 className="form-control rounded-md border-[#BCBCBC]"
                                 onChange={(e) => stage.setStageName(e.target.value)}
                             />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {stage.errorStageName}
                             </div>
                             <br />
@@ -383,7 +384,7 @@ export default function Stage() {
                                 onChange={(e) => stage.setStageName(e.target.value)}
                                 value={stage.stageName}
                             />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {stage.errorStageName}
                             </div>
                             <br />

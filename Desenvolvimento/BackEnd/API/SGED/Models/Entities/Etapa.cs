@@ -19,6 +19,6 @@ namespace SGED.Models.Entities
 		[ForeignKey("idtipoprocesso")]
 		public int IdTipoProcesso { get; set; }
 
-		public ICollection<TipoDocumento>? TipoDocumento { get; set; }
+		public ICollection<TipoDocumentoEtapa>? TipoDocumentoEtapas { get; set; }
 	}
 }

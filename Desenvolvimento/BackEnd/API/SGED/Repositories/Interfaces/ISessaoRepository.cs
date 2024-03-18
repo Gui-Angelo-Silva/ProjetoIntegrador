@@ -10,11 +10,12 @@ public interface ISessaoRepository
     Task<IEnumerable<Sessao>> GetCloseSessions();
     Task<Sessao> GetLastSession(int id);
     Task<Sessao> GetById(int id);
+    Task<Sessao> GetByToken(string token);
     Task<Usuario> GetUser(int id);
     Task<Sessao> Create(Sessao sessao);
     Task<Sessao> Update(Sessao sessao);
     Task<Sessao> Delete(int id);
 
-    Task<IEnumerable<Usuario>> GetOnlineUser();
-    Task<IEnumerable<Usuario>> GetOfflineUser();
+    Task<IEnumerable<Usuario>> GetOnlineUsers();
+    Task<IEnumerable<Usuario>> GetOfflineUsers();
 }

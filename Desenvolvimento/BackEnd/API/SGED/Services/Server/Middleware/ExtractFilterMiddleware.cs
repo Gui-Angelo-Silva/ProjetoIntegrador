@@ -14,7 +14,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using System.Reflection;
 
-namespace SGED.Services.Server.Filter
+namespace SGED.Services.Server.Middleware
 {
     public class ExtractFilterMiddleware
     {

@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SGED.Context;
@@ -11,20 +6,14 @@ using SGED.Repositories.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Entities;
 using SGED.Services.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using System.Text;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using SGED.Helpers;
 using SGED.Services.Server.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using SGED.Services.Server.Attributes;
-using System.Reflection;
-using Microsoft.AspNetCore.Mvc;
-using SGED.Services.Server.Filter;
-using Microsoft.AspNetCore.Mvc.Filters;
-using SGED.Services.Server.Functions;
+using SGED.Services.Server.Middleware;
+using Newtonsoft.Json;
 
 namespace SGED
 {
@@ -117,7 +106,8 @@ namespace SGED
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             // Injeção de dependências
-
+            
+            
             // Conjunto: Pessoa
 
             // Dependência: Municipe
@@ -186,12 +176,15 @@ namespace SGED
             services.AddScoped<ITipoDocumentoRepository, TipoDocumentoRepository>();
             services.AddScoped<ITipoDocumentoService, TipoDocumentoService>();
 
+            // Dependência: TipoDocumentoEtapa
+            services.AddScoped<ITipoDocumentoEtapaRepository, TipoDocumentoEtapaRepository>();
+            services.AddScoped<ITipoDocumentoEtapaService, TipoDocumentoEtapaService>();
+
 
             // Conjunto: Servidor
-            // Tasks
-            services.AddHostedService<SessionCleanupService>();
 
-            //services.AddSingleton<ExtractFilterMiddleware>();
+            // Serviço: Task de Fechar Sessão
+            services.AddHostedService<SessionCleanupService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -231,18 +224,35 @@ namespace SGED
 
             app.UseCors("MyPolicy");
 
-            // Middleware ExtractFilterMiddleware
-            app.UseWhen(context => context.Request.Method != "GET", appBuilder =>
+            /*app.UseWhen(context => context.Request.Path.StartsWithSegments("/api") && context.GetEndpoint()?.Metadata.GetMetadata<AnonymousAttribute>() == null,
+            appBuilder =>
             {
-                appBuilder.UseMiddleware<ExtractFilterMiddleware>();
+                appBuilder.UseValidateSessionMiddleware();
+                appBuilder.UseUpdateAuthorizeMiddleware();
             });
 
+            // Verifica se o status da resposta é 401 após a execução dos dois middlewares
             app.Use(async (context, next) =>
             {
+                // Acessa o valor do cabeçalho de autorização
+                var authorizationHeaderValue = context.Request.Headers["Authorization"];
+
+                // Configura a resposta para 401 (Não Autorizado)
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                context.Response.ContentType = "application/json";
+
+                // Escreve o valor do cabeçalho de autorização no corpo da resposta
+                await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = authorizationHeaderValue }));
+
+                // Retorna para interromper a execução do pipeline de middleware
+                return;
+
+
+                // Verifica se o status da resposta é 401 (Não Autorizado)
                 if (context.Response.StatusCode == StatusCodes.Status401Unauthorized) return;
 
-                await next();
-            });
+                await next(context);
+            });*/
 
             app.UseEndpoints(endpoints =>
             {

@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class Database : Migration
+    public partial class Database_v1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -80,6 +80,20 @@ namespace SGED.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_municipe", x => x.idmunicipe);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TipoDocumento",
+                columns: table => new
+                {
+                    idTipoDocumento = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    nomeTipoDocumento = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    descricaoTipoDocumento = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TipoDocumento", x => x.idTipoDocumento);
                 });
 
             migrationBuilder.CreateTable(
@@ -215,21 +229,28 @@ namespace SGED.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TipoDocumento",
+                name: "tipodocumentoetapa",
                 columns: table => new
                 {
-                    idTipoDocumento = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    nomeTipoDocumento = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
-                    descricaoTipoDocumento = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false),
                     IdEtapa = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    tipodocumentoetapa = table.Column<int>(type: "integer", nullable: false),
+                    TipoDocumentoId = table.Column<int>(type: "integer", nullable: false),
+                    IdTipoDocumento = table.Column<int>(type: "integer", nullable: false),
+                    EtapaId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TipoDocumento", x => x.idTipoDocumento);
+                    table.PrimaryKey("PK_tipodocumentoetapa", x => x.IdEtapa);
                     table.ForeignKey(
-                        name: "FK_TipoDocumento_etapa_IdEtapa",
-                        column: x => x.IdEtapa,
+                        name: "FK_tipodocumentoetapa_TipoDocumento_TipoDocumentoId",
+                        column: x => x.TipoDocumentoId,
+                        principalTable: "TipoDocumento",
+                        principalColumn: "idTipoDocumento",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tipodocumentoetapa_etapa_EtapaId",
+                        column: x => x.EtapaId,
                         principalTable: "etapa",
                         principalColumn: "idetapa",
                         onDelete: ReferentialAction.Cascade);
@@ -245,6 +266,8 @@ namespace SGED.Migrations
                     datahorafechamento = table.Column<string>(type: "text", nullable: true),
                     tokensessao = table.Column<string>(type: "text", nullable: false),
                     statussessao = table.Column<bool>(type: "boolean", nullable: false),
+                    emailpessoa = table.Column<string>(type: "text", nullable: false),
+                    nivelacesso = table.Column<string>(type: "text", nullable: false),
                     IdUsuario = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -611,9 +634,14 @@ namespace SGED.Migrations
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TipoDocumento_IdEtapa",
-                table: "TipoDocumento",
-                column: "IdEtapa");
+                name: "IX_tipodocumentoetapa_EtapaId",
+                table: "tipodocumentoetapa",
+                column: "EtapaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tipodocumentoetapa_TipoDocumentoId",
+                table: "tipodocumentoetapa",
+                column: "TipoDocumentoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_usuario_IdTipoUsuario",
@@ -637,7 +665,7 @@ namespace SGED.Migrations
                 name: "sessao");
 
             migrationBuilder.DropTable(
-                name: "TipoDocumento");
+                name: "tipodocumentoetapa");
 
             migrationBuilder.DropTable(
                 name: "logradouro");
@@ -647,6 +675,9 @@ namespace SGED.Migrations
 
             migrationBuilder.DropTable(
                 name: "usuario");
+
+            migrationBuilder.DropTable(
+                name: "TipoDocumento");
 
             migrationBuilder.DropTable(
                 name: "etapa");

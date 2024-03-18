@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
-using System.Text.Json.Serialization;
 using SGED.Helpers;
 using Newtonsoft.Json;
 
@@ -22,6 +21,10 @@ namespace SGED.DTO.Entities
         [Required(ErrorMessage = "O status é requerido!")]
         public Boolean StatusSessao { get; set; }
 
+        [JsonIgnore]
+        public string EmailPessoa { get; set; }
+
+        [JsonIgnore]
         public string NivelAcesso { get; set; }
 
 

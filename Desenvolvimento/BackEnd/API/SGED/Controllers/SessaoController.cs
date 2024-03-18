@@ -25,24 +25,26 @@ namespace SGED.Controllers
     {
         private readonly ISessaoService _sessaoService;
         private readonly IUsuarioService _usuarioService;
+        private readonly ITipoUsuarioService _tipoUsuarioService;
 
-        public SessaoController(ISessaoService sessaoService, IUsuarioService usuarioService)
+        public SessaoController(ISessaoService sessaoService, IUsuarioService usuarioService, ITipoUsuarioService tipoUsuarioService)
         {
             _sessaoService = sessaoService;
             _usuarioService = usuarioService;
+            _tipoUsuarioService = tipoUsuarioService;
         }
 
-        [HttpGet("GetOnline")]
-        public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetOnline()
+        [HttpGet("GetOnlineUsers")]
+        public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetOnlineUsers()
         {
-            var usuariosDTO = await _sessaoService.GetOnlineUser();
+            var usuariosDTO = await _sessaoService.GetOnlineUsers();
             return Ok(usuariosDTO);
         }
 
-        [HttpGet("GetOffline")]
-        public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetOffline()
+        [HttpGet("GetOfflineUsers")]
+        public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetOfflineUsers()
         {
-            var usuariosDTO = await _sessaoService.GetOfflineUser();
+            var usuariosDTO = await _sessaoService.GetOfflineUsers();
             return Ok(usuariosDTO);
         }
 
@@ -60,6 +62,7 @@ namespace SGED.Controllers
         {
             if (loginDTO is null) return BadRequest(new { status = false, response = "Dados inválidos!" });
             var usuarioDTO = await _usuarioService.Login(loginDTO);
+            var tipoUsuarioDTO = await _tipoUsuarioService.GetById(usuarioDTO.Id);
 
             if (usuarioDTO is not null)
             {
@@ -70,7 +73,9 @@ namespace SGED.Controllers
                     DataHoraInicio = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"),
                     StatusSessao = true,
                     TokenSessao = SessaoDTO.GenerateToken(usuarioDTO.EmailPessoa),
-                    NivelAcesso = usuarioDTO.TipoUsuarioDTO.NivelAcesso
+
+                    EmailPessoa = usuarioDTO.EmailPessoa,
+                    NivelAcesso = tipoUsuarioDTO.NivelAcesso
                 };
 
                 if (ultimaSessao is null || !ultimaSessao.StatusSessao)
@@ -78,8 +83,7 @@ namespace SGED.Controllers
                     //await _sessaoService.Remove(ultimaSessao.Id);
 
                     await _sessaoService.Create(sessaoDTO);
-                    DataSession session = new DataSession(); session.Id = sessaoDTO.Id; session.EmailPessoa = usuarioDTO.EmailPessoa;
-                    return Ok(new { status = true, response = session});
+                    return Ok(new { status = true, response = sessaoDTO.TokenSessao });
                 }
                 else if (ultimaSessao.StatusSessao)
                 { 
@@ -87,7 +91,7 @@ namespace SGED.Controllers
                     else
                     {
                         await _sessaoService.Create(sessaoDTO);
-                        return Ok(new { status = true, response = new { id = sessaoDTO.Id, email = usuarioDTO.EmailPessoa } });
+                        return Ok(new { status = true, response = sessaoDTO.TokenSessao });
                     }
                 }
             }
@@ -96,19 +100,17 @@ namespace SGED.Controllers
         }
 
         [HttpPut("Validation")]
-        public async Task<IActionResult> ValidateSession(int id, string email)
+        public async Task<IActionResult> ValidateSession(string token)
         {
-            var sessaoDTO = await _sessaoService.GetById(id);
+            var sessaoDTO = await _sessaoService.GetByToken(token);
             if (sessaoDTO is null) return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
 
-            var status = SessaoDTO.ValidateToken(sessaoDTO.TokenSessao, email);
-
-            if (status)
+            if (sessaoDTO.StatusSessao && SessaoDTO.ValidateToken(sessaoDTO.TokenSessao, sessaoDTO.EmailPessoa))
             {
-                sessaoDTO.TokenSessao = SessaoDTO.GenerateToken(email); 
+                sessaoDTO.TokenSessao = SessaoDTO.GenerateToken(sessaoDTO.EmailPessoa); 
                 await _sessaoService.Update(sessaoDTO);
 
-                return Ok(new { status = true, response = "Sessão atualizada!" });
+                return Ok(new { status = true, response = sessaoDTO.TokenSessao });
             }
             else
             {

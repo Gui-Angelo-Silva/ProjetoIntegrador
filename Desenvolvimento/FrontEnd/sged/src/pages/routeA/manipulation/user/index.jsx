@@ -238,23 +238,23 @@ export default function User() {
 
     return (
         <div className="flex flex-1 min-h-screen">
-            <div className="h-full w-full" style={{ display: 'flex', flexDirection: 'column' }}>
+            <div className="flex flex-col h-full w-full">
                 <NavBar /> {/* NavBar no topo */}
                 <div className="flex flex-1 min-h-full">
                     <SideBar />
-                    <div className="min-h-screen" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
+                    <div className="flex-2 min-h-screen mr-[40px] ml-[80px] mt-[-5px] w-full">
                         <br />
                         <div className="flex flex-row">
-                            <h3 className="text-2xl font-semibold text-gray-500 pr-2" style={{ cursor: 'pointer' }} onClick={() => server.removeSegment(1)}>Cadastros</h3>
+                            <h3 className="text-2xl font-semibold text-gray-500 pr-2 cursor-pointer" onClick={() => server.removeSegment(1)}>Cadastros</h3>
                             {/*<Link onClick={() => server.removeSegment(1)}>
                                 <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
                             </Link>*/}
                             <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
                             <h3 className="text-2xl font-semibold text-gray-800">Usuário</h3>
                         </div>
-                        <div className="flex" style={{ alignItems: 'center' }}>
+                        <div className="flex items-center">
                             <div className="flex justify-center items-center mx-auto">
-                                <div className="relative items-stretch self-center justify-center" style={{ width: 500 }}>
+                                <div className="relative items-stretch self-center justify-center w-[500px]">
                                     <label htmlFor="default-search" className="mb-5 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                                     <div className="flex relative border rounded-lg border-[#BCBCBC]">
                                         <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -285,8 +285,8 @@ export default function User() {
                                 </div>
                             </div>
                             <div className="flex items-center">
-                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert(true)}>
-                                    Novo <FaPlus className="inline-block" style={{ alignItems: 'center' }} />
+                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 bg-[#004C57]" onClick={() => openCloseModalInsert(true)}>
+                                    Novo <FaPlus className="inline-block items-center" />
                                 </button>
                             </div>
                         </div>
@@ -354,23 +354,16 @@ export default function User() {
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Usuário</ModalHeader>
                     <ModalBody>
                         <div className="form-group">
-                            <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <div className="flex relative justify-center items-center ">
                                 <input
                                     id="fileInputInsert"
                                     type="file"
-                                    style={{ display: 'none' }}
+                                    className="hidden"
                                     onChange={(e) => user.insertPicture(e.target.files[0])}
                                 />
                                 <img
                                     src={user.personPicture ? user.personPicture : user.defaultPicture}
-                                    style={{
-                                        cursor: 'pointer',
-                                        borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
-                                        width: '200px', // ajuste o tamanho da imagem conforme necessário
-                                        height: '200px', // ajuste o tamanho da imagem conforme necessário
-                                        objectFit: 'cover', // para garantir que a imagem seja totalmente coberta pelo círculo
-                                        boxShadow: '0 0 0 3px white, 0 0 0 5px black', // Adicionando uma borda branca (interna) e uma borda preta (externa)
-                                    }}
+                                    className="cursor-pointer rounded-full w-[200px] h-[200px] object-cover p-1 shadow-md"
                                     title="Selecionar Imagem"
                                     onClick={(e) => user.handleImageClick("Insert")}
                                 />
@@ -379,15 +372,11 @@ export default function User() {
                                         src={user.closeIcon}
                                         style={{
                                             position: 'absolute',
-                                            top: '5px', // Distância do topo
-                                            left: 'calc(50% + 150px)', // Centralizando horizontalmente e adicionando 100px à esquerda após o meio
-                                            transform: 'translate(-50%, -50%)', // Centralizando completamente
-                                            cursor: 'pointer',
-                                            borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
-                                            width: '20px', // ajuste o tamanho da imagem conforme necessário
-                                            height: '20px', // ajuste o tamanho da imagem conforme necessário
-                                            objectFit: 'cover', // para garantir que a imagem seja totalmente coberta pelo círculo
+                                            top: '5px',
+                                            left: 'calc(50% + 150px)',
+                                            transform: 'translate(-50%, -50%)',
                                         }}
+                                        className="cursor-pointer w-[20px] h-[20px] object-cover rounded-full"
                                         onClick={(e) => user.removePicture("Insert")}
                                     />
                                 )}
@@ -396,14 +385,14 @@ export default function User() {
                             <label className="text-[#444444]">Nome: </label>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.setPersonName(e.target.value)} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {user.errorPersonName}
                             </div>
                             <br />
                             <label className="text-[#444444]">E-mail:</label>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.setPersonEmail(e.target.value.toLowerCase())} value={user.personEmail} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {user.errorPersonEmail}
                             </div>
                             <br />
@@ -413,24 +402,24 @@ export default function User() {
                                 <input type="password" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.setUserPassword(e.target.value)} id="passwordInput" />
                                 <i className="toggle-password fas fa-eye" onClick={() => togglePasswordVisibility()} ></i>
                             </div>
-                            <div className="error-message" style={{ fontSize: '14px', color: 'black' }}>
+                            <div className="text-sm text-black">
                                 {user.passwordStrength}
                             </div>
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {user.errorUserPassword}
                             </div>
                             <br />
                             <label className="text-[#444444]">Cargo: </label>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.setUserOffice(e.target.value)} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {user.errorUserOffice}
                             </div>
                             <br />
                             <label className="text-[#444444]">Telefone: </label>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.handlePhone(e.target.value)} value={user.personTelephone} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {user.errorPersonTelephone}
                             </div>
                             <br />
@@ -446,7 +435,7 @@ export default function User() {
                             </select>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.handleCpfCnpj(e.target.value)} value={user.personCpfCnpj} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {user.errorPersonCpfCnpj}
                             </div>
                             <br />
@@ -462,7 +451,7 @@ export default function User() {
                             </select>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.handleRgIe(e.target.value)} value={user.personRgIe} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {user.errorPersonRgIe}
                             </div>
                             <br />
@@ -497,7 +486,7 @@ export default function User() {
                                 }}
                                 className="style-select"
                             />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {user.errorIdTypeUser}
                             </div>
                         </div>
@@ -511,23 +500,16 @@ export default function User() {
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Usuário</ModalHeader>
                     <ModalBody>
                         <div className="form-group">
-                            <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <div className="flex relative justify-center items-center">
                                 <input
                                     id="fileInputInsert"
                                     type="file"
-                                    style={{ display: 'none' }}
+                                    className="hidden"
                                     onChange={(e) => user.insertPicture(e.target.files[0])}
                                 />
                                 <img
                                     src={user.personPicture ? user.personPicture : user.defaultPicture}
-                                    style={{
-                                        cursor: 'pointer',
-                                        borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
-                                        width: '200px', // ajuste o tamanho da imagem conforme necessário
-                                        height: '200px', // ajuste o tamanho da imagem conforme necessário
-                                        objectFit: 'cover', // para garantir que a imagem seja totalmente coberta pelo círculo
-                                        boxShadow: '0 0 0 3px white, 0 0 0 5px black', // Adicionando uma borda branca (interna) e uma borda preta (externa)
-                                    }}
+                                    className="cursor-pointer rounded-full w-[200px] h-[200px] object-cover p-1 shadow-md"
                                     title="Selecionar Imagem"
                                     onClick={(e) => user.handleImageClick("Insert")}
                                 />
@@ -536,15 +518,11 @@ export default function User() {
                                         src={user.closeIcon}
                                         style={{
                                             position: 'absolute',
-                                            top: '5px', // Distância do topo
-                                            left: 'calc(50% + 150px)', // Centralizando horizontalmente e adicionando 100px à esquerda após o meio
-                                            transform: 'translate(-50%, -50%)', // Centralizando completamente
-                                            cursor: 'pointer',
-                                            borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
-                                            width: '20px', // ajuste o tamanho da imagem conforme necessário
-                                            height: '20px', // ajuste o tamanho da imagem conforme necessário
-                                            objectFit: 'cover', // para garantir que a imagem seja totalmente coberta pelo círculo
+                                            top: '5px', 
+                                            left: 'calc(50% + 150px)',
+                                            transform: 'translate(-50%, -50%)', 
                                         }}
+                                        className="cursor-pointer w-[20px] h-[20px] object-cover rounded-full"
                                         onClick={(e) => user.removePicture("Insert")}
                                     />
                                 )}
@@ -555,13 +533,13 @@ export default function User() {
                             <label>Nome:</label>
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomePessoa" onChange={(e) => user.setPersonName(e.target.value)} value={user.personName} />
                             <br />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {user.errorPersonName}
                             </div>
                             <label>E-mail:</label>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="emailPessoa" onChange={(e) => user.setPersonEmail(e.target.value.toLowerCase())} value={user.personEmail} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {user.errorPersonEmail}
                             </div>
                             <br />
@@ -571,20 +549,20 @@ export default function User() {
                             <div className="error-message" style={{ fontSize: '14px', color: 'black' }}>
                                 {user.passwordStrength}
                             </div>
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {user.errorUserPassword}
                             </div>
                             <br />
                             <label>Cargo:</label>
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="cargoUsuario" onChange={(e) => user.setUserOffice(e.target.value)} value={user.userOffice} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {user.errorUserOffice}
                             </div>
                             <br />
                             <label className="text-[#444444]">Telefone: </label>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.handlePhone(e.target.value)} value={user.personTelephone} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {user.errorPersonTelephone}
                             </div>
                             <br />
@@ -600,7 +578,7 @@ export default function User() {
                             </select>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.handleCpfCnpj(e.target.value)} value={user.personCpfCnpj} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {user.errorPersonCpfCnpj}
                             </div>
                             <br />
@@ -616,7 +594,7 @@ export default function User() {
                             </select>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => user.handleRgIe(e.target.value)} value={user.personRgIe} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {user.errorPersonRgIe}
                             </div>
                             <br />
@@ -651,7 +629,7 @@ export default function User() {
                                 }}
                                 className="style-select"
                             />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {user.errorIdTypeUser}
                             </div>
                             <br />
@@ -675,8 +653,6 @@ export default function User() {
                             <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete(false)}>Cancelar</button>
                             <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteUser()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'} </button>{"  "}
                         </div>
-                        {/* <ModalFooter>
-                    </ModalFooter> */}
                     </ModalBody>
                 </Modal>
             </div >

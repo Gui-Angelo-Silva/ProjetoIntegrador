@@ -43,12 +43,21 @@ public class SessaoService : ISessaoService
 
     public async Task<SessaoDTO> GetById(int id)
     {
-        var sessao = await _sessaoRepository.GetById(id);
+        /*var sessao = await _sessaoRepository.GetById(id);
         var sessaoDTO = _mapper.Map<SessaoDTO>(sessao);
         sessaoDTO.UsuarioDTO = _mapper.Map<UsuarioDTO>(sessao.Usuario);
         sessaoDTO.UsuarioDTO.TipoUsuarioDTO = _mapper.Map<TipoUsuarioDTO>(sessao.Usuario.TipoUsuario);
 
-        return sessaoDTO;
+        return sessaoDTO;*/
+
+        var sessao = await _sessaoRepository.GetById(id);
+        return _mapper.Map<SessaoDTO>(sessao);
+    }
+
+    public async Task<SessaoDTO> GetByToken(string token)
+    {
+        var sessao = await _sessaoRepository.GetByToken(token);
+        return _mapper.Map<SessaoDTO>(sessao);
     }
 
     public async Task<UsuarioDTO> GetUser(int id)
@@ -76,15 +85,15 @@ public class SessaoService : ISessaoService
     }
 
 
-    public async Task<IEnumerable<UsuarioDTO>> GetOnlineUser()
+    public async Task<IEnumerable<UsuarioDTO>> GetOnlineUsers()
     {
-        var usuarios = await _sessaoRepository.GetOnlineUser();
+        var usuarios = await _sessaoRepository.GetOnlineUsers();
         return _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
     }
 
-    public async Task<IEnumerable<UsuarioDTO>> GetOfflineUser()
+    public async Task<IEnumerable<UsuarioDTO>> GetOfflineUsers()
     {
-        var usuarios = await _sessaoRepository.GetOfflineUser();
+        var usuarios = await _sessaoRepository.GetOfflineUsers();
         return _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
     }
 }

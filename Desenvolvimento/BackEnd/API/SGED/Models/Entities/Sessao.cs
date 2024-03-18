@@ -23,6 +23,12 @@ namespace SGED.Models.Entities
         [Column("statussessao")]
         public Boolean StatusSessao { get; set; }
 
+        [Column("emailpessoa")]
+        public string EmailPessoa { get; set; }
+
+        [Column("nivelacesso")]
+        public string NivelAcesso { get; set; }
+
         public Usuario? Usuario { get; set; }
 
         [ForeignKey("idusuario")]

@@ -141,11 +141,11 @@ export default function Citizen() {
 
     return (
         <div className="flex flex-1 min-h-screen">
-            <div className="h-full w-full" style={{ display: 'flex', flexDirection: 'column' }}>
-                <NavBar /> {/* NavBar no topo */}
+            <div className="flex flex-col h-full w-full">
+                <NavBar />
                 <div className="flex flex-1 min-h-full">
                     <SideBar />
-                    <div className="min-h-screen" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
+                    <div className="flex-2 min-h-screen mr-[40px] ml-[80px] mt-[-5px] w-full">
                         <br />
                         <div className="flex flex-row">
                             <Link to="/a/registration">
@@ -154,9 +154,9 @@ export default function Citizen() {
                             <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
                             <h3 className="text-2xl font-semibold text-gray-800">Munícipe</h3>
                         </div>
-                        <div className="flex" style={{ alignItems: 'center' }}>
+                        <div className="flex items-center">
                             <div className="flex justify-center items-center mx-auto">
-                                <div className="relative items-stretch self-center justify-center" style={{ width: 500 }}>
+                                <div className="relative items-stretch self-center justify-center w-[500px]">
                                     <label htmlFor="default-search" className="mb-5 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                                     <div className="flex relative border rounded-lg border-[#BCBCBC]">
                                         <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -203,7 +203,7 @@ export default function Citizen() {
                                     return (
                                         <li className="grid grid-cols-6 w-full" key={object.id}>
                                             <span className="flex pl-5 justify-center items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">
-                                                <img src={object.imagemPessoa} style={{ cursor: 'pointer', borderRadius: '50%', width: '40px', height: '40px', objectFit: 'cover', boxShadow: '0 0 0 1px black', }} />
+                                                <img src={object.imagemPessoa} className="cursor-pointer rounded-full w-[40px] h-[40px] object-cover shadow-md" />
                                             </span>
                                             <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.nomePessoa}</span>
                                             <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.emailPessoa}</span>
@@ -252,23 +252,16 @@ export default function Citizen() {
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Munícipe</ModalHeader>
                     <ModalBody>
                         <div className="form-group">
-                            <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <div className="flex relative justify-center items-center">
                                 <input
                                     id="fileInputInsert"
                                     type="file"
-                                    style={{ display: 'none' }}
+                                    className="hidden"
                                     onChange={(e) => citizen.insertPicture(e.target.files[0])}
                                 />
                                 <img
                                     src={citizen.personPicture}
-                                    style={{
-                                        cursor: 'pointer',
-                                        borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
-                                        width: '200px', // ajuste o tamanho da imagem conforme necessário
-                                        height: '200px', // ajuste o tamanho da imagem conforme necessário
-                                        objectFit: 'cover', // para garantir que a imagem seja totalmente coberta pelo círculo
-                                        boxShadow: '0 0 0 3px white, 0 0 0 5px black', // Adicionando uma borda branca (interna) e uma borda preta (externa)
-                                    }}
+                                    className="cursor-pointer rounded-full w-[200px] h-[200px] object-cover p-1 shadow-md"
                                     title="Selecionar Imagem"
                                     onClick={(e) => citizen.handleImageClick("Insert")}
                                 />
@@ -280,38 +273,34 @@ export default function Citizen() {
                                             top: '5px', // Distância do topo
                                             left: 'calc(50% + 150px)', // Centralizando horizontalmente e adicionando 100px à esquerda após o meio
                                             transform: 'translate(-50%, -50%)', // Centralizando completamente
-                                            cursor: 'pointer',
-                                            borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
-                                            width: '20px', // ajuste o tamanho da imagem conforme necessário
-                                            height: '20px', // ajuste o tamanho da imagem conforme necessário
-                                            objectFit: 'cover', // para garantir que a imagem seja totalmente coberta pelo círculo
                                         }}
+                                        className="cursor-pointer w-[20px] h-[20px] object-cover rounded-full"
                                         onClick={(e) => citizen.removePicture("Insert")}
                                     />
                                 )}
                             </div>
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {citizen.errorPersonPicture}
                             </div>
                             <br />
                             <label className="text-[#444444]">Nome: </label>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => citizen.setPersonName(e.target.value)} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {citizen.errorPersonName}
                             </div>
                             <br />
                             <label className="text-[#444444]">E-mail:</label>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => citizen.setPersonEmail(e.target.value.toLowerCase())} value={citizen.personEmail} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {citizen.errorPersonEmail}
                             </div>
                             <br />
                             <label className="text-[#444444]">Telefone: </label>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => citizen.handlePhone(e.target.value)} value={citizen.personTelephone} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {citizen.errorPersonTelephone}
                             </div>
                             <br />
@@ -327,7 +316,7 @@ export default function Citizen() {
                             </select>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => citizen.handleCpfCnpj(e.target.value)} value={citizen.personCpfCnpj} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {citizen.errorPersonCpfCnpj}
                             </div>
                             <br />
@@ -343,7 +332,7 @@ export default function Citizen() {
                             </select>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => citizen.handleRgIe(e.target.value)} value={citizen.personRgIe} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {citizen.errorPersonRgIe}
                             </div>
                             <br />
@@ -358,23 +347,16 @@ export default function Citizen() {
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Munícipe</ModalHeader>
                     <ModalBody>
                         <div className="form-group">
-                            <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <div className="flex relative justify-center items-center">
                                 <input
                                     id="fileInputInsert"
                                     type="file"
-                                    style={{ display: 'none' }}
+                                    className="hidden"
                                     onChange={(e) => citizen.insertPicture(e.target.files[0])}
                                 />
                                 <img
                                     src={citizen.personPicture ? citizen.personPicture : citizen.defaultPicture}
-                                    style={{
-                                        cursor: 'pointer',
-                                        borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
-                                        width: '200px', // ajuste o tamanho da imagem conforme necessário
-                                        height: '200px', // ajuste o tamanho da imagem conforme necessário
-                                        objectFit: 'cover', // para garantir que a imagem seja totalmente coberta pelo círculo
-                                        boxShadow: '0 0 0 3px white, 0 0 0 5px black', // Adicionando uma borda branca (interna) e uma borda preta (externa)
-                                    }}
+                                    className="cursor-pointer rounded-full w-[200px] h-[200px] object-cover p-1 shadow-md"
                                     title="Selecionar Imagem"
                                     onClick={(e) => citizen.handleImageClick("Insert")}
                                 />
@@ -386,17 +368,13 @@ export default function Citizen() {
                                             top: '5px', // Distância do topo
                                             left: 'calc(50% + 150px)', // Centralizando horizontalmente e adicionando 100px à esquerda após o meio
                                             transform: 'translate(-50%, -50%)', // Centralizando completamente
-                                            cursor: 'pointer',
-                                            borderRadius: '50%', // para fazer a imagem ter bordas arredondadas
-                                            width: '20px', // ajuste o tamanho da imagem conforme necessário
-                                            height: '20px', // ajuste o tamanho da imagem conforme necessário
-                                            objectFit: 'cover', // para garantir que a imagem seja totalmente coberta pelo círculo
                                         }}
+                                        className="cursor-pointer w-[20px] h-[20px] object-cover rounded-full"
                                         onClick={(e) => citizen.removePicture("Insert")}
                                     />
                                 )}
                             </div>
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {citizen.errorPersonPicture}
                             </div>
                             <br />
@@ -405,13 +383,13 @@ export default function Citizen() {
                             <label>Nome:</label>
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomePessoa" onChange={(e) => citizen.setPersonName(e.target.value)} value={citizen.personName} />
                             <br />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {citizen.errorPersonName}
                             </div>
                             <label>E-mail:</label>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="emailPessoa" onChange={(e) => citizen.setPersonEmail(e.target.value.toLowerCase())} value={citizen.personEmail} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {citizen.errorPersonEmail}
                             </div>
                             <br />
@@ -427,7 +405,7 @@ export default function Citizen() {
                             </select>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => citizen.handleCpfCnpj(e.target.value)} value={citizen.personCpfCnpj} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {citizen.errorPersonCpfCnpj}
                             </div>
                             <br />
@@ -443,7 +421,7 @@ export default function Citizen() {
                             </select>
                             <br />
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => citizen.handleRgIe(e.target.value)} value={citizen.personRgIe} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
+                            <div className="text-sm text-red-600">
                                 {citizen.errorPersonRgIe}
                             </div>
                             <br />

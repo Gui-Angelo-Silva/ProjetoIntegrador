@@ -13,6 +13,8 @@ namespace SGED.Context.Builders
             modelBuilder.Entity<Sessao>().Property(b => b.DataHoraEncerramento);
             modelBuilder.Entity<Sessao>().Property(b => b.TokenSessao);
             modelBuilder.Entity<Sessao>().Property(b => b.StatusSessao).IsRequired();
+            modelBuilder.Entity<Sessao>().Property(b => b.EmailPessoa);
+            modelBuilder.Entity<Sessao>().Property(b => b.NivelAcesso);
             modelBuilder.Entity<Sessao>().HasOne(b => b.Usuario).WithMany().HasForeignKey(b => b.IdUsuario);
 
             // Relacionamento: Usuario -> Sessao

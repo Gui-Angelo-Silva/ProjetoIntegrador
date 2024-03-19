@@ -183,8 +183,11 @@ namespace SGED
 
             // Conjunto: Servidor
 
-            // Serviço: Task de Fechar Sessão
+            // Task: Fechar Sessão
             services.AddHostedService<SessionCleanupService>();
+
+            // Task: Remover Sessões
+            services.AddHostedService<RemoveSessionService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -228,28 +231,10 @@ namespace SGED
             appBuilder =>
             {
                 appBuilder.UseValidateSessionMiddleware();
-                //appBuilder.UseUpdateAuthorizeMiddleware();
             });
 
-            // Verifica se o status da resposta é 401 após a execução dos dois middlewares
             app.Use(async (context, next) =>
             {
-                /*
-                // Acessa o valor do cabeçalho de autorização
-                var authorizationHeaderValue = context.Request.Headers["Authorization"];
-
-                // Configura a resposta para 401 (Não Autorizado)
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                context.Response.ContentType = "application/json";
-
-                // Escreve o valor do cabeçalho de autorização no corpo da resposta
-                await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = authorizationHeaderValue }));
-
-                // Retorna para interromper a execução do pipeline de middleware
-                return;
-                */
-
-                // Verifica se o status da resposta é 401 (Não Autorizado)
                 if (context.Response.StatusCode == StatusCodes.Status401Unauthorized) return;
 
                 await next(context);

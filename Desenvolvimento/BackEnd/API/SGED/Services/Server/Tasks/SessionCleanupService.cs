@@ -16,8 +16,7 @@ namespace SGED.Services.Server.Tasks
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             using var scope = _serviceProvider.CreateScope();
-            var _sessaoRepository = scope.ServiceProvider.GetRequiredService<ISessaoRepository>();
-            var _usuarioRepository = scope.ServiceProvider.GetRequiredService<IUsuarioRepository>();
+            var _sessionRepository = scope.ServiceProvider.GetRequiredService<ISessaoRepository>();
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -25,23 +24,23 @@ namespace SGED.Services.Server.Tasks
                 try
                 {
                     // Obter todas as sessões abertas
-                    var sessoes = await _sessaoRepository.GetOpenSessions();
+                    var sessions = await _sessionRepository.GetOpenSessions();
 
-                    foreach (var sessao in sessoes)
+                    foreach (var session in sessions)
                     {
                         try
                         {
                             // Verificar se o token é válido
-                            var statusToken = SessaoDTO.ValidateToken(sessao.TokenSessao, sessao.Usuario.EmailPessoa);
+                            var statusToken = SessaoDTO.ValidateToken(session.TokenSessao, session.EmailPessoa);
 
                             // Se o token for inválido, atualizar o status da sessão no banco de dados
                             if (!statusToken)
                             {
-                                sessao.StatusSessao = false;
-                                sessao.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                                session.StatusSessao = false;
+                                session.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
 
                                 // Atualizar a sessão no banco de dados
-                                await _sessaoRepository.Update(sessao);
+                                await _sessionRepository.Update(session);
                             }
                         }
                         catch (Exception ex)

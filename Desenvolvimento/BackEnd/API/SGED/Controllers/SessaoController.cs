@@ -11,7 +11,6 @@ using Newtonsoft.Json;
 using System.Diagnostics.Eventing.Reader;
 using MySqlX.XDevAPI;
 using SGED.Services.Entities;
-using SGED.Services.Server.Functions;
 using Microsoft.AspNetCore.Authorization;
 using SGED.Services.Server.Attributes;
 using SGED.Helpers;
@@ -62,10 +61,10 @@ namespace SGED.Controllers
         {
             if (loginDTO is null) return BadRequest(new { status = false, response = "Dados inválidos!" });
             var usuarioDTO = await _usuarioService.Login(loginDTO);
-            var tipoUsuarioDTO = await _tipoUsuarioService.GetById(usuarioDTO.Id);
 
             if (usuarioDTO is not null)
             {
+                var tipoUsuarioDTO = await _tipoUsuarioService.GetById(usuarioDTO.Id);
                 var ultimaSessao = await _sessaoService.GetLastSession(usuarioDTO.Id);
                 SessaoDTO sessaoDTO = new()
                 {

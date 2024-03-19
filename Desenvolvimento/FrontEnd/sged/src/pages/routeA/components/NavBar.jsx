@@ -13,7 +13,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import LogoJales from '../../../assets/pages/LogoJales.png'
-//import LogoProjeto from '../../../assets/.../logoSGED.png'
+import LogoProjeto from '../../../../public/logoSGED.png'
 
 import MoonIcon from '@mui/icons-material/DarkModeOutlined';
 import SunIcon from '@mui/icons-material/WbSunnyOutlined';

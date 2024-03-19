@@ -29,7 +29,7 @@ export const SessionProvider = ({ children }) => {
         var autentication = false;
 
         try {
-            const response = await connection.objectUrl("Login").actionUrl("Autentication").postOrder(object);
+            const response = await connection.objectUrl("Sessao").actionUrl("Autentication").postOrder(object);
 
             if (response.status) {
                 const data = response.data;

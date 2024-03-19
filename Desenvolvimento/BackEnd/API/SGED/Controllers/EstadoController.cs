@@ -6,7 +6,6 @@ using System.Reflection.Metadata.Ecma335;
 using Npgsql;
 using SGED.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
-using SGED.Services.Server.Functions;
 
 namespace SGED.Controllers
 {
@@ -25,7 +24,6 @@ namespace SGED.Controllers
         }
 
         [HttpGet(Name = "GetEstados")]
-        [Authorization("A")]
         public async Task<ActionResult<IEnumerable<EstadoDTO>>> GetAll()
         {
             var estadosDTO = await _estadoService.GetAll();

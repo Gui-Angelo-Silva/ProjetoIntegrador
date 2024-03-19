@@ -15,8 +15,9 @@ namespace SGED.Services.Server.Tasks
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             using var scope = _serviceProvider.CreateScope();
-            var _sessaoRepository = scope.ServiceProvider.GetRequiredService<ISessaoRepository>();
-            var _usuarioRepository = scope.ServiceProvider.GetRequiredService<IUsuarioRepository>();
+            var _sessionRepository = scope.ServiceProvider.GetRequiredService<ISessaoRepository>();
+
+            string dateTime = DateTime.Now.AddDays(-7).ToString("dd/MM/yyyy HH:mm:ss");
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -24,18 +25,13 @@ namespace SGED.Services.Server.Tasks
                 try
                 {
                     // Obtém todas as sessões agrupadas por usuário e ordenadas pelo ID
-                    var sessionsGroupedByUser = await _sessaoRepository.GetAllSessionsGroupedByUser();
+                    var sessions = await _sessionRepository.GetCloseSessions();
 
-                    foreach (var userSessions in sessionsGroupedByUser)
+                    foreach (var session in sessions)
                     {
-                        // Verifica se o grupo possui mais de uma sessão
-                        if (userSessions.Count() > 1)
+                        if (String.Compare(session.DataHoraEncerramento, dateTime) > 0)
                         {
-                            // Remove todas as sessões com StatusSessao igual a false
-                            foreach (var session in userSessions)
-                            {
-                                if (!session.StatusSessao) await _sessaoRepository.Delete(session.Id);
-                            }
+                            _sessionRepository.Delete(session.Id);
                         }
                     }
 
@@ -45,8 +41,8 @@ namespace SGED.Services.Server.Tasks
                     return;
                 }
 
-                // Aguarda 10 minutos antes de verificar novamente
-                await Task.Delay(TimeSpan.FromDays(7), stoppingToken);
+                // Aguarda 1 dia antes de verificar novamente
+                await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
             }
         }
     }

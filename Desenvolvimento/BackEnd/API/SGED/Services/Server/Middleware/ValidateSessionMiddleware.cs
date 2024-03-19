@@ -40,8 +40,8 @@ namespace SGED.Services.Server.Middleware
                     {
                         context.Response.Headers.Remove("Authorization");
 
-                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        context.Response.ContentType = "text/plain";
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                        context.Response.ContentType = "application/json";
                         await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = "Erro: Token inválido!" }));
                         return;
                     }
@@ -52,8 +52,8 @@ namespace SGED.Services.Server.Middleware
                     {
                         context.Response.Headers.Remove("Authorization");
 
-                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        context.Response.ContentType = "text/plain";
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                        context.Response.ContentType = "application/json";
                         await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = "Erro: Sessão não encontrada!" }));
                         return;
                     }
@@ -65,8 +65,8 @@ namespace SGED.Services.Server.Middleware
                         sessao.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
                         await _sessaoRepository.Update(sessao);
 
-                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        context.Response.ContentType = "text/plain";
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                        context.Response.ContentType = "application/json";
                         await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = "Erro: Sessão expirada!" }));
                         return;
                     }
@@ -85,16 +85,16 @@ namespace SGED.Services.Server.Middleware
                 {
                     context.Response.Headers.Remove("Authorization");
 
-                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    context.Response.ContentType = "text/plain";
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    context.Response.ContentType = "application/json";
                     await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = "Erro: Token inválido!" }));
                     return;
                 }
             }
             else
             {
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                context.Response.ContentType = "text/plain";
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                context.Response.ContentType = "application/json";
                 await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = "Token não informado!" }));
                 return;
             }

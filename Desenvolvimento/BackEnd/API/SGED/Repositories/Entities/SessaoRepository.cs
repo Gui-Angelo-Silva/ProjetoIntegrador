@@ -26,7 +26,7 @@ public class SessaoRepository : ISessaoRepository
 
     public async Task<IEnumerable<Sessao>> GetOpenSessions()
     {
-        return await _dbContext.Sessao.Where(sessao => sessao.StatusSessao).Include(sessao => sessao.Usuario).ToListAsync();
+        return await _dbContext.Sessao.Where(sessao => sessao.StatusSessao).ToListAsync();
     }
 
     public async Task<IEnumerable<Sessao>> GetCloseSessions()

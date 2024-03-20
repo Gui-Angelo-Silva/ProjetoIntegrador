@@ -181,18 +181,18 @@ export default function TypeUser() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-4 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="flex ml-5 text-white text-lg font-semibold">Tipo de Usuário</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Nível de Acesso</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
-                                <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                                <div className="flex ml-5 text-white text-lg font-semibold">Tipo de Usuário</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Nível de Acesso</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Descrição</div>
+                                <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
                             </div>
                             <ul className="w-full">
                                 {list.currentList.map((typeuser) => (
                                     <li className="grid grid-cols-4 w-full" key={typeuser.id}>
-                                        <span className="flex pl-5 items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{typeuser.nomeTipoUsuario}</span>
-                                        <span className="flex justify-center pl-2 pr-2 items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{typeuser.nivelAcesso}</span>
-                                        <span className="flex justify-start pl-2 pr-2 items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{typeuser.descricaoTipoUsuario}</span>
-                                        <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                        <div className="flex pl-5 items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{typeuser.nomeTipoUsuario}</div>
+                                        <div className="flex justify-center pl-2 pr-2 items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{typeuser.nivelAcesso}</div>
+                                        <div className="flex justify-start pl-2 pr-2 items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{typeuser.descricaoTipoUsuario}</div>
+                                        <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                             <button
                                                 className=""
                                                 onClick={() => SelectTypeUser(typeuser, "Editar")}
@@ -205,7 +205,7 @@ export default function TypeUser() {
                                             >
                                                 <TrashSimple size={20} className="hover:text-red-600" />
                                             </button>
-                                        </span>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>

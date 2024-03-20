@@ -191,28 +191,28 @@ export default function Citizen() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-6 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="flex ml-5 justify-center items-center text-white text-lg font-semibold">Imagem</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Nome</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">E-mail</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">CPF / CNPJ</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">RG / IE</span>
-                                <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                                <div className="flex ml-5 justify-center items-center text-white text-lg font-semibold">Imagem</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Nome</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">E-mail</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">CPF / CNPJ</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">RG / IE</div>
+                                <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
                             </div>
                             <ul className="w-full">
                                 {list.currentList.map((object) => {
                                     return (
                                         <li className="grid grid-cols-6 w-full" key={object.id}>
-                                            <span className="flex pl-5 justify-center items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">
+                                            <div className="flex pl-5 justify-center items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">
                                                 <img src={object.imagemPessoa} className="cursor-pointer rounded-full w-[40px] h-[40px] object-cover shadow-md" />
-                                            </span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.nomePessoa}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.emailPessoa}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.cpfCnpjPessoa}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.rgIePessoa}</span>
-                                            <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                            </div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.nomePessoa}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.emailPessoa}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.cpfCnpjPessoa}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.rgIePessoa}</div>
+                                            <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                                 <button onClick={() => SelectCitizen(object, "Editar")}><PencilSimple size={20} className="hover:text-cyan-500" /></button>{"  "}
                                                 <button onClick={() => SelectCitizen(object, "Excluir")}><TrashSimple size={20} className="hover:text-red-600" /></button>
-                                            </span>
+                                            </div>
                                         </li>
                                     );
                                 })}

@@ -173,16 +173,16 @@ export default function TypeProcess() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="flex ml-5 text-white text-lg font-semibold">Tipo Processo</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
-                                <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                                <div className="flex ml-5 text-white text-lg font-semibold">Tipo Processo</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Descrição</div>
+                                <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
                             </div>
                             <ul className="w-full">
                                 {list.currentList.map((object) => (
                                     <li className="grid grid-cols-3 w-full" key={object.id}>
-                                        <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoProcesso}</span>
-                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoProcesso}</span>
-                                        <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                        <div className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoProcesso}</div>
+                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoProcesso}</div>
+                                        <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                             <button
                                                 className=""
                                                 onClick={() => SelectTypeProcess(object, "Editar")}
@@ -195,7 +195,7 @@ export default function TypeProcess() {
                                             >
                                                 <TrashSimple size={20} className="hover:text-red-600" />
                                             </button>
-                                        </span>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>

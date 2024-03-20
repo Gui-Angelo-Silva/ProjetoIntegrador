@@ -48,9 +48,12 @@ namespace SGED.Controllers
         }
 
         [HttpGet("GetUser")]
-        public async Task<ActionResult<UsuarioDTO>> GetUser(int id)
+        public async Task<ActionResult<UsuarioDTO>> GetUser(string token)
         {
-            var usuarioDTO = await _sessaoService.GetUser(id);
+            var sessaoDTO = await _sessaoService.GetByToken(token);
+            if (sessaoDTO is null) return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
+
+            var usuarioDTO = await _sessaoService.GetUser(sessaoDTO.IdUsuario);
             if (usuarioDTO is null) return Unauthorized(new { status = false, response = "Usuário não encontrado!" });
             else return Ok(new { status = true, response = usuarioDTO });
         }
@@ -99,6 +102,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut("Validation")]
+        [Anonymous]
         public async Task<IActionResult> ValidateSession(string token)
         {
             var sessaoDTO = await _sessaoService.GetByToken(token);
@@ -123,17 +127,35 @@ namespace SGED.Controllers
         }
 
         [HttpPut("Close")]
-        public async Task<IActionResult> CloseSession(int id)
+        [Anonymous]
+        public async Task<IActionResult> CloseSession(string token)
         {
-            var sessaoDTO = await _sessaoService.GetById(id);
+            var sessaoDTO = await _sessaoService.GetByToken(token);
             if (sessaoDTO is null) return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
 
-            sessaoDTO.TokenSessao = "";
             sessaoDTO.StatusSessao = false;
             sessaoDTO.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
             await _sessaoService.Update(sessaoDTO);
 
             return Ok(new { status = true, response = "Sessão encerrada com sucesso!" });
+        }
+
+        [HttpPut("CloseUserSession")]
+        public async Task<IActionResult> CloseUserSession(int id)
+        {
+            if (id == 1) return Ok(new { status = true, response = "Nenhuma sessão aberta encontrada!" });
+
+            var sessoes = await _sessaoService.GetOpenSessionByUser(id);
+            if (sessoes == null) return Ok(new { status = true, response = "Nenhuma sessão aberta encontrada!" });
+
+            foreach (var sessao in sessoes)
+            {
+                sessao.StatusSessao = false;
+                sessao.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                await _sessaoService.Update(sessao);
+            }
+
+            return Ok(new { status = true, response = "Sessão do usuário encerrada!" });
         }
 
 

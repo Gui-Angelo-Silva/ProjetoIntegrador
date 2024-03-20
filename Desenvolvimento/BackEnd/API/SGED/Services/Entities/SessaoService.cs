@@ -96,4 +96,10 @@ public class SessaoService : ISessaoService
         var usuarios = await _sessaoRepository.GetOfflineUsers();
         return _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
     }
+
+    public async Task<IEnumerable<SessaoDTO>> GetOpenSessionByUser(int id)
+    {
+        var sessoes = await _sessaoRepository.GetOpenSessionByUser(id);
+        return _mapper.Map<IEnumerable<SessaoDTO>>(sessoes);
+    }
 }

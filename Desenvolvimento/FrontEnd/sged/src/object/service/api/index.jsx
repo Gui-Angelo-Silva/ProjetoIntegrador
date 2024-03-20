@@ -1,5 +1,6 @@
 import { createContext, useContext } from "react";
 import PropTypes from 'prop-types';
+import { useSession } from '../../../object/service/session';
 
 const ApiContext = createContext();
 
@@ -14,24 +15,25 @@ export const useApi = () => {
 export const ApiProvider = ({ children }) => {
 
   const baseURL = "https://localhost:7096/api/";
-  let token = '';
+  const session = useSession();
 
   const appendRoute = (route) => {
     return baseURL + route;
   };
 
   const updateToken = (newToken) => {
-    token = newToken;
+    if (newToken) session.setToken(newToken.startsWith('Front ') ? newToken.replace('Front ', '') : newToken);
+    else session.defaultToken();
   };
 
   const getAuthConfig = () => {
-    const token = sessionStorage.getItem("token");
+    const token = session.getToken();
 
     if (token) {
       return {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          Authorization: `Front ${token}`
         }
       };
     } else {

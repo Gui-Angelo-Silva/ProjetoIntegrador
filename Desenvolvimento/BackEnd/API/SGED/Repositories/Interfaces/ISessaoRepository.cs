@@ -18,4 +18,5 @@ public interface ISessaoRepository
 
     Task<IEnumerable<Usuario>> GetOnlineUsers();
     Task<IEnumerable<Usuario>> GetOfflineUsers();
+    Task<IEnumerable<Sessao>> GetOpenSessionByUser(int id);
 }

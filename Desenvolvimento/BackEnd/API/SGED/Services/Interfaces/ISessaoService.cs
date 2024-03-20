@@ -18,5 +18,6 @@ namespace SGED.Services.Interfaces
 
         Task<IEnumerable<UsuarioDTO>> GetOnlineUsers();
         Task<IEnumerable<UsuarioDTO>> GetOfflineUsers();
+        Task<IEnumerable<SessaoDTO>> GetOpenSessionByUser(int id);
     }
 }

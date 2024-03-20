@@ -1,19 +1,19 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
-import './index.css'
-import { SessionProvider } from './object/service/session';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.jsx";
+import "./index.css";
+import { SessionProvider } from "./object/service/session";
 import { ApiProvider } from "./object/service/api";
 import { MontageProvider } from "./object/modules/montage";
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <MontageProvider>
-      <ApiProvider>
-        <SessionProvider>
+      <SessionProvider>
+        <ApiProvider>
           <App />
-        </SessionProvider>
-      </ApiProvider>
+        </ApiProvider>
+      </SessionProvider>
     </MontageProvider>
   </React.StrictMode>
-)
+);

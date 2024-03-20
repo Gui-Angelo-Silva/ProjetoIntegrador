@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 import PropTypes from 'prop-types';
-import RequisitionClass from '../../class/requisition';
+import TokenClass from '../../class/token';
 import ConnectionEntity from '../connection';
 
 const SessionContext = createContext();
@@ -15,59 +15,8 @@ export const useSession = () => {
 
 export const SessionProvider = ({ children }) => {
 
-    const requisition = RequisitionClass();
+    const tokenClass = TokenClass();
     const connection = ConnectionEntity();
-
-    const defaultSession = () => {
-        localStorage.setItem('token', null);
-        localStorage.setItem('user', null);
-        localStorage.setItem('permission', null);
-    };
-
-    const createSession = async (object) => {
-
-        var autentication = false;
-
-        try {
-            const response = await connection.objectUrl("Sessao").actionUrl("Autentication").postOrder(object);
-
-            if (response.status) {
-                const data = response.data;
-
-                if (isTokenValid()) {
-                    autentication = true;
-
-                    if (object.persistLogin) {
-                        persistsLogin(object);
-                    } else {
-                        localStorage.setItem('login', null);
-                    }
-
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.usuario));
-                    const acessLevel = String(data.usuario.tipoUsuarioDTO.nivelAcesso).toLowerCase();
-                    localStorage.setItem('permission', acessLevel);
-
-                    updateAuthConfig();
-                    return { validation: autentication, message: 'Entrada liberada.' };
-                } else {
-                    return { validation: autentication, message: 'Token inválido!' };
-                }
-
-            } else {
-                return { validation: autentication, message: response.message };
-            }
-
-        } catch (error) {
-            return { validation: autentication, message: error.message };
-
-        }
-    };
-
-    const persistsLogin = (object) => {
-        const login = { persist: object.persistLogin, emailPessoa: object.personEmail, senhaUsuario: object.userPassword };
-        localStorage.setItem('login', JSON.stringify(login));
-    };
 
     const getLogin = () => {
         const login = localStorage.getItem('login');
@@ -79,52 +28,69 @@ export const SessionProvider = ({ children }) => {
         return token !== "null" ? token : null;
     };
 
-    const getSession = () => {
-        const session = localStorage.getItem('user');
-        return session !== "null" ? JSON.parse(session) : null;
+    const setLogin = (object) => {
+        const login = { persist: object.persistLogin, emailPessoa: object.personEmail, senhaUsuario: object.userPassword };
+        localStorage.setItem('login', JSON.stringify(login));
     };
 
-    const getPermission = () => {
-        const permission = localStorage.getItem('permission');
-        return permission !== "null" ? permission : null;
+    const setToken = (token) => {
+        localStorage.setItem('token', token);
     };
 
-    const isTokenValid = async () => {
-        const token = getToken();
-        const user = getSession();
-
-        if (token !== null || user !== null) {
-            try {
-                sessionStorage.setItem("requisition", JSON.stringify({ email: user.emailPessoa, token: token }));
-                const response = await connection.objectUrl("Login").actionUrl("Validation").postOrder(requisition);
-
-                return response.status;
-
-            } catch (error) {
-                return false;
-            }
-        } else {
-            return false;
-        }
+    const defaultToken = () => {
+        localStorage.setItem('token', null);
     };
 
-    const newToken = async () => {
-        const session = getSession();
+    const defaultLogin = () => {
+        localStorage.setItem('login', null);
+    };
 
-        if (session !== null) {
-            try {
-                sessionStorage.setItem("requisition", JSON.stringify({ email: session.emailPessoa, senha: session.senhaUsuario }));
-                const response = await connection.objectUrl("Login").actionUrl("Autentication").postOrder(requisition);
+    const createSession = async (object) => {
 
-                if (response.status) {
-                    const data = response.data;
-                    const acessLevel = String(data.usuario.tipoUsuarioDTO.nivelAcesso).toLowerCase();
+        var autentication = false;
 
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.usuario));
-                    localStorage.setItem('permission', acessLevel);
+        try {
+            const response = await connection.objectUrl("Sessao").actionUrl("Autentication").postOrder(object);
+
+            if (response.status) {
+                setToken(response.data.response);
+
+                if (object.persistLogin) {
+                    setLogin(object);
+                } else {
+                    defaultLogin();
                 }
 
+                if (validateToken()) {
+                    autentication = true;
+                    return { validation: autentication, message: 'Entrada liberada.' };
+                } else {
+                    defaultToken();
+                    return { validation: autentication, message: 'Token inválido!' };
+                }
+
+            } else {
+                defaultToken();
+                return { validation: autentication, message: response.data.response };
+            }
+
+        } catch (error) {
+            defaultToken();
+            return { validation: autentication, message: error.message };
+
+        }
+    };
+
+    const closeSession = async () => {
+        const token = getToken();
+
+        if (token !== null) {
+            try {
+                tokenClass.setToken(token);
+                const response = await connection.objectUrl("Sessao").actionUrl("Close").postOrder(tokenClass);
+                
+                defaultToken();
+
                 return response.status;
 
             } catch (error) {
@@ -135,33 +101,42 @@ export const SessionProvider = ({ children }) => {
         }
     };
 
-    const verifySession = async () => {
-        var response = await isTokenValid();
+    const validateToken = async () => {
+        const token = getToken();
 
-        if (!response) { defaultSession(); }
-        else { response = await newToken(); }
+        if (token !== null) {
+            try {
+                tokenClass.setToken(token);
+                const response = await connection.objectUrl("Sessao").actionUrl("Validation").postOrder(tokenClass);
 
-        if (!response) { defaultSession(); }
-        else { updateAuthConfig(); }
+                if (response.status) setToken(response.data.response);
+                else defaultToken();
 
-        return response;
-    }
+                return response.status;
 
-    const updateAuthConfig = () => {
-        sessionStorage.setItem("token", getToken());
+            } catch (error) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    };
+
+    const validateSession = async () => {
+        return await validateToken();
     };
 
     const value = {
-        defaultSession,
-        createSession,
-        persistsLogin,
         getLogin,
         getToken,
-        getSession,
-        getPermission,
-        isTokenValid,
-        newToken,
-        verifySession
+        setLogin,
+        setToken,
+        defaultToken,
+        defaultLogin,
+        createSession,
+        closeSession,
+        validateToken,
+        validateSession,
     };
 
     return (

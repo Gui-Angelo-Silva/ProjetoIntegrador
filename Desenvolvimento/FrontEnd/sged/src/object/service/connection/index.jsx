@@ -34,6 +34,8 @@ function ConnectionEntity() {
 
         try {
             const response = await axios.get(requisitionUrl, api.getAuthConfig());
+            api.updateToken(response.config.headers.Authorization);
+
             if (statusArray.includes(response.status)) {
                 return { status: true, message: 'Informações adquiridas com sucesso.', data: response.data };
             } else {

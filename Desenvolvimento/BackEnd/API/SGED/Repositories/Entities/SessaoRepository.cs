@@ -98,4 +98,9 @@ public class SessaoRepository : ISessaoRepository
         ).Where(sessao => sessao.Usuario.Id != 1 && (sessao.UltimaSessao == null || !sessao.UltimaSessao.StatusSessao)).Select(sessao => sessao.Usuario).ToListAsync();
     }
 
+    public async Task<IEnumerable<Sessao>> GetOpenSessionByUser(int id)
+    {
+        return await _dbContext.Sessao.Where(sessao => sessao.StatusSessao && sessao.IdUsuario == id).ToListAsync();
+    }
+
 }

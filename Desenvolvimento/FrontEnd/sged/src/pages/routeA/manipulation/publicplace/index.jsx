@@ -279,12 +279,12 @@ export default function PublicPlace() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-6 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="flex ml-5 text-white text-lg font-semibold">CEP</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Número Inicial</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Número Final</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Bairro</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Tipo Logradouro</span>
-                                <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                                <div className="flex ml-5 text-white text-lg font-semibold">CEP</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Número Inicial</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Número Final</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Bairro</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Tipo Logradouro</div>
+                                <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
                             </div>
                             <ul className="w-full">
                                 {list.currentList.map((publicplace) => {
@@ -292,12 +292,12 @@ export default function PublicPlace() {
                                     const tipoLogradouro = listTypePublicPlace.list.find((typepublicplace) => typepublicplace.id === publicplace.idTipoLogradouro)
                                     return (
                                         <li className="grid grid-cols-6 w-full" key={publicplace.id}>
-                                            <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{publicplace.cep}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{publicplace.numeroInicial}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{publicplace.numeroFinal}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{bairro ? bairro.nomeBairro : "Bairro não encontrado!"}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoLogradouro ? tipoLogradouro.descricao : "Tipo Logradouro não encontrado!"}</span>
-                                            <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                            <div className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{publicplace.cep}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{publicplace.numeroInicial}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{publicplace.numeroFinal}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{bairro ? bairro.nomeBairro : "Bairro não encontrado!"}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoLogradouro ? tipoLogradouro.descricao : "Tipo Logradouro não encontrado!"}</div>
+                                            <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                                 <button
                                                     className=""
                                                     onClick={() => SelectPublicPlace(publicplace, "Editar")}
@@ -310,7 +310,7 @@ export default function PublicPlace() {
                                                 >
                                                     <TrashSimple size={20} className="hover:text-red-600" />
                                                 </button>
-                                            </span>
+                                            </div>
                                         </li>
                                     );
                                 })}

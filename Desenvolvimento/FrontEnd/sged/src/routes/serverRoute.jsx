@@ -19,15 +19,14 @@ export const ServerProvider = ({ children }) => {
     const [callFunctionRoute, setCallFunctionRoute] = useState(false);
     const [liberateNavigate, setLiberateNavigate] = useState(false);
     const { componentMontage, clearStateMontage } = useMontage();
-    const { verifySession, getPermission } = useSession();
+    const { validateSession } = useSession();
     const navigate = useNavigate();
 
     const updateAuthentication = useCallback(async () => {
         try {
-            await verifySession();
-            return getPermission();
+            return await validateSession();
         } catch (error) {
-            return null;
+            return false;
         }
     }, []);
 
@@ -52,8 +51,7 @@ export const ServerProvider = ({ children }) => {
     }, []);
 
     const clearSegment = useCallback((route) => {
-        const permission = getPermission();
-        const newPath = permission !== null ? buildPath(permission, route) : buildPath(route, null);
+        const newPath = buildPath("https://localhost:5173", route);
         navigate(newPath);
     }, []);
 
@@ -73,54 +71,30 @@ export const ServerProvider = ({ children }) => {
 
     useEffect(() => {
         const currentPathSegments = window.location.pathname.split('/');
-        const permissionInRoute = currentPathSegments[1]?.toLowerCase();
-        const typerPermissions = ["a", "b", "c", "d"];
-        const initialPages = ["login", "register", "development"];
+        const initialPages = ["login"];
 
-        if (callFunctionRoute) {
-            clearStateMontage();
-            
-            const validationRoute = async () => {
-                const permission = await updateAuthentication();
+        const validationRoute = async () => {
+            const autentication = await updateAuthentication();
+            clearStateMontage(); if (!callFunctionRoute) setLiberateNavigate(false);
 
-                if (permission === null) {
-                    if (typerPermissions.includes(permissionInRoute)) {
-                        clearSegment("login");
-                    }
-                } else if (permissionInRoute !== permission) {
-                    clearSegment("home");
-                }
-            };
+            if (window.location.protocol === 'http:') {
+                window.location.href = window.location.href.replace('http:', 'https:');
+            }
 
-            validationRoute();
-
-        } else {
-            setLiberateNavigate(false);
-            clearStateMontage();
-
-            const validationRoute = async () => {
-                const permission = await updateAuthentication();
-
-                if (permissionInRoute === "") {
-                    clearSegment(permission !== null ? "home" : "login");
-
-                } else if (typerPermissions.includes(permissionInRoute) && permissionInRoute !== permission) {
-                    sessionStorage.setItem("page: not permission", permissionInRoute.toUpperCase());
-                    clearSegment("notpermission");
-
-                } else if (permission !== null && initialPages.includes(permissionInRoute)) {
+            if (!autentication && !initialPages.includes(currentPathSegments[currentPathSegments.length - 1])) {
+                clearSegment("login");
+            } else if (!callFunctionRoute) {
+                if (autentication && initialPages.includes(currentPathSegments[currentPathSegments.length - 1])) {
                     clearSegment("home");
                 } else if (["notfound", "notpermission", "development"].includes(currentPathSegments[currentPathSegments.length - 1])) {
-                    clearSegment(permission !== null ? "home" : "login");
+                    clearSegment(autentication ? "home" : "login");
                 }
 
                 setLiberateNavigate(true);
-            };
+            }
+        };
 
-            validationRoute();
-        }
-
-        setCallFunctionRoute(false);
+        validationRoute(); setCallFunctionRoute(false);
     }, [window.location.pathname]);
 
     useEffect(() => {

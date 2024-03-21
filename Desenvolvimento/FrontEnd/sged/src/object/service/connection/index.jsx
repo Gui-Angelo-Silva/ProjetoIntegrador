@@ -1,9 +1,9 @@
 import axios from "axios";
-import { useApi } from '../api';
+import ApiService from '../api';
 
-function ConnectionEntity() {
+function ConnectionService() {
 
-    const api = useApi();
+    const api = ApiService();
     const statusArray = [200, 201];
     let requisitionUrl = '';
 
@@ -108,7 +108,14 @@ function ConnectionEntity() {
         }
     }
 
-    return { objectUrl, actionUrl, getOrder, postOrder, putOrder, deleteOrder };
+    return { 
+        objectUrl, 
+        actionUrl, 
+        getOrder, 
+        postOrder, 
+        putOrder, 
+        deleteOrder 
+    };
 }
 
-export default ConnectionEntity;
+export default ConnectionService;

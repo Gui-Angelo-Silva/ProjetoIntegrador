@@ -1,21 +1,9 @@
-import { createContext, useContext } from "react";
-import PropTypes from 'prop-types';
-import { useSession } from '../../../object/service/session';
+import SessionService from '../../../object/service/session';
 
-const ApiContext = createContext();
-
-export const useApi = () => {
-  const context = useContext(ApiContext);
-  if (!context) {
-    throw new Error('useApi deve ser usado dentro de um ApiProvider!');
-  }
-  return context;
-};
-
-export const ApiProvider = ({ children }) => {
+function ApiService() {
 
   const baseURL = "https://localhost:7096/api/";
-  const session = useSession();
+  const session = SessionService();
 
   const appendRoute = (route) => {
     return baseURL + route;
@@ -45,14 +33,12 @@ export const ApiProvider = ({ children }) => {
     }
   };
 
-  return (
-    <ApiContext.Provider value={{ appendRoute, updateToken, getAuthConfig }}>
-      {children}
-    </ApiContext.Provider>
-  );
+  return {
+    appendRoute, 
+    updateToken, 
+    getAuthConfig 
+  };
 
 };
 
-ApiProvider.propTypes = {
-  children: PropTypes.node
-};
+export default ApiService;

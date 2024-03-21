@@ -9,11 +9,7 @@ import { MontageProvider } from "./object/modules/montage";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <MontageProvider>
-      <SessionProvider>
-        <ApiProvider>
-          <App />
-        </ApiProvider>
-      </SessionProvider>
+      <App />
     </MontageProvider>
   </React.StrictMode>
 );

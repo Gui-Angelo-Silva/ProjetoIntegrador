@@ -1,22 +1,10 @@
-import { createContext, useContext } from 'react';
-import PropTypes from 'prop-types';
 import TokenClass from '../../class/token';
-import ConnectionEntity from '../connection';
+import ConnectionService from '../connection';
 
-const SessionContext = createContext();
-
-export const useSession = () => {
-    const context = useContext(SessionContext);
-    if (!context) {
-        throw new Error('useSession deve ser usado dentro de um SessionProvider');
-    }
-    return context;
-};
-
-export const SessionProvider = ({ children }) => {
+function SessionService() {
 
     const tokenClass = TokenClass();
-    const connection = ConnectionEntity();
+    const connection = ConnectionService();
 
     const getLogin = () => {
         const login = localStorage.getItem('login');
@@ -126,7 +114,7 @@ export const SessionProvider = ({ children }) => {
         return await validateToken();
     };
 
-    const value = {
+    return {
         getLogin,
         getToken,
         setLogin,
@@ -136,16 +124,8 @@ export const SessionProvider = ({ children }) => {
         createSession,
         closeSession,
         validateToken,
-        validateSession,
+        validateSession
     };
-
-    return (
-        <SessionContext.Provider value={value}>
-            {children}
-        </SessionContext.Provider>
-    );
 };
 
-SessionProvider.propTypes = {
-    children: PropTypes.any
-};
+export default SessionService;

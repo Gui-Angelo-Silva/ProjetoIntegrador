@@ -47,6 +47,14 @@ namespace SGED.Controllers
             return Ok(usuariosDTO);
         }
 
+        /*[HttpGet("GetSession")]
+        public async Task<ActionResult<SessaoDTO>> GetSession(string token)
+        {
+            var sessaoDTO = await _sessaoService.GetByToken(token);
+            if (sessaoDTO is null) return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
+            else return Ok(new { status = true, response = sessaoDTO });
+        }*/
+
         [HttpGet("GetUser")]
         public async Task<ActionResult<UsuarioDTO>> GetUser(string token)
         {

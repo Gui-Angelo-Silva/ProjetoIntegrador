@@ -1,5 +1,8 @@
+import StorageModule from '../../modules/storage';
+
 function ApiService() {
 
+  const storage = StorageModule();
   const baseURL = "https://localhost:7096/api/";
 
   const appendRoute = (route) => {
@@ -7,12 +10,11 @@ function ApiService() {
   };
 
   const updateToken = (newToken) => {
-    if (newToken) localStorage.setItem("token", newToken.startsWith('Front ') ? newToken.replace('Front ', '') : newToken);
-    else localStorage.setItem('token', null);
+    storage.setLocal('token', newToken.startsWith('Front ') ? newToken.replace('Front ', '') : newToken);
   };
 
   const getAuthConfig = () => {
-    const token = localStorage.getItem('token');
+    const token = storage.getLocal('token');
 
     if (token) {
       return {

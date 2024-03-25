@@ -1,36 +1,36 @@
 import TokenClass from '../../class/token';
 import ConnectionService from '../connection';
+import StorageModule from '../../modules/storage';
 
 function SessionService() {
 
     const tokenClass = TokenClass();
     const connection = ConnectionService();
+    const storage = StorageModule();
 
     const getLogin = () => {
-        const login = localStorage.getItem('login');
-        return login !== "null" ? JSON.parse(login) : null;
+        return storage.getLocal('login');
     };
 
     const getToken = () => {
-        const token = localStorage.getItem('token');
-        return token !== "null" ? token : null;
+        return storage.getLocal('token');
     };
 
     const setLogin = (object) => {
         const login = { persist: object.persistLogin, emailPessoa: object.personEmail, senhaUsuario: object.userPassword };
-        localStorage.setItem('login', JSON.stringify(login));
+        storage.setLocal('login', login);
     };
 
     const setToken = (token) => {
-        localStorage.setItem('token', token);
+        storage.setLocal('token', token);
     };
 
     const defaultToken = () => {
-        localStorage.setItem('token', null);
+        storage.setLocal('token', null);
     };
 
     const defaultLogin = () => {
-        localStorage.setItem('login', null);
+        storage.setLocal('login', null);
     };
 
     const createSession = async (object) => {

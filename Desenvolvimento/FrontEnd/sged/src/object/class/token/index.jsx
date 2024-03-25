@@ -1,8 +1,4 @@
-import { useState } from 'react';
-
 function TokenClass() {
-
-  const [token, setToken] = useState('');
 
   function propertyName() {
     return "Token";
@@ -14,15 +10,11 @@ function TokenClass() {
 
   function setData() {
     return {
-      token: token
+      token: localStorage.getItem('token')
     }
   }
 
   return {
-    // Atributos
-    token,
-    setToken,
-
     // Funções Essencias
     propertyName,
     gender,

@@ -19,8 +19,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 
 import { useMontage } from '../../../../object/modules/montage';
 import { useEffect, useState } from "react";
-import { useSession } from '../../../../object/service/session';
 import { useServer } from '../../../../routes/serverRoute';
+import SessionService from '../../../../object/service/session';
 import LoginClass from '../../../../object/class/login';
 
 const defaultTheme = createTheme();
@@ -37,7 +37,7 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState('');
   const [loginError, setLoginError] = useState('');
   const server = useServer();
-  const session = useSession();
+  const session = SessionService();
   const login = LoginClass();
 
   const handlePersistLoginChange = (e) => {

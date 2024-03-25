@@ -74,8 +74,8 @@ function SessionService() {
 
         if (token !== null) {
             try {
-                tokenClass.setToken(token);
-                const response = await connection.objectUrl("Sessao").actionUrl("Close").postOrder(tokenClass);
+                tokenClass.setTokenSession(token);
+                const response = await connection.objectUrl("Sessao").actionUrl("Close").putOrder(tokenClass);
                 
                 defaultToken();
 
@@ -94,8 +94,12 @@ function SessionService() {
 
         if (token !== null) {
             try {
-                tokenClass.setToken(token);
-                const response = await connection.objectUrl("Sessao").actionUrl("Validation").postOrder(tokenClass);
+                tokenClass.setTokenSession(token);
+
+                console.log(token);
+                console.log(tokenClass);
+
+                const response = await connection.objectUrl("Sessao").actionUrl("Validation").putOrder(tokenClass);
 
                 if (response.status) setToken(response.data.response);
                 else defaultToken();

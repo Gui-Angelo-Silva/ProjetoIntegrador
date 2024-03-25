@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import IconNotification from "../../../../assets/user/Notification"
-import { useSession } from '../../../../object/service/session';
+import SessionService from '../../../../object/service/session';
 import UserClass from '../../../../object/class/user';
 
 export default function NavBarAdm() {
 
-    const session = useSession();
+    const session = SessionService();
     const user = UserClass();
 
     function GetUser() {

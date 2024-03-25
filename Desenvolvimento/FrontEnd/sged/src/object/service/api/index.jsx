@@ -1,21 +1,18 @@
-import SessionService from '../../../object/service/session';
-
 function ApiService() {
 
   const baseURL = "https://localhost:7096/api/";
-  const session = SessionService();
 
   const appendRoute = (route) => {
     return baseURL + route;
   };
 
   const updateToken = (newToken) => {
-    if (newToken) session.setToken(newToken.startsWith('Front ') ? newToken.replace('Front ', '') : newToken);
-    else session.defaultToken();
+    if (newToken) localStorage.setItem("token", newToken.startsWith('Front ') ? newToken.replace('Front ', '') : newToken);
+    else localStorage.setItem('token', null);
   };
 
   const getAuthConfig = () => {
-    const token = session.getToken();
+    const token = localStorage.getItem('token');
 
     if (token) {
       return {

@@ -22,8 +22,8 @@ import NotVisible from '@mui/icons-material/VisibilityOffOutlined';
 
 import { useMontage } from '../../../../object/modules/montage';
 import { useEffect, useState } from "react";
-import { useSession } from '../../../../object/service/session';
 import { useServer } from '../../../../routes/serverRoute';
+import SessionService from '../../../../object/service/session';
 import ConnectionEntity from '../../../../object/service/connection';
 import UserClass from '../../../../object/class/user';
 import CitizenClass from '../../../../object/class/citizen';
@@ -45,7 +45,7 @@ export default function Register() {
     const [isRegister, setIsRegister] = useState('');
     const [registerError, setRegisterError] = useState('');
     const server = useServer();
-    const session = useSession();
+    const session = SessionService();
     const connection = ConnectionEntity();
     const user = UserClass();
     const citizen = CitizenClass();

@@ -18,9 +18,9 @@ import LogoProjeto from '../../../../public/logoSGED.png'
 import MoonIcon from '@mui/icons-material/DarkModeOutlined';
 import SunIcon from '@mui/icons-material/WbSunnyOutlined';
 
-import { useSession } from '../../../object/service/session';
-import { useServer } from '../../../routes/serverRoute';
 import { useEffect, useState } from "react";
+import { useServer } from '../../../routes/serverRoute';
+import SessionService from '../../../object/service/session';
 import UserClass from '../../../object/class/user';
 
 export default function NavBar() {
@@ -34,7 +34,7 @@ export default function NavBar() {
     // o tema da aplicação
   };
 
-  const session = useSession();
+  const session = SessionService();
   const server = useServer();
   const user = UserClass();
 

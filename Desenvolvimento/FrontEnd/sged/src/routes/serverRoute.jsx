@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSession } from '../object/service/session';
 import { useMontage } from '../object/modules/montage';
+import SessionService from '../object/service/session';
 import PropTypes from 'prop-types';
 
 const ServerContext = createContext();
@@ -19,12 +19,12 @@ export const ServerProvider = ({ children }) => {
     const [callFunctionRoute, setCallFunctionRoute] = useState(false);
     const [liberateNavigate, setLiberateNavigate] = useState(false);
     const { componentMontage, clearStateMontage } = useMontage();
-    const { validateSession } = useSession();
+    const session = SessionService();
     const navigate = useNavigate();
 
     const updateAuthentication = useCallback(async () => {
         try {
-            return await validateSession();
+            return await session.validateSession();
         } catch (error) {
             return false;
         }
@@ -51,7 +51,7 @@ export const ServerProvider = ({ children }) => {
     }, []);
 
     const clearSegment = useCallback((route) => {
-        const newPath = buildPath("https://localhost:5173", route);
+        const newPath = buildPath(route, null);
         navigate(newPath);
     }, []);
 
@@ -70,6 +70,55 @@ export const ServerProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
+        const currentPathSegments = window.location.pathname.split('/');
+        const firstSegment = currentPathSegments[1]?.toLowerCase();
+        const initialPages = ["login"];
+
+        /*if (callFunctionRoute) {
+            const validationRoute = async () => {
+                const authenticade = await updateAuthentication();
+
+                if (!authenticade && !initialPages.includes(firstSegment)) {
+                    clearSegment("login");
+                } else if (authenticade && initialPages.includes(firstSegment)) {
+                    clearSegment("home");
+                }
+            };
+
+            validationRoute();
+
+        } else {
+            setLiberateNavigate(false);
+            clearStateMontage();
+
+            const validationRoute = async () => {
+                const authenticade = await updateAuthentication();
+
+                if (!firstSegment) {
+                    clearSegment(authenticade ? "home" : "login");
+
+                } else if (authenticade && initialPages.includes(firstSegment)) {
+                    clearSegment("home");
+
+                } else if (!authenticade && !initialPages.includes(firstSegment)) {
+                    clearSegment("login");
+
+                } else if (["notfound", "notpermission"].includes(firstSegment)) {
+                    clearSegment(authenticade ? "home" : "login");
+
+                }
+
+                setLiberateNavigate(true);
+            };
+
+            validationRoute();
+        }*/
+
+        setLiberateNavigate(true);
+        setCallFunctionRoute(false);
+    }, [window.location.pathname]);
+
+    /*useEffect(() => {
         const currentPathSegments = window.location.pathname.split('/');
         const initialPages = ["login"];
 
@@ -95,7 +144,7 @@ export const ServerProvider = ({ children }) => {
         };
 
         validationRoute(); setCallFunctionRoute(false);
-    }, [window.location.pathname]);
+    }, [window.location.pathname]);*/
 
     useEffect(() => {
         const delay = (milliseconds) => {

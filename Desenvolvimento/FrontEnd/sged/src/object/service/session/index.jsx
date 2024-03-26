@@ -38,10 +38,14 @@ function SessionService() {
         var autentication = false;
 
         try {
-            const response = await connection.objectUrl("Sessao").actionUrl("Autentication").postOrder(object);
+            await connection.endpoint("Sessao").action("Autentication").postOrder(object).message();
 
-            if (response.status) {
-                setToken(response.data.response);
+            console.log(connection.response);
+
+            if (connection.response.status) {
+                setToken(connection.response.data.response);
+
+                console.log(connection.response.data);
 
                 if (object.persistLogin) {
                     setLogin(object);

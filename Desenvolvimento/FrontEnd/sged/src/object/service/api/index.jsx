@@ -38,6 +38,6 @@ function ApiService() {
     getAuthConfig 
   };
 
-};
+}
 
 export default ApiService;

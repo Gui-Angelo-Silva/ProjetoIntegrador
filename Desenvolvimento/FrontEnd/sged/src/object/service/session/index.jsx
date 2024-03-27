@@ -38,14 +38,10 @@ function SessionService() {
         var autentication = false;
 
         try {
-            await connection.endpoint("Sessao").action("Autentication").post(object).messagePopUp();
-
-            console.log(connection.response);
+            await connection.endpoint("Sessao").action("Autentication").post(object);
 
             if (connection.response.status) {
                 setToken(connection.response.data.response);
-
-                console.log(connection.response.data);
 
                 if (object.persistLogin) {
                     setLogin(object);
@@ -53,13 +49,13 @@ function SessionService() {
                     defaultLogin();
                 }
 
-                if (validateToken()) {
+                if (await validateToken()) {
                     autentication = true;
                     return { validation: autentication, message: 'Entrada liberada.' };
-                } else {
-                    defaultToken();
-                    return { validation: autentication, message: 'Token inválido!' };
                 }
+
+                defaultToken();
+                return { validation: autentication, message: 'Token inválido!' };
 
             } else {
                 defaultToken();
@@ -78,9 +74,7 @@ function SessionService() {
 
         if (token !== null) {
             try {
-                setToken(token);
-                await connection.objectUrl("Sessao").actionUrl("Close").putOrder(tokenClass);
-                
+                await connection.endpoint("Sessao").action("Close").put(tokenClass);
                 defaultToken();
 
                 return connection.response.status;
@@ -98,8 +92,7 @@ function SessionService() {
 
         if (token !== null) {
             try {
-                setToken(token);
-                await connection.objectUrl("Sessao").actionUrl("Validation").putOrder(tokenClass);
+                await connection.endpoint("Sessao").action("Validation").put(tokenClass);
 
                 if (connection.response.status) setToken(connection.response.data.response);
                 else defaultToken();

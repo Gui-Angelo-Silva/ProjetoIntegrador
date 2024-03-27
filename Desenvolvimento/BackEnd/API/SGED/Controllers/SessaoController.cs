@@ -111,9 +111,9 @@ namespace SGED.Controllers
 
         [HttpPut("Validation")]
         [Anonymous]
-        public async Task<IActionResult> ValidateSession(string token)
+        public async Task<IActionResult> ValidateSession([FromBody] Acess acess)
         {
-            var sessaoDTO = await _sessaoService.GetByToken(token);
+            var sessaoDTO = await _sessaoService.GetByToken(acess.Token);
             if (sessaoDTO is null) return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
 
             if (sessaoDTO.StatusSessao && SessaoDTO.ValidateToken(sessaoDTO.TokenSessao, sessaoDTO.EmailPessoa))
@@ -136,9 +136,9 @@ namespace SGED.Controllers
 
         [HttpPut("Close")]
         [Anonymous]
-        public async Task<IActionResult> CloseSession(string token)
+        public async Task<IActionResult> CloseSession([FromBody] Acess acess)
         {
-            var sessaoDTO = await _sessaoService.GetByToken(token);
+            var sessaoDTO = await _sessaoService.GetByToken(acess.Token);
             if (sessaoDTO is null) return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
 
             sessaoDTO.StatusSessao = false;

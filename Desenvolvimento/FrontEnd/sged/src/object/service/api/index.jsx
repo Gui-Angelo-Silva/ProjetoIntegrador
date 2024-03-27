@@ -13,7 +13,7 @@ function ApiService() {
     storage.setLocal('token', newToken.startsWith('Front ') ? newToken.replace('Front ', '') : newToken);
   };
 
-  const getAuthConfig = () => {
+  const headerConfig = () => {
     const token = storage.getLocal('token');
 
     if (token) {
@@ -35,7 +35,7 @@ function ApiService() {
   return {
     appendRoute, 
     updateToken, 
-    getAuthConfig 
+    headerConfig 
   };
 
 }

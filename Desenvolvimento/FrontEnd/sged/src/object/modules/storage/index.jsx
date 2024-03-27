@@ -1,7 +1,7 @@
 function StorageModule() {
 
-    const getLocal = (atribute) => {
-        const data = localStorage.getItem(atribute);
+    const getLocal = (attribute) => {
+        const data = localStorage.getItem(attribute);
 
         if (data) {
             try {

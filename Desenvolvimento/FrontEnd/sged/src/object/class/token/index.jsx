@@ -1,4 +1,8 @@
+import StorageModule from '../../modules/storage';
+
 function TokenClass() {
+
+  const storage = StorageModule();
 
   function propertyName() {
     return "Token";
@@ -10,7 +14,7 @@ function TokenClass() {
 
   function setData() {
     return {
-      token: localStorage.getItem('token')
+      token: storage.getLocal('token')
     }
   }
 

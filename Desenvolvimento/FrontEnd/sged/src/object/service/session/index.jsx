@@ -5,7 +5,7 @@ import StorageModule from '../../modules/storage';
 function SessionService() {
 
     const tokenClass = TokenClass();
-    const connection = ConnectionService();
+    const connection = new ConnectionService();
     const storage = StorageModule();
 
     const getLogin = () => {
@@ -38,7 +38,7 @@ function SessionService() {
         var autentication = false;
 
         try {
-            await connection.endpoint("Sessao").action("Autentication").postOrder(object).message();
+            await connection.endpoint("Sessao").action("Autentication").post(object).messagePopUp();
 
             console.log(connection.response);
 
@@ -63,7 +63,7 @@ function SessionService() {
 
             } else {
                 defaultToken();
-                return { validation: autentication, message: response.data.response };
+                return { validation: autentication, message: connection.response.data.response };
             }
 
         } catch (error) {
@@ -78,12 +78,12 @@ function SessionService() {
 
         if (token !== null) {
             try {
-                tokenClass.setTokenSession(token);
-                const response = await connection.objectUrl("Sessao").actionUrl("Close").putOrder(tokenClass);
+                setToken(token);
+                await connection.objectUrl("Sessao").actionUrl("Close").putOrder(tokenClass);
                 
                 defaultToken();
 
-                return response.status;
+                return connection.response.status;
 
             } catch (error) {
                 return false;
@@ -98,17 +98,13 @@ function SessionService() {
 
         if (token !== null) {
             try {
-                tokenClass.setTokenSession(token);
+                setToken(token);
+                await connection.objectUrl("Sessao").actionUrl("Validation").putOrder(tokenClass);
 
-                console.log(token);
-                console.log(tokenClass);
-
-                const response = await connection.objectUrl("Sessao").actionUrl("Validation").putOrder(tokenClass);
-
-                if (response.status) setToken(response.data.response);
+                if (connection.response.status) setToken(connection.response.data.response);
                 else defaultToken();
 
-                return response.status;
+                return connection.response.status;
 
             } catch (error) {
                 return false;

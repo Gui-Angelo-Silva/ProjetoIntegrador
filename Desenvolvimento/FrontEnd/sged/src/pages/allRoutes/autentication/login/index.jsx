@@ -31,7 +31,7 @@ export default function SignIn() {
 
   useEffect(() => {
     componentMounted();
-  }, [componentMounted]);
+  }, []);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState('');

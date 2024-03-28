@@ -18,7 +18,7 @@ export const ServerProvider = ({ children }) => {
 
     const [callFunctionRoute, setCallFunctionRoute] = useState(false);
     const [liberateNavigate, setLiberateNavigate] = useState(false);
-    const { componentMontage, clearStateMontage } = useMontage();
+    const montage = useMontage();
     const session = SessionService();
     const navigate = useNavigate();
 
@@ -74,77 +74,31 @@ export const ServerProvider = ({ children }) => {
         const firstSegment = currentPathSegments[1]?.toLowerCase();
         const initialPages = ["login"];
 
-        /*if (callFunctionRoute) {
-            const validationRoute = async () => {
-                const authenticade = await updateAuthentication();
-
-                if (!authenticade && !initialPages.includes(firstSegment)) {
-                    clearSegment("login");
-                } else if (authenticade && initialPages.includes(firstSegment)) {
-                    clearSegment("home");
-                }
-            };
-
-            validationRoute();
-
-        } else {
-            setLiberateNavigate(false);
-            clearStateMontage();
-
-            const validationRoute = async () => {
-                const authenticade = await updateAuthentication();
-
-                if (!firstSegment) {
-                    clearSegment(authenticade ? "home" : "login");
-
-                } else if (authenticade && initialPages.includes(firstSegment)) {
-                    clearSegment("home");
-
-                } else if (!authenticade && !initialPages.includes(firstSegment)) {
-                    clearSegment("login");
-
-                } else if (["notfound", "notpermission"].includes(firstSegment)) {
-                    clearSegment(authenticade ? "home" : "login");
-
-                }
-
-                setLiberateNavigate(true);
-            };
-
-            validationRoute();
-        }*/
-
-        setLiberateNavigate(true);
-        setCallFunctionRoute(false);
-    }, [window.location.pathname]);
-
-    /*useEffect(() => {
-        const currentPathSegments = window.location.pathname.split('/');
-        const initialPages = ["login"];
-
         const validationRoute = async () => {
+            if (!callFunctionRoute) { setLiberateNavigate(false); montage.clearStateMontage(); }
             const autentication = await updateAuthentication();
-            clearStateMontage(); if (!callFunctionRoute) setLiberateNavigate(false);
 
-            if (window.location.protocol === 'http:') {
+            /*if (window.location.protocol === 'http:') {
                 window.location.href = window.location.href.replace('http:', 'https:');
-            }
+            }*/
 
-            if (!autentication && !initialPages.includes(currentPathSegments[currentPathSegments.length - 1])) {
+            if (!autentication && !initialPages.includes(firstSegment)) {
                 clearSegment("login");
+
+            } else if (autentication && initialPages.includes(firstSegment)) {
+                clearSegment("home");
+
             } else if (!callFunctionRoute) {
-                if (autentication && initialPages.includes(currentPathSegments[currentPathSegments.length - 1])) {
-                    clearSegment("home");
-                } else if (["notfound", "notpermission", "development"].includes(currentPathSegments[currentPathSegments.length - 1])) {
+                if (["notfound", "notpermission", "development"].includes(firstSegment)) {
                     clearSegment(autentication ? "home" : "login");
                 }
-
-                setLiberateNavigate(true);
             }
+
+            setLiberateNavigate(true);
         };
 
         validationRoute(); setCallFunctionRoute(false);
-    }, [window.location.pathname]);*/
+    }, [window.location.pathname]);
 
     useEffect(() => {
         const delay = (milliseconds) => {
@@ -155,13 +109,17 @@ export const ServerProvider = ({ children }) => {
 
         const verifyMontage = async () => {
             try {
-                await delay(2000);
+                if (!isExecuting) {
+                    return;
+                }
+
+                await delay(3000);
 
                 if (!isExecuting) {
                     return;
                 }
 
-                if (!componentMontage) {
+                if (!montage.componentMontage) {
                     sessionStorage.setItem("page: non-existent", window.location.pathname);
                     clearSegment("notfound");
                 }
@@ -170,7 +128,7 @@ export const ServerProvider = ({ children }) => {
             }
         };
 
-        if (liberateNavigate && !componentMontage) {
+        if (liberateNavigate && !montage.componentMontage) {
             verifyMontage();
         }
 
@@ -178,7 +136,7 @@ export const ServerProvider = ({ children }) => {
             isExecuting = false;
         };
 
-    }, [liberateNavigate, componentMontage]);
+    }, [liberateNavigate, montage.componentMontage]);
 
     return (
         <ServerContext.Provider value={{ inDevelopment, addSegment, clearSegment, removeSegment }}>

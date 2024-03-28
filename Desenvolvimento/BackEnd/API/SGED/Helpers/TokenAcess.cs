@@ -1,6 +1,6 @@
 ﻿namespace SGED.Helpers
 {
-    public class Acess
+    public class TokenAcess
     {
         public string Token { get; set; }
     }

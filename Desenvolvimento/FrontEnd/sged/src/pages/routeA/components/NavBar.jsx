@@ -39,9 +39,8 @@ export default function NavBar() {
   const user = UserClass();
 
   const GetUser = () => {
-    const object = session.getSession();
-    if (object !== null) {
-      user.getData(object);
+    if (session.getToken()) {
+      user.getData(session.getUser());
     }
   };
 

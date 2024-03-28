@@ -68,13 +68,13 @@ function ConnectionService() {
         }
     };
 
-    this.get = async function () {
-        const result = await this.execute(() => this.getMethod(), 'GET');
+    this.get = async function (object) {
+        const result = await this.execute(() => this.getMethod(object), 'GET');
         if (!result.status) this.clearResponse();
     };
 
-    this.getMethod = async function () {
-        return await axios.get(this.url, this.api.headerConfig());
+    this.getMethod = async function (object) {
+        return await axios.get(object ? `${this.url}?${object.setData()}` : this.url, this.api.headerConfig());
     }
 
     this.post = async function (object) {

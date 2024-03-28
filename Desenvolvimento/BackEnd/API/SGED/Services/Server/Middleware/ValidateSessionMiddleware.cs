@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using MySqlX.XDevAPI;
 using Newtonsoft.Json;
 using SGED.Context;
 using SGED.DTO.Entities;
@@ -24,17 +25,18 @@ namespace SGED.Services.Server.Middleware
         {
             using var scope = _serviceProvider.CreateScope();
             var _sessaoRepository = scope.ServiceProvider.GetRequiredService<ISessaoRepository>();
+            var tokenPrevious = "";
 
-            if (context.Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues value))
+            if (context.Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues valuePrevious))
             {
-                var authorizationHeader = value.ToString();
+                var authorizationHeader = valuePrevious.ToString();
                 var tokenParts = authorizationHeader.Split(' ');
 
                 if (tokenParts.Length == 2)
                 {
                     var validTypes = new List<string> { "Front", "Back" };
                     var tokenType = tokenParts[0];
-                    var token = tokenParts[1];
+                    tokenPrevious = tokenParts[1];
 
                     if (!validTypes.Contains(tokenType))
                     {
@@ -42,11 +44,12 @@ namespace SGED.Services.Server.Middleware
 
                         context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                         context.Response.ContentType = "application/json";
+                        context.Request.Headers.Remove("Authorization");
                         await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = "Erro: Token inválido!" }));
                         return;
                     }
 
-                    var sessao = await _sessaoRepository.GetByToken(token);
+                    var sessao = await _sessaoRepository.GetByToken(tokenPrevious);
 
                     if (sessao is null)
                     {
@@ -54,6 +57,7 @@ namespace SGED.Services.Server.Middleware
 
                         context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                         context.Response.ContentType = "application/json";
+                        context.Request.Headers.Remove("Authorization");
                         await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = "Erro: Sessão não encontrada!" }));
                         return;
                     }
@@ -67,18 +71,9 @@ namespace SGED.Services.Server.Middleware
 
                         context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                         context.Response.ContentType = "application/json";
+                        context.Request.Headers.Remove("Authorization");
                         await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = "Erro: Sessão expirada!" }));
                         return;
-                    }
-                    else if (tokenType == "Front")
-                    {
-                        sessao.TokenSessao = SessaoDTO.GenerateToken(sessao.EmailPessoa);
-                        await _sessaoRepository.Update(sessao);
-
-                        /*context.Request.Headers.Remove("Authorization");
-                        context.Request.Headers.Add("Authorization", "Bearer " + sessao.TokenSessao);*/
-
-                        context.Request.Headers["Authorization"] = $"Front {sessao.TokenSessao}";
                     }
                 }
                 else
@@ -87,6 +82,7 @@ namespace SGED.Services.Server.Middleware
 
                     context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     context.Response.ContentType = "application/json";
+                    context.Request.Headers.Remove("Authorization");
                     await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = "Erro: Token inválido!" }));
                     return;
                 }
@@ -99,7 +95,47 @@ namespace SGED.Services.Server.Middleware
                 return;
             }
 
-            await _next(context);
+            await _next(context); // Chama o proximo serviço do pipeline da requisição
+
+            if (context.Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues valueAfter))
+            {
+                var authorizationHeader = valueAfter.ToString();
+                var tokenParts = authorizationHeader.Split(' ');
+
+                var tokenType = tokenParts[0];
+                var tokenAfter = tokenParts[1];
+
+                if (tokenType == "Front")
+                {
+                    var sessaoAfter = await _sessaoRepository.GetByToken(tokenAfter);
+
+                    if (tokenPrevious != tokenAfter)
+                    {
+                        var sessaoPrevious = await _sessaoRepository.GetByToken(tokenPrevious);
+
+                        if (sessaoPrevious.IdUsuario != sessaoAfter.IdUsuario)
+                        {
+                            context.Request.Headers.Remove("Authorization"); return;
+                        }
+                    }
+                    else
+                    {
+                        var user = await _sessaoRepository.GetUser(sessaoAfter.IdUsuario);
+
+                        if (user == null) 
+                        {
+                            context.Request.Headers.Remove("Authorization"); return;
+                        }
+
+                        sessaoAfter.EmailPessoa = user.EmailPessoa;
+                        if (user.TipoUsuario != null) { sessaoAfter.NivelAcesso = user.TipoUsuario.NivelAcesso; }
+                        sessaoAfter.TokenSessao = SessaoDTO.GenerateToken(sessaoAfter.EmailPessoa);
+                        await _sessaoRepository.Update(sessaoAfter);
+
+                        context.Request.Headers["Authorization"] = $"Front {sessaoAfter.TokenSessao}";
+                    }
+                }
+            }
         }
 
     }

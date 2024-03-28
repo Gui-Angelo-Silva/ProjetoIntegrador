@@ -52,7 +52,7 @@ public class SessaoRepository : ISessaoRepository
 
     public async Task<Usuario> GetUser(int id)
     {
-        return await _dbContext.Sessao.Where(sessao => sessao.Id == id).Select(sessao => sessao.Usuario).FirstOrDefaultAsync();
+        return await _dbContext.Sessao.Where(sessao => sessao.Id == id).Select(sessao => sessao.Usuario).Include(usuario => usuario.TipoUsuario).FirstOrDefaultAsync();
     }
 
     public async Task<Sessao> Create(Sessao sessao)

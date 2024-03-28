@@ -16,6 +16,23 @@ function SessionService() {
         return storage.getLocal('token');
     };
 
+    const getUser = async () => {
+        const token = getToken();
+
+        if (token) {
+            try {
+                await connection.endpoint("Sessao").action("GetUser").get(tokenClass);
+                return connection.response.response;
+
+            } catch (error) {
+                return null;
+
+            }
+        }
+
+        return null;
+    };
+
     const setLogin = (object) => {
         const login = { persist: object.persistLogin, emailPessoa: object.personEmail, senhaUsuario: object.userPassword };
         storage.setLocal('login', login);
@@ -114,6 +131,7 @@ function SessionService() {
     return {
         getLogin,
         getToken,
+        getUser,
         setLogin,
         setToken,
         defaultToken,

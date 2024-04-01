@@ -97,49 +97,54 @@ namespace SGED.Services.Server.Middleware
 
             await _next(context); // Chama o proximo serviço do pipeline da requisição
 
-            if (tokenPrevious is not null && context.Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues valueAfter))
+            if (tokenPrevious is not null)
             {
-                var authorizationHeader = valueAfter.ToString();
-                var tokenParts = authorizationHeader.Split(' ');
-
-                var tokenType = tokenParts[0];
-                var tokenAfter = tokenParts[1];
-
-                if (tokenType == "Front")
+                if (context.Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues valueAfter))
                 {
-                    var sessaoAfter = await _sessaoRepository.GetByToken(tokenAfter);
+                    var authorizationHeader = valueAfter.ToString();
+                    var tokenParts = authorizationHeader.Split(' ');
 
-                    if (sessaoAfter == null)
+                    var tokenType = tokenParts[0];
+                    var tokenAfter = tokenParts[1];
+
+                    if (tokenType == "Front")
+                    {
+                        var sessaoAfter = await _sessaoRepository.GetByToken(tokenAfter);
+
+                        if (sessaoAfter == null)
+                        {
+                            context.Request.Headers.Remove("Authorization"); return;
+                        }
+                        else if (tokenPrevious != tokenAfter)
+                        {
+                            var user = await _sessaoRepository.GetUser(tokenPrevious);
+
+                            if (user == null)
+                            {
+                                context.Request.Headers.Remove("Authorization"); return;
+                            }
+                            else if (user.Id != sessaoAfter.IdUsuario)
+                            {
+                                context.Request.Headers.Remove("Authorization"); return;
+                            }
+                        }
+                    }
+                } else
+                {
+                    var sessaoAfter = await _sessaoRepository.GetByToken(tokenPrevious);
+                    var user = await _sessaoRepository.GetUser(tokenPrevious);
+
+                    if (user == null)
                     {
                         context.Request.Headers.Remove("Authorization"); return;
-                    } else if (tokenPrevious != tokenAfter)
-                    {
-                        var sessaoPrevious = await _sessaoRepository.GetByToken(tokenPrevious);
-
-                        if (sessaoPrevious == null)
-                        {
-                            context.Request.Headers.Remove("Authorization"); return;
-                        } else if (sessaoPrevious.IdUsuario != sessaoAfter.IdUsuario)
-                        {
-                            context.Request.Headers.Remove("Authorization"); return;
-                        }
                     }
-                    else
-                    {
-                        var user = await _sessaoRepository.GetUser(sessaoAfter.TokenSessao);
 
-                        if (user == null) 
-                        {
-                            context.Request.Headers.Remove("Authorization"); return;
-                        }
+                    sessaoAfter.EmailPessoa = user.EmailPessoa;
+                    if (user.TipoUsuario != null) { sessaoAfter.NivelAcesso = user.TipoUsuario.NivelAcesso; }
+                    sessaoAfter.TokenSessao = SessaoDTO.GenerateToken(sessaoAfter.EmailPessoa);
+                    await _sessaoRepository.Update(sessaoAfter);
 
-                        sessaoAfter.EmailPessoa = user.EmailPessoa;
-                        if (user.TipoUsuario != null) { sessaoAfter.NivelAcesso = user.TipoUsuario.NivelAcesso; }
-                        sessaoAfter.TokenSessao = SessaoDTO.GenerateToken(sessaoAfter.EmailPessoa);
-                        await _sessaoRepository.Update(sessaoAfter);
-
-                        context.Request.Headers["Authorization"] = $"Front {sessaoAfter.TokenSessao}";
-                    }
+                    context.Request.Headers.Add("Token", $"Front {sessaoAfter.TokenSessao}");
                 }
             }
         }

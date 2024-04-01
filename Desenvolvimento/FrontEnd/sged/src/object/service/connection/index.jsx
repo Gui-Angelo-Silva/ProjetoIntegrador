@@ -50,8 +50,10 @@ function ConnectionService() {
             const result = await method();
 
             if (this.statusRequest.success.includes(result.status)) {
-                console.log(result.headers);
-                this.api.updateToken(result.headers.authorization);
+                console.log('Header:', this.api.headerConfig());
+                console.log('Response:', result);
+
+                //this.api.updateToken(result.headers.token);
                 return { status: true, data: result.data };
             } else {
                 if (result.data.error) this.messageRequest = { type: 'bad', content: result.data.error };
@@ -73,6 +75,7 @@ function ConnectionService() {
     this.get = async function (data) {
         const result = await this.execute(() => this.getMethod(data), 'GET');
         if (!result.status) this.clearResponse();
+        this.updateResponse(result);
     };
 
     this.getMethod = async function (data) {

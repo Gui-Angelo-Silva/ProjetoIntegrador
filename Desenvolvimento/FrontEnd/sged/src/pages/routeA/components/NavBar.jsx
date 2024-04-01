@@ -40,7 +40,8 @@ export default function NavBar() {
 
   const GetUser = async () => {
     if (session.getToken()) {
-      user.getData(await session.getUser());
+      const data = await session.getUser();
+      if (data) {user.getData(data);}
     }
   };
 
@@ -51,7 +52,7 @@ export default function NavBar() {
 
   useEffect(() => {
     GetUser();
-  }, []);
+  }, [session.getUser()]);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);

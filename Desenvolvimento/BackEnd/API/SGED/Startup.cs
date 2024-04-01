@@ -227,19 +227,6 @@ namespace SGED
 
             app.UseCors("MyPolicy");
 
-            app.UseWhen(context => context.Request.Path.StartsWithSegments("/api") && context.GetEndpoint()?.Metadata.GetMetadata<AnonymousAttribute>() == null,
-            appBuilder =>
-            {
-                appBuilder.UseValidateSessionMiddleware();
-            });
-
-            app.Use(async (context, next) =>
-            {
-                if (context.Response.StatusCode == StatusCodes.Status401Unauthorized) return;
-
-                await next(context);
-            });
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

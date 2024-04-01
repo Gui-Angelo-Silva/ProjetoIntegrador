@@ -127,7 +127,7 @@ namespace SGED.Controllers
                         sessaoDTO.TokenSessao = SessaoDTO.GenerateToken(sessaoDTO.EmailPessoa);
                         await _sessaoService.Update(sessaoDTO);
 
-                        Response.Headers["Authorization"] = $"Front {sessaoDTO.TokenSessao}";
+                        Response.Headers.Add("Token", $"Front {sessaoDTO.TokenSessao}");
                     }
 
                     return Ok(new { status = true, response = sessaoDTO.TokenSessao });

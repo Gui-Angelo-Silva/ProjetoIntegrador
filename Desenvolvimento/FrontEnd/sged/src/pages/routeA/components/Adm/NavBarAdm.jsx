@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import IconNotification from "../../../../assets/user/Notification"
 import { useSession } from '../../../../object/service/session';
 import UserClass from '../../../../object/class/user';
-import NavDropdown from 'react-bootstrap/NavDropdown';
 
 export default function NavBarAdm() {
 

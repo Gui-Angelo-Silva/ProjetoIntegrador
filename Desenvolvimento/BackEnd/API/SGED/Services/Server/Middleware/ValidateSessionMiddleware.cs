@@ -97,7 +97,7 @@ namespace SGED.Services.Server.Middleware
 
             await _next(context); // Chama o proximo serviço do pipeline da requisição
 
-            if (context.Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues valueAfter))
+            if (tokenPrevious is not null && context.Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues valueAfter))
             {
                 var authorizationHeader = valueAfter.ToString();
                 var tokenParts = authorizationHeader.Split(' ');
@@ -109,18 +109,24 @@ namespace SGED.Services.Server.Middleware
                 {
                     var sessaoAfter = await _sessaoRepository.GetByToken(tokenAfter);
 
-                    if (tokenPrevious != tokenAfter)
+                    if (sessaoAfter == null)
+                    {
+                        context.Request.Headers.Remove("Authorization"); return;
+                    } else if (tokenPrevious != tokenAfter)
                     {
                         var sessaoPrevious = await _sessaoRepository.GetByToken(tokenPrevious);
 
-                        if (sessaoPrevious.IdUsuario != sessaoAfter.IdUsuario)
+                        if (sessaoPrevious == null)
+                        {
+                            context.Request.Headers.Remove("Authorization"); return;
+                        } else if (sessaoPrevious.IdUsuario != sessaoAfter.IdUsuario)
                         {
                             context.Request.Headers.Remove("Authorization"); return;
                         }
                     }
                     else
                     {
-                        var user = await _sessaoRepository.GetUser(sessaoAfter.IdUsuario);
+                        var user = await _sessaoRepository.GetUser(sessaoAfter.TokenSessao);
 
                         if (user == null) 
                         {

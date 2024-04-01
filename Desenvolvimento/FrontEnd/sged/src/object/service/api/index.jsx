@@ -10,7 +10,7 @@ function ApiService() {
   };
 
   const updateToken = (newToken) => {
-    storage.setLocal('token', newToken.startsWith('Front ') ? newToken.replace('Front ', '') : newToken);
+    storage.setLocal('token', newToken? newToken.startsWith('Front ') ? newToken.replace('Front ', '') : newToken : null);
   };
 
   const headerConfig = () => {

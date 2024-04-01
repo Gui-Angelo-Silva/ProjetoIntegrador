@@ -38,9 +38,9 @@ export default function NavBar() {
   const server = useServer();
   const user = UserClass();
 
-  const GetUser = () => {
+  const GetUser = async () => {
     if (session.getToken()) {
-      user.getData(session.getUser());
+      user.getData(await session.getUser());
     }
   };
 

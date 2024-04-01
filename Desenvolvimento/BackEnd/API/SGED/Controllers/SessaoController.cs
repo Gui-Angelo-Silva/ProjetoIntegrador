@@ -54,18 +54,17 @@ namespace SGED.Controllers
 
             var sessaoDTO = await _sessaoService.GetByToken(token.Token);
 
-            return Ok(new { status = true, response = sessaoDTO });
+            return Ok(sessaoDTO);
         }
 
-        [HttpGet("GetUser")]
-        public async Task<ActionResult<UsuarioDTO>> GetUser([FromQuery] TokenAcess token)
+        [HttpGet("GetUser/{token}")]
+        public async Task<ActionResult<UsuarioDTO>> GetUser(string token)
         {
             if (token is null) return BadRequest(new { status = false, response = "Dados inválidos!" });
 
-            var sessaoDTO = await _sessaoService.GetByToken(token.Token);
-            var usuarioDTO = await _sessaoService.GetUser(sessaoDTO.IdUsuario);
+            var usuarioDTO = await _sessaoService.GetUser(token);
 
-            return Ok(new { status = true, response = usuarioDTO });
+            return Ok(usuarioDTO);
         }
 
         [HttpPost("Autentication")]

@@ -11,7 +11,7 @@ public interface ISessaoRepository
     Task<Sessao> GetLastSession(int id);
     Task<Sessao> GetById(int id);
     Task<Sessao> GetByToken(string token);
-    Task<Usuario> GetUser(int id);
+    Task<Usuario> GetUser(string token);
     Task<Sessao> Create(Sessao sessao);
     Task<Sessao> Update(Sessao sessao);
     Task<Sessao> Delete(int id);

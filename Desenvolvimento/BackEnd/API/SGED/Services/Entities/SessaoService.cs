@@ -60,9 +60,9 @@ public class SessaoService : ISessaoService
         return _mapper.Map<SessaoDTO>(sessao);
     }
 
-    public async Task<UsuarioDTO> GetUser(int id)
+    public async Task<UsuarioDTO> GetUser(string token)
     {
-        var usuario = await _sessaoRepository.GetUser(id);
+        var usuario = await _sessaoRepository.GetUser(token);
         return _mapper.Map<UsuarioDTO>(usuario);
     }
 

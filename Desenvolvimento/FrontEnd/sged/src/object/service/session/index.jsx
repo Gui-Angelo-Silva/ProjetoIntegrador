@@ -21,7 +21,7 @@ function SessionService() {
 
         if (token) {
             try {
-                await connection.endpoint("Sessao").action("GetUser").get(tokenClass);
+                await connection.endpoint("Sessao").action("GetUser").get(token);
                 return connection.response.response;
 
             } catch (error) {
@@ -89,7 +89,7 @@ function SessionService() {
     const closeSession = async () => {
         const token = getToken();
 
-        if (token !== null) {
+        if (token) {
             try {
                 await connection.endpoint("Sessao").action("Close").put(tokenClass);
                 defaultToken();
@@ -107,7 +107,7 @@ function SessionService() {
     const validateToken = async () => {
         const token = getToken();
 
-        if (token !== null) {
+        if (token) {
             try {
                 await connection.endpoint("Sessao").action("Validation").put(tokenClass);
 

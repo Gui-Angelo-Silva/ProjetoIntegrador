@@ -50,6 +50,8 @@ function ConnectionService() {
             const result = await method();
 
             if (this.statusRequest.success.includes(result.status)) {
+                console.log(result.headers);
+                this.api.updateToken(result.headers.authorization);
                 return { status: true, data: result.data };
             } else {
                 if (result.data.error) this.messageRequest = { type: 'bad', content: result.data.error };
@@ -68,13 +70,13 @@ function ConnectionService() {
         }
     };
 
-    this.get = async function (object) {
-        const result = await this.execute(() => this.getMethod(object), 'GET');
+    this.get = async function (data) {
+        const result = await this.execute(() => this.getMethod(data), 'GET');
         if (!result.status) this.clearResponse();
     };
 
-    this.getMethod = async function (object) {
-        return await axios.get(object ? `${this.url}?${object.setData()}` : this.url, this.api.headerConfig());
+    this.getMethod = async function (data) {
+        return await axios.get(data ? `${this.url}${data}` : this.url, this.api.headerConfig());
     }
 
     this.post = async function (object) {

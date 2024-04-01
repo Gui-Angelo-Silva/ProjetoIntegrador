@@ -11,7 +11,7 @@ namespace SGED.Services.Interfaces
         Task<SessaoDTO> GetLastSession(int id);
         Task<SessaoDTO> GetById(int id);
         Task<SessaoDTO> GetByToken(string token);
-        Task<UsuarioDTO> GetUser(int id);
+        Task<UsuarioDTO> GetUser(string token);
         Task Create(SessaoDTO sessaoDTO);
         Task Update(SessaoDTO sessaoDTO);
         Task Remove(int id);

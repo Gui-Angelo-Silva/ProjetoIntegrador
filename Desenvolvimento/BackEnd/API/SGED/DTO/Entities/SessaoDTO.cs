@@ -46,8 +46,7 @@ namespace SGED.DTO.Entities
                 { "exp", DateTimeOffset.UtcNow.AddMinutes(60).ToUnixTimeSeconds() }
             };
 
-            string token = JWT.Encode(payload, Encoding.UTF8.GetBytes(securityEntity.Key), JwsAlgorithm.HS256);
-            return token;
+            return JWT.Encode(payload, Encoding.UTF8.GetBytes(securityEntity.Key), JwsAlgorithm.HS256);
         }
 
         public static bool ValidateToken(string token, string subject)

@@ -50,9 +50,14 @@ public class SessaoRepository : ISessaoRepository
         return await _dbContext.Sessao.Where(sessao => sessao.TokenSessao == token).FirstOrDefaultAsync();
     }
 
-    public async Task<Usuario> GetUser(int id)
+    public async Task<Usuario> GetUser(string token)
     {
-        return await _dbContext.Sessao.Where(sessao => sessao.Id == id).Select(sessao => sessao.Usuario).Include(usuario => usuario.TipoUsuario).FirstOrDefaultAsync();
+        var sessao = await _dbContext.Sessao
+            .Include(s => s.Usuario)
+                .ThenInclude(u => u.TipoUsuario)
+            .FirstOrDefaultAsync(s => s.TokenSessao == token);
+
+        return sessao?.Usuario;
     }
 
     public async Task<Sessao> Create(Sessao sessao)

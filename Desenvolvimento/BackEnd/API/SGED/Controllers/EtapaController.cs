@@ -55,5 +55,13 @@ namespace SGED.Controllers
 			await _etapaService.Remove(id);
 			return Ok(etapaDTO);
 		}
+
+		[HttpGet("GetRelatedToTypeProcess/{idTipoProcesso}")]
+		public async Task<ActionResult<IEnumerable<EtapaDTO>>> GetStagesRelatedToTypeProcess(int idTipoProcesso)
+		{
+			if (idTipoProcesso == 0) return BadRequest("Informe o Id do Tipo Processo!");
+			var etapaDTO = await _etapaService.GetStagesRelatedToTypeProcess(idTipoProcesso);
+			return Ok(etapaDTO);
+		}
 	}
 }

@@ -22,7 +22,7 @@ function SessionService() {
         if (token) {
             try {
                 await connection.endpoint("Sessao").action("GetUser").get(token);
-                return connection.response.data;
+                return connection.response.status? connection.response.data : null;
 
             } catch (error) {
                 return null;

@@ -7,10 +7,8 @@ import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
-import defaultProfilePicture from '../../../../assets/user/defaultProfilePicture.png';
-
 import { useMontage } from '../../../../object/modules/montage';
-import ConnectionEntity from '../../../../object/service/connection';
+import ConnectionService from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
 import CitizenClass from '../../../../object/class/citizen';
 import SelectModule from '../../../../object/modules/select';
@@ -23,7 +21,7 @@ export default function Citizen() {
         componentMounted();
     }, []);
 
-    const connection = ConnectionEntity();
+    const connection = new ConnectionService(); connection.messagePopUp();
     const citizen = CitizenClass();
     const list = ListModule();
     const selectBox = SelectModule();
@@ -74,25 +72,20 @@ export default function Citizen() {
     };
 
     const GetCitizen = async () => {
-        const response = await connection.objectUrl("Municipe").getOrder();
-        if (response.status) {
-            list.setList(response.data);
-        } else {
-            console.log(response.message);
-        }
+        await connection.endpoint("Municipe").get;
+        list.setList(connection.response.data);
     };
 
     const PostCitizen = async () => {
         setInOperation(true);
 
         if (citizen.verifyData()) {
-            const response = await connection.objectUrl("Municipe").postOrder(citizen);
+            await connection.endpoint("Municipe").postOrder(citizen);
 
-            if (!response.status) { citizen.getError(response.data); }
+            if (!connection.response.status) { citizen.getError(connection.response.data); }
 
-            openCloseModalInsert(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalInsert(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -104,13 +97,12 @@ export default function Citizen() {
         setInOperation(true);
 
         if (citizen.verifyData()) {
-            const response = await connection.objectUrl("Municipe").putOrder(citizen);
+            await connection.endpoint("Municipe").putOrder(citizen);
 
-            if (!response.status) { citizen.getError(response.data); }
+            if (!connection.response.status) { citizen.getError(connection.response.data); }
 
-            openCloseModalEdit(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalEdit(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -121,11 +113,10 @@ export default function Citizen() {
     const DeleteCitizen = async () => {
         setInOperation(true);
 
-        const response = await connection.objectUrl("Municipe").deleteOrder(citizen);
+        await connection.endpoint("Municipe").deleteOrder(citizen);
 
-        openCloseModalDelete(!response.status);
-        setUpdateData(response.status);
-        console.log(response.message);
+        openCloseModalDelete(!connection.response.status);
+        setUpdateData(connection.response.status);
 
         setInOperation(false);
     };
@@ -191,28 +182,28 @@ export default function Citizen() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-6 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="flex ml-5 justify-center items-center text-white text-lg font-semibold">Imagem</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Nome</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">E-mail</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">CPF / CNPJ</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">RG / IE</span>
-                                <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                                <div className="flex ml-5 justify-center items-center text-white text-lg font-semibold">Imagem</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Nome</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">E-mail</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">CPF / CNPJ</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">RG / IE</div>
+                                <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
                             </div>
                             <ul className="w-full">
                                 {list.currentList.map((object) => {
                                     return (
                                         <li className="grid grid-cols-6 w-full" key={object.id}>
-                                            <span className="flex pl-5 justify-center items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">
+                                            <div className="flex pl-5 justify-center items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">
                                                 <img src={object.imagemPessoa} className="cursor-pointer rounded-full w-[40px] h-[40px] object-cover shadow-md" />
-                                            </span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.nomePessoa}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.emailPessoa}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.cpfCnpjPessoa}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.rgIePessoa}</span>
-                                            <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                            </div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.nomePessoa}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.emailPessoa}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.cpfCnpjPessoa}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.rgIePessoa}</div>
+                                            <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                                 <button onClick={() => SelectCitizen(object, "Editar")}><PencilSimple size={20} className="hover:text-cyan-500" /></button>{"  "}
                                                 <button onClick={() => SelectCitizen(object, "Excluir")}><TrashSimple size={20} className="hover:text-red-600" /></button>
-                                            </span>
+                                            </div>
                                         </li>
                                     );
                                 })}

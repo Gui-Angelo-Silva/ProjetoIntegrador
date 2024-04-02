@@ -9,7 +9,7 @@ import Select from 'react-select';
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
 import { useMontage } from '../../../../object/modules/montage';
-import ConnectionEntity from '../../../../object/service/connection';
+import ConnectionService from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
 import CityClass from '../../../../object/class/city';
 import SelectModule from '../../../../object/modules/select';
@@ -22,7 +22,7 @@ export default function City() {
         componentMounted();
     }, []);
 
-    const connection = ConnectionEntity();
+    const connection = new ConnectionService();
     const city = CityClass();
     const list = ListModule();
     const listState = ListModule();
@@ -73,7 +73,7 @@ export default function City() {
     };
 
     const GetState = async () => {
-        const response = await connection.objectUrl("Estado").getOrder();
+        const response = await connection.endpoint("Estado").getOrder();
         if (response.status) {
             listState.setList(response.data);
         } else {
@@ -82,7 +82,7 @@ export default function City() {
     };
 
     const GetCity = async () => {
-        const response = await connection.objectUrl("Cidade").getOrder();
+        const response = await connection.endpoint("Cidade").getOrder();
         if (response.status) {
             list.setList(response.data);
         } else {
@@ -94,7 +94,7 @@ export default function City() {
         setInOperation(true);
 
         if (city.verifyData(list.list)) {
-            const response = await connection.objectUrl("Cidade").postOrder(city);
+            const response = await connection.endpoint("Cidade").postOrder(city);
 
             openCloseModalInsert(!response.status);
             setUpdateData(response.status);
@@ -111,7 +111,7 @@ export default function City() {
         setInOperation(true);
 
         if (city.verifyData(list.list)) {
-            const response = await connection.objectUrl("Cidade").putOrder(city);
+            const response = await connection.endpoint("Cidade").putOrder(city);
 
             openCloseModalEdit(!response.status);
             setUpdateData(response.status);
@@ -126,7 +126,7 @@ export default function City() {
     const DeleteCity = async () => {
         setInOperation(true);
 
-        const response = await connection.objectUrl("Cidade").deleteOrder(city);
+        const response = await connection.endpoint("Cidade").deleteOrder(city);
 
         openCloseModalDelete(!response.status);
         setUpdateData(response.status);
@@ -247,18 +247,18 @@ export default function City() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="flex ml-5 text-white text-lg font-semibold">Cidade</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Estado</span>
-                                <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                                <div className="flex ml-5 text-white text-lg font-semibold">Cidade</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Estado</div>
+                                <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
                             </div>
                             <ul className="w-full">
                                 {list.currentList.map((city) => {
                                     const estado = listState.list.find((state) => state.id === city.idEstado);
                                     return (
                                         <li className="grid grid-cols-3 w-full" key={city.id}>
-                                            <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{city.nomeCidade}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{estado ? estado.nomeEstado : "Estado não encontrado!"}</span>
-                                            <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                            <div className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{city.nomeCidade}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{estado ? estado.nomeEstado : "Estado não encontrado!"}</div>
+                                            <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                                 <button
                                                     className=""
                                                     onClick={() => SelectCity(city, "Editar")}
@@ -271,7 +271,7 @@ export default function City() {
                                                 >
                                                     <TrashSimple size={20} className="hover:text-red-600" />
                                                 </button>
-                                            </span>
+                                            </div>
                                         </li>
                                     );
                                 })}

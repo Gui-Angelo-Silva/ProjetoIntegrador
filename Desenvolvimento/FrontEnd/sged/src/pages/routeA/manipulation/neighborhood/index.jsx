@@ -9,7 +9,7 @@ import Select from 'react-select';
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
 import { useMontage } from '../../../../object/modules/montage';
-import ConnectionEntity from '../../../../object/service/connection';
+import ConnectionService from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
 import NeighborhoodClass from '../../../../object/class/neighborhood';
 import SelectModule from '../../../../object/modules/select';
@@ -22,7 +22,7 @@ export default function Neighborhood() {
         componentMounted();
     }, []);
 
-    const connection = ConnectionEntity();
+    const connection = new ConnectionService();
     const neighborhood = NeighborhoodClass();
     const list = ListModule();
     const listCity = ListModule();
@@ -73,7 +73,7 @@ export default function Neighborhood() {
     };
 
     const GetCity = async () => {
-        const response = await connection.objectUrl("Cidade").getOrder();
+        const response = await connection.endpoint("Cidade").getOrder();
         if (response.status) {
             listCity.setList(response.data);
         } else {
@@ -82,7 +82,7 @@ export default function Neighborhood() {
     };
 
     const GetNeighborhood = async () => {
-        const response = await connection.objectUrl("Bairro").getOrder();
+        const response = await connection.endpoint("Bairro").getOrder();
         if (response.status) {
             list.setList(response.data);
         } else {
@@ -94,7 +94,7 @@ export default function Neighborhood() {
         setInOperation(true);
 
         if (neighborhood.verifyData(list.list)) {
-            const response = await connection.objectUrl("Bairro").postOrder(neighborhood);
+            const response = await connection.endpoint("Bairro").postOrder(neighborhood);
 
             openCloseModalInsert(!response.status);
             setUpdateData(response.status);
@@ -110,7 +110,7 @@ export default function Neighborhood() {
         setInOperation(true);
 
         if (neighborhood.verifyData(list.list)) {
-            const response = await connection.objectUrl("Bairro").putOrder(neighborhood);
+            const response = await connection.endpoint("Bairro").putOrder(neighborhood);
 
             openCloseModalEdit(!response.status);
             setUpdateData(response.status);
@@ -125,7 +125,7 @@ export default function Neighborhood() {
     const DeleteNeighborhood = async () => {
         setInOperation(true);
 
-        const response = await connection.objectUrl("Bairro").deleteOrder(neighborhood);
+        const response = await connection.endpoint("Bairro").deleteOrder(neighborhood);
 
         openCloseModalDelete(!response.status);
         setUpdateData(response.status);
@@ -246,18 +246,18 @@ export default function Neighborhood() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="flex ml-5 text-white text-lg font-semibold">Bairro</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Cidade</span>
-                                <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                                <div className="flex ml-5 text-white text-lg font-semibold">Bairro</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Cidade</div>
+                                <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
                             </div>
                             <ul className="w-full">
                                 {list.currentList.map((neighborhood) => {
                                     const cidade = listCity.list.find((city) => city.id === neighborhood.idCidade);
                                     return (
                                         <li className="grid grid-cols-3 w-full" key={neighborhood.id}>
-                                            <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{neighborhood.nomeBairro}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{cidade ? cidade.nomeCidade : "Cidade não encontrada!"}</span>
-                                            <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                            <div className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{neighborhood.nomeBairro}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{cidade ? cidade.nomeCidade : "Cidade não encontrada!"}</div>
+                                            <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                                 <button
                                                     className=""
                                                     onClick={() => SelectNeighborhood(neighborhood, "Editar")}
@@ -270,7 +270,7 @@ export default function Neighborhood() {
                                                 >
                                                     <TrashSimple size={20} className="hover:text-red-600" />
                                                 </button>
-                                            </span>
+                                            </div>
                                         </li>
                                     );
                                 })}

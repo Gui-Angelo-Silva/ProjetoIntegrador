@@ -9,4 +9,7 @@ public interface ITipoDocumentoEtapaRepository
     Task<TipoDocumentoEtapa> Create(TipoDocumentoEtapa TipoDocumentoEtapa);
     Task<TipoDocumentoEtapa> Update(TipoDocumentoEtapa TipoDocumentoEtapa);
     Task<TipoDocumentoEtapa> Delete(int id);
+
+    Task<IEnumerable<TipoDocumento>> GetTypeDocumentsRelatedToStage(int IdEtapa);
+    Task<IEnumerable<TipoDocumento>> GetTypeDocumentsNoRelatedToStage(int IdEtapa);
 }

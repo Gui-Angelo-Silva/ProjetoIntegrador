@@ -1,5 +1,6 @@
 import axios from "axios";
 import ApiService from '../api';
+import { useEffect } from "react";
 
 function ConnectionService() {
 
@@ -50,8 +51,8 @@ function ConnectionService() {
             const result = await method();
 
             if (this.statusRequest.success.includes(result.status)) {
-                console.log('Header:', this.api.headerConfig());
-                console.log('Response:', result);
+                //console.log('Header:', this.api.headerConfig());
+                //console.log('Response:', result);
 
                 //this.api.updateToken(result.headers.token);
                 return { status: true, data: result.data };
@@ -117,9 +118,11 @@ function ConnectionService() {
 
     this.messagePopUp = function () {
         useEffect(() => {
+            console.log(this.messageRequest);
+
             if (this.messageRequest.type) {
                 if (this.typeMethod !== 'GET' || this.activityGetPopUp) {
-                    console.log(this.messageRequest);
+                    console.log("PopUp: " + this.messageRequest);
                 }
             }
         }, [this.messageRequest]);

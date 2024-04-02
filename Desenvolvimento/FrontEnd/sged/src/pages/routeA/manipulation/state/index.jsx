@@ -8,7 +8,7 @@ import { FaPlus } from "react-icons/fa6";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
 import { useMontage } from '../../../../object/modules/montage';
-import ConnectionEntity from '../../../../object/service/connection';
+import ConnectionService from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
 import StateClass from '../../../../object/class/state';
 
@@ -20,7 +20,7 @@ export default function State() {
         componentMounted();
     }, []);
 
-    const connection = ConnectionEntity();
+    const connection = new ConnectionService(); connection.messagePopUp();
     const list = ListModule();
     const state = StateClass();
 
@@ -68,23 +68,18 @@ export default function State() {
     };
 
     const GetState = async () => {
-        const response = await connection.objectUrl("Estado").getOrder();
-        if (response.status) {
-            list.setList(response.data);
-        } else {
-            console.error(response.data);
-        }
+        await connection.endpoint("Estado").get();
+            list.setList(connection.response.data);
     };
 
     const PostState = async () => {
         setInOperation(true);
 
         if (state.verifyData()) {
-            const response = await connection.objectUrl("Estado").postOrder(state);
+            await connection.endpoint("Estado").post(state);
 
-            openCloseModalInsert(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalInsert(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -96,11 +91,10 @@ export default function State() {
         setInOperation(true);
 
         if (state.verifyData()) {
-            const response = await connection.objectUrl("Estado").putOrder(state);
+            await connection.endpoint("Estado").put(state);
 
-            openCloseModalEdit(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalEdit(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -111,11 +105,10 @@ export default function State() {
     const DeleteState = async () => {
         setInOperation(true);
 
-        const response = await connection.objectUrl("Estado").deleteOrder(state);
+        await connection.endpoint("Estado").delete(state);
 
-        openCloseModalDelete(!response.status);
-        setUpdateData(response.status);
-        console.log(response.message);
+        openCloseModalDelete(!connection.response.status);
+        setUpdateData(connection.response.status);
 
         setInOperation(false);
     };
@@ -174,16 +167,16 @@ export default function State() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="flex ml-5 text-white text-lg font-semibold">Estado</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">UF</span>
-                                <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                                <div className="flex ml-5 text-white text-lg font-semibold">Estado</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">UF</div>
+                                <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
                             </div>
                             <ul className="w-full">
                                 {list.currentList.map((object) => (
                                     <li className="grid grid-cols-3 w-full" key={object.id}>
-                                        <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeEstado}</span>
-                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.ufEstado}</span>
-                                        <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                        <div className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeEstado}</div>
+                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.ufEstado}</div>
+                                        <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                             <button
                                                 className=""
                                                 onClick={() => SelectState(object, "Editar")}
@@ -196,7 +189,7 @@ export default function State() {
                                             >
                                                 <TrashSimple size={20} className="hover:text-red-600" />
                                             </button>
-                                        </span>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>

@@ -9,7 +9,7 @@ import Select from "react-select";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
 import { useMontage } from "../../../../object/modules/montage";
-import ConnectionEntity from "../../../../object/service/connection";
+import ConnectionService from "../../../../object/service/connection";
 import ListModule from "../../../../object/modules/list";
 import PublicPlaceClass from "../../../../object/class/publicplace";
 import ControlModule from '../../../../object/modules/control';
@@ -23,7 +23,7 @@ export default function PublicPlace() {
         componentMounted();
     }, []);
 
-    const connection = ConnectionEntity();
+    const connection = new ConnectionService();
     const control = ControlModule();
     const publicplace = PublicPlaceClass();
     const list = ListModule();
@@ -77,7 +77,7 @@ export default function PublicPlace() {
     };
 
     const GetNeighborhood = async () => {
-        const response = await connection.objectUrl("Bairro").getOrder();
+        const response = await connection.endpoint("Bairro").getOrder();
         if (response.status) {
             listNeighborhood.setList(response.data);
         } else {
@@ -86,7 +86,7 @@ export default function PublicPlace() {
     };
     
     const GetTypePublicPlace = async () => {
-        const response = await connection.objectUrl("TipoLogradouro").getOrder();
+        const response = await connection.endpoint("TipoLogradouro").getOrder();
         if (response.status) {
             listTypePublicPlace.setList(response.data);
         } else {
@@ -95,7 +95,7 @@ export default function PublicPlace() {
     };
     
     const GetPublicPlace = async () => {
-        const response = await connection.objectUrl("Logradouro").getOrder();
+        const response = await connection.endpoint("Logradouro").getOrder();
         if (response.status) {
             list.setList(response.data);
         } else {
@@ -106,7 +106,7 @@ export default function PublicPlace() {
     const PostPublicPlace = async () => {
         setInOperation(false);
         if (publicplace.verifyData(list.list)) {
-            const response = await connection.objectUrl("Logradouro").postOrder(publicplace);
+            const response = await connection.endpoint("Logradouro").postOrder(publicplace);
 
             openCloseModalInsert(!response.status);
             setUpdateData(response.status);
@@ -122,7 +122,7 @@ export default function PublicPlace() {
         setInOperation(true);
 
         if (publicplace.verifyData(list.list)) {
-            const response = await connection.objectUrl("Logradouro").putOrder(publicplace);
+            const response = await connection.endpoint("Logradouro").putOrder(publicplace);
             openCloseModalEdit(!response.status);
             setUpdateData(response.status);
             console.log(response.message);
@@ -136,7 +136,7 @@ export default function PublicPlace() {
     const DeletePublicPlace = async () => {
         setInOperation(true);
 
-        const response = await connection.objectUrl("Logradouro").deleteOrder(publicplace);
+        const response = await connection.endpoint("Logradouro").deleteOrder(publicplace);
 
         openCloseModalDelete(!response.status);
         setUpdateData(response.status);
@@ -279,12 +279,12 @@ export default function PublicPlace() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-6 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="flex ml-5 text-white text-lg font-semibold">CEP</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Número Inicial</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Número Final</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Bairro</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Tipo Logradouro</span>
-                                <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                                <div className="flex ml-5 text-white text-lg font-semibold">CEP</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Número Inicial</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Número Final</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Bairro</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Tipo Logradouro</div>
+                                <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
                             </div>
                             <ul className="w-full">
                                 {list.currentList.map((publicplace) => {
@@ -292,12 +292,12 @@ export default function PublicPlace() {
                                     const tipoLogradouro = listTypePublicPlace.list.find((typepublicplace) => typepublicplace.id === publicplace.idTipoLogradouro)
                                     return (
                                         <li className="grid grid-cols-6 w-full" key={publicplace.id}>
-                                            <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{publicplace.cep}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{publicplace.numeroInicial}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{publicplace.numeroFinal}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{bairro ? bairro.nomeBairro : "Bairro não encontrado!"}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoLogradouro ? tipoLogradouro.descricao : "Tipo Logradouro não encontrado!"}</span>
-                                            <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                            <div className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{publicplace.cep}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{publicplace.numeroInicial}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{publicplace.numeroFinal}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{bairro ? bairro.nomeBairro : "Bairro não encontrado!"}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoLogradouro ? tipoLogradouro.descricao : "Tipo Logradouro não encontrado!"}</div>
+                                            <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                                 <button
                                                     className=""
                                                     onClick={() => SelectPublicPlace(publicplace, "Editar")}
@@ -310,7 +310,7 @@ export default function PublicPlace() {
                                                 >
                                                     <TrashSimple size={20} className="hover:text-red-600" />
                                                 </button>
-                                            </span>
+                                            </div>
                                         </li>
                                     );
                                 })}

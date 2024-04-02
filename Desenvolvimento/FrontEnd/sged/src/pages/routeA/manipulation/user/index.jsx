@@ -12,7 +12,7 @@ import defaultProfilePicture from '../../../../assets/user/defaultProfilePicture
 
 import { useMontage } from '../../../../object/modules/montage';
 import { useServer } from '../../../../routes/serverRoute';
-import ConnectionEntity from '../../../../object/service/connection';
+import ConnectionService from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
 import UserClass from '../../../../object/class/user';
 import SelectModule from '../../../../object/modules/select';
@@ -26,7 +26,7 @@ export default function User() {
     }, []);
 
     const server = useServer();
-    const connection = ConnectionEntity();
+    const connection = new ConnectionService();
     const user = UserClass();
     const list = ListModule();
     const listTypeUser = ListModule();
@@ -78,7 +78,7 @@ export default function User() {
     };
 
     const GetTypeUser = async () => {
-        const response = await connection.objectUrl("TipoUsuario").getOrder();
+        const response = await connection.endpoint("TipoUsuario").getOrder();
         if (response.status) {
             listTypeUser.setList(response.data);
         } else {
@@ -87,7 +87,7 @@ export default function User() {
     };
 
     const GetUser = async () => {
-        const response = await connection.objectUrl("Usuario").getOrder();
+        const response = await connection.endpoint("Usuario").getOrder();
         if (response.status) {
             list.setList(response.data);
         } else {
@@ -99,7 +99,7 @@ export default function User() {
         setInOperation(true);
 
         if (user.verifyData()) {
-            const response = await connection.objectUrl("Usuario").postOrder(user);
+            const response = await connection.endpoint("Usuario").postOrder(user);
 
             if (!response.status) { user.getError(response.data); }
 
@@ -117,7 +117,7 @@ export default function User() {
         setInOperation(true);
 
         if (user.verifyData()) {
-            const response = await connection.objectUrl("Usuario").putOrder(user);
+            const response = await connection.endpoint("Usuario").putOrder(user);
 
             if (!response.status) { user.getError(response.data); }
 
@@ -134,7 +134,7 @@ export default function User() {
     const DeleteUser = async () => {
         setInOperation(true);
 
-        const response = await connection.objectUrl("Usuario").deleteOrder(user);
+        const response = await connection.endpoint("Usuario").deleteOrder(user);
 
         openCloseModalDelete(!response.status);
         setUpdateData(response.status);
@@ -292,29 +292,29 @@ export default function User() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-6 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="flex ml-5 justify-center items-center text-white text-lg font-semibold">Imagem</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Nome</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">E-mail</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Tipo Usuário</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Cargo</span>
-                                <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                                <div className="flex ml-5 justify-center items-center text-white text-lg font-semibold">Imagem</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Nome</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">E-mail</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Tipo Usuário</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Cargo</div>
+                                <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
                             </div>
                             <ul className="w-full">
                                 {list.currentList.map(user => {
                                     const tipoUsuario = listTypeUser.list.find(typeuser => typeuser.id === user.idTipoUsuario);
                                     return (
                                         <li className="grid grid-cols-6 w-full" key={user.id}>
-                                            <span className="flex pl-5 justify-center items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">
+                                            <div className="flex pl-5 justify-center items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">
                                                 <img src={user.imagemPessoa ? user.imagemPessoa : defaultProfilePicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '40px', height: '40px', objectFit: 'cover', boxShadow: '0 0 0 1px black', }} />
-                                            </span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.nomePessoa}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.emailPessoa}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoUsuario ? tipoUsuario.nomeTipoUsuario : 'Tipo Usuário não encontrado!'}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.cargoUsuario}</span>
-                                            <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                            </div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.nomePessoa}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.emailPessoa}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoUsuario ? tipoUsuario.nomeTipoUsuario : 'Tipo Usuário não encontrado!'}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.cargoUsuario}</div>
+                                            <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                                 <button className="" onClick={() => SelectUser(user, "Editar")}><PencilSimple size={20} className="hover:text-cyan-500" /></button>{"  "}
                                                 <button className="" onClick={() => SelectUser(user, "Excluir")}><TrashSimple size={20} className="hover:text-red-600" /></button>
-                                            </span>
+                                            </div>
                                         </li>
                                     );
                                 })}

@@ -8,7 +8,7 @@ import { FaPlus } from "react-icons/fa6";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
 import { useMontage } from '../../../../object/modules/montage';
-import ConnectionEntity from '../../../../object/service/connection';
+import ConnectionService from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
 import TypePublicPlaceClass from "../../../../object/class/typepublicplace";
 
@@ -20,7 +20,7 @@ export default function TypePublicPlace() {
         componentMounted();
     }, [componentMounted]);
 
-    const connection = ConnectionEntity();
+    const connection = new ConnectionService();
     const list = ListModule();
     const typepublicplace = TypePublicPlaceClass();
 
@@ -68,7 +68,7 @@ export default function TypePublicPlace() {
     };
 
     const GetTypePublicPlace = async () => {
-        const response = await connection.objectUrl("TipoLogradouro").getOrder();
+        const response = await connection.endpoint("TipoLogradouro").getOrder();
         if (response.status) {
             list.setList(response.data);
         } else {
@@ -80,7 +80,7 @@ export default function TypePublicPlace() {
         setInOperation(true);
 
         if (typepublicplace.verifyData()) {
-            const response = await connection.objectUrl("TipoLogradouro").postOrder(typepublicplace);
+            const response = await connection.endpoint("TipoLogradouro").postOrder(typepublicplace);
 
             openCloseModalInsert(!response.status);
             setUpdateData(response.status);
@@ -96,7 +96,7 @@ export default function TypePublicPlace() {
         setInOperation(true);
 
         if (typepublicplace.verifyData()) {
-            const response = await connection.objectUrl("TipoLogradouro").putOrder(typepublicplace);
+            const response = await connection.endpoint("TipoLogradouro").putOrder(typepublicplace);
 
             openCloseModalEdit(!response.status);
             setUpdateData(response.status);
@@ -111,7 +111,7 @@ export default function TypePublicPlace() {
     const DeleteTypePublicPlace = async () => {
         setInOperation(true);
 
-        const response = await connection.objectUrl("TipoLogradouro").deleteOrder(typepublicplace);
+        const response = await connection.endpoint("TipoLogradouro").deleteOrder(typepublicplace);
 
         openCloseModalDelete(!response.status);
         setUpdateData(response.status);
@@ -174,16 +174,16 @@ export default function TypePublicPlace() {
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="flex ml-5 text-white text-lg font-semibold">Código Informativo</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
-                                <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                                <div className="flex ml-5 text-white text-lg font-semibold">Código Informativo</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Descrição</div>
+                                <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
                             </div>
                             <ul className="w-full">
                                 {list.currentList.map((object) => (
                                     <li className="grid grid-cols-3 w-full" key={object.id}>
-                                        <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.codigoInformativo}</span>
-                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricao}</span>
-                                        <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                        <div className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.codigoInformativo}</div>
+                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricao}</div>
+                                        <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                             <button
                                                 className=""
                                                 onClick={() => SelectTypePublicPlace(object, "Editar")}
@@ -196,7 +196,7 @@ export default function TypePublicPlace() {
                                             >
                                                 <TrashSimple size={20} className="hover:text-red-600" />
                                             </button>
-                                        </span>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>

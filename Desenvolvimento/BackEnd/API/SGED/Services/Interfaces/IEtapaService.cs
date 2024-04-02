@@ -9,5 +9,6 @@ namespace SGED.Services.Interfaces
 		Task Create(EtapaDTO etapaDTO);
 		Task Update(EtapaDTO etapaDTO);
 		Task Remove(int id);
+		Task<IEnumerable<EtapaDTO>> GetStagesRelatedToTypeProcess(int idTipoProcesso);
 	}
 }

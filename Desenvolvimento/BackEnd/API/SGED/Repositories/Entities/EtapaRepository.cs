@@ -46,5 +46,11 @@ namespace SGED.Repositories.Entities
 			return etapa;
 		}
 
+
+		public async Task<IEnumerable<Etapa>> GetStagesRelatedToTypeProcess(int idTipoProcesso)
+		{
+			return await _dbContext.Etapa.Where(objeto => objeto.IdTipoProcesso == idTipoProcesso).ToListAsync();
+		}
+
 	}
 }

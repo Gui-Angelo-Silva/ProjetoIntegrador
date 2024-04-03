@@ -78,6 +78,8 @@ export const ServerProvider = ({ children }) => {
             if (!callFunctionRoute) { setLiberateNavigate(false); montage.clearStateMontage(); }
             const autentication = await updateAuthentication();
 
+            console.log(autentication);
+
             /*if (window.location.protocol === 'http:') {
                 window.location.href = window.location.href.replace('http:', 'https:');
             }*/

@@ -239,7 +239,7 @@ namespace SGED
 
                 await next(context);
             });*/
-
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

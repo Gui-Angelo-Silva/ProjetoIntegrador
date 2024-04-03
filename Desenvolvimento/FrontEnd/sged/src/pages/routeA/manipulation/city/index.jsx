@@ -22,7 +22,7 @@ export default function City() {
         componentMounted();
     }, []);
 
-    const connection = new ConnectionService();
+    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
     const city = CityClass();
     const list = ListModule();
     const listState = ListModule();
@@ -73,33 +73,23 @@ export default function City() {
     };
 
     const GetState = async () => {
-        const response = await connection.endpoint("Estado").getOrder();
-        if (response.status) {
-            listState.setList(response.data);
-        } else {
-            console.log(response.message);
-        }
+        await connection.endpoint("Estado").get();
+        listState.setList(connection.response.data);
     };
 
     const GetCity = async () => {
-        const response = await connection.endpoint("Cidade").getOrder();
-        if (response.status) {
-            list.setList(response.data);
-        } else {
-            console.log(response.message);
-        }
+        await connection.endpoint("Cidade").get();
+        list.setList(connection.response.data);
     };
 
     const PostCity = async () => {
         setInOperation(true);
 
         if (city.verifyData(list.list)) {
-            const response = await connection.endpoint("Cidade").postOrder(city);
+            await connection.endpoint("Cidade").post(city);
 
-            openCloseModalInsert(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
-            setUpdateData(true)
+            openCloseModalInsert(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -111,11 +101,10 @@ export default function City() {
         setInOperation(true);
 
         if (city.verifyData(list.list)) {
-            const response = await connection.endpoint("Cidade").putOrder(city);
+            await connection.endpoint("Cidade").put(city);
 
-            openCloseModalEdit(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalEdit(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -126,11 +115,10 @@ export default function City() {
     const DeleteCity = async () => {
         setInOperation(true);
 
-        const response = await connection.endpoint("Cidade").deleteOrder(city);
+        await connection.endpoint("Cidade").remove(city);
 
-        openCloseModalDelete(!response.status);
-        setUpdateData(response.status);
-        console.log(response.message);
+        openCloseModalDelete(!connection.response.status);
+        setUpdateData(connection.response.status);
 
         setInOperation(false);
     };
@@ -241,7 +229,7 @@ export default function City() {
                             </div>
                             <div className="flex items-center">
                                 <button className="btn hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 item bg-[#004C57]" onClick={() => openCloseModalInsert(true)}>
-                                    Novo <FaPlus className="inline-block items-center"/>
+                                    Novo <FaPlus className="inline-block items-center" />
                                 </button>
                             </div>
                         </div>

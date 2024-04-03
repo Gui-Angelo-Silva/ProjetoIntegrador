@@ -20,7 +20,7 @@ export default function TypeProcess() {
         componentMounted();
     }, []);
 
-    const connection = new ConnectionService();
+    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
     const list = ListModule();
     const typeprocess = TypeProcessClass();
 
@@ -67,23 +67,18 @@ export default function TypeProcess() {
     };
 
     const GetTypeProcess = async () => {
-        const response = await connection.endpoint("TipoProcesso").getOrder();
-        if (response.status) {
-            list.setList(response.data);
-        } else {
-            console.error(response.data);
-        }
+        await connection.endpoint("TipoProcesso").get();
+        list.setList(connection.response.data);
     };
 
     const PostTypeProcess = async () => {
         setInOperation(true);
 
         if (typeprocess.verifyData()) {
-            const response = await connection.endpoint("TipoProcesso").postOrder(typeprocess);
+            await connection.endpoint("TipoProcesso").post(typeprocess);
 
-            openCloseModalInsert(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalInsert(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados Inválidos!');
         }
@@ -95,11 +90,10 @@ export default function TypeProcess() {
         setInOperation(true);
 
         if (typeprocess.verifyData()) {
-            const response = await connection.endpoint("TipoProcesso").putOrder(typeprocess);
+            await connection.endpoint("TipoProcesso").put(typeprocess);
 
-            openCloseModalEdit(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalEdit(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados Inválidos!');
         }
@@ -110,11 +104,10 @@ export default function TypeProcess() {
     const DeleteTypeProcess = async () => {
         setInOperation(true);
 
-        const response = await connection.endpoint("TipoProcesso").deleteOrder(typeprocess);
+        await connection.endpoint("TipoProcesso").remove(typeprocess);
 
-        openCloseModalDelete(!response.status);
-        setUpdateData(response.status);
-        console.log(response.message);
+        openCloseModalDelete(!connection.response.status);
+        setUpdateData(connection.response.status);
 
         setInOperation(false);
     };
@@ -167,7 +160,7 @@ export default function TypeProcess() {
                             </div>
                             <div className="flex items-center">
                                 <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 bg-[#004C57]" onClick={() => openCloseModalInsert(true)}>
-                                    Novo <FaPlus className="inline-block items-center"/>
+                                    Novo <FaPlus className="inline-block items-center" />
                                 </button>
                             </div>
                         </div>

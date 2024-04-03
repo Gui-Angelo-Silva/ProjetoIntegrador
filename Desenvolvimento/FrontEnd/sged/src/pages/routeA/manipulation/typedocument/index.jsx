@@ -22,7 +22,7 @@ export default function TypeDocument() {
         componentMounted();
     }, []);
 
-    const connection = new ConnectionService();
+    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
     const typedocument = TypeDocumentClass();
     const list = ListModule();
     const listStage = ListModule();
@@ -71,32 +71,23 @@ export default function TypeDocument() {
     };
 
     const GetStage = async () => {
-        const response = await connection.endpoint("Etapa").getOrder();
-        if (response.status) {
-            listStage.setList(response.data);
-        } else {
-            console.log(response.message);
-        }
+        await connection.endpoint("Etapa").get();
+        listStage.setList(connection.response.data);
     }
 
     const GetTypeDocument = async () => {
-        const response = await connection.endpoint("TipoDocumento").getOrder();
-        if (response.status) {
-            list.setList(response.data);
-        } else {
-            console.error(response.data);
-        }
+        await connection.endpoint("TipoDocumento").get();
+        list.setList(connection.response.data);
     };
 
     const PostTypeDocument = async () => {
         setInOperation(true);
 
         if (typedocument.verifyData()) {
-            const response = await connection.endpoint("TipoDocumento").postOrder(typedocument);
+            await connection.endpoint("TipoDocumento").post(typedocument);
 
-            openCloseModalInsert(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalInsert(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados Inválidos!');
         }
@@ -108,11 +99,10 @@ export default function TypeDocument() {
         setInOperation(true);
 
         if (typedocument.verifyData()) {
-            const response = await connection.endpoint("TipoDocumento").putOrder(typedocument);
+            await connection.endpoint("TipoDocumento").put(typedocument);
 
-            openCloseModalEdit(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalEdit(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados Inválidos!');
         }
@@ -123,11 +113,10 @@ export default function TypeDocument() {
     const DeleteTypeDocument = async () => {
         setInOperation(true);
 
-        const response = await connection.endpoint("TipoDocumento").deleteOrder(typedocument);
+        await connection.endpoint("TipoDocumento").remove(typedocument);
 
-        openCloseModalDelete(!response.status);
-        setUpdateData(response.status);
-        console.log(response.message);
+        openCloseModalDelete(!connection.response.status);
+        setUpdateData(connection.response.status);
 
         setInOperation(false);
     };
@@ -241,7 +230,7 @@ export default function TypeDocument() {
                             </div>
                             <div className="flex items-center">
                                 <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 bg-[#004C57]" onClick={() => openCloseModalInsert(true)}>
-                                    Novo <FaPlus className="inline-block items-center"/>
+                                    Novo <FaPlus className="inline-block items-center" />
                                 </button>
                             </div>
                         </div>
@@ -259,7 +248,7 @@ export default function TypeDocument() {
                                         <li className="grid grid-cols-4 w-full" key={object.id}>
                                             <div className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</div>
                                             <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoDocumento}</div>
-                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{etapa ?  etapa.nomeEtapa : "Etapa não encontrada!"}</div>
+                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{etapa ? etapa.nomeEtapa : "Etapa não encontrada!"}</div>
                                             <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                                 <button
                                                     className=""

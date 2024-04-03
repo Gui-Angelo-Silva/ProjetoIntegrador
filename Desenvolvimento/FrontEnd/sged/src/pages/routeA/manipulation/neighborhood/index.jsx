@@ -22,7 +22,7 @@ export default function Neighborhood() {
         componentMounted();
     }, []);
 
-    const connection = new ConnectionService();
+    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
     const neighborhood = NeighborhoodClass();
     const list = ListModule();
     const listCity = ListModule();
@@ -73,32 +73,23 @@ export default function Neighborhood() {
     };
 
     const GetCity = async () => {
-        const response = await connection.endpoint("Cidade").getOrder();
-        if (response.status) {
-            listCity.setList(response.data);
-        } else {
-            console.log(response.message);
-        }
+        await connection.endpoint("Cidade").get();
+        listCity.setList(connection.response.data);
     };
 
     const GetNeighborhood = async () => {
-        const response = await connection.endpoint("Bairro").getOrder();
-        if (response.status) {
-            list.setList(response.data);
-        } else {
-            console.log(response.message);
-        }
+        await connection.endpoint("Bairro").get();
+        list.setList(connection.response.data);
     };
 
     const PostNeighborhood = async () => {
         setInOperation(true);
 
         if (neighborhood.verifyData(list.list)) {
-            const response = await connection.endpoint("Bairro").postOrder(neighborhood);
+            await connection.endpoint("Bairro").post(neighborhood);
 
-            openCloseModalInsert(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalInsert(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -110,11 +101,10 @@ export default function Neighborhood() {
         setInOperation(true);
 
         if (neighborhood.verifyData(list.list)) {
-            const response = await connection.endpoint("Bairro").putOrder(neighborhood);
+            await connection.endpoint("Bairro").put(neighborhood);
 
-            openCloseModalEdit(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalEdit(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -125,11 +115,10 @@ export default function Neighborhood() {
     const DeleteNeighborhood = async () => {
         setInOperation(true);
 
-        const response = await connection.endpoint("Bairro").deleteOrder(neighborhood);
+        await connection.endpoint("Bairro").remove(neighborhood);
 
-        openCloseModalDelete(!response.status);
-        setUpdateData(response.status);
-        console.log(response.message);
+        openCloseModalDelete(!connection.response.status);
+        setUpdateData(connection.response.status);
 
         setInOperation(false);
     };
@@ -240,7 +229,7 @@ export default function Neighborhood() {
                             </div>
                             <div className="flex items-center">
                                 <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 bg-[#004C57]" onClick={() => openCloseModalInsert(true)}>
-                                    Novo <FaPlus className="inline-block items-center"/>
+                                    Novo <FaPlus className="inline-block items-center" />
                                 </button>
                             </div>
                         </div>

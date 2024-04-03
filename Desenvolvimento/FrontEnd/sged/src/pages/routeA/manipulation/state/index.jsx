@@ -20,7 +20,7 @@ export default function State() {
         componentMounted();
     }, []);
 
-    const connection = new ConnectionService(); connection.messagePopUp();
+    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
     const list = ListModule();
     const state = StateClass();
 
@@ -69,14 +69,14 @@ export default function State() {
 
     const GetState = async () => {
         await connection.endpoint("Estado").get();
-            list.setList(connection.response.data);
+        list.setList(connection.response.data);
     };
 
     const PostState = async () => {
         setInOperation(true);
 
         if (state.verifyData()) {
-            await connection.endpoint("Estado").post(state);
+            await connection.endpoint("Estado").post(state); //quando faço uma requisição, o statusPopUp já está false
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -91,7 +91,7 @@ export default function State() {
         setInOperation(true);
 
         if (state.verifyData()) {
-            await connection.endpoint("Estado").put(state);
+            await connection.endpoint("Estado").put(state); //quando faço uma requisição, o statusPopUp já está false
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -105,7 +105,7 @@ export default function State() {
     const DeleteState = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Estado").delete(state);
+        await connection.endpoint("Estado").remove(state); //quando faço uma requisição, o statusPopUp já está false
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

@@ -15,14 +15,14 @@ import StageClass from "../../../../object/class/stage";
 import SelectModule from '../../../../object/modules/select';
 
 export default function Stage() {
-    
+
     const { componentMounted } = useMontage();
 
     useEffect(() => {
         componentMounted();
     }, []);
 
-    const connection = new ConnectionService();
+    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
     const stage = StageClass();
     const list = ListModule();
     const listTypeProcess = ListModule();
@@ -72,33 +72,23 @@ export default function Stage() {
     };
 
     const GetTypeProcess = async () => {
-        const response = await connection.endpoint("TipoProcesso").getOrder();
-        if (response.status) {
-            listTypeProcess.setList(response.data);
-        } else {
-            console.log(response.message);
-        }
+        await connection.endpoint("TipoProcesso").get();
+        listTypeProcess.setList(connection.response.data);
     };
 
     const GetStage = async () => {
-        const response = await connection.endpoint("Etapa").getOrder(stage);
-        if (response.status) {
-            list.setList(response.data);
-        } else {
-            console.log(response.message);
-        }
+        await connection.endpoint("Etapa").get(stage);
+        list.setList(connection.response.data);
     };
 
     const PostStage = async () => {
         setInOperation(true);
 
         if (stage.verifyData(list.list)) {
-            const response = await connection.endpoint("Etapa").postOrder(stage);
+            await connection.endpoint("Etapa").post(stage);
 
-            openCloseModalInsert(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
-            setUpdateData(true)
+            openCloseModalInsert(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -110,11 +100,10 @@ export default function Stage() {
         setInOperation(true);
 
         if (stage.verifyData(list.list)) {
-            const response = await connection.endpoint("Etapa").putOrder(stage);
+            await connection.endpoint("Etapa").put(stage);
 
-            openCloseModalEdit(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalEdit(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -124,12 +113,11 @@ export default function Stage() {
     const DeleteStage = async () => {
         setInOperation(true);
 
-        const response = await connection.endpoint("Etapa").deleteOrder(stage);
+        await connection.endpoint("Etapa").remove(stage);
 
-        openCloseModalDelete(!response.status);
-        setUpdateData(response.status);
-        console.log(response.message);
-        
+        openCloseModalDelete(!connection.response.status);
+        setUpdateData(connection.response.status);
+
         setInOperation(false);
     };
 
@@ -241,9 +229,9 @@ export default function Stage() {
                                 </div>
                             </div>
                             <div className="flex items-center">
-                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 bg-[#004C57]" 
+                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 bg-[#004C57]"
                                     onClick={() => openCloseModalInsert(true)}>
-                                    Novo <FaPlus className="inline-block items-center"/>
+                                    Novo <FaPlus className="inline-block items-center" />
                                 </button>
                             </div>
                         </div>

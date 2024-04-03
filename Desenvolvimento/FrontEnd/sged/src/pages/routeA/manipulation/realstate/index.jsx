@@ -24,7 +24,7 @@ export default function RealState() {
         componentMounted();
     }, []);
 
-    const connection = new ConnectionService();
+    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
     const control = ControlModule();
     const realstate = RealStateClass();
     const list = ListModule();
@@ -78,39 +78,27 @@ export default function RealState() {
     };
 
     const GetPublicPlace = async () => {
-        const response = await connection.endpoint("Logradouro").getOrder();
-        if (response.status) {
-            listPublicPlace.setList(response.data);
-        } else {
-            console.log("Erro ao obter dados do Logradouro:", response.message);
-        }
+        await connection.endpoint("Logradouro").get();
+        listPublicPlace.setList(connection.response.data);
     };
 
     const GetCitizen = async () => {
-        const response = await connection.endpoint("Municipe").getOrder();
-        if (response.status) {
-            listCitizen.setList(response.data);
-        } else {
-            console.log("Erro ao obter dados do Munícipe:", response.message);
-        }
+        await connection.endpoint("Municipe").get();
+        listCitizen.setList(connection.response.data);
     };
 
     const GetRealState = async () => {
-        const response = await connection.endpoint("Imovel").getOrder();
-        if (response.status) {
-            list.setList(response.data);
-        } else {
-            console.log("Erro ao obter dados do Imóvel", response.message);
-        }
+        await connection.endpoint("Imovel").get();
+        list.setList(connection.response.data);
     };
 
     const PostRealState = async () => {
         setInOperation(false);
         if (realstate.verifyData(list.list)) {
-            const response = await connection.endpoint("Imovel").postOrder(realstate);
-            openCloseModalInsert(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            await connection.endpoint("Imovel").post(realstate);
+
+            openCloseModalInsert(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log("Dados Inválidos!");
         }
@@ -122,10 +110,10 @@ export default function RealState() {
         setInOperation(true);
 
         if (realstate.verifyData(list.list)) {
-            const response = await connection.endpoint("Imovel").putOrder(realstate);
-            openCloseModalEdit(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            await connection.endpoint("Imovel").put(realstate);
+
+            openCloseModalEdit(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log("Dados Inválidos!");
         }
@@ -136,11 +124,10 @@ export default function RealState() {
     const DeleteRealState = async () => {
         setInOperation(true);
 
-        const response = await connection.endpoint("Imovel").deleteOrder(realstate);
+        await connection.endpoint("Imovel").remove(realstate);
 
-        openCloseModalDelete(!response.status);
-        setUpdateData(response.status);
-        console.log(response.message);
+        openCloseModalDelete(!connection.response.status);
+        setUpdateData(connection.response.status);
 
         setInOperation(false);
     };

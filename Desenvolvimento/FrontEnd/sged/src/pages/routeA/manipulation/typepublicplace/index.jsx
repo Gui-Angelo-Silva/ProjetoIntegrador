@@ -20,7 +20,7 @@ export default function TypePublicPlace() {
         componentMounted();
     }, [componentMounted]);
 
-    const connection = new ConnectionService();
+    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
     const list = ListModule();
     const typepublicplace = TypePublicPlaceClass();
 
@@ -68,23 +68,18 @@ export default function TypePublicPlace() {
     };
 
     const GetTypePublicPlace = async () => {
-        const response = await connection.endpoint("TipoLogradouro").getOrder();
-        if (response.status) {
-            list.setList(response.data);
-        } else {
-            console.error(response.data);
-        }
+        await connection.endpoint("TipoLogradouro").get();
+        list.setList(connection.response.data);
     };
 
     const PostTypePublicPlace = async () => {
         setInOperation(true);
 
         if (typepublicplace.verifyData()) {
-            const response = await connection.endpoint("TipoLogradouro").postOrder(typepublicplace);
+            await connection.endpoint("TipoLogradouro").post(typepublicplace);
 
-            openCloseModalInsert(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalInsert(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -96,11 +91,10 @@ export default function TypePublicPlace() {
         setInOperation(true);
 
         if (typepublicplace.verifyData()) {
-            const response = await connection.endpoint("TipoLogradouro").putOrder(typepublicplace);
+            await connection.endpoint("TipoLogradouro").put(typepublicplace);
 
-            openCloseModalEdit(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalEdit(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -111,11 +105,10 @@ export default function TypePublicPlace() {
     const DeleteTypePublicPlace = async () => {
         setInOperation(true);
 
-        const response = await connection.endpoint("TipoLogradouro").deleteOrder(typepublicplace);
+        await connection.endpoint("TipoLogradouro").remove(typepublicplace);
 
-        openCloseModalDelete(!response.status);
-        setUpdateData(response.status);
-        console.log(response.message);
+        openCloseModalDelete(!connection.response.status);
+        setUpdateData(connection.response.status);
 
         setInOperation(false);
     };
@@ -168,7 +161,7 @@ export default function TypePublicPlace() {
                             </div>
                             <div className="flex items-center">
                                 <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 bg-[#004C57]" onClick={() => openCloseModalInsert(true)}>
-                                    Novo <FaPlus className="inline-block items-center"/>
+                                    Novo <FaPlus className="inline-block items-center" />
                                 </button>
                             </div>
                         </div>
@@ -237,7 +230,7 @@ export default function TypePublicPlace() {
                         <div className="form-group">
                             <label className="text-[#444444]">Código Informativo: </label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typepublicplace.verifyIc(e.target.value.toUpperCase())} value={typepublicplace.typePublicPlaceIc} maxLength={3}/>
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typepublicplace.verifyIc(e.target.value.toUpperCase())} value={typepublicplace.typePublicPlaceIc} maxLength={3} />
                             <div className="text-sm text-red-600">
                                 {typepublicplace.errorTypePublicPlaceIc}
                             </div>
@@ -261,7 +254,7 @@ export default function TypePublicPlace() {
                     <ModalBody>
                         <div className="form-group">
                             <label className="text-[#444444]">ID: </label><br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={typepublicplace.typePublicPlaceId} /> 
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={typepublicplace.typePublicPlaceId} />
                             <br />
                             <label className="text-[#444444]">Código Informativo:</label>
                             <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="codigoInformativo" onChange={(e) => typepublicplace.verifyIc(e.target.value.toUpperCase())} value={typepublicplace.typePublicPlaceIc} maxLength={3} />
@@ -271,7 +264,7 @@ export default function TypePublicPlace() {
                             <br />
                             <label className="text-[#444444]">Sigla:</label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="descricao" onChange={(e) => typepublicplace.setTypePublicPlaceDescription(e.target.value)} value={typepublicplace.typePublicPlaceDescription}/>
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="descricao" onChange={(e) => typepublicplace.setTypePublicPlaceDescription(e.target.value)} value={typepublicplace.typePublicPlaceDescription} />
                             <div className="text-sm text-red-600">
                                 {typepublicplace.errorTypePublicPlaceDescription}
                             </div>

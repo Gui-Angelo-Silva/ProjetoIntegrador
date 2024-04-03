@@ -26,7 +26,7 @@ export default function User() {
     }, []);
 
     const server = useServer();
-    const connection = new ConnectionService();
+    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
     const user = UserClass();
     const list = ListModule();
     const listTypeUser = ListModule();
@@ -78,34 +78,25 @@ export default function User() {
     };
 
     const GetTypeUser = async () => {
-        const response = await connection.endpoint("TipoUsuario").getOrder();
-        if (response.status) {
-            listTypeUser.setList(response.data);
-        } else {
-            console.log(response.message);
-        }
+        await connection.endpoint("TipoUsuario").get();
+        listTypeUser.setList(connection.response.data);
     };
 
     const GetUser = async () => {
-        const response = await connection.endpoint("Usuario").getOrder();
-        if (response.status) {
-            list.setList(response.data);
-        } else {
-            console.log(response.message);
-        }
+        await connection.endpoint("Usuario").get();
+        list.setList(connection.response.data);
     };
 
     const PostUser = async () => {
         setInOperation(true);
 
         if (user.verifyData()) {
-            const response = await connection.endpoint("Usuario").postOrder(user);
+            await connection.endpoint("Usuario").post(user);
 
-            if (!response.status) { user.getError(response.data); }
+            if (!connection.response.status) { user.getError(connection.response.data); }
 
-            openCloseModalInsert(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalInsert(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -117,13 +108,12 @@ export default function User() {
         setInOperation(true);
 
         if (user.verifyData()) {
-            const response = await connection.endpoint("Usuario").putOrder(user);
+            await connection.endpoint("Usuario").put(user);
 
-            if (!response.status) { user.getError(response.data); }
+            if (!connection.response.status) { user.getError(connection.response.data); }
 
-            openCloseModalEdit(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalEdit(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -134,11 +124,10 @@ export default function User() {
     const DeleteUser = async () => {
         setInOperation(true);
 
-        const response = await connection.endpoint("Usuario").deleteOrder(user);
+        await connection.endpoint("Usuario").remove(user);
 
-        openCloseModalDelete(!response.status);
-        setUpdateData(response.status);
-        console.log(response.message);
+        openCloseModalDelete(!connection.response.status);
+        setUpdateData(connection.response.status);
 
         setInOperation(false);
     };
@@ -518,9 +507,9 @@ export default function User() {
                                         src={user.closeIcon}
                                         style={{
                                             position: 'absolute',
-                                            top: '5px', 
+                                            top: '5px',
                                             left: 'calc(50% + 150px)',
-                                            transform: 'translate(-50%, -50%)', 
+                                            transform: 'translate(-50%, -50%)',
                                         }}
                                         className="cursor-pointer w-[20px] h-[20px] object-cover rounded-full"
                                         onClick={(e) => user.removePicture("Insert")}

@@ -21,7 +21,7 @@ export default function Citizen() {
         componentMounted();
     }, []);
 
-    const connection = new ConnectionService(); connection.messagePopUp();
+    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
     const citizen = CitizenClass();
     const list = ListModule();
     const selectBox = SelectModule();
@@ -72,7 +72,7 @@ export default function Citizen() {
     };
 
     const GetCitizen = async () => {
-        await connection.endpoint("Municipe").get;
+        await connection.endpoint("Municipe").get();
         list.setList(connection.response.data);
     };
 
@@ -80,7 +80,7 @@ export default function Citizen() {
         setInOperation(true);
 
         if (citizen.verifyData()) {
-            await connection.endpoint("Municipe").postOrder(citizen);
+            await connection.endpoint("Municipe").post(citizen);
 
             if (!connection.response.status) { citizen.getError(connection.response.data); }
 
@@ -97,7 +97,7 @@ export default function Citizen() {
         setInOperation(true);
 
         if (citizen.verifyData()) {
-            await connection.endpoint("Municipe").putOrder(citizen);
+            await connection.endpoint("Municipe").put(citizen);
 
             if (!connection.response.status) { citizen.getError(connection.response.data); }
 
@@ -113,7 +113,7 @@ export default function Citizen() {
     const DeleteCitizen = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Municipe").deleteOrder(citizen);
+        await connection.endpoint("Municipe").remove(citizen);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

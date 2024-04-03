@@ -125,7 +125,11 @@ function SessionService() {
     };
 
     const validateSession = async () => {
-        return await validateToken();
+        var status = await validateToken();
+
+        if (!status) defaultToken();
+
+        return status;
     };
 
     return {

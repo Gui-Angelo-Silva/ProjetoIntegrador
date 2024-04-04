@@ -229,12 +229,6 @@ export default function SignIn() {
                 }}
                 label="Lembre de mim"
               />
-              <button
-                onClick={() => server.clearSegment("register")}
-                style={{ color: 'blue', marginLeft: '150px' }}
-              >
-                Não possuo conta
-              </button>
               <Button
                 type="submit"
                 fullWidth

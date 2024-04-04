@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMontage } from '../object/modules/montage';
-import SessionService from '../object/service/session';
+import Session from '../object/service/session';
 import PropTypes from 'prop-types';
 
 const ServerContext = createContext();
@@ -18,15 +18,15 @@ export const ServerProvider = ({ children }) => {
 
     const [callFunctionRoute, setCallFunctionRoute] = useState(false);
     const [liberateNavigate, setLiberateNavigate] = useState(false);
-    const montage = useMontage();
-    const session = SessionService();
+    const { componentMontage, clearStateMontage } = useMontage();
+    const session = Session();
     const navigate = useNavigate();
 
     const updateAuthentication = useCallback(async () => {
         try {
             return await session.validateSession();
         } catch (error) {
-            return false;
+            return null;
         }
     }, []);
 
@@ -70,58 +70,70 @@ export const ServerProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
+        const abortController = new AbortController();
+
         const currentPathSegments = window.location.pathname.split('/');
-        const firstSegment = currentPathSegments[1]?.toLowerCase();
+        const firstRoute = currentPathSegments[1]?.toLowerCase();
         const initialPages = ["login"];
 
-        const validationRoute = async () => {
-            if (!callFunctionRoute) { setLiberateNavigate(false); montage.clearStateMontage(); }
-            const autentication = await updateAuthentication();
+        if (callFunctionRoute) {
+            clearStateMontage();
 
-            console.log(autentication);
+            const validationRoute = async () => {
+                const autenticate = await updateAuthentication();
 
-            /*if (window.location.protocol === 'http:') {
-                window.location.href = window.location.href.replace('http:', 'https:');
-            }*/
-
-            if (!autentication && !initialPages.includes(firstSegment)) {
-                clearSegment("login");
-
-            } else if (autentication && initialPages.includes(firstSegment)) {
-                clearSegment("home");
-
-            } else if (!callFunctionRoute) {
-                if (["notfound", "notpermission", "development"].includes(firstSegment)) {
-                    clearSegment(autentication ? "home" : "login");
+                if (!autenticate && !initialPages.includes(firstRoute)) {
+                    clearSegment("login");
                 }
-            }
+            };
 
-            setLiberateNavigate(true);
+            validationRoute();
+
+        } else {
+            setLiberateNavigate(false);
+            clearStateMontage();
+
+            const validationRoute = async () => {
+                const autenticate = await updateAuthentication();
+
+                if (firstRoute === "") {
+                    clearSegment(autenticate ? "home" : "login");
+
+                } else if (autenticate && initialPages.includes(firstRoute)) {
+                    clearSegment("home");
+
+                } else if (!autenticate && !initialPages.includes(firstRoute)) {
+                    clearSegment("login");
+
+                } else if (["notfound", "notpermission", "development"].includes(firstRoute)) {
+                    clearSegment(autenticate ? "home" : "login");
+
+                }
+
+                setLiberateNavigate(true);
+            };
+
+            validationRoute();
+        } setCallFunctionRoute(false);
+
+        return () => {
+            abortController.abort();
         };
-
-        validationRoute(); setCallFunctionRoute(false);
     }, [window.location.pathname]);
 
     useEffect(() => {
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+
         const delay = (milliseconds) => {
             return new Promise(resolve => setTimeout(resolve, milliseconds));
         };
 
-        let isExecuting = true;
-
         const verifyMontage = async () => {
             try {
-                if (!isExecuting) {
-                    return;
-                }
+                await delay(2000, { signal });
 
-                await delay(3000);
-
-                if (!isExecuting) {
-                    return;
-                }
-
-                if (!montage.componentMontage) {
+                if (!componentMontage) {
                     sessionStorage.setItem("page: non-existent", window.location.pathname);
                     clearSegment("notfound");
                 }
@@ -130,15 +142,15 @@ export const ServerProvider = ({ children }) => {
             }
         };
 
-        if (liberateNavigate && !montage.componentMontage) {
+        if (liberateNavigate && !componentMontage) {
             verifyMontage();
         }
 
         return () => {
-            isExecuting = false;
+            abortController.abort();
         };
 
-    }, [liberateNavigate, montage.componentMontage]);
+    }, [liberateNavigate, componentMontage]);
 
     return (
         <ServerContext.Provider value={{ inDevelopment, addSegment, clearSegment, removeSegment }}>

@@ -1,8 +1,9 @@
 import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
-import CardDashboard from "../../components/CardDashboard";
+import CardDashboard from "../../components/Card/CardDashboard";
+import Title from "../../components/Title/Title";
+import Subtitle from "../../components/Title/Subtitle";
 import { FaAngleRight, FaTableCellsLarge, FaFile } from "react-icons/fa6";
-
 import { useMontage } from '../../../../object/modules/montage';
 import { useEffect } from "react";
 
@@ -22,10 +23,8 @@ export default function Home() {
           <SideBar />
           <div className="flex-2 min-h-screen w-full ml-[80px] mr-[40px] mt-[-5px]">
             <br />
-            <h3 className="text-2xl font-semibold text-gray-600">Visão Geral</h3>
-            <div className="bg-slate-200 rounded-md mt-[15px]">
-              <h4 className="pl-4 pt-2 pb-2 text-gray-500">Solitações</h4>
-            </div>
+            <Title title="Visão Geral"/>
+            <Subtitle subtitle="Solicitações Gerais"/> 
             <div className="flex gap-3 justify-around pt-[40px]">
               <CardDashboard titulo="NOVAS" total={0} corFundo="#057BFF" corBorda="sky-700" />
               <CardDashboard titulo="EM ANDAMENTO" total={0} corFundo="#19A2B4" corBorda="emerald-600" />

@@ -2,9 +2,9 @@ import NavBar from "../../components/NavBar";
 import SideBar from "../../components/SideBar";
 //import { Link } from "react-router-dom";
 import { useMontage } from '../../../../object/modules/montage';
-import Cards from '../../components/Cards';
+import Cards from '../../components/Card/Cards';
 import React, { useState, useEffect } from "react";
-import CardIcon from "../../components/CardIcon";
+import CardIcon from "../../components/Card/CardIcon";
 
 export default function Registrations() {
 

@@ -15,6 +15,7 @@ import ListModule from "../../../../object/modules/list";
 import PublicPlaceClass from "../../../../object/class/publicplace";
 import ControlModule from '../../../../object/modules/control';
 import SelectModule from "../../../../object/modules/select";
+import ButtonTable from "../../components/Table/ButtonTable";
 
 export default function PublicPlace() {
 
@@ -85,7 +86,7 @@ export default function PublicPlace() {
             console.log("Erro ao obter dados de Bairro:", response.message);
         }
     };
-    
+
     const GetTypePublicPlace = async () => {
         const response = await connection.objectUrl("TipoLogradouro").getOrder();
         if (response.status) {
@@ -94,7 +95,7 @@ export default function PublicPlace() {
             console.log("Erro ao obter dados de Tipo Logradouro:", response.message);
         }
     };
-    
+
     const GetPublicPlace = async () => {
         const response = await connection.objectUrl("Logradouro").getOrder();
         if (response.status) {
@@ -103,7 +104,7 @@ export default function PublicPlace() {
             console.log("Erro ao obter dados de Logradouro:", response.message);
         }
     };
-    
+
     const PostPublicPlace = async () => {
         setInOperation(false);
         if (publicplace.verifyData(list.list)) {
@@ -293,18 +294,8 @@ export default function PublicPlace() {
                                             <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{bairro ? bairro.nomeBairro : "Bairro não encontrado!"}</div>
                                             <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoLogradouro ? tipoLogradouro.descricao : "Tipo Logradouro não encontrado!"}</div>
                                             <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                                <button
-                                                    className=""
-                                                    onClick={() => SelectPublicPlace(publicplace, "Editar")}
-                                                >
-                                                    <PencilSimple size={20} className="hover:text-cyan-500" />
-                                                </button>{" "}
-                                                <button
-                                                    className=""
-                                                    onClick={() => SelectPublicPlace(publicplace, "Excluir")}
-                                                >
-                                                    <TrashSimple size={20} className="hover:text-red-600" />
-                                                </button>
+                                                <ButtonTable text="Editar" func={() => SelectPublicPlace(publicplace, "Editar")} />
+                                                <ButtonTable text="Excluir" func={() => SelectPublicPlace(publicplace, "Excluir")} />
                                             </div>
                                         </li>
                                     );
@@ -312,12 +303,7 @@ export default function PublicPlace() {
                             </ul>
                             {/* Estilização dos botões de navegação */}
                             <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
-                                <button
-                                    className=""
-                                    onClick={() => list.goToPage(list.currentPage - 1)}
-                                >
-                                    <CaretLeft size={22} className="text-[#58AFAE]" />
-                                </button>
+                                <ButtonTable text="Esquerda" func={() => list.goToPage(list.currentPage - 1)} />
                                 <select
                                     className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
                                     value={list.currentPage}
@@ -329,12 +315,7 @@ export default function PublicPlace() {
                                         </option>
                                     ))}
                                 </select>
-                                <button
-                                    className=""
-                                    onClick={() => list.goToPage(list.currentPage + 1)}
-                                >
-                                    <CaretRight size={22} className="text-[#58AFAE]" />
-                                </button>
+                                <ButtonTable text="Direita" func={() => list.goToPage(list.currentPage + 1)} />
                             </div>
                             {/* Espaçamento abaixo dos botões */}
                             <div className="mt-4"></div>
@@ -357,7 +338,7 @@ export default function PublicPlace() {
                                 type="number"
                                 className="form-control rounded-md border-[#BCBCBC]"
                                 onKeyDown={control.handleKeyDown}
-                                onChange={(e) => publicplace.setPublicPlaceInitialNumber(e.target.value >= 1? e.target.value : '')}
+                                onChange={(e) => publicplace.setPublicPlaceInitialNumber(e.target.value >= 1 ? e.target.value : '')}
                                 value={publicplace.publicPlaceInitialNumber}
                             />
                             <div className="text-sm text-red-600">
@@ -369,7 +350,7 @@ export default function PublicPlace() {
                                 type="number"
                                 className="form-control rounded-md border-[#BCBCBC]"
                                 onKeyDown={control.handleKeyDown}
-                                onChange={(e) => publicplace.setPublicPlaceFinalNumber(e.target.value >= 1? e.target.value : '')}
+                                onChange={(e) => publicplace.setPublicPlaceFinalNumber(e.target.value >= 1 ? e.target.value : '')}
                                 value={publicplace.publicPlaceFinalNumber}
                             />
                             <div className="text-sm text-red-600">
@@ -457,7 +438,7 @@ export default function PublicPlace() {
                                 type="number"
                                 className="form-control rounded-md border-[#BCBCBC]"
                                 onKeyDown={control.handleKeyDown}
-                                onChange={(e) => publicplace.setPublicPlaceInitialNumber(e.target.value >= 1? e.target.value : '')}
+                                onChange={(e) => publicplace.setPublicPlaceInitialNumber(e.target.value >= 1 ? e.target.value : '')}
                                 value={publicplace.publicPlaceInitialNumber}
                             />
                             <div className="text-sm text-red-600">
@@ -469,7 +450,7 @@ export default function PublicPlace() {
                                 type="number"
                                 className="form-control rounded-md border-[#BCBCBC]"
                                 onKeyDown={control.handleKeyDown}
-                                onChange={(e) => publicplace.setPublicPlaceFinalNumber(e.target.value >= 1? e.target.value : '')}
+                                onChange={(e) => publicplace.setPublicPlaceFinalNumber(e.target.value >= 1 ? e.target.value : '')}
                                 value={publicplace.publicPlaceFinalNumber}
                             />
                             <div className="text-sm text-red-600">

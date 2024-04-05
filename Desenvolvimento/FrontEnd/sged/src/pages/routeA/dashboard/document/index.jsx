@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import ImgProcesso from "../../../../assets/card/ImgProcessoAtualizada.png";
 import Title from "../../components/Title/Title";
 import Subtitle from "../../components/Title/Subtitle";
+import Cards from '../../components/Card/Cards';
+import CardIcon from "../../components/Card/CardIcon";
 import ImgDocumentoProcesso from "../../../../assets/card/ImgDocumentoProcessoAtualizada.png";
 
 export default function Document() {

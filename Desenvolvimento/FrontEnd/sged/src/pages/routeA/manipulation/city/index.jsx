@@ -8,6 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Select from 'react-select';
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 import LinkTitle from "../../components/Title/LinkTitle";
+import ButtonModal from "../../components/Modal/ButtonModal";
 
 import { useMontage } from '../../../../object/modules/montage';
 import ConnectionEntity from '../../../../object/service/connection';
@@ -340,12 +341,11 @@ export default function City() {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert(false)}>
-                            Cancelar
-                        </button>
+                        <ButtonModal textBtn="Cancelar" func={() => openCloseModalInsert(false)}/>
                         <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostCity()} disabled={inOperation} >
                             {inOperation ? 'Aguarde' : 'Cadastrar'}
-                        </button>{" "}
+                        </button>
+                        {/* <ButtonModal textBtn={inOperation ? 'Aguarde' : 'Cadastrar'} func={() => inOperation ? null : PostCity()}/> */}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalEdit}>

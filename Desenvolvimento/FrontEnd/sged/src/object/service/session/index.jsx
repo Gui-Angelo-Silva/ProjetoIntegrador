@@ -1,19 +1,23 @@
 import TokenClass from '../../class/token';
 import ConnectionService from '../connection';
 import StorageModule from '../../modules/storage';
+import CookieModule from '../../modules/cookie';
 
 function SessionService() {
 
     const tokenClass = TokenClass();
     const connection = new ConnectionService();
     const storage = StorageModule();
+    const cookie = CookieModule();
 
     const getLogin = () => {
-        return storage.getLocal('login');
+        //return storage.getLocal('login');
+        return cookie.getCookie("login");
     };
 
     const getToken = () => {
-        return storage.getLocal('token');
+        //return storage.getLocal('token');
+        return cookie.getCookie("token");
     };
 
     const getUser = async () => {
@@ -35,19 +39,23 @@ function SessionService() {
 
     const setLogin = (object) => {
         const login = { persist: object.persistLogin, emailPessoa: object.personEmail, senhaUsuario: object.userPassword };
-        storage.setLocal('login', login);
+        //storage.setLocal('login', login);
+        cookie.setCookie("login", login, 1);
     };
 
     const setToken = (token) => {
-        storage.setLocal('token', token);
-    };
-
-    const defaultToken = () => {
-        storage.setLocal('token', null);
+        //storage.setLocal('token', token);
+        cookie.setCookie("token", token, 1);
     };
 
     const defaultLogin = () => {
-        storage.setLocal('login', null);
+        //storage.setLocal('login', null);
+        cookie.deleteCookie("login");
+    };
+
+    const defaultToken = () => {
+        //storage.setLocal('token', null);
+        cookie.deleteCookie("token");
     };
 
     const createSession = async (object) => {
@@ -138,8 +146,8 @@ function SessionService() {
         getUser,
         setLogin,
         setToken,
-        defaultToken,
         defaultLogin,
+        defaultToken,
         createSession,
         closeSession,
         validateToken,

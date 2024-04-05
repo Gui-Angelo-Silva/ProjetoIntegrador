@@ -39,7 +39,7 @@ export default function NavBar() {
   const user = UserClass();
 
   const encerateSession = () => {
-    session.defaultSession();
+    session.defaultToken();
     server.clearSegment("login");
   };
 

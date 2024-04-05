@@ -95,6 +95,7 @@ export const ServerProvider = ({ children }) => {
 
             const validationRoute = async () => {
                 const autenticate = await updateAuthentication();
+                console.log(firstRoute); console.log(autenticate);
 
                 if (firstRoute === "") {
                     clearSegment(autenticate ? "home" : "login");
@@ -102,7 +103,7 @@ export const ServerProvider = ({ children }) => {
                 } else if (autenticate && initialPages.includes(firstRoute)) {
                     clearSegment("home");
 
-                } else if (!autenticate && !initialPages.includes(firstRoute)) {
+                } else if (!autenticate && firstRoute !== "login") {
                     clearSegment("login");
 
                 } else if (["notfound", "notpermission", "development"].includes(firstRoute)) {

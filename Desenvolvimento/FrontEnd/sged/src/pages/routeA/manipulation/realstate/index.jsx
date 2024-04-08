@@ -14,6 +14,7 @@ import ListModule from "../../../../object/modules/list";
 import RealStateClass from "../../../../object/class/realstate"
 import ControlModule from '../../../../object/modules/control';
 import SelectModule from "../../../../object/modules/select";
+import LinkTitle from "../../components/Title/LinkTitle";
 import { list } from "postcss";
 
 export default function RealState() {
@@ -225,13 +226,7 @@ export default function RealState() {
                     <SideBar />
                     <div className="flex-2 min-h-screen mr-[40px] ml-[80px] mt-[-5px] w-full">
                         <br />
-                        <div className="flex flex-row">
-                            <Link to="/a/registration">
-                                <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
-                            </Link>
-                            <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
-                            <h3 className="text-2xl font-semibold text-gray-800">Imóvel</h3>
-                        </div>
+                        <LinkTitle pageName="Imóvel" />
                         <div className="flex items-center">
                             <div className="flex justify-center items-center mx-auto">
                                 <div className="relative items-stretch self-center justify-center w-[500px]">

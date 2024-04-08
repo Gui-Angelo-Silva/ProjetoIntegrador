@@ -4,6 +4,10 @@ import { useServer } from "../../../../routes/serverRoute";
 import { useMontage } from '../../../../object/modules/montage';
 import { useEffect, useState } from "react";
 import ImgProcesso from "../../../../assets/card/ImgProcessoAtualizada.png";
+import Title from "../../components/Title/Title";
+import Subtitle from "../../components/Title/Subtitle";
+import Cards from '../../components/Card/Cards';
+import CardIcon from "../../components/Card/CardIcon";
 import ImgDocumentoProcesso from "../../../../assets/card/ImgDocumentoProcessoAtualizada.png";
 
 export default function Document() {
@@ -26,10 +30,8 @@ export default function Document() {
                     <SideBar />
                     <div className="flex-2 min-h-screen w-full ml-[80px] mr-[40px] mt-[-5px]">
                         <br />
-                        <h3 className="text-2xl font-semibold text-gray-600">Processo</h3>
-                        <div className="bg-slate-200 rounded-md mt-[15px]">
-                            <h4 className="pl-4 pt-2 pb-2 text-gray-500">Funções</h4>
-                        </div>
+                        <Title title="Processo"/>
+                        <Subtitle subtitle="Funções"/>
                         <div className="flex mt-10">
                             <div className="flex flex-col items-center justify-center w-[148px] h-[148px] transition ease-in-out delay-75 hover:scale-105 shadow-xl mb-3 mr-4 rounded-xl text-lg font-semibold bg-[#d1eaee] hover:bg-[#59C3D3] text-[#59C3D3] hover:text-white cursor-pointer"
                                 onClick={() => inDevelopment("Controle de Processo")}

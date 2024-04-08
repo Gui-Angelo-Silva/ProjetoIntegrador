@@ -3,10 +3,11 @@ import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
 import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import { FaPlus } from "react-icons/fa6";
-import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Select from 'react-select';
-import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
+import LinkTitle from "../../components/Title/LinkTitle";
+import ButtonModal from "../../components/Modal/ButtonModal";
+import ButtonTable from "../../components/Table/ButtonTable";
 
 import { useMontage } from '../../../../object/modules/montage';
 import ConnectionService from '../../../../object/service/connection';
@@ -198,13 +199,7 @@ export default function City() {
                     <SideBar />
                     <div className="flex-2 min-h-screen mr-[40px] ml-[80px] mt-[-5px] w-full">
                         <br />
-                        <div className="flex flex-row">
-                            <Link to="/a/registration">
-                                <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
-                            </Link>
-                            <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
-                            <h3 className="text-2xl font-semibold text-gray-800">Cidade</h3>
-                        </div>
+                        <LinkTitle pageName="Cidade" />
                         <div className="flex items-center">
                             <div className="flex justify-center items-center mx-auto">
                                 <div className="relative items-stretch self-center justify-center w-[500px]">
@@ -247,18 +242,8 @@ export default function City() {
                                             <div className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{city.nomeCidade}</div>
                                             <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{estado ? estado.nomeEstado : "Estado não encontrado!"}</div>
                                             <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                                <button
-                                                    className=""
-                                                    onClick={() => SelectCity(city, "Editar")}
-                                                >
-                                                    <PencilSimple size={20} className="hover:text-cyan-500" />
-                                                </button>{" "}
-                                                <button
-                                                    className=""
-                                                    onClick={() => SelectCity(city, "Excluir")}
-                                                >
-                                                    <TrashSimple size={20} className="hover:text-red-600" />
-                                                </button>
+                                                <ButtonTable text="Editar" func={() => SelectCity(city, "Editar")} />
+                                                <ButtonTable text="Excluir" func={() => SelectCity(city, "Excluir")} />
                                             </div>
                                         </li>
                                     );
@@ -266,12 +251,7 @@ export default function City() {
                             </ul>
                             {/* Estilização dos botões de navegação */}
                             <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
-                                <button
-                                    className=""
-                                    onClick={() => list.goToPage(list.currentPage - 1)}
-                                >
-                                    <CaretLeft size={22} className="text-[#58AFAE]" />
-                                </button>
+                                <ButtonTable text="Esquerda" func={() => list.goToPage(list.currentPage - 1)} />
                                 <select
                                     className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
                                     value={list.currentPage}
@@ -283,12 +263,7 @@ export default function City() {
                                         </option>
                                     ))}
                                 </select>
-                                <button
-                                    className=""
-                                    onClick={() => list.goToPage(list.currentPage + 1)}
-                                >
-                                    <CaretRight size={22} className="text-[#58AFAE]" />
-                                </button>
+                                <ButtonTable text="Direita" func={() => list.goToPage(list.currentPage + 1)} />
                             </div>
                             {/* Espaçamento abaixo dos botões */}
                             <div className="mt-4"></div>
@@ -333,12 +308,11 @@ export default function City() {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert(false)}>
-                            Cancelar
-                        </button>
+                        <ButtonModal textBtn="Cancelar" func={() => openCloseModalInsert(false)} />
                         <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostCity()} disabled={inOperation} >
                             {inOperation ? 'Aguarde' : 'Cadastrar'}
-                        </button>{" "}
+                        </button>
+                        {/* <ButtonModal textBtn={inOperation ? 'Aguarde' : 'Cadastrar'} func={() => inOperation ? null : PostCity()}/> */}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalEdit}>

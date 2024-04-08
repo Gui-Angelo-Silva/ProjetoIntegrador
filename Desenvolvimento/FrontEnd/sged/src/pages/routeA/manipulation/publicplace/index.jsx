@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Select from "react-select";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
+import LinkTitle from "../../components/Title/LinkTitle";
 
 import { useMontage } from "../../../../object/modules/montage";
 import ConnectionService from "../../../../object/service/connection";
@@ -14,6 +15,7 @@ import ListModule from "../../../../object/modules/list";
 import PublicPlaceClass from "../../../../object/class/publicplace";
 import ControlModule from '../../../../object/modules/control';
 import SelectModule from "../../../../object/modules/select";
+import ButtonTable from "../../components/Table/ButtonTable";
 
 export default function PublicPlace() {
 
@@ -225,13 +227,7 @@ export default function PublicPlace() {
                     <SideBar />
                     <div className="flex-2 min-h-screen mr-[40px] ml-[80px] mt-[-5px] w-full">
                         <br />
-                        <div className="flex flex-row">
-                            <Link to="/a/registration">
-                                <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
-                            </Link>
-                            <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
-                            <h3 className="text-2xl font-semibold text-gray-800">Logradouro</h3>
-                        </div>
+                        <LinkTitle pageName="Logradouro" />
                         <div className="flex items-center">
                             <div className="flex justify-center items-center mx-auto">
                                 <div className="relative items-stretch self-center justify-center w-[500px]">
@@ -284,18 +280,8 @@ export default function PublicPlace() {
                                             <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{bairro ? bairro.nomeBairro : "Bairro não encontrado!"}</div>
                                             <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoLogradouro ? tipoLogradouro.descricao : "Tipo Logradouro não encontrado!"}</div>
                                             <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                                <button
-                                                    className=""
-                                                    onClick={() => SelectPublicPlace(publicplace, "Editar")}
-                                                >
-                                                    <PencilSimple size={20} className="hover:text-cyan-500" />
-                                                </button>{" "}
-                                                <button
-                                                    className=""
-                                                    onClick={() => SelectPublicPlace(publicplace, "Excluir")}
-                                                >
-                                                    <TrashSimple size={20} className="hover:text-red-600" />
-                                                </button>
+                                                <ButtonTable text="Editar" func={() => SelectPublicPlace(publicplace, "Editar")} />
+                                                <ButtonTable text="Excluir" func={() => SelectPublicPlace(publicplace, "Excluir")} />
                                             </div>
                                         </li>
                                     );
@@ -303,12 +289,7 @@ export default function PublicPlace() {
                             </ul>
                             {/* Estilização dos botões de navegação */}
                             <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
-                                <button
-                                    className=""
-                                    onClick={() => list.goToPage(list.currentPage - 1)}
-                                >
-                                    <CaretLeft size={22} className="text-[#58AFAE]" />
-                                </button>
+                                <ButtonTable text="Esquerda" func={() => list.goToPage(list.currentPage - 1)} />
                                 <select
                                     className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
                                     value={list.currentPage}
@@ -320,12 +301,7 @@ export default function PublicPlace() {
                                         </option>
                                     ))}
                                 </select>
-                                <button
-                                    className=""
-                                    onClick={() => list.goToPage(list.currentPage + 1)}
-                                >
-                                    <CaretRight size={22} className="text-[#58AFAE]" />
-                                </button>
+                                <ButtonTable text="Direita" func={() => list.goToPage(list.currentPage + 1)} />
                             </div>
                             {/* Espaçamento abaixo dos botões */}
                             <div className="mt-4"></div>

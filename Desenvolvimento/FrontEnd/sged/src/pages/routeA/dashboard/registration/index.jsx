@@ -1,10 +1,11 @@
 import NavBar from "../../components/NavBar";
 import SideBar from "../../components/SideBar";
 //import { Link } from "react-router-dom";
+import Title from "../../components/Title/Title";
 import { useMontage } from '../../../../object/modules/montage';
-import Cards from '../../components/Cards';
+import Cards from '../../components/Card/Cards';
+import CardIcon from "../../components/Card/CardIcon";
 import React, { useState, useEffect } from "react";
-import CardIcon from "../../components/CardIcon";
 
 export default function Registrations() {
 
@@ -81,7 +82,7 @@ export default function Registrations() {
                     <SideBar />
                     <div className="flex-2 min-h-screen w-full ml-[80px] mr-[40px] mt-[-5px]">
                         <br />
-                        <h3 className="text-2xl font-semibold text-gray-600">Cadastros</h3>
+                        <Title title="Cadastros"/>
                         <div className="bg-slate-200 rounded-md mt-[15px]">
                             <div className="flex relative border rounded-lg border-[#BCBCBC] bg-white">
                                 <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">

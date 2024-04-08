@@ -3,10 +3,11 @@ import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
 import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import { FaPlus } from "react-icons/fa6";
-import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Select from 'react-select';
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
+import LinkTitle from "../../components/Title/LinkTitle";
+import ButtonTable from "../../components/Table/ButtonTable";
 
 import { useMontage } from '../../../../object/modules/montage';
 import ConnectionService from '../../../../object/service/connection';
@@ -198,13 +199,7 @@ export default function Neighborhood() {
                     <SideBar />
                     <div className="flex-2 min-h-screen mr-[40px] ml-[80px] mt-[-5px] w-full">
                         <br />
-                        <div className="flex flex-row">
-                            <Link to="/a/registration">
-                                <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
-                            </Link>
-                            <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
-                            <h3 className="text-2xl font-semibold text-gray-800">Bairro</h3>
-                        </div>
+                        <LinkTitle pageName="Bairro" />
                         <div className="flex items-center">
                             <div className="flex justify-center items-center mx-auto">
                                 <div className="relative items-stretch self-center justify-center w-[500px]">
@@ -247,18 +242,8 @@ export default function Neighborhood() {
                                             <div className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{neighborhood.nomeBairro}</div>
                                             <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{cidade ? cidade.nomeCidade : "Cidade não encontrada!"}</div>
                                             <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                                <button
-                                                    className=""
-                                                    onClick={() => SelectNeighborhood(neighborhood, "Editar")}
-                                                >
-                                                    <PencilSimple size={20} className="hover:text-cyan-500" />
-                                                </button>{" "}
-                                                <button
-                                                    className=""
-                                                    onClick={() => SelectNeighborhood(neighborhood, "Excluir")}
-                                                >
-                                                    <TrashSimple size={20} className="hover:text-red-600" />
-                                                </button>
+                                                <ButtonTable text="Editar" func={() => SelectNeighborhood(neighborhood, "Editar")} />
+                                                <ButtonTable text="Excluir" func={() => SelectNeighborhood(neighborhood, "Excluir")} />
                                             </div>
                                         </li>
                                     );
@@ -266,12 +251,7 @@ export default function Neighborhood() {
                             </ul>
                             {/* Estilização dos botões de navegação */}
                             <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
-                                <button
-                                    className=""
-                                    onClick={() => list.goToPage(list.currentPage - 1)}
-                                >
-                                    <CaretLeft size={22} className="text-[#58AFAE]" />
-                                </button>
+                                <ButtonTable text="Esquerda" func={() => list.goToPage(list.currentPage - 1)} />
                                 <select
                                     className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
                                     value={list.currentPage}
@@ -283,12 +263,7 @@ export default function Neighborhood() {
                                         </option>
                                     ))}
                                 </select>
-                                <button
-                                    className=""
-                                    onClick={() => list.goToPage(list.currentPage + 1)}
-                                >
-                                    <CaretRight size={22} className="text-[#58AFAE]" />
-                                </button>
+                                <ButtonTable text="Direita" func={() => list.goToPage(list.currentPage + 1)} />
                             </div>
                             {/* Espaçamento abaixo dos botões */}
                             <div className="mt-4"></div>

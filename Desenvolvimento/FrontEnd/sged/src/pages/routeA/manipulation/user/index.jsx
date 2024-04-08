@@ -7,6 +7,7 @@ import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 import Select from 'react-select';
+import LinkTitle from "../../components/Title/LinkTitle";
 
 import defaultProfilePicture from '../../../../assets/user/defaultProfilePicture.png';
 
@@ -233,14 +234,7 @@ export default function User() {
                     <SideBar />
                     <div className="flex-2 min-h-screen mr-[40px] ml-[80px] mt-[-5px] w-full">
                         <br />
-                        <div className="flex flex-row">
-                            <h3 className="text-2xl font-semibold text-gray-500 pr-2 cursor-pointer" onClick={() => server.removeSegment(1)}>Cadastros</h3>
-                            {/*<Link onClick={() => server.removeSegment(1)}>
-                                <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
-                            </Link>*/}
-                            <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
-                            <h3 className="text-2xl font-semibold text-gray-800">Usuário</h3>
-                        </div>
+                        <LinkTitle pageName="Usuário"/>
                         <div className="flex items-center">
                             <div className="flex justify-center items-center mx-auto">
                                 <div className="relative items-stretch self-center justify-center w-[500px]">

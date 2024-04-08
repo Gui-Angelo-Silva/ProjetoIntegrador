@@ -19,7 +19,11 @@
 <br />
 ✔️ Sprint 6 - Completa.
 <br />
-🚧 Sprint 7 - Em andamento...
+✔️ Sprint 7 - Completa.
+<br />
+✔️ Sprint 8 - Completa.
+<br />
+🚧 Sprint 9 - Em andamento...
 
 <br />
 

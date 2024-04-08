@@ -133,7 +133,6 @@ namespace SGED.Controllers
                     return Ok(new { status = true, response = sessaoDTO.TokenSessao });
                 }
 
-                sessaoDTO.TokenSessao = "";
                 sessaoDTO.StatusSessao = false;
                 sessaoDTO.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
                 await _sessaoService.Update(sessaoDTO);
@@ -143,7 +142,6 @@ namespace SGED.Controllers
             }
             else
             {
-                sessaoDTO.TokenSessao = "";
                 sessaoDTO.StatusSessao = false;
                 sessaoDTO.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
                 await _sessaoService.Update(sessaoDTO);

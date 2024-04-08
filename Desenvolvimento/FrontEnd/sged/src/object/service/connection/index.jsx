@@ -51,7 +51,7 @@ class ConnectionService {
             this.typeMethod = type;
             const result = await method();
 
-            console.log(result.headers);
+            //console.log(result.headers);
 
             if (this.statusRequest.success.includes(result.status)) {
                 return { status: true, data: result.data };

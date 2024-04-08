@@ -70,8 +70,6 @@ export const ServerProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        const abortController = new AbortController();
-
         const currentPathSegments = window.location.pathname.split('/');
         const firstRoute = currentPathSegments[1]?.toLowerCase();
         const initialPages = ["login"];
@@ -82,7 +80,7 @@ export const ServerProvider = ({ children }) => {
             const validationRoute = async () => {
                 const autenticate = await updateAuthentication();
 
-                if (!autenticate && !initialPages.includes(firstRoute)) {
+                if (!autenticate && firstRoute !== "notfound" && !initialPages.includes(firstRoute)) {
                     clearSegment("login");
                 }
             };
@@ -95,7 +93,6 @@ export const ServerProvider = ({ children }) => {
 
             const validationRoute = async () => {
                 const autenticate = await updateAuthentication();
-                console.log(firstRoute); console.log(autenticate);
 
                 if (firstRoute === "") {
                     clearSegment(autenticate ? "home" : "login");
@@ -116,15 +113,10 @@ export const ServerProvider = ({ children }) => {
 
             validationRoute();
         } setCallFunctionRoute(false);
-
-        return () => {
-            abortController.abort();
-        };
     }, [window.location.pathname]);
 
     useEffect(() => {
-        const abortController = new AbortController();
-        const signal = abortController.signal;
+        var execute = true;
 
         const delay = (milliseconds) => {
             return new Promise(resolve => setTimeout(resolve, milliseconds));
@@ -132,7 +124,9 @@ export const ServerProvider = ({ children }) => {
 
         const verifyMontage = async () => {
             try {
-                await delay(2000, { signal });
+                await delay(2000);
+
+                if (!execute) return;
 
                 if (!componentMontage) {
                     sessionStorage.setItem("page: non-existent", window.location.pathname);
@@ -148,9 +142,8 @@ export const ServerProvider = ({ children }) => {
         }
 
         return () => {
-            abortController.abort();
+            execute = false;
         };
-
     }, [liberateNavigate, componentMontage]);
 
     return (

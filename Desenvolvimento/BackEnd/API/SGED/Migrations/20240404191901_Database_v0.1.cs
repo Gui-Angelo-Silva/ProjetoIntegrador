@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class sgedDB : Migration
+    public partial class Database_v01 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -232,25 +232,52 @@ namespace SGED.Migrations
                 name: "tipodocumentoetapa",
                 columns: table => new
                 {
-                    tipodocumentoetapa = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    IdTipoDocumento = table.Column<int>(type: "integer", nullable: false),
                     IdEtapa = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    tipodocumentoetapa = table.Column<int>(type: "integer", nullable: false),
+                    TipoDocumentoId = table.Column<int>(type: "integer", nullable: false),
+                    IdTipoDocumento = table.Column<int>(type: "integer", nullable: false),
+                    EtapaId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tipodocumentoetapa", x => x.tipodocumentoetapa);
+                    table.PrimaryKey("PK_tipodocumentoetapa", x => x.IdEtapa);
                     table.ForeignKey(
-                        name: "FK_tipodocumentoetapa_etapa_IdEtapa",
-                        column: x => x.IdEtapa,
+                        name: "FK_tipodocumentoetapa_etapa_EtapaId",
+                        column: x => x.EtapaId,
                         principalTable: "etapa",
                         principalColumn: "idetapa",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_tipodocumentoetapa_tipodocumento_IdTipoDocumento",
-                        column: x => x.IdTipoDocumento,
+                        name: "FK_tipodocumentoetapa_tipodocumento_TipoDocumentoId",
+                        column: x => x.TipoDocumentoId,
                         principalTable: "tipodocumento",
                         principalColumn: "idTipoDocumento",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "sessao",
+                columns: table => new
+                {
+                    idsessao = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    datahoraabertura = table.Column<string>(type: "text", nullable: false),
+                    datahorafechamento = table.Column<string>(type: "text", nullable: true),
+                    tokensessao = table.Column<string>(type: "text", nullable: false),
+                    statussessao = table.Column<bool>(type: "boolean", nullable: false),
+                    emailpessoa = table.Column<string>(type: "text", nullable: false),
+                    nivelacesso = table.Column<string>(type: "text", nullable: false),
+                    IdUsuario = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_sessao", x => x.idsessao);
+                    table.ForeignKey(
+                        name: "FK_sessao_usuario_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalTable: "usuario",
+                        principalColumn: "idusuario",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -602,14 +629,19 @@ namespace SGED.Migrations
                 column: "IdTipoLogradouro");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tipodocumentoetapa_IdEtapa",
-                table: "tipodocumentoetapa",
-                column: "IdEtapa");
+                name: "IX_sessao_IdUsuario",
+                table: "sessao",
+                column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tipodocumentoetapa_IdTipoDocumento",
+                name: "IX_tipodocumentoetapa_EtapaId",
                 table: "tipodocumentoetapa",
-                column: "IdTipoDocumento");
+                column: "EtapaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tipodocumentoetapa_TipoDocumentoId",
+                table: "tipodocumentoetapa",
+                column: "TipoDocumentoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_usuario_IdTipoUsuario",
@@ -630,10 +662,10 @@ namespace SGED.Migrations
                 name: "imovel");
 
             migrationBuilder.DropTable(
-                name: "tipodocumentoetapa");
+                name: "sessao");
 
             migrationBuilder.DropTable(
-                name: "usuario");
+                name: "tipodocumentoetapa");
 
             migrationBuilder.DropTable(
                 name: "logradouro");
@@ -642,19 +674,22 @@ namespace SGED.Migrations
                 name: "municipe");
 
             migrationBuilder.DropTable(
+                name: "usuario");
+
+            migrationBuilder.DropTable(
                 name: "etapa");
 
             migrationBuilder.DropTable(
                 name: "tipodocumento");
 
             migrationBuilder.DropTable(
-                name: "tipousuario");
-
-            migrationBuilder.DropTable(
                 name: "bairro");
 
             migrationBuilder.DropTable(
                 name: "tipologradouro");
+
+            migrationBuilder.DropTable(
+                name: "tipousuario");
 
             migrationBuilder.DropTable(
                 name: "tipoprocesso");

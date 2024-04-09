@@ -1,112 +1,148 @@
-import axios from "axios";
-import { useApi } from '../api';
+import { useEffect } from 'react';
+import axios from 'axios';
+import ApiService from '../api';
 
-function ConnectionEntity() {
+class ConnectionService {
 
-    const api = useApi();
-    const statusArray = [200, 201];
-    let requisitionUrl = '';
+    constructor() {
+        this.api = new ApiService();
+        this.url = '';
+        this.typeMethod = '';
+        this.statusPopUp = false;
+        this.getPopUp = false;
+        this.response = { status: false, data: [] };
+        this.messageRequest = { type: '', content: '' };
+        this.statusRequest = {
+            success: [200, 201],
+            bad: [400, 404],
+            noresponse: [500],
+            error: [401]
+        };
+    }
 
-    function objectUrl(url) {
-        // Limpa e adiciona uma nova url
-        requisitionUrl = api.appendRoute(url);
-        requisitionUrl += "/";
+    clearData() {
+        this.url = '';
+        this.typeMethod = '';
+        this.response = { status: false, data: [] };
+        this.messageRequest = { type: '', content: '' };
+    }
+
+    updateResponse(result) {
+        this.response = result;
+    }
+
+    endpoint(endpointUrl) {
+        this.clearData(); this.url = this.api.appendRoute(endpointUrl) + "/";
         return this;
     }
 
-    function actionUrl(url) {
-        // Divide a string por "/"
-        const parts = requisitionUrl.split("/");
-
-        // Mantém as partes até a posição 5 (0-indexed)
+    action(actionUrl) {
+        const parts = this.url.split("/");
         const objectUrl = parts.slice(0, 5);
 
-        // Adiciona o novo segmento à lista de partes
-        objectUrl.push(url);
+        objectUrl.push(actionUrl);
+        this.url = objectUrl.join("/") + "/";
 
-        // Remonta a string com "/"
-        requisitionUrl = objectUrl.join("/");
-        requisitionUrl += "/";
         return this;
     }
 
-    async function getOrder() {
-
+    async execute(method, type) {
         try {
-            const response = await axios.get(requisitionUrl, api.getAuthConfig());
-            if (statusArray.includes(response.status)) {
-                return { status: true, message: 'Informações adquiridas com sucesso.', data: response.data };
+            this.typeMethod = type;
+            const result = await method();
+
+            //console.log(result.headers);
+
+            if (this.statusRequest.success.includes(result.status)) {
+                return { status: true, data: result.data };
             } else {
-                return { status: false, message: 'Erro ao processar a requisição!', data: response.data };
+                if (result.data.error) this.messageRequest = { type: 'bad', content: result.data.error };
+                else this.messageRequest = { type: 'bad', content: 'Dados inválidos!' };
             }
+
+            return { status: false, data: result.data };
         } catch (error) {
-            if (error.response) {
-                return { status: false, message: "Erro no servidor: " + error.response.data.message ? error.response.data.message : error.response.data, data: error.response.data };
-            } else {
-                return { status: false, message: "Erro na requisição: Sem resposta do servidor!", data: "" };
+            if (this.statusRequest.noresponse.includes(error.response.status)) {
+                this.messageRequest = { type: 'error', content: 'Sem resposta do servidor!' };
+                return { status: false, data: null };
             }
+
+            this.messageRequest = { type: 'error', content: 'Erro ao executar a requisição!' };
+            return { status: false, data: error.response.data };
         }
     }
 
-    async function postOrder(object) {
+    async get(data) {
+        const result = await this.execute(() => this.getMethod(data), 'GET');
+        if (!result.status) this.clearData();
+        else this.messageRequest = { type: 'success', content: `Dados obtidos com sucesso.` };
+        this.updateResponse(result); if (this.statusPopUp) this.messagePopUp();
+    }
+
+    async getMethod(data) {
+        return await axios.get(data ? `${this.url}${data}` : this.url, this.api.headerConfig());
+    }
+
+    async post(object) {
+        const result = await this.execute(() => this.postMethod(object), 'POST');
+        if (result.status) this.messageRequest = { type: 'success', content: `${object.propertyName()} cadastrad${object.gender()} com sucesso.` };
+        this.updateResponse(result); if (this.statusPopUp) this.messagePopUp(); 
+    }
+
+    async postMethod(object) {
+        const data = object.setData(); delete data.id;
+        return await axios.post(this.url, data, this.api.headerConfig());
+    }
+
+    async put(object) {
+        const result = await this.execute(() => this.putMethod(object), 'PUT');
+        if (result.status) this.messageRequest = { type: 'success', content: `${object.propertyName()} alterad${object.gender()} com sucesso.` };
+        this.updateResponse(result); if (this.statusPopUp) this.messagePopUp();
+    }
+
+    async putMethod(object) {
         const data = object.setData();
-        delete data.id;
-
-        try {
-            const response = await axios.post(requisitionUrl, data, api.getAuthConfig());
-            if (statusArray.includes(response.status)) {
-                return { status: true, message: `${object.propertyName()} cadastrad${object.gender()} com sucesso.`, data: response.data };
-            } else {
-                return { status: false, message: 'Erro ao processar a requisição!', data: response.data };
-            }
-        } catch (error) {
-            if (error.response) {
-                return { status: false, message: "Erro no servidor: " + error.response.data.message ? error.response.data.message : error.response.data, data: error.response.data };
-            } else {
-                return { status: false, message: "Erro na requisição: Sem resposta do servidor!", data: "" };
-            }
-        }
+        return await axios.put(this.url, data, this.api.headerConfig());
     }
 
-    async function putOrder(object) {
+    async delete(object) {
+        const result = await this.execute(() => this.deleteMethod(object), 'DELETE');
+        if (result.status) this.messageRequest = { type: 'success', content: `${object.propertyName()} excluíd${object.gender()} com sucesso.` };
+        this.updateResponse(result); if (this.statusPopUp) this.messagePopUp();
+    }
+
+    async deleteMethod(object) {
         const data = object.setData();
+        return await axios.delete(this.url, data.id, this.api.headerConfig());
+    }
 
-        try {
-            const response = await axios.put(requisitionUrl, data, api.getAuthConfig());
-            if (statusArray.includes(response.status)) {
-                return { status: true, message: `${object.propertyName()} alterad${object.gender()} com sucesso.`, data: response.data };
-            } else {
-                return { status: false, message: 'Erro ao processar a requisição!', data: response.data };
-            }
-        } catch (error) {
-            if (error.response) {
-                return { status: false, message: "Erro no servidor: " + error.response.data.message ? error.response.data.message : error.response.data, data: error.response.data };
-            } else {
-                return { status: false, message: "Erro na requisição: Sem resposta do servidor!", data: "" };
+    messagePopUp() {
+        if (this.messageRequest.type) {
+            if (this.typeMethod !== 'GET' || this.getPopUp) {
+                console.log(this.messageRequest);
             }
         }
     }
 
-    async function deleteOrder(object) {
-        const data = object.setData();
-
-        try {
-            const response = await axios.delete(requisitionUrl + data.id, api.getAuthConfig());
-            if (statusArray.includes(response.status)) {
-                return { status: true, message: `${object.propertyName()} excluíd${object.gender()} com sucesso.`, data: response.data };
-            } else {
-                return { status: false, message: 'Erro ao processar a requisição!', data: response.data };
-            }
-        } catch (error) {
-            if (error.response) {
-                return { status: false, message: "Erro no servidor: " + error.response.data.message ? error.response.data.message : error.response.data, data: error.response.data };
-            } else {
-                return { status: false, message: "Erro na requisição: Sem resposta do servidor!", data: "" };
-            }
-        }
+    enablePopUp() {
+        this.statusPopUp = true;
+        return this;
     }
 
-    return { objectUrl, actionUrl, getOrder, postOrder, putOrder, deleteOrder };
+    disablePopUp() {
+        this.statusPopUp = false;
+        return this;
+    }
+
+    enableGetPopUp() {
+        this.getPopUp = true;
+        return this;
+    }
+
+    disableGetPopUp() {
+        this.getPopUp = false;
+        return this;
+    }
 }
 
-export default ConnectionEntity;
+export default ConnectionService;

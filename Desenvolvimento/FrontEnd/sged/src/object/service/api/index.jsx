@@ -1,37 +1,29 @@
-import { createContext, useContext } from "react";
-import PropTypes from 'prop-types';
+import StorageModule from '../../modules/storage';
+import CookieModule from '../../modules/cookie';
 
-const ApiContext = createContext();
+function ApiService() {
 
-export const useApi = () => {
-  const context = useContext(ApiContext);
-  if (!context) {
-    throw new Error('useApi deve ser usado dentro de um ApiProvider!');
-  }
-  return context;
-};
-
-export const ApiProvider = ({ children }) => {
-
+  const storage = StorageModule();
+  const cookie = CookieModule();
   const baseURL = "https://localhost:7096/api/";
-  let token = '';
 
   const appendRoute = (route) => {
     return baseURL + route;
   };
 
   const updateToken = (newToken) => {
-    token = newToken;
+    //storage.setLocal('token', newToken? newToken.startsWith('Front ') ? newToken.replace('Front ', '') : newToken : null);
+    cookie.setCookie("token", newToken? newToken.startsWith('Front ') ? newToken.replace('Front ', '') : newToken : null);
   };
 
-  const getAuthConfig = () => {
-    const token = sessionStorage.getItem("token");
+  const headerConfig = () => {
+    const token = cookie.getCookie("token");
 
     if (token) {
       return {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          Authorization: `Front ${token}`
         }
       };
     } else {
@@ -43,14 +35,12 @@ export const ApiProvider = ({ children }) => {
     }
   };
 
-  return (
-    <ApiContext.Provider value={{ appendRoute, updateToken, getAuthConfig }}>
-      {children}
-    </ApiContext.Provider>
-  );
+  return {
+    appendRoute, 
+    updateToken, 
+    headerConfig 
+  };
 
-};
+}
 
-ApiProvider.propTypes = {
-  children: PropTypes.node
-};
+export default ApiService;

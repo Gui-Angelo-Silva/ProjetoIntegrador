@@ -8,10 +8,8 @@ import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icon
 import LinkTitle from "../../components/Title/LinkTitle";
 import ButtonTable from "../../components/Table/ButtonTable";
 
-import defaultProfilePicture from '../../../../assets/user/defaultProfilePicture.png';
-
 import { useMontage } from '../../../../object/modules/montage';
-import ConnectionEntity from '../../../../object/service/connection';
+import ConnectionService from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
 import CitizenClass from '../../../../object/class/citizen';
 import SelectModule from '../../../../object/modules/select';
@@ -24,7 +22,7 @@ export default function Citizen() {
         componentMounted();
     }, []);
 
-    const connection = ConnectionEntity();
+    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
     const citizen = CitizenClass();
     const list = ListModule();
     const selectBox = SelectModule();
@@ -75,25 +73,20 @@ export default function Citizen() {
     };
 
     const GetCitizen = async () => {
-        const response = await connection.objectUrl("Municipe").getOrder();
-        if (response.status) {
-            list.setList(response.data);
-        } else {
-            console.log(response.message);
-        }
+        await connection.endpoint("Municipe").get();
+        list.setList(connection.response.data);
     };
 
     const PostCitizen = async () => {
         setInOperation(true);
 
         if (citizen.verifyData()) {
-            const response = await connection.objectUrl("Municipe").postOrder(citizen);
+            await connection.endpoint("Municipe").post(citizen);
 
-            if (!response.status) { citizen.getError(response.data); }
+            if (!connection.response.status) { citizen.getError(connection.response.data); }
 
-            openCloseModalInsert(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalInsert(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -105,13 +98,12 @@ export default function Citizen() {
         setInOperation(true);
 
         if (citizen.verifyData()) {
-            const response = await connection.objectUrl("Municipe").putOrder(citizen);
+            await connection.endpoint("Municipe").put(citizen);
 
-            if (!response.status) { citizen.getError(response.data); }
+            if (!connection.response.status) { citizen.getError(connection.response.data); }
 
-            openCloseModalEdit(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalEdit(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -122,11 +114,10 @@ export default function Citizen() {
     const DeleteCitizen = async () => {
         setInOperation(true);
 
-        const response = await connection.objectUrl("Municipe").deleteOrder(citizen);
+        await connection.endpoint("Municipe").remove(citizen);
 
-        openCloseModalDelete(!response.status);
-        setUpdateData(response.status);
-        console.log(response.message);
+        openCloseModalDelete(!connection.response.status);
+        setUpdateData(connection.response.status);
 
         setInOperation(false);
     };

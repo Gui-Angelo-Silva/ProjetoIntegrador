@@ -10,7 +10,7 @@ import LinkTitle from "../../components/Title/LinkTitle";
 import ButtonTable from "../../components/Table/ButtonTable";
 
 import { useMontage } from '../../../../object/modules/montage';
-import ConnectionEntity from '../../../../object/service/connection';
+import ConnectionService from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
 import NeighborhoodClass from '../../../../object/class/neighborhood';
 import SelectModule from '../../../../object/modules/select';
@@ -23,7 +23,7 @@ export default function Neighborhood() {
         componentMounted();
     }, []);
 
-    const connection = ConnectionEntity();
+    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
     const neighborhood = NeighborhoodClass();
     const list = ListModule();
     const listCity = ListModule();
@@ -74,32 +74,23 @@ export default function Neighborhood() {
     };
 
     const GetCity = async () => {
-        const response = await connection.objectUrl("Cidade").getOrder();
-        if (response.status) {
-            listCity.setList(response.data);
-        } else {
-            console.log(response.message);
-        }
+        await connection.endpoint("Cidade").get();
+        listCity.setList(connection.response.data);
     };
 
     const GetNeighborhood = async () => {
-        const response = await connection.objectUrl("Bairro").getOrder();
-        if (response.status) {
-            list.setList(response.data);
-        } else {
-            console.log(response.message);
-        }
+        await connection.endpoint("Bairro").get();
+        list.setList(connection.response.data);
     };
 
     const PostNeighborhood = async () => {
         setInOperation(true);
 
         if (neighborhood.verifyData(list.list)) {
-            const response = await connection.objectUrl("Bairro").postOrder(neighborhood);
+            await connection.endpoint("Bairro").post(neighborhood);
 
-            openCloseModalInsert(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalInsert(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -111,11 +102,10 @@ export default function Neighborhood() {
         setInOperation(true);
 
         if (neighborhood.verifyData(list.list)) {
-            const response = await connection.objectUrl("Bairro").putOrder(neighborhood);
+            await connection.endpoint("Bairro").put(neighborhood);
 
-            openCloseModalEdit(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalEdit(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -126,11 +116,10 @@ export default function Neighborhood() {
     const DeleteNeighborhood = async () => {
         setInOperation(true);
 
-        const response = await connection.objectUrl("Bairro").deleteOrder(neighborhood);
+        await connection.endpoint("Bairro").remove(neighborhood);
 
-        openCloseModalDelete(!response.status);
-        setUpdateData(response.status);
-        console.log(response.message);
+        openCloseModalDelete(!connection.response.status);
+        setUpdateData(connection.response.status);
 
         setInOperation(false);
     };

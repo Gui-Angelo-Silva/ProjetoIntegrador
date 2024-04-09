@@ -11,8 +11,8 @@ import Visible from '@mui/icons-material/VisibilityOutlined';
 import NotVisible from '@mui/icons-material/VisibilityOffOutlined';
 
 import { useMontage } from '../../../../object/modules/montage';
-import { useSession } from '../../../../object/service/session';
-import ConnectionEntity from '../../../../object/service/connection';
+import SessionService from '../../../../object/service/session';
+import ConnectionService from '../../../../object/service/connection';
 import UserClass from '../../../../object/class/user';
 import LoginClass from '../../../../object/class/login';
 import ListModule from '../../../../object/modules/list';
@@ -26,8 +26,8 @@ export default function User() {
     componentMounted();
   }, []);
 
-  const session = useSession();
-  const connection = ConnectionEntity();
+  const session = SessionService();
+  const connection = ConnectionService();
   const user = UserClass();
   const login = LoginClass();
   const list = ListModule();

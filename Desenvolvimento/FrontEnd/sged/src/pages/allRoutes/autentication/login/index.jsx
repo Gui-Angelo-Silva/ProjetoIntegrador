@@ -19,8 +19,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 
 import { useMontage } from '../../../../object/modules/montage';
 import { useEffect, useState } from "react";
-import { useSession } from '../../../../object/service/session';
 import { useServer } from '../../../../routes/serverRoute';
+import SessionService from '../../../../object/service/session';
 import LoginClass from '../../../../object/class/login';
 
 const defaultTheme = createTheme();
@@ -31,13 +31,13 @@ export default function SignIn() {
 
   useEffect(() => {
     componentMounted();
-  }, [componentMounted]);
+  }, []);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState('');
   const [loginError, setLoginError] = useState('');
   const server = useServer();
-  const session = useSession();
+  const session = SessionService();
   const login = LoginClass();
 
   const handlePersistLoginChange = (e) => {
@@ -229,12 +229,6 @@ export default function SignIn() {
                 }}
                 label="Lembre de mim"
               />
-              <button
-                onClick={() => server.clearSegment("register")}
-                style={{ color: 'blue', marginLeft: '150px' }}
-              >
-                Não possuo conta
-              </button>
               <Button
                 type="submit"
                 fullWidth

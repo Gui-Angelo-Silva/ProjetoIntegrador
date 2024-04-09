@@ -8,7 +8,7 @@ import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icon
 import LinkTitle from "../../components/Title/LinkTitle";
 
 import { useMontage } from '../../../../object/modules/montage';
-import ConnectionEntity from '../../../../object/service/connection';
+import ConnectionService from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
 import TypeUserClass from '../../../../object/class/typeuser';
 
@@ -20,7 +20,7 @@ export default function TypeUser() {
         componentMounted();
     }, [componentMounted]);
 
-    const connection = ConnectionEntity();
+    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
     const list = ListModule();
     const typeuser = TypeUserClass();
 
@@ -68,23 +68,18 @@ export default function TypeUser() {
     };
 
     const GetTypeUser = async () => {
-        const response = await connection.objectUrl("TipoUsuario").getOrder();
-        if (response.status) {
-            list.setList(response.data);
-        } else {
-            console.error(response.data);
-        }
+        await connection.endpoint("TipoUsuario").get();
+        list.setList(connection.response.data);
     };
 
     const PostTypeUser = async () => {
         setInOperation(true);
 
         if (await typeuser.verifyData()) {
-            const response = await connection.objectUrl("TipoUsuario").postOrder(typeuser);
+            await connection.endpoint("TipoUsuario").post(typeuser);
 
-            openCloseModalInsert(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalInsert(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -96,11 +91,10 @@ export default function TypeUser() {
         setInOperation(true);
 
         if (await typeuser.verifyData()) {
-            const response = await connection.objectUrl("TipoUsuario").putOrder(typeuser);
+            await connection.endpoint("TipoUsuario").put(typeuser);
 
-            openCloseModalEdit(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalEdit(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -111,11 +105,10 @@ export default function TypeUser() {
     const DeleteTypeUser = async () => {
         setInOperation(true);
 
-        const response = await connection.objectUrl("TipoUsuario").deleteOrder(typeuser);
+        await connection.endpoint("TipoUsuario").remove(typeuser);
 
-        openCloseModalDelete(!response.status);
-        setUpdateData(response.status);
-        console.log(response.message);
+        openCloseModalDelete(!connection.response.status);
+        setUpdateData(connection.response.status);
 
         setInOperation(false);
     };

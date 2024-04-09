@@ -11,8 +11,8 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240401161915_sgedDB")]
-    partial class sgedDB
+    [Migration("20240404191901_Database_v0.1")]
+    partial class Database_v01
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -578,6 +578,53 @@ namespace SGED.Migrations
                     b.ToTable("municipe");
                 });
 
+            modelBuilder.Entity("SGED.Models.Entities.Sessao", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("idsessao");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DataHoraEncerramento")
+                        .HasColumnType("text")
+                        .HasColumnName("datahorafechamento");
+
+                    b.Property<string>("DataHoraInicio")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("datahoraabertura");
+
+                    b.Property<string>("EmailPessoa")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("emailpessoa");
+
+                    b.Property<int>("IdUsuario")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("NivelAcesso")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("nivelacesso");
+
+                    b.Property<bool>("StatusSessao")
+                        .HasColumnType("boolean")
+                        .HasColumnName("statussessao");
+
+                    b.Property<string>("TokenSessao")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("tokensessao");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdUsuario");
+
+                    b.ToTable("sessao");
+                });
+
             modelBuilder.Entity("SGED.Models.Entities.TipoDocumento", b =>
                 {
                     b.Property<int>("Id")
@@ -606,24 +653,30 @@ namespace SGED.Migrations
 
             modelBuilder.Entity("SGED.Models.Entities.TipoDocumentoEtapa", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("IdEtapa")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdEtapa"));
+
+                    b.Property<int>("EtapaId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Id")
                         .HasColumnType("integer")
                         .HasColumnName("tipodocumentoetapa");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("IdEtapa")
-                        .HasColumnType("integer");
 
                     b.Property<int>("IdTipoDocumento")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.Property<int>("TipoDocumentoId")
+                        .HasColumnType("integer");
 
-                    b.HasIndex("IdEtapa");
+                    b.HasKey("IdEtapa");
 
-                    b.HasIndex("IdTipoDocumento");
+                    b.HasIndex("EtapaId");
+
+                    b.HasIndex("TipoDocumentoId");
 
                     b.ToTable("tipodocumentoetapa");
                 });
@@ -1982,17 +2035,28 @@ namespace SGED.Migrations
                     b.Navigation("TipoLogradouro");
                 });
 
+            modelBuilder.Entity("SGED.Models.Entities.Sessao", b =>
+                {
+                    b.HasOne("SGED.Models.Entities.Usuario", "Usuario")
+                        .WithMany("Sessoes")
+                        .HasForeignKey("IdUsuario")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("SGED.Models.Entities.TipoDocumentoEtapa", b =>
                 {
                     b.HasOne("SGED.Models.Entities.Etapa", "Etapa")
                         .WithMany("TipoDocumentoEtapas")
-                        .HasForeignKey("IdEtapa")
+                        .HasForeignKey("EtapaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SGED.Models.Entities.TipoDocumento", "TipoDocumento")
                         .WithMany("TipoDocumentoEtapas")
-                        .HasForeignKey("IdTipoDocumento")
+                        .HasForeignKey("TipoDocumentoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -2060,6 +2124,11 @@ namespace SGED.Migrations
             modelBuilder.Entity("SGED.Models.Entities.TipoUsuario", b =>
                 {
                     b.Navigation("Usuarios");
+                });
+
+            modelBuilder.Entity("SGED.Models.Entities.Usuario", b =>
+                {
+                    b.Navigation("Sessoes");
                 });
 #pragma warning restore 612, 618
         }

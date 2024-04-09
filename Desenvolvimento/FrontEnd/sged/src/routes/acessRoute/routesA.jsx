@@ -23,29 +23,29 @@ import RealState from '../../pages/routeA/manipulation/realstate';
 export default function RouteA() {
     return (
         <Routes>
-            <Route path="/a/development" element={<Development />}></Route>
-            <Route path="/a/notfound" element={<NotFound />} />
-            <Route path="/a/notpermission" element={<NotPermission />} />
+            <Route path="/development" element={<Development />}></Route>
+            <Route path="/notfound" element={<NotFound />} />
+            <Route path="/notpermission" element={<NotPermission />} />
 
-            <Route path="/a/home" element={<Home />}></Route>
-            <Route path="/a/profile" element={<Profile />} />
+            <Route path="/home" element={<Home />}></Route>
+            <Route path="/profile" element={<Profile />} />
 
-            <Route path="/a/registration" element={<Registration />}></Route>
-            <Route path="/a/registration/state" element={<State />}></Route>
-            <Route path="/a/registration/city" element={<City />}></Route>
-            <Route path="/a/registration/typeuser" element={<TypeUser />}></Route>
-            <Route path="/a/registration/user" element={<User />}></Route>
-            <Route path="/a/registration/citizen" element={<Citizen />}></Route>
-            <Route path="/a/registration/typepublicplace" element={<TypePublicPlace />}></Route>
-            <Route path="/a/registration/neighborhood" element={<Neighborhood />}></Route>
-            <Route path="/a/registration/publicplace" element={<PublicPlace />}></Route>
-            <Route path="/a/registration/typedocument" element={<TypeDocument />}></Route>
-            <Route path="/a/registration/typeprocess" element={<TypeProcess  />}></Route>
-            <Route path="/a/registration/stage" element={<Stage  />}></Route>
-            <Route path="/a/registration/realstate" element={<RealState  />}></Route>
+            <Route path="/registration" element={<Registration />}></Route>
+            <Route path="/registration/state" element={<State />}></Route>
+            <Route path="/registration/city" element={<City />}></Route>
+            <Route path="/registration/typeuser" element={<TypeUser />}></Route>
+            <Route path="/registration/user" element={<User />}></Route>
+            <Route path="/registration/citizen" element={<Citizen />}></Route>
+            <Route path="/registration/typepublicplace" element={<TypePublicPlace />}></Route>
+            <Route path="/registration/neighborhood" element={<Neighborhood />}></Route>
+            <Route path="/registration/publicplace" element={<PublicPlace />}></Route>
+            <Route path="/registration/typedocument" element={<TypeDocument />}></Route>
+            <Route path="/registration/typeprocess" element={<TypeProcess  />}></Route>
+            <Route path="/registration/stage" element={<Stage  />}></Route>
+            <Route path="/registration/realstate" element={<RealState  />}></Route>
 
-            <Route path="/a/document" element={<Document />}></Route>
-            <Route path="/a/test" element={<Test />}></Route>
+            <Route path="/document" element={<Document />}></Route>
+            <Route path="/test" element={<Test />}></Route>
         </Routes>
     );
 }

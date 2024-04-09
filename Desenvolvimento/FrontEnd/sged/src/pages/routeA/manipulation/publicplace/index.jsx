@@ -10,7 +10,7 @@ import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icon
 import LinkTitle from "../../components/Title/LinkTitle";
 
 import { useMontage } from "../../../../object/modules/montage";
-import ConnectionEntity from "../../../../object/service/connection";
+import ConnectionService from "../../../../object/service/connection";
 import ListModule from "../../../../object/modules/list";
 import PublicPlaceClass from "../../../../object/class/publicplace";
 import ControlModule from '../../../../object/modules/control';
@@ -25,7 +25,7 @@ export default function PublicPlace() {
         componentMounted();
     }, []);
 
-    const connection = ConnectionEntity();
+    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
     const control = ControlModule();
     const publicplace = PublicPlaceClass();
     const list = ListModule();
@@ -79,40 +79,27 @@ export default function PublicPlace() {
     };
 
     const GetNeighborhood = async () => {
-        const response = await connection.objectUrl("Bairro").getOrder();
-        if (response.status) {
-            listNeighborhood.setList(response.data);
-        } else {
-            console.log("Erro ao obter dados de Bairro:", response.message);
-        }
+        await connection.endpoint("Bairro").get();
+        listNeighborhood.setList(connection.response.data);
     };
 
     const GetTypePublicPlace = async () => {
-        const response = await connection.objectUrl("TipoLogradouro").getOrder();
-        if (response.status) {
-            listTypePublicPlace.setList(response.data);
-        } else {
-            console.log("Erro ao obter dados de Tipo Logradouro:", response.message);
-        }
+        await connection.endpoint("TipoLogradouro").get();
+        listTypePublicPlace.setList(connection.response.data);
     };
 
     const GetPublicPlace = async () => {
-        const response = await connection.objectUrl("Logradouro").getOrder();
-        if (response.status) {
-            list.setList(response.data);
-        } else {
-            console.log("Erro ao obter dados de Logradouro:", response.message);
-        }
+        await connection.endpoint("Logradouro").get();
+        list.setList(connection.response.data);
     };
 
     const PostPublicPlace = async () => {
         setInOperation(false);
         if (publicplace.verifyData(list.list)) {
-            const response = await connection.objectUrl("Logradouro").postOrder(publicplace);
+            await connection.endpoint("Logradouro").post(publicplace);
 
-            openCloseModalInsert(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalInsert(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log("Dados Inválidos!");
         }
@@ -124,10 +111,10 @@ export default function PublicPlace() {
         setInOperation(true);
 
         if (publicplace.verifyData(list.list)) {
-            const response = await connection.objectUrl("Logradouro").putOrder(publicplace);
-            openCloseModalEdit(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            await connection.endpoint("Logradouro").put(publicplace);
+
+            openCloseModalEdit(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log("Dados Inválidos!");
         }
@@ -138,11 +125,10 @@ export default function PublicPlace() {
     const DeletePublicPlace = async () => {
         setInOperation(true);
 
-        const response = await connection.objectUrl("Logradouro").deleteOrder(publicplace);
+        await connection.endpoint("Logradouro").remove(publicplace);
 
-        openCloseModalDelete(!response.status);
-        setUpdateData(response.status);
-        console.log(response.message);
+        openCloseModalDelete(!connection.response.status);
+        setUpdateData(connection.response.status);
 
         setInOperation(false);
     };

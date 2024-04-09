@@ -19,12 +19,10 @@ namespace SGED.Controllers
     {
 
         private readonly IUsuarioService _usuarioService;
-        private readonly AppDBContext _context;
 
         public UsuarioController(IUsuarioService usuarioService, AppDBContext context)
         {
             _usuarioService = usuarioService;
-            _context = context;
         }
 
         [HttpGet]
@@ -104,6 +102,7 @@ namespace SGED.Controllers
         [HttpPut()]
         public async Task<ActionResult> Put([FromBody] UsuarioDTO usuarioDTO)
         {
+            if (usuarioDTO.Id == 1) return BadRequest("Dado(s) inválido(s)!");
             if (usuarioDTO is null) return BadRequest("Dado(s) inválido(s)!");
             usuarioDTO.EmailPessoa = usuarioDTO.EmailPessoa.ToLower();
 
@@ -164,8 +163,10 @@ namespace SGED.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<UsuarioDTO>> Delete(int id)
         {
+            if (id == 1) return NotFound("Usuário não encontrado!");
+
             var usuarioDTO = await _usuarioService.GetById(id);
-            if (usuarioDTO == null) return NotFound("Usuario não encontrada!");
+            if (usuarioDTO == null) return NotFound("Usuário não encontrado!");
             await _usuarioService.Remove(id);
             return Ok(usuarioDTO);
         }

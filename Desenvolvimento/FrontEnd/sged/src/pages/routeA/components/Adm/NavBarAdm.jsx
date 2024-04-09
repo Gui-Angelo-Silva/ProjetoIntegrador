@@ -1,19 +1,23 @@
 import { useState, useRef, useEffect } from "react";
 import IconNotification from "../../../../assets/user/Notification"
-import { useSession } from '../../../../object/service/session';
+import SessionService from '../../../../object/service/session';
 import UserClass from '../../../../object/class/user';
 
 export default function NavBarAdm() {
 
-    const session = useSession();
+    const session = SessionService();
     const user = UserClass();
 
-    function GetUser() {
-        const object = session.getSession();
-        if (object !== null) {
-            user.getData(object);
-        }
-    }
+    useEffect(() => {
+        const GetUser = async () => {
+          if (session.getToken()) {
+            const data = await session.getUser();
+            if (data) user.getData(data);
+          }
+        };
+    
+        GetUser();
+      }, []);
 
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -27,10 +31,6 @@ export default function NavBarAdm() {
             setIsOpen(false);
         }
     };
-
-    useEffect(() => {
-        GetUser();
-    }, [GetUser]);
 
     useEffect(() => {
         document.addEventListener("mousedown", handleClickOutside);

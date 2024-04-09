@@ -9,7 +9,7 @@ import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icon
 import LinkTitle from "../../components/Title/LinkTitle";
 
 import { useMontage } from '../../../../object/modules/montage';
-import ConnectionEntity from '../../../../object/service/connection';
+import ConnectionService from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
 import StateClass from '../../../../object/class/state';
 
@@ -21,7 +21,7 @@ export default function State() {
         componentMounted();
     }, []);
 
-    const connection = ConnectionEntity();
+    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
     const list = ListModule();
     const state = StateClass();
 
@@ -69,23 +69,18 @@ export default function State() {
     };
 
     const GetState = async () => {
-        const response = await connection.objectUrl("Estado").getOrder();
-        if (response.status) {
-            list.setList(response.data);
-        } else {
-            console.error(response.data);
-        }
+        await connection.endpoint("Estado").get();
+        list.setList(connection.response.data);
     };
 
     const PostState = async () => {
         setInOperation(true);
 
         if (state.verifyData()) {
-            const response = await connection.objectUrl("Estado").postOrder(state);
+            await connection.endpoint("Estado").post(state); //quando faço uma requisição, o statusPopUp já está false
 
-            openCloseModalInsert(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalInsert(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -97,11 +92,10 @@ export default function State() {
         setInOperation(true);
 
         if (state.verifyData()) {
-            const response = await connection.objectUrl("Estado").putOrder(state);
+            await connection.endpoint("Estado").put(state); //quando faço uma requisição, o statusPopUp já está false
 
-            openCloseModalEdit(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
+            openCloseModalEdit(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
             console.log('Dados inválidos!');
         }
@@ -112,11 +106,10 @@ export default function State() {
     const DeleteState = async () => {
         setInOperation(true);
 
-        const response = await connection.objectUrl("Estado").deleteOrder(state);
+        await connection.endpoint("Estado").remove(state); //quando faço uma requisição, o statusPopUp já está false
 
-        openCloseModalDelete(!response.status);
-        setUpdateData(response.status);
-        console.log(response.message);
+        openCloseModalDelete(!connection.response.status);
+        setUpdateData(connection.response.status);
 
         setInOperation(false);
     };

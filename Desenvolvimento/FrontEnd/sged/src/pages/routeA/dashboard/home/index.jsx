@@ -26,11 +26,11 @@ export default function Home() {
             <Title title="Visão Geral"/>
             <Subtitle subtitle="Solicitações Gerais"/> 
             <div className="flex gap-3 justify-around pt-[40px]">
-              <CardDashboard titulo="NOVAS" total={0} corFundo="#057BFF" corBorda="sky-700" />
-              <CardDashboard titulo="EM ANDAMENTO" total={0} corFundo="#19A2B4" corBorda="emerald-600" />
-              <CardDashboard titulo="PENDENTE" total={0} corFundo="#F1B900" corBorda="amber-600" />
-              <CardDashboard titulo="ATRASO" total={0} corFundo="#D6313F" corBorda="red-800"/>
-              <CardDashboard titulo="PRAZO HOJE" total={0} corFundo="#26A242" corBorda="green-700"/>
+              <CardDashboard title="NOVAS" total={0}/>
+              <CardDashboard title="EM ANDAMENTO" total={0}/>
+              <CardDashboard title="PENDENTE" total={0}/>
+              <CardDashboard title="ATRASADO" total={0}/>
+              <CardDashboard title="PRAZO HOJE" total={0}/>
             </div>
             <div className="pt-[40px]">
               <div className="border-2 border-[#E2E8F0] rounded-[6px]">

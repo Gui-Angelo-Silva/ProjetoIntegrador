@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SGED.Models.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SGED.DTO.Entities
@@ -16,5 +17,7 @@ namespace SGED.DTO.Entities
 		[MinLength(3)]
 		[MaxLength(35)]
 		public string Descricao { get; set; }
+
+		public ICollection<LogradouroDTO>? LogradouroDTOs { get; set; }
 	}
 }

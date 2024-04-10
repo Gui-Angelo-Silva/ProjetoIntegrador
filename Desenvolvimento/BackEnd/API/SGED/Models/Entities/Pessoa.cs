@@ -6,6 +6,9 @@ namespace SGED.Models.Entities
 {
     public class Pessoa
     {
+        [Column("imagempessoa")]
+        public string ImagemPessoa { get; set; }
+
         [Column("nomepessoa")]
         public string NomePessoa { get; set; }
 

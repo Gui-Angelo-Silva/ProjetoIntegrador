@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSession } from '../object/service/session';
 import { useMontage } from '../object/modules/montage';
+import Session from '../object/service/session';
 import PropTypes from 'prop-types';
 
 const ServerContext = createContext();
@@ -19,13 +19,12 @@ export const ServerProvider = ({ children }) => {
     const [callFunctionRoute, setCallFunctionRoute] = useState(false);
     const [liberateNavigate, setLiberateNavigate] = useState(false);
     const { componentMontage, clearStateMontage } = useMontage();
-    const { verifySession, getPermission } = useSession();
+    const session = Session();
     const navigate = useNavigate();
 
     const updateAuthentication = useCallback(async () => {
         try {
-            await verifySession();
-            return getPermission();
+            return await session.validateSession();
         } catch (error) {
             return null;
         }
@@ -52,8 +51,7 @@ export const ServerProvider = ({ children }) => {
     }, []);
 
     const clearSegment = useCallback((route) => {
-        const permission = getPermission();
-        const newPath = permission !== null ? buildPath(permission, route) : buildPath(route, null);
+        const newPath = buildPath(route, null);
         navigate(newPath);
     }, []);
 
@@ -61,7 +59,7 @@ export const ServerProvider = ({ children }) => {
         const path = window.location.pathname;
         const segments = path.split('/');
         const numSegments = segments.length;
-        const index = (numSegments - quantRemove) - 1;
+        const index = (numSegments - quantRemove);
 
         if (index > 0) {
             const newPath = buildPath(segments.slice(1, index).join('/'), null);
@@ -73,22 +71,17 @@ export const ServerProvider = ({ children }) => {
 
     useEffect(() => {
         const currentPathSegments = window.location.pathname.split('/');
-        const permissionInRoute = currentPathSegments[1]?.toLowerCase();
-        const typerPermissions = ["a", "b", "c", "d"];
-        const initialPages = ["login", "register", "development"];
+        const firstRoute = currentPathSegments[1]?.toLowerCase();
+        const initialPages = ["login"];
 
         if (callFunctionRoute) {
             clearStateMontage();
-            
-            const validationRoute = async () => {
-                const permission = await updateAuthentication();
 
-                if (permission === null) {
-                    if (typerPermissions.includes(permissionInRoute)) {
-                        clearSegment("login");
-                    }
-                } else if (permissionInRoute !== permission) {
-                    clearSegment("home");
+            const validationRoute = async () => {
+                const autenticate = await updateAuthentication();
+
+                if (!autenticate && firstRoute !== "notfound" && !initialPages.includes(firstRoute)) {
+                    clearSegment("login");
                 }
             };
 
@@ -99,44 +92,41 @@ export const ServerProvider = ({ children }) => {
             clearStateMontage();
 
             const validationRoute = async () => {
-                const permission = await updateAuthentication();
+                const autenticate = await updateAuthentication();
 
-                if (permissionInRoute === "") {
-                    clearSegment(permission !== null ? "home" : "login");
+                if (firstRoute === "") {
+                    clearSegment(autenticate ? "home" : "login");
 
-                } else if (typerPermissions.includes(permissionInRoute) && permissionInRoute !== permission) {
-                    sessionStorage.setItem("page: not permission", permissionInRoute.toUpperCase());
-                    clearSegment("notpermission");
-
-                } else if (permission !== null && initialPages.includes(permissionInRoute)) {
+                } else if (autenticate && initialPages.includes(firstRoute)) {
                     clearSegment("home");
-                } else if (["notfound", "notpermission"].includes(currentPathSegments[currentPathSegments.length - 1])) {
-                    clearSegment(permission !== null ? "home" : "login");
+
+                } else if (!autenticate && firstRoute !== "login") {
+                    clearSegment("login");
+
+                } else if (["notfound", "notpermission", "development"].includes(firstRoute)) {
+                    clearSegment(autenticate ? "home" : "login");
+
                 }
 
                 setLiberateNavigate(true);
             };
 
             validationRoute();
-        }
-
-        setCallFunctionRoute(false);
+        } setCallFunctionRoute(false);
     }, [window.location.pathname]);
 
     useEffect(() => {
+        var execute = true;
+
         const delay = (milliseconds) => {
             return new Promise(resolve => setTimeout(resolve, milliseconds));
         };
-
-        let isExecuting = true;
 
         const verifyMontage = async () => {
             try {
                 await delay(2000);
 
-                if (!isExecuting) {
-                    return;
-                }
+                if (!execute) return;
 
                 if (!componentMontage) {
                     sessionStorage.setItem("page: non-existent", window.location.pathname);
@@ -152,9 +142,8 @@ export const ServerProvider = ({ children }) => {
         }
 
         return () => {
-            isExecuting = false;
+            execute = false;
         };
-
     }, [liberateNavigate, componentMontage]);
 
     return (

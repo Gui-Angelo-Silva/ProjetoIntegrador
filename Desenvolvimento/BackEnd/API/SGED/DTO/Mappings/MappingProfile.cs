@@ -8,32 +8,69 @@ namespace SGED.DTO.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<EstadoDTO, Estado>();
-            CreateMap<Estado, EstadoDTO>().ReverseMap();
+            // Classes do Sistema:
 
-            CreateMap<TipoUsuarioDTO, TipoUsuario>();
-            CreateMap<TipoUsuario, TipoUsuarioDTO>().ReverseMap();
-
-            CreateMap<PessoaDTO, Pessoa>();
-            CreateMap<Pessoa, PessoaDTO>().ReverseMap();
-
-            CreateMap<CidadeDTO, Cidade>();
-            CreateMap<Cidade, CidadeDTO>().ReverseMap();
-
-            CreateMap<UsuarioDTO, Usuario>();
-            CreateMap<Usuario, UsuarioDTO>().ReverseMap();
-
-            CreateMap<AutenticationDTO, Autentication>();
-            CreateMap<Autentication, AutenticationDTO>().ReverseMap();
+            // Objetos de Pessoa:
 
             CreateMap<MunicipeDTO, Municipe>();
             CreateMap<Municipe, MunicipeDTO>().ReverseMap();
 
-            CreateMap<TipoLogradouroDTO, TipoLogradouro>();
-            CreateMap<TipoLogradouro, TipoLogradouroDTO>().ReverseMap();
+            CreateMap<EngenheiroDTO, Engenheiro>();
+            CreateMap<Engenheiro, EngenheiroDTO>().ReverseMap();
+
+            CreateMap<FiscalDTO, Fiscal>();
+            CreateMap<Fiscal, FiscalDTO>().ReverseMap();
+
+            CreateMap<TipoUsuarioDTO, TipoUsuario>();
+            CreateMap<TipoUsuario, TipoUsuarioDTO>().ReverseMap();
+
+            CreateMap<UsuarioDTO, Usuario>();
+            CreateMap<Usuario, UsuarioDTO>().ReverseMap();
+
+
+            // Objetos de Imóvel:
+
+            CreateMap<EstadoDTO, Estado>();
+            CreateMap<Estado, EstadoDTO>().ReverseMap();
+
+            CreateMap<CidadeDTO, Cidade>();
+            CreateMap<Cidade, CidadeDTO>().ReverseMap();
 
             CreateMap<BairroDTO, Bairro>();
             CreateMap<Bairro, BairroDTO>().ReverseMap();
+
+            CreateMap<TipoLogradouroDTO, TipoLogradouro>();
+            CreateMap<TipoLogradouro, TipoLogradouroDTO>().ReverseMap();
+
+            CreateMap<LogradouroDTO, Logradouro>();
+            CreateMap<Logradouro, LogradouroDTO>().ReverseMap();
+
+            CreateMap<ImovelDTO, Imovel>();
+            CreateMap<Imovel, ImovelDTO>().ReverseMap();
+
+
+            // Objetos de Processo:
+
+            CreateMap<TipoProcessoDTO, TipoProcesso>();
+            CreateMap<TipoProcesso, TipoProcessoDTO>().ReverseMap();
+
+            CreateMap<EtapaDTO, Etapa>();
+            CreateMap<Etapa, EtapaDTO>().ReverseMap();
+
+            CreateMap<TipoDocumentoDTO, TipoDocumento>();
+            CreateMap<TipoDocumento, TipoDocumentoDTO>().ReverseMap();
+
+            CreateMap<TipoDocumentoEtapaDTO, TipoDocumentoEtapa>();
+            CreateMap<TipoDocumentoEtapa, TipoDocumentoEtapaDTO>().ReverseMap();
+
+
+            // Objetos do Servidor:
+
+            CreateMap<LoginDTO, Login>();
+            CreateMap<Login, LoginDTO>().ReverseMap();
+
+            CreateMap<SessaoDTO, Sessao>();
+            CreateMap<Sessao, SessaoDTO>().ReverseMap();
         }
     }
 }

@@ -22,7 +22,6 @@ namespace SGED.Controllers
 		public async Task<ActionResult<IEnumerable<TipoUsuarioDTO>>> Get()
 		{
 			var tipoUsuarioDTO = await _service.GetAll();
-			if (tipoUsuarioDTO == null) return NotFound("Tipos de usuário não encontrados!");
 			return Ok(tipoUsuarioDTO);
 		}
 

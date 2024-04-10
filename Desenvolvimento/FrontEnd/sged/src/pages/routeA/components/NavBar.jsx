@@ -12,31 +12,45 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 //import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import LogoJales from '../../../assets/LogoJales.png'
+import LogoJales from '../../../assets/pages/LogoJales.png'
+import LogoProjeto from '../../../../public/logoSGED.png'
 
-import { useSession } from '../../../object/service/session';
-import { useServer } from '../../../routes/serverRoute';
+import MoonIcon from '@mui/icons-material/DarkModeOutlined';
+import SunIcon from '@mui/icons-material/WbSunnyOutlined';
+
 import { useEffect, useState } from "react";
+import { useServer } from '../../../routes/serverRoute';
+import SessionService from '../../../object/service/session';
+import UserClass from '../../../object/class/user';
 
 export default function NavBar() {
 
-  const { getSession, defaultSession } = useSession();
-  const { clearSegment, inDevelopment } = useServer();
-  const [userName, setUserName] = useState("");
+  const [darkMode, setDarkMode] = useState(false);
 
-  const GetUser = () => {
-    const user = getSession();
-    if (user !== null) {
-      setUserName(user.nomePessoa);
-    }
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+    // Aqui você pode adicionar lógica para alternar a cor de fundo do website
+    // por exemplo, mudando classes CSS ou chamando uma função para alterar
+    // o tema da aplicação
   };
 
+  const session = SessionService();
+  const server = useServer();
+  const user = UserClass();
+
   const encerateSession = () => {
-    defaultSession();
-    clearSegment("login");
+    session.defaultToken();
+    server.clearSegment("login");
   };
 
   useEffect(() => {
+    const GetUser = async () => {
+      if (session.getToken()) {
+        const data = await session.getUser();
+        if (data) user.getData(data);
+      }
+    };
+
     GetUser();
   }, []);
 
@@ -80,7 +94,7 @@ export default function NavBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={() => inDevelopment("Perfil")}>Perfil</MenuItem>
+      <MenuItem onClick={() => server.clearSegment("profile")}>Perfil</MenuItem>
       <MenuItem onClick={() => encerateSession()}>Sair</MenuItem>
     </Menu>
   );
@@ -112,7 +126,7 @@ export default function NavBar() {
             <NotificationsIcon />
           </Badge>
         </IconButton>
-        <p>Notifications</p>
+        <p>Notificações</p>
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
@@ -122,9 +136,9 @@ export default function NavBar() {
           aria-haspopup="true"
           color="inherit"
         >
-          <AccountCircle />
+          <img src={user.personPicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '25px', height: '25px', objectFit: 'cover', border: '1px solid black', boxShadow: '0 0 0 1px white', backgroundColor: 'white' }} />
         </IconButton>
-        <p>Profile</p>
+        <p>Perfil</p>
       </MenuItem>
     </Menu>
   );
@@ -132,7 +146,7 @@ export default function NavBar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar style={{backgroundColor: '#2D636B', height: 40}}>
+        <Toolbar style={{ backgroundColor: '#2D636B', height: 40 }}>
           {/* <IconButton
             size="large"
             edge="start"
@@ -148,8 +162,8 @@ export default function NavBar() {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' }, marginLeft: 5 }}
           >
-            <img className='' src={LogoJales} alt="Logo de Jales"></img>
-          </Typography> 
+            <img className='w-24 ' src={LogoJales} alt="Logo de Jales"></img>
+          </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Typography
             variant="h6"
@@ -157,8 +171,8 @@ export default function NavBar() {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' }, marginLeft: 5 }}
           >
-            { userName }
-          </Typography> 
+            {user.personName}
+          </Typography>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton
               size="large"
@@ -169,7 +183,21 @@ export default function NavBar() {
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              <AccountCircle />
+              <img src={user.personPicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '25px', height: '25px', objectFit: 'cover', border: '1px solid black', boxShadow: '0 0 0 1px white', backgroundColor: 'white' }} />
+            </IconButton>
+            <IconButton
+              size="large"
+              aria-label="toggle dark mode"
+              color="inherit"
+              onClick={toggleDarkMode}
+            >
+              <Badge color="error">
+                {darkMode ? (
+                  <MoonIcon style={{ color: '#CCCCCC' }} />
+                ) : (
+                  <SunIcon style={{ color: '#FFD700' }} />
+                )}
+              </Badge>
             </IconButton>
             <IconButton
               size="large"

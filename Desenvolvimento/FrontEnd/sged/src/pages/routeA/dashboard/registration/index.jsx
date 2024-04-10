@@ -1,10 +1,11 @@
 import NavBar from "../../components/NavBar";
 import SideBar from "../../components/SideBar";
 //import { Link } from "react-router-dom";
+import Title from "../../components/Title/Title";
 import { useMontage } from '../../../../object/modules/montage';
-import Cards from '../../components/Cards';
+import Cards from '../../components/Card/Cards';
+import CardIcon from "../../components/Card/CardIcon";
 import React, { useState, useEffect } from "react";
-import CardIcon from "../../components/CardIcon";
 
 export default function Registrations() {
 
@@ -75,14 +76,14 @@ export default function Registrations() {
 
     return (
         <div className="flex flex-1 min-h-screen">
-            <div className="h-full w-full" style={{ display: 'flex', flexDirection: 'column' }}>
+            <div className="flex flex-col h-full w-full">
                 <NavBar />
                 <div className="flex flex-1 min-h-full">
                     <SideBar />
-                    <div className="min-h-screen" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
+                    <div className="flex-2 min-h-screen w-full ml-[80px] mr-[40px] mt-[-5px]">
                         <br />
-                        <h3 className="text-2xl font-semibold text-gray-600">Cadastros</h3>
-                        <div className="bg-slate-200 rounded-md" style={{ marginTop: 15 }}>
+                        <Title title="Cadastros"/>
+                        <div className="bg-slate-200 rounded-md mt-[15px]">
                             <div className="flex relative border rounded-lg border-[#BCBCBC] bg-white">
                                 <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                     <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -108,7 +109,7 @@ export default function Registrations() {
                         </div>
                         <div className="flex mt-10">
                             {Object.entries(categoryFiltered).map(([categoryName, categoryCards]) => (
-                                <div className="pr-[50px]">
+                                <div className="pr-[50px]" key={categoryName}>
                                     <div className="text-gray-600 text-lg font-semibold mb-2">
                                         {categoryName}
                                     </div>

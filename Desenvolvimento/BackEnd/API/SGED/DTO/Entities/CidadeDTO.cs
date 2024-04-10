@@ -15,12 +15,13 @@ namespace SGED.DTO.Entities
         [MaxLength(100)]
         public string NomeCidade { get; set; }
 
-
         [JsonIgnore]
         public EstadoDTO? EstadoDTO { get; set; }
 
         [Required(ErrorMessage = "O Estado é requerido!")]
         public int IdEstado { get; set; }
-
+        
+        [JsonIgnore]
+        public ICollection<BairroDTO>? BairroDTOs { get; set; }
     }
 }

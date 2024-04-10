@@ -1,245 +1,486 @@
-import NavBar from "../../components/NavBar";
+import { useEffect, useState } from "react";
+import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import SideBar from "../../components/SideBar";
-import ImgImovel from "../../../../assets/imgImovel.png"
-import ImgEstado from "../../../../assets/imgEstado.png";
-import ImgCidade from "../../../../assets/ImgCidade.png";
-import ImgLogradouro from "../../../../assets/ImgLogradouro.png";
-import ImgTipoLogradouro from "../../../../assets/ImgTipoLogradouro.png";
-import ImgUsuario from "../../../../assets/ImgUsuario.png";
-import ImgBairro from "../../../../assets/ImgBairro.png";
-import ImgTipoUsuario from "../../../../assets/ImgTipoUsuario.png";
-import ImgMunicipe from "../../../../assets/ImgMunicipe.png";
-import ImgEngenheiro from "../../../../assets/ImgEngenheiro.png";
-import ImgFiscal from "../../../../assets/ImgFiscal.png";
-import ImgAuditoria from "../../../../assets/ImgAuditoria.png";
-import ImgProcesso from "../../../../assets/ImgProcesso.png";
-import ImgTipoProcesso from "../../../../assets/ImgTipoProcesso.png";
-import ImgEtapa from "../../../../assets/ImgEtapa.png";
-import ImgTipoDocumento from "../../../../assets/ImgTipoDocumento.png";
-import ImgDocumentoProcesso from "../../../../assets/ImgDocumentoProcesso.png";
-//import { Link } from "react-router-dom";
+import NavBar from "../../components/NavBar";
+import { FaPlus } from "react-icons/fa6";
+import { Link } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Select from 'react-select';
+import { CaretLeft, CaretRight, FloppyDisk, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
-import { useMontage } from '../../../../object/modules/montage';
-import { useServer } from "../../../../routes/serverRoute";
-import React, { useState, useEffect } from "react";
+import { useMontage } from "../../../../object/modules/montage";
+import ConnectionEntity from "../../../../object/service/connection";
+import ListModule from "../../../../object/modules/list";
+import TypeDocumentClass from "../../../../object/class/typedocument";
+import SelectModule from '../../../../object/modules/select';
+import SidebarAdm from '../../components/Adm/SideBarAdm';
+import NavBarAdm from '../../components/Adm/NavBarAdm';
 
-export default function Registrations() {
+export default function TypeDocument() {
 
     const { componentMounted } = useMontage();
 
     useEffect(() => {
         componentMounted();
-    }, [componentMounted]);
+    }, []);
 
-    const { addSegment, inDevelopment } = useServer();
+    const connection = ConnectionEntity();
+    const typedocument = TypeDocumentClass();
+    const listTypeProcess = ListModule();
+    const listStage = ListModule();
+    const listTypeDocumentRelated = ListModule();
+    const listTypeDocumentNoRelated = ListModule();
+    const selectBoxTypeProcess = SelectModule();
+    const selectBoxStage = SelectModule();
+    const selectBoxTypeDocument = SelectModule();
 
-    const [searchFilter, setSearchFilter] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState("Todos");
+    const [modalInsert, setModalInsert] = useState(false);
+    const [modalEdit, setModalEdit] = useState(false);
+    const [modalDelete, setModalDelete] = useState(false);
+    const [updateData, setUpdateData] = useState(true);
+    const [inOperation, setInOperation] = useState(false);
 
-    const normalizeString = (str) => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const openCloseModalInsert = (boolean) => {
+        setModalInsert(boolean);
+        typedocument.clearError();
 
-    const handleSearch = (value) => {
-        setSearchFilter(value);
+        if (!boolean) {
+            typedocument.clearData();
+        }
+    };
+
+    const openCloseModalEdit = (boolean) => {
+        setModalEdit(boolean);
+        typedocument.clearError();
+
+        if (!boolean) {
+            typedocument.clearData();
+        }
+    };
+
+    const openCloseModalDelete = (boolean) => {
+        setModalDelete(boolean);
+
+        if (!boolean) {
+            typedocument.clearData();
+        }
+    };
+
+    const SelectTypeDocument = (object, option) => {
+        typedocument.getData(object);
+
+        if (option === "Editar") {
+            openCloseModalEdit(true);
+        } else {
+            openCloseModalDelete(true);
+        }
+    };
+
+    const GetTypeProcess = async () => {
+        const response = await connection.objectUrl("TipoProcesso").getOrder();
+        if (response.status) {
+            listTypeProcess.setList(response.data);
+        } else {
+            console.error(response.data);
+        }
+    };
+
+    const GetStage = async () => {
+        const response = await connection.objectUrl("Etapa").actionUrl(`GetRelatedToTypeProcess/${selectBoxTypeProcess.selectedOption.value}`).getOrder();
+        if (response.status) {
+            listStage.setList(response.data);
+        } else {
+            console.log(response.message);
+        }
+    }
+
+    const GetTypeDocumentRelated = async () => {
+        const response = await connection.objectUrl("TipoDocumentoEtapa").actionUrl(`Related/${selectBoxStage.selectedOption.value}`).getOrder();
+        if (response.status) {
+            listTypeDocumentRelated.setList(response.data);
+        } else {
+            console.error(response.data);
+        }
+    };
+
+    const GetTypeDocumentNoRelated = async () => {
+        const response = await connection.objectUrl("TipoDocumentoEtapa").actionUrl(`NoRelated/${selectBoxStage.selectedOption.value}`).getOrder();
+        if (response.status) {
+            listTypeDocumentNoRelated.setList(response.data);
+        } else {
+            console.error(response.data);
+        }
+    };
+
+    const PostTypeDocument = async () => {
+        setInOperation(true);
+
+        if (typedocument.verifyData()) {
+            const response = await connection.objectUrl("TipoDocumento").postOrder(typedocument);
+
+            openCloseModalInsert(!response.status);
+            setUpdateData(response.status);
+            console.log(response.message);
+        } else {
+            console.log('Dados Inválidos!');
+        }
+
+        setInOperation(false);
+    };
+
+    const PutTypeDocument = async () => {
+        setInOperation(true);
+
+        if (typedocument.verifyData()) {
+            const response = await connection.objectUrl("TipoDocumento").putOrder(typedocument);
+
+            openCloseModalEdit(!response.status);
+            setUpdateData(response.status);
+            console.log(response.message);
+        } else {
+            console.log('Dados Inválidos!');
+        }
+
+        setInOperation(false);
+    };
+
+    const DeleteTypeDocument = async () => {
+        setInOperation(true);
+
+        const response = await connection.objectUrl("TipoDocumento").deleteOrder(typedocument);
+
+        openCloseModalDelete(!response.status);
+        setUpdateData(response.status);
+        console.log(response.message);
+
+        setInOperation(false);
+    };
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchBy, setSearchBy] = useState('nomeTipoDocumento');
+
+    const handleSearch = (searchTerm) => {
+        setSearchTerm(searchTerm);
     };
 
     const handleSearchBy = (value) => {
-        setSelectedCategory(value);
+        setSearchBy(value);
     };
 
-    const titles = ["Imóvel", "Usuário", "Processo"];
-    const titleColors = {
-        "Imóvel": { bg: "#CDE3E7", hover: "#4DA8B6", text: "#005A66" },
-        "Usuário": { bg: "#D1EBFE", hover: "#91C9F4", text: "#1D90E8" },
-        "Processo": { bg: "#D6D3FA", hover: "#A6A0F8", text: "#4E42ED" },
+    const filterTypeDocument = () => {
+        const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+        if (!searchTerm) {
+            listTypeProcess.setListToRender(listTypeProcess.list);
+        } else {
+            if (searchBy === 'nomeEtapa') {
+                const filteredStage = listStage.listTypeProcess.filter((stage) => {
+                    const stageFilter = stage[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    return stageFilter.toLowerCase().includes(searchTermNormalized.toLowerCase());
+                });
+
+                const filteredIds = filteredStage.map((stage) => stage.id);
+
+                const filtered = listTypeProcess.listTypeProcess.filter((typedocument) => {
+                    return filteredIds.includes(typedocument.idEtapa);
+                });
+
+                listTypeProcess.setListToRender(filtered);
+            } else if (searchBy === 'descricaoTipoDocumento') {
+                const filtered = listTypeProcess.listTypeProcess.filter((typedocument) => {
+                    const typedocumentFilter = typedocument[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    return typedocumentFilter.toLowerCase().includes(searchTermNormalized.toLowerCase());
+                });
+
+                listTypeProcess.setListToRender(filtered);
+            } else {
+                listTypeProcess.setSearchTerm(searchTerm);
+                listTypeProcess.setSearchBy(searchBy);
+            }
+        }
     };
-    const cards = {
-        "Imóvel": ["Imóvel", "Estado", "Cidade", "Bairro", "Logradouro", "Tipo Logradouro"],
-        "Usuário": ["Usuário", "Tipo Usuário", "Munícipe", "Engenheiro", "Fiscal", "Auditoria"],
-        "Processo": ["Processo", "Tipo Processo", "Etapa", "Tipo Documento", "Documento Processo"]
-    }
-    const dataCards = {
-        // Imóvel
-        "Imóvel": [
-            {
-                onClick: () => inDevelopment("Controle de Imóvel"),
-                image: ImgImovel,
-                title: "Abrir a Página de Controle de Imóvel"
-            }
-        ],
-        "Estado": [
-            {
-                onClick: () => addSegment("state"),
-                image: ImgEstado,
-                title: "Abrir a Página de Controle de Estado"
-            }
-        ],
-        "Cidade": [
-            {
-                onClick: () => addSegment("city"),
-                image: ImgCidade,
-                title: "Abrir a Página de Controle de Cidade"
-            }
-        ],
-        "Bairro": [
-            {
-                onClick: () => inDevelopment("Controle de Bairro"),
-                image: ImgBairro,
-                title: "Abrir a Página de Controle de Bairro"
-            }
-        ],
-        "Logradouro": [
-            {
-                onClick: () => inDevelopment("Controle de Logradouro"),
-                image: ImgLogradouro,
-                title: "Abrir a Página de Controle de Logradouro"
-            }
-        ],
-        "Tipo Logradouro": [
-            {
-                onClick: () => addSegment("typepublicplace"),
-                image: ImgTipoLogradouro,
-                title: "Abrir a Página de Controle de Tipo Logradouro"
-            }
-        ],
 
-        // Usuário
-        "Usuário": [
-            {
-                onClick: () => addSegment("user"),
-                image: ImgUsuario,
-                title: "Abrir a Página de Controle de Usuário"
-            }
-        ],
-        "Tipo Usuário": [
-            {
-                onClick: () => addSegment("typeuser"),
-                image: ImgTipoUsuario,
-                title: "Abrir a Página de Controle de Tipo Usuário"
-            }
-        ],
-        "Munícipe": [
-            {
-                onClick: () => inDevelopment("Controle de Munícipe"),
-                image: ImgMunicipe,
-                title: "Abrir a Página de Controle de Munícipe"
-            }
-        ],
-        "Engenheiro": [
-            {
-                onClick: () => inDevelopment("Controle de Engenheiro"),
-                image: ImgEngenheiro,
-                title: "Abrir a Página de Controle de Engenheiro"
-            }
-        ],
-        "Fiscal": [
-            {
-                onClick: () => inDevelopment("Controle de Fiscal"),
-                image: ImgFiscal,
-                title: "Abrir a Página de Controle de Fiscal"
-            }
-        ],
-        "Auditoria": [
-            {
-                onClick: () => inDevelopment("Controle de Auditoria"),
-                image: ImgAuditoria,
-                title: "Abrir a Página de Controle de Auditoria"
-            }
-        ],
+    useEffect(() => {
+        filterTypeDocument();
+    }, [searchTerm, searchBy, listTypeProcess.list]);
 
-        // Processo
-        "Processo": [
-            {
-                onClick: () => inDevelopment("Controle de Processo"),
-                image: ImgProcesso,
-                title: "Abrir a Página de Controle de Processo"
-            }
-        ],
-        "Tipo Processo": [
-            {
-                onClick: () => inDevelopment("Controle de Tipo Processo"),
-                image: ImgTipoProcesso,
-                title: "Abrir a Página de Controle de Tipo Processo"
-            }
-        ],
-        "Etapa": [
-            {
-                onClick: () => inDevelopment("Controle de Etapa"),
-                image: ImgEtapa,
-                title: "Abrir a Página de Controle de Etapa"
-            }
-        ],
-        "Tipo Documento": [
-            {
-                onClick: () => inDevelopment("Controle de Tipo Documento"),
-                image: ImgTipoDocumento,
-                title: "Abrir a Página de Controle de Tipo Documento"
-            }
-        ],
-        "Documento Processo": [
-            {
-                onClick: () => inDevelopment("Controle de Documento Processo"),
-                image: ImgDocumentoProcesso,
-                title: "Abrir a Página de Controle de Documento Processo"
-            }
-        ]
-    }
+    useEffect(() => {
+        if (updateData) {
+            GetTypeProcess();
 
-    const filteredTitles = selectedCategory === "Todos" ? titles : [selectedCategory];
+            setUpdateData(false);
+        }
+    }, [updateData]);
+
+    useEffect(() => {
+        if (!modalInsert && !modalEdit && !modalDelete) {
+            selectBoxTypeProcess.updateOptions(listTypeProcess.list, "id", "nomeTipoProcesso");
+            selectBoxTypeProcess.selectOption(listTypeProcess.list[0]?.id);
+        }
+    }, [listTypeProcess.list, modalInsert, modalEdit, modalDelete]);
+
+    useEffect(() => {
+        listStage.setList([]);
+        listTypeDocumentNoRelated.setList([]);
+        listTypeDocumentRelated.setList([]);
+
+        if (selectBoxTypeProcess.selectedOption.value) {
+            GetStage();
+        }
+    }, [selectBoxTypeProcess.selectedOption]);
+
+    useEffect(() => {
+        selectBoxStage.updateOptions(listStage.list, "id", "nomeEtapa");
+        selectBoxStage.selectOption(listStage.list[0]?.id);
+    }, [listStage.list]);
+
+    useEffect(() => {
+        if (selectBoxStage.selectedOption.value) {
+            GetTypeDocumentNoRelated();
+            GetTypeDocumentRelated();
+        }
+    }, [selectBoxStage.selectedOption]);
 
     return (
         <div className="flex flex-1 min-h-screen">
-            <div className="h-full w-full" style={{ display: 'flex', flexDirection: 'column' }}>
+            <div className="flex flex-col h-full w-full">
+                {/* <NavBar /> */}
                 <NavBar />
                 <div className="flex flex-1 min-h-full">
                     <SideBar />
-                    <div className="min-h-screen" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
+                    <div className="flex-2 min-h-screen mr-[40px] ml-[80px] mt-[-5px] w-full">
                         <br />
-                        <h3 className="text-2xl font-semibold text-gray-600">Cadastros</h3>
-                        <div className="bg-slate-200 rounded-md" style={{ marginTop: 15 }}>
-                            <div className="flex relative border rounded-lg border-[#BCBCBC]">
-                                <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                    <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                                    </svg>
-                                </div>
-                                <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar cartões" required onChange={(e) => handleSearch(e.target.value)} />
-                                <select className="appearance-none form-control rounded-md w-40 text-gray-800" onChange={(e) => handleSearchBy(e.target.value)} >
-                                    <option key="Todos" value="Todos">
-                                        Todos
-                                    </option>
-                                    <option key="Imóvel" value="Imóvel">
-                                        Imóvel
-                                    </option>
-                                    <option key="Usuário" value="Usuário">
-                                        Usuário
-                                    </option>
-                                    <option key="Processo" value="Processo">
-                                        Processo
-                                    </option>
-                                </select>
-                            </div>
+                        <div className="flex flex-row mb-4">
+                            <Link to="/a/registration">
+                                <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
+                            </Link>
+                            <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
+                            <h3 className="text-2xl font-semibold text-gray-700">Tipo Documento p/ Etapa</h3>
                         </div>
-                        <div className="flex">
-                            {filteredTitles.map((title, indexTitle) => (
-                                <div key={indexTitle} className="pr-[50px]">
-                                    <div className="pt-4 text-xl font-semibold text-gray-600 pb-2">{title}</div>
-                                    <div className="grid grid-cols-2">
-                                        {cards[title].filter(card => searchFilter !== "" ? normalizeString(card.toLowerCase()).includes(normalizeString(searchFilter.toLowerCase())) : card).length > 0 ? (
-                                            cards[title].filter(card => searchFilter !== "" ? normalizeString(card.toLowerCase()).includes(normalizeString(searchFilter.toLowerCase())) : card).map((card, indexCard) => (
-                                                <button key={indexCard} onClick={dataCards[card]?.[0]?.onClick}>
-                                                    <div className={`flex flex-col items-center justify-center w-[148px] h-[148px] bg-[${titleColors[title].bg}] hover:bg-[${titleColors[title].hover}] shadow-xl hover:scale-105 mb-3 rounded-xl mr-4`} >
-                                                        <div className={`text-lg font-semibold text-[${titleColors[title].text}]`}>{card}</div>
-                                                        <img src={dataCards[card]?.[0]?.image} title={dataCards[card]?.[0]?.title} />
-                                                    </div>
-                                                </button>
-                                            ))
-                                        ) : (
-                                            <div className="w-[148px] mr-4"></div>
-                                        )}
+                        <div className="grid grid-cols-2">
+                            <div className="w-full">
+                                <div className="w-[450px]">
+                                    <div className="text-gray-600 text-lg mb-1">Tipo Processo:</div>
+                                    <Select
+                                        value={selectBoxTypeProcess.selectedOption}
+                                        onChange={selectBoxTypeProcess.handleChange}
+                                        onInputChange={selectBoxTypeProcess.delayedSearch}
+                                        loadOptions={selectBoxTypeProcess.loadOptions}
+                                        options={selectBoxTypeProcess.options}
+                                        placeholder="Pesquisar tipo processo . . ."
+                                        isClearable
+                                        isSearchable
+                                        noOptionsMessage={() => {
+                                            if (listTypeProcess.listTypeProcess.length === 0) {
+                                                return "Nenhum Tipo Processo cadastrado!";
+                                            } else {
+                                                return "Nenhuma opção encontrada!";
+                                            }
+                                        }}
+                                        className="style-select rounded-md border-[#d9d9d9] mb-3"
+                                    />
+                                    <div className="text-gray-600 text-lg mb-1">Etapa:</div>
+                                    <Select
+                                        value={selectBoxStage.selectedOption}
+                                        onChange={selectBoxStage.handleChange}
+                                        onInputChange={selectBoxStage.delayedSearch}
+                                        loadOptions={selectBoxStage.loadOptions}
+                                        options={selectBoxStage.options}
+                                        placeholder="Pesquisar etapa . . ."
+                                        isClearable
+                                        isSearchable
+                                        noOptionsMessage={() => {
+                                            if (listStage.listTypeProcess.length === 0) {
+                                                return "Nenhuma Etapa cadastrado!";
+                                            } else {
+                                                return "Nenhuma opção encontrada!";
+                                            }
+                                        }}
+                                        className="style-select rounded-md border-[#d9d9d9]"
+                                    />
+                                </div>
+                            </div>
+                            <div className="w-full">
+                                <div className="grid grid-rows-2">
+                                    <div className="w-full rounded-[20px] border-1 border-[#C8E5E5]">
+                                        <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
+                                            <span className="flex ml-5 text-white text-lg font-semibold">Tipo Documento</span>
+                                            <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
+                                            <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                                        </div>
+                                        <ul className="w-full">
+                                            {listTypeDocumentNoRelated.currentList.map((object) => {
+                                                return (
+                                                    <li className="grid grid-cols-3 w-full" key={object.id}>
+                                                        <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</span>
+                                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoDocumento}</span>
+                                                        <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                                            <button
+                                                                className=""
+                                                                onClick={() => SelectTypeDocument(object, "Editar")}
+                                                            >
+                                                                <PencilSimple size={20} className="hover:text-cyan-500" />
+                                                            </button>{" "}
+                                                            <button
+                                                                className=""
+                                                                onClick={() => SelectTypeDocument(object, "Excluir")}
+                                                            >
+                                                                <TrashSimple size={20} className="hover:text-red-600" />
+                                                            </button>
+                                                        </span>
+                                                    </li>
+                                                )
+                                            })}
+                                        </ul>
+                                        {/* Estilização dos botões de navegação */}
+                                        <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
+                                            <button
+                                                className=""
+                                                onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage - 1)}
+                                            >
+                                                <CaretLeft size={22} className="text-[#58AFAE]" />
+                                            </button>
+                                            <select
+                                                className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
+                                                value={listTypeProcess.currentPage}
+                                                onChange={(e) => listTypeProcess.goToPage(Number(e.target.value))}
+                                            >
+                                                {[...Array(listTypeProcess.totalPages)].map((_, index) => (
+                                                    <option key={index + 1} value={index + 1}>
+                                                        {index + 1}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <button
+                                                className=""
+                                                onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage + 1)}
+                                            >
+                                                <CaretRight size={22} className="text-[#58AFAE]" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-4">
+                                        <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
+                                            <span className="flex ml-5 text-white text-lg font-semibold">Etapa</span>
+                                            <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
+                                            <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                                        </div>
+                                        <ul className="w-full">
+                                            {listTypeDocumentRelated.currentList.map((object) => {
+                                                return (
+                                                    <li className="grid grid-cols-3 w-full" key={object.id}>
+                                                        <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</span>
+                                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoDocumento}</span>
+                                                        <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                                            <button
+                                                                className=""
+                                                                onClick={() => SelectTypeDocument(object, "Editar")}
+                                                            >
+                                                                <PencilSimple size={20} className="hover:text-cyan-500" />
+                                                            </button>{" "}
+                                                            <button
+                                                                className=""
+                                                                onClick={() => SelectTypeDocument(object, "Excluir")}
+                                                            >
+                                                                <TrashSimple size={20} className="hover:text-red-600" />
+                                                            </button>
+                                                        </span>
+                                                    </li>
+                                                )
+                                            })}
+                                        </ul>
+                                        {/* Estilização dos botões de navegação */}
+                                        <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
+                                            <button
+                                                className=""
+                                                onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage - 1)}
+                                            >
+                                                <CaretLeft size={22} className="text-[#58AFAE]" />
+                                            </button>
+                                            <select
+                                                className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
+                                                value={listTypeProcess.currentPage}
+                                                onChange={(e) => listTypeProcess.goToPage(Number(e.target.value))}
+                                            >
+                                                {[...Array(listTypeProcess.totalPages)].map((_, index) => (
+                                                    <option key={index + 1} value={index + 1}>
+                                                        {index + 1}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <button
+                                                className=""
+                                                onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage + 1)}
+                                            >
+                                                <CaretRight size={22} className="text-[#58AFAE]" />
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            ))}
+                            </div>
                         </div>
+                        {/* <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
+                            <div className="grid grid-cols-4 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
+                                <span className="flex ml-5 text-white text-lg font-semibold">Nome</span>
+                                <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
+                                <span className="flex justify-center items-center text-white text-lg font-semibold">Etapa</span>
+                                <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                            </div>
+                            <ul className="w-full">
+                                {listTypeProcess.currentlistTypeProcess.map((object) => {
+                                    const etapa = listStage.listTypeProcess.find((stage) => stage.id === object.idEtapa);
+                                    return (
+                                        <li className="grid grid-cols-4 w-full" key={object.id}>
+                                            <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoDocumento}</span>
+                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{etapa ? etapa.nomeEtapa : "Etapa não encontrada!"}</span>
+                                            <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                                <button
+                                                    className=""
+                                                    onClick={() => SelectTypeDocument(object, "Editar")}
+                                                >
+                                                    <PencilSimple size={20} className="hover:text-cyan-500" />
+                                                </button>{" "}
+                                                <button
+                                                    className=""
+                                                    onClick={() => SelectTypeDocument(object, "Excluir")}
+                                                >
+                                                    <TrashSimple size={20} className="hover:text-red-600" />
+                                                </button>
+                                            </span>
+                                        </li>
+                                    )
+                                })}
+                            </ul>
+                            {/* Estilização dos botões de navegação 
+                            <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
+                                <button
+                                    className=""
+                                    onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage - 1)}
+                                >
+                                    <CaretLeft size={22} className="text-[#58AFAE]" />
+                                </button>
+                                <select
+                                    className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
+                                    value={listTypeProcess.currentPage}
+                                    onChange={(e) => listTypeProcess.goToPage(Number(e.target.value))}
+                                >
+                                    {[...Array(listTypeProcess.totalPages)].map((_, index) => (
+                                        <option key={index + 1} value={index + 1}>
+                                            {index + 1}
+                                        </option>
+                                    ))}
+                                </select>
+                                <button
+                                    className=""
+                                    onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage + 1)}
+                                >
+                                    <CaretRight size={22} className="text-[#58AFAE]" />
+                                </button>
+                            </div>
+                            {/* Espaçamento abaixo dos botões 
+                            <div className="mt-4"></div>
+                        </div> */}
                     </div>
                 </div>
             </div>

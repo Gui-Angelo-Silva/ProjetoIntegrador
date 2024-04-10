@@ -26,5 +26,8 @@ namespace SGED.DTO.Entities
 
         public int IdTipoUsuario { get; set; }
 
+        [JsonIgnore]
+        public ICollection<SessaoDTO>? SessoesDTO { get; set; }
+
     }
 }

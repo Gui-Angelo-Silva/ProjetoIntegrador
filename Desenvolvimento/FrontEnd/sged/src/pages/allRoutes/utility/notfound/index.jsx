@@ -1,13 +1,5 @@
-import SideBarA from "../../../routeA/components/SideBar";
-import SideBarB from "../../../routeA/components/SideBar";
-import SideBarC from "../../../routeA/components/SideBar";
-import SideBarD from "../../../routeA/components/SideBar";
-
-import NavBar from "../../../allRoutes/components/NavBar";
-import NavBarA from "../../../routeA/components/NavBar";
-import NavBarB from "../../../routeA/components/NavBar";
-import NavBarC from "../../../routeA/components/NavBar";
-import NavBarD from "../../../routeA/components/NavBar";
+import NavBar from "../../../routeA/components/NavBar";
+import SideBar from "../../../routeA/components/SideBar";
 
 import Button from '@mui/material/Button';
 //import { FaAngleRight, FaTableCellsLarge, FaFile } from "react-icons/fa6";
@@ -15,8 +7,9 @@ import Button from '@mui/material/Button';
 import { useMontage } from '../../../../object/modules/montage';
 import { useEffect } from "react";
 import { useServer } from "../../../../routes/serverRoute";
+import SessionService from '../../../../object/service/session';
 
-export default function Development() {
+export default function NotFound() {
 
   const { componentMounted } = useMontage();
 
@@ -24,41 +17,26 @@ export default function Development() {
     componentMounted();
   }, [componentMounted]);
 
-  const { clearSegment } = useServer();
-  const pagePrevious = sessionStorage.getItem("page: non-existent");
-
-  const permissionInRoute = window.location.pathname.split('/')[1]?.toUpperCase();
-  const permission = ["A", "B", "C", "D"].includes(permissionInRoute) ? permissionInRoute : null;
+  const server = useServer();
+  const session = SessionService();
 
   const redirect = () => {
     sessionStorage.removeItem("page: non-existent");
-    clearSegment(permission !== null ? "home" : "login");
-  }
-
-  const callComponent = (component) => {
-    const componentName = permission !== null ? component + permission : component;
-
-    const componentsNav = { NavBar, NavBarA, NavBarB, NavBarC, NavBarD };
-    const componentsSide = { SideBarA, SideBarB, SideBarC, SideBarD };
-    const ComponentToRender = componentName[0] === "N" ? componentsNav[componentName] : componentsSide[componentName];
-
-    return ComponentToRender ? <ComponentToRender /> : null;
+    server.clearSegment(session.getToken() ? "home" : "login");
   }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {callComponent("NavBar")}
+      <NavBar />
       <div style={{ display: 'flex', flex: 1 }}> {/* Container principal flexível */}
-        <div style={{ flex: 0, width: '200px' }}>
-          {callComponent("SideBar")}
-        </div>
+        <SideBar />
         <div style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '90vh' }}>
           <br />
           <h3 className="text-3xl font-semibold text-gray-600">Página Inexistente</h3>
           <p className="pl-4" style={{ marginTop: '40px', textAlign: 'center' }}>
-            A página <span style={{ color: 'blue' }}>{pagePrevious}</span> informada não existe dentro do website.
+            A página <span style={{ color: 'blue', fontWeight: 'bold' }}>{sessionStorage.getItem("page: non-existent")}</span> informada não existe dentro do website.
             <br />
-            Clique no botão abaixo para retornar para a página {permission !== null ? "principal" : "de autenticação"}.
+            Clique no botão abaixo para retornar para a página {session.getToken() ? "principal" : "de autenticação"}.
           </p>
           <Button
             type="submit"
@@ -71,7 +49,7 @@ export default function Development() {
             }}
             onClick={() => redirect()}
           >
-            {permission !== null ? "Página Principal" : "Login"}
+            {session.getToken() ? "Página Principal" : "Login"}
           </Button>
         </div>
       </div>

@@ -1,32 +1,46 @@
-import { createContext, useContext } from "react";
-import PropTypes from 'prop-types';
+import StorageModule from '../../modules/storage';
+import CookieModule from '../../modules/cookie';
 
-const ApiContext = createContext();
+function ApiService() {
 
-export const useApi = () => {
-  const context = useContext(ApiContext);
-  if (!context) {
-    throw new Error('useApi deve ser usado dentro de um ApiProvider!');
-  }
-  return context;
-};
-
-export const ApiProvider = ({ children }) => {
-
+  const storage = StorageModule();
+  const cookie = CookieModule();
   const baseURL = "https://localhost:7096/api/";
 
   const appendRoute = (route) => {
     return baseURL + route;
   };
-  
-  return (
-    <ApiContext.Provider value={{ appendRoute }}>
-      {children}
-    </ApiContext.Provider>
-  );
 
-};
+  const updateToken = (newToken) => {
+    //storage.setLocal('token', newToken? newToken.startsWith('Front ') ? newToken.replace('Front ', '') : newToken : null);
+    cookie.setCookie("token", newToken? newToken.startsWith('Front ') ? newToken.replace('Front ', '') : newToken : null);
+  };
 
-ApiProvider.propTypes = {
-  children: PropTypes.node
-};
+  const headerConfig = () => {
+    const token = cookie.getCookie("token");
+
+    if (token) {
+      return {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Front ${token}`
+        }
+      };
+    } else {
+      return {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+    }
+  };
+
+  return {
+    appendRoute, 
+    updateToken, 
+    headerConfig 
+  };
+
+}
+
+export default ApiService;

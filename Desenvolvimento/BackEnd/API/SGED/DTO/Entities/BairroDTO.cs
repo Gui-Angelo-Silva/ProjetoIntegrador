@@ -21,5 +21,7 @@ namespace SGED.DTO.Entities
         [Required(ErrorMessage = "A Cidade é requerida!")]
         public int IdCidade { get; set; }
 
-    }
+        [JsonIgnore]
+		public ICollection<LogradouroDTO>? LogradourosDTOs { get; set; }
+	}
 }

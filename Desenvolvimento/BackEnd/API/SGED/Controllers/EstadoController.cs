@@ -24,10 +24,9 @@ namespace SGED.Controllers
         }
 
         [HttpGet(Name = "GetEstados")]
-        public async Task<ActionResult<IEnumerable<EstadoCidadeDTO>>> GetAll()
+        public async Task<ActionResult<IEnumerable<EstadoDTO>>> GetAll()
         {
             var estadosDTO = await _estadoService.GetAll();
-            if (estadosDTO == null) return NotFound("Estados não econtrados!");
             return Ok(estadosDTO);
         }
 
@@ -48,9 +47,16 @@ namespace SGED.Controllers
         }
 
         [HttpPost]
+        //[Authorization("A")]
         public async Task<ActionResult> Post([FromBody] EstadoDTO estadoDTO)
         {
             if (estadoDTO is null) return BadRequest("Dado inválido!");
+
+            /*AuditoriaDTO auditoriaDTO = new();
+            auditoriaDTO.IdUsuario = (int)HttpContext.Items["IdUsuario"];
+
+            List<EstadoDTO> estados = new() { estadoDTO };
+            auditoriaDTO.ConverttoStringList(estados);
 
             var estadosDTO = await _estadoService.GetByName(estadoDTO.NomeEstado);
 
@@ -60,7 +66,7 @@ namespace SGED.Controllers
                 {
                     return NotFound("Já existe o Estado " + estadoDTO.NomeEstado + " cadastrado.");
                 }
-            }
+            }*/
 
             await _estadoService.Create(estadoDTO);
             return new CreatedAtRouteResult("GetById", new { id = estadoDTO.Id }, estadoDTO);

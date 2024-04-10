@@ -6,18 +6,20 @@ using System.Runtime.CompilerServices;
 
 namespace SGED.Models.Entities
 {
-    [Table("Bairro")]
+    [Table("bairro")]
     public class Bairro
     {
-        [Column("idBairro")]
+        [Column("idbairro")]
         public int Id { get; set; }
 
-        [Column("Bairro")]
+        [Column("bairro")]
         public string NomeBairro { get; set; }
 
         public Cidade? Cidade { get; set; }
 
-        [ForeignKey("idCidade")]
+        [ForeignKey("idcidade")]
         public int IdCidade { get; set; }
+
+        public ICollection<Logradouro>? Logradouros { get; set;}
     }
 }

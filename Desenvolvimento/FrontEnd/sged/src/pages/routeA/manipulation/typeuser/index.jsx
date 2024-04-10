@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react"
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap'
-import axios from "axios"
 import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
+import LinkTitle from "../../components/Title/LinkTitle";
 
 import { useMontage } from '../../../../object/modules/montage';
-import { useSession } from '../../../../object/service/session';
-import { useApi } from '../../../../object/service/api';
+import ConnectionService from '../../../../object/service/connection';
+import ListModule from '../../../../object/modules/list';
+import TypeUserClass from '../../../../object/class/typeuser';
 
 export default function TypeUser() {
 
@@ -20,252 +20,107 @@ export default function TypeUser() {
         componentMounted();
     }, [componentMounted]);
 
-    const { getAuthConfig } = useSession();
-    const { appendRoute } = useApi();
-    const typeuserURL = appendRoute('TipoUsuario/');
+    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
+    const list = ListModule();
+    const typeuser = TypeUserClass();
 
-    const [data, setData] = useState([])
-    const [modalInsert, setModalInsert] = useState(false)
-    const [modalEdit, setModalEdit] = useState(false)
-    const [modalDelete, setModalDelete] = useState(false)
-    const [updateData, setUpdateData] = useState(true)
-    const [typeUserName, setTypeUserName] = useState("");
-    const [typeUserAcessLevel, setTypeUserAcessLevel] = useState("A");
-    const [typeUserDesc, setTypeUserDesc] = useState("");
-    const [typeUserId, setTypeUserId] = useState("");
-    const [selectTypeUser] = useState({
-        id: "",
-        nomeTipoUsuario: "",
-        nivelAcesso: "",
-        descricaoTipoUsuario: ""
-    });
+    const [modalInsert, setModalInsert] = useState(false);
+    const [modalEdit, setModalEdit] = useState(false);
+    const [modalDelete, setModalDelete] = useState(false);
+    const [updateData, setUpdateData] = useState(true);
+    const [inOperation, setInOperation] = useState(false);
 
-    const [errorTypeUserName, setErrorTypeUserName] = useState("");
-    const [errorTypeUserDescrition, setErrorTypeUserDescrition] = useState("");
+    const openCloseModalInsert = (boolean) => {
+        setModalInsert(boolean);
+        typeuser.clearError();
 
-    const clearErrors = () => {
-        setErrorTypeUserName('');
-        setErrorTypeUserDescrition('');
+        if (!boolean) {
+            typeuser.clearData();
+        }
     };
 
-    const clearDatas = () => {
-        setTypeUserName('');
-        setTypeUserAcessLevel('A');
-        setTypeUserDesc('');
-        setTypeUserId('');
+    const openCloseModalEdit = (boolean) => {
+        setModalEdit(boolean);
+        typeuser.clearError();
+
+        if (!boolean) {
+            typeuser.clearData();
+        }
     };
 
-    const SelectTypeUser = (typeuser, option) => {
-        setTypeUserId(typeuser.id)
-        setTypeUserName(typeuser.nomeTipoUsuario)
-        setTypeUserAcessLevel(typeuser.nivelAcesso)
-        setTypeUserDesc(typeuser.descricaoTipoUsuario)
+    const openCloseModalDelete = (boolean) => {
+        setModalDelete(boolean);
+
+        if (!boolean) {
+            typeuser.clearData();
+        }
+    };
+
+    const SelectTypeUser = (object, option) => {
+        user.getData(object);
 
         if (option === "Editar") {
-            openCloseModalEdit();
+            openCloseModalEdit(true);
         }
         else {
-            openCloseModalDelete();
+            openCloseModalDelete(true);
         }
-    }
+    };
 
-    const openCloseModalInsert = () => {
-        setModalInsert(!modalInsert);
-        clearErrors();
+    const GetTypeUser = async () => {
+        await connection.endpoint("TipoUsuario").get();
+        list.setList(connection.response.data);
+    };
 
-        if (modalInsert) {
-            clearDatas();
-        }
-    }
+    const PostTypeUser = async () => {
+        setInOperation(true);
 
-    const openCloseModalEdit = () => {
-        setModalEdit(!modalEdit);
-        clearErrors();
+        if (await typeuser.verifyData()) {
+            await connection.endpoint("TipoUsuario").post(typeuser);
 
-        if (modalEdit) {
-            clearDatas();
-        }
-    }
-
-    const openCloseModalDelete = () => {
-        setModalDelete(!modalDelete);
-        clearErrors();
-
-        if (modalDelete) {
-            clearDatas();
-        }
-    }
-
-    const verificarDados = async () => {
-        clearErrors();
-        var status = true;
-
-        if (typeUserName) {
-            if (typeUserName.length < 3) {
-                setErrorTypeUserName('O nome precisa ter no mínimo 3 letras!');
-                status = false;
-            }
+            openCloseModalInsert(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
-            setErrorTypeUserName('O nome é requerido!');
-            status = false;
+            console.log('Dados inválidos!');
         }
 
-        if (typeUserDesc) {
-            if (typeUserDesc.length < 5) {
-                setErrorTypeUserDescrition('A descrição precisa ter no mínimo 5 letras!');
-                status = false;
-            }
-        } else {
-            setErrorTypeUserDescrition('A descrição é requerida!');
-            status = false;
-        }
-
-        return status;
+        setInOperation(false);
     };
 
     const PutTypeUser = async () => {
-        await axios.get(typeuserURL, getAuthConfig())
-            .then(response => {
-                setData(response.data)
-            }).catch(error => {
-                console.log(error);
-            })
-    }
+        setInOperation(true);
 
-    const PostOrder = async () => {
-        var response = await verificarDados();
-        if (response) {
+        if (await typeuser.verifyData()) {
+            await connection.endpoint("TipoUsuario").put(typeuser);
 
-            delete selectTypeUser.id
-            await axios.post(typeuserURL, { nomeTipoUsuario: typeUserName, nivelAcesso: typeUserAcessLevel, descricaoTipoUsuario: typeUserDesc }, getAuthConfig())
-                .then(response => {
-                    setData(data.concat(response.data));
-                    openCloseModalInsert();
-                    setUpdateData(true);
-                }).catch(error => {
-                    console.log(error);
-                })
-
-        }
-    }
-
-    async function PutOrder() {
-        var response = await verificarDados();
-        if (response) {
-
-            delete selectTypeUser.id
-            await axios.put(typeuserURL, { id: typeUserId, nomeTipoUsuario: typeUserName, nivelAcesso: typeUserAcessLevel, descricaoTipoUsuario: typeUserDesc }, getAuthConfig())
-                .then(response => {
-                    var answer = response.data
-                    var aux = data
-                    aux.map(typeuser => {
-                        if (typeuser.id === selectTypeUser.id) {
-                            typeuser.nomeTipoUsuario = answer.nomeTipoUsuario
-                            typeuser.nivelAcesso = answer.nivelAcesso
-                            typeuser.descricaoTipoUsuario = answer.descricaoTipoUsuario
-                        }
-                    })
-
-                    const updateTypeUser = response.data;
-
-                    setData((prevData) => {
-                        return prevData.map((typeuser) => {
-                            if (typeuser.id === typeUserId) {
-                                return updateTypeUser;
-                            }
-                            return typeuser;
-                        });
-                    });
-
-                    openCloseModalEdit();
-                    setUpdateData(true);
-                }).catch(error => {
-                    console.log(error)
-                })
-
-        }
-    }
-
-    const DeleteOrder = async () => {
-        await axios.delete(typeuserURL + typeUserId, getAuthConfig())
-            .then(response => {
-                setData(data.filter(typeuser => typeuser.id !== response.data));
-                PutTypeUser();
-                openCloseModalDelete();
-                setUpdateData(true);
-            }).catch(error => {
-                console.log(error);
-            })
-    }
-
-    const [typeUserToRender, setTypeUserToRender] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [searchBy, setSearchBy] = useState('nomeTipoUsuario');
-
-    const fetchData = async () => {
-        try {
-            const response = await axios.get(typeuserURL, getAuthConfig());
-            setData(response.data);
-            setTypeUserToRender(response.data);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    const handleSearch = (searchTerm) => {
-        setSearchTerm(searchTerm);
-    };
-
-    const handleSearchBy = (value) => {
-        setSearchBy(value);
-    };
-
-    const filterTypeUser = () => {
-        const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-
-        if (searchTerm === '') {
-            setTypeUserToRender(data);
+            openCloseModalEdit(!connection.response.status);
+            setUpdateData(connection.response.status);
         } else {
-            const filtered = data.filter((typeuser) => {
-                const typeUserNameNormalized = typeuser[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                return typeUserNameNormalized.toLowerCase().includes(searchTermNormalized.toLowerCase());
-            });
-            setTypeUserToRender(filtered);
+            console.log('Dados inválidos!');
         }
+
+        setInOperation(false);
+    };
+
+    const DeleteTypeUser = async () => {
+        setInOperation(true);
+
+        await connection.endpoint("TipoUsuario").remove(typeuser);
+
+        openCloseModalDelete(!connection.response.status);
+        setUpdateData(connection.response.status);
+
+        setInOperation(false);
     };
 
     useEffect(() => {
         if (updateData) {
-            fetchData();
+            GetTypeUser();
+            setUpdateData(false);
         }
+
+        list.searchBy ? null : list.setSearchBy('nomeTipoUsuario');
     }, [updateData]);
-
-    useEffect(() => {
-        filterTypeUser();
-    }, [searchTerm, data]);
-
-
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
-    const totalItems = typeUserToRender.length;
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-    // Função para pegar uma parte específica da lista
-    const getCurrentPageItems = (page) => {
-        const startIndex = (page - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-        return typeUserToRender.slice(startIndex, endIndex);
-    };
-
-    // Renderiza a lista atual com base na página atual
-    const currentTypeUsers = getCurrentPageItems(currentPage);
-
-    // Funções para navegar entre as páginas
-    const goToPage = (page) => {
-        if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page);
-        }
-    };
 
     return (
         <div className="flex flex-1 min-h-screen">
@@ -273,21 +128,12 @@ export default function TypeUser() {
                 <NavBar />
                 <div className="flex flex-1 min-h-full">
                     <SideBar />
-                    <div className="min-h-screen" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
+                    <div className="flex-2 min-h-screen mr-[40px] ml-[80px] mt-[-5px] w-full">
                         <br />
-                        <div className="flex flex-row">
-                            <Link to="/a/registration">
-                                <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
-                            </Link>
-                            <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
-                            <h3 className="text-2xl font-semibold text-gray-800">Tipo Usuário</h3>
-                        </div>
-                        {/* <div className="bg-slate-200 rounded-md mb-10" style={{ marginTop: 15 }}>
-                                <h4 className="pl-4 pt-2 pb-2 text-gray-500">Funções</h4>
-                            </div> */}
-                        <div className="flex" style={{ alignItems: 'center' }}>
+                        <LinkTitle pageName="Tipo Usuário" />
+                        <div className="flex items-center">
                             <div className="flex justify-center items-center mx-auto">
-                                <div className="relative items-stretch self-center justify-center" style={{ width: 500 }}>
+                                <div className="relative items-stretch self-center justify-center w-[500px]">
                                     <label htmlFor="default-search" className="mb-5 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                                     <div className="flex relative border rounded-lg border-[#BCBCBC]">
                                         <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -295,8 +141,8 @@ export default function TypeUser() {
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                             </svg>
                                         </div>
-                                        <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar tipo usuário" required onChange={(e) => handleSearch(e.target.value)} />
-                                        <select className="form-control rounded-md w-44 text-gray-800" onChange={(e) => handleSearchBy(e.target.value)}>
+                                        <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar tipo usuário" required onChange={(e) => list.handleSearch(e.target.value)} />
+                                        <select className="form-control rounded-md w-44 text-gray-800" onChange={(e) => list.handleSearchBy(e.target.value)}>
                                             <option key="nomeTipoUsuario" value="nomeTipoUsuario">
                                                 Tipo de Usuário
                                             </option>
@@ -311,25 +157,25 @@ export default function TypeUser() {
                                 </div>
                             </div>
                             <div className="flex items-center">
-                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert()}>
-                                    Novo <FaPlus className="inline-block" style={{ alignItems: 'center' }} />
+                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 bg-[#004C57]" onClick={() => openCloseModalInsert(true)}>
+                                    Novo <FaPlus className="inline-block items-baseline" />
                                 </button>
                             </div>
                         </div>
                         <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-4 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="flex ml-5 text-white text-lg font-semibold">Tipo de Usuário</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Nível de Acesso</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
-                                <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                                <div className="flex ml-5 text-white text-lg font-semibold">Tipo de Usuário</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Nível de Acesso</div>
+                                <div className="flex justify-center items-center text-white text-lg font-semibold">Descrição</div>
+                                <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
                             </div>
                             <ul className="w-full">
-                                {currentTypeUsers.map((typeuser) => (
+                                {list.currentList.map((typeuser) => (
                                     <li className="grid grid-cols-4 w-full" key={typeuser.id}>
-                                        <span className="flex pl-5 items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{typeuser.nomeTipoUsuario}</span>
-                                        <span className="flex justify-center pl-2 pr-2 items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{typeuser.nivelAcesso}</span>
-                                        <span className="flex justify-start pl-2 pr-2 items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{typeuser.descricaoTipoUsuario}</span>
-                                        <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                        <div className="flex pl-5 items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{typeuser.nomeTipoUsuario}</div>
+                                        <div className="flex justify-center pl-2 pr-2 items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{typeuser.nivelAcesso}</div>
+                                        <div className="flex justify-start pl-2 pr-2 items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{typeuser.descricaoTipoUsuario}</div>
+                                        <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                             <button
                                                 className=""
                                                 onClick={() => SelectTypeUser(typeuser, "Editar")}
@@ -342,7 +188,7 @@ export default function TypeUser() {
                                             >
                                                 <TrashSimple size={20} className="hover:text-red-600" />
                                             </button>
-                                        </span>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>
@@ -350,24 +196,24 @@ export default function TypeUser() {
                             <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
                                 <button
                                     className=""
-                                    onClick={() => goToPage(currentPage - 1)}
+                                    onClick={() => list.goToPage(list.currentPage - 1)}
                                 >
                                     <CaretLeft size={22} className="text-[#58AFAE]" />
                                 </button>
                                 <select
                                     className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
-                                    value={currentPage}
-                                    onChange={(e) => goToPage(Number(e.target.value))}
+                                    value={list.currentPage}
+                                    onChange={(e) => list.goToPage(Number(e.target.value))}
                                 >
-                                    {[...Array(totalPages)].map((_, index) => (
-                                        <option key={index + 1} value={index + 1}>
+                                    {[...Array(list.totalPages)].map((_, index) => (
+                                        <option key={index + 1} value={index + 1} >
                                             {index + 1}
                                         </option>
                                     ))}
                                 </select>
                                 <button
                                     className=""
-                                    onClick={() => goToPage(currentPage + 1)}
+                                    onClick={() => list.goToPage(list.currentPage + 1)}
                                 >
                                     <CaretRight size={22} className="text-[#58AFAE]" />
                                 </button>
@@ -383,40 +229,37 @@ export default function TypeUser() {
                         <div className="form-group">
                             <label className="text-[#444444]">Nome: </label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setTypeUserName(e.target.value)} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {errorTypeUserName}
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typeuser.setTypeUserName(e.target.value)} />
+                            <div className="text-sm text-red-600">
+                                {typeuser.errorTypeUserName}
                             </div>
                             <br />
                             <label className="text-[#444444]">Nível de acesso:</label>
                             <br />
-                            <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setTypeUserAcessLevel(e.target.value)} value={typeUserAcessLevel}>
-                                <option key="A" value="A" title="Descrição: pode realizar todas funcionalides do sistema.">
+                            <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typeuser.setTypeUserAcessLevel(e.target.value)} value={typeuser.typeUserAcessLevel}>
+                                <option key="A" value="A" title="Descrição: pode realizar todas funcionalidades do sistema.">
                                     A
                                 </option>
-                                <option key="B" value="B" title="Descrição: pode realizar todas funcionalides do sistema, porém com auditoria de ações.">
+                                <option key="B" value="B" title="Descrição: pode realizar todas funcionalidades do sistema, porém com auditoria de ações.">
                                     B
                                 </option>
-                                <option key="C" value="C" title="Descrição: pode vizualizar todos dados, com exceção de senhas.">
+                                <option key="C" value="C" title="Descrição: pode realizar todas funcionalidades do sistema, porém com autorização dos superiores.">
                                     C
-                                </option>
-                                <option key="D" value="D" title="Descrição: pode vizualizar somente dados relacionados a ele próprio.">
-                                    D
                                 </option>
                             </select>
                             <br />
                             <label>Descrição:</label>
                             <br />
-                            <textarea type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setTypeUserDesc(e.target.value)} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {errorTypeUserDescrition}
+                            <textarea type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typeuser.setTypeUserDescription(e.target.value)} />
+                            <div className="text-sm text-red-600">
+                                {typeuser.errorTypeUserDescrition}
                             </div>
                             <br />
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert()}>Cancelar</button>
-                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PostOrder()}>Cadastrar</button>{"  "}
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert(false)}>Cancelar</button>
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostTypeUser()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Cadastrar'} </button>{"  "}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalEdit}>
@@ -424,34 +267,33 @@ export default function TypeUser() {
                     <ModalBody>
                         <div className="form-group">
                             <label className="text-[#444444]">ID: </label><br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={typeUserId} /> <br />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={typeuser.typeUserId} /> <br />
                             <label className="text-[#444444]">Nome:</label>
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomeTipoUsuario" onChange={(e) => setTypeUserName(e.target.value)} value={typeUserName} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {errorTypeUserName}
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomeTipoUsuario" onChange={(e) => typeuser.setTypeUserName(e.target.value)} value={typeuser.typeUserName} />
+                            <div className="text-sm text-red-600">
+                                {typeuser.errorTypeUserName}
                             </div>
                             <br />
                             <label className="text-[#444444]">Nível de acesso:</label>
                             <br />
-                            <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => setTypeUserAcessLevel(e.target.value)}>
-                                <option value="A" selected={typeUserAcessLevel === "A"} title="Descrição: pode realizar todas funcionalides do sistema.">A</option>
-                                <option value="B" selected={typeUserAcessLevel === "B"} title="Descrição: pode realizar todas funcionalides do sistema, porém com auditoria de ações.">B</option>
-                                <option value="C" selected={typeUserAcessLevel === "C"} title="Descrição: pode vizualizar todos dados, com exceção de senhas.">C</option>
-                                <option value="D" selected={typeUserAcessLevel === "D"} title="Descrição: pode vizualizar somente dados relacionados a ele próprio.">D</option>
+                            <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typeuser.setTypeUserAcessLevel(e.target.value)} value={typeuser.typeUserAcessLevel}>
+                                <option value="A" title="Descrição: pode realizar todas funcionalidades do sistema.">A</option>
+                                <option value="B" title="Descrição: pode realizar todas funcionalidades do sistema, porém com auditoria de ações.">B</option>
+                                <option value="C" title="Descrição: pode realizar todas funcionalidades do sistema, porém com autorização dos superiores.">C</option>
                             </select>
                             <br />
                             <label className="text-[#444444]">Descrição:</label>
                             <br />
-                            <textarea type="text" className="form-control rounded-md border-[#BCBCBC]" name="descricaoTipoUsuario" onChange={(e) => setTypeUserDesc(e.target.value)} value={typeUserDesc} />
-                            <div className="error-message" style={{ fontSize: '14px', color: 'red' }}>
-                                {errorTypeUserDescrition}
+                            <textarea type="text" className="form-control rounded-md border-[#BCBCBC]" name="descricaoTipoUsuario" onChange={(e) => typeuser.setTypeUserDescription(e.target.value)} value={typeuser.typeUserDescription} />
+                            <div className="text-sm text-red-600">
+                                {typeuser.errorTypeUserDescrition}
                             </div>
                             <br />
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit()}>Cancelar</button>
-                        <button className="btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]" onClick={() => PutOrder()}>Atualizar</button>{"  "}
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit(false)}>Cancelar</button>
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutTypeUser()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Atualizar'} </button>{"  "}
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalDelete}>
@@ -460,12 +302,12 @@ export default function TypeUser() {
                         <div className="flex flex-row justify-center p-2">
                             Confirmar a exclusão deste tipo de usuário:
                             <div className="text-[#059669] ml-1">
-                                {typeUserName}
+                                {typeuser.typeUserName}
                             </div> ?
                         </div>
                         <div className="flex justify-center gap-2 pt-3">
-                            <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete()}>Cancelar</button>
-                            <button className='btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' onClick={() => DeleteOrder()}>Confirmar</button>
+                            <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete(false)}>Cancelar</button>
+                            <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteTypeUser()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'} </button>{"  "}
                         </div>
                         {/* <ModalFooter>
                     </ModalFooter> */}

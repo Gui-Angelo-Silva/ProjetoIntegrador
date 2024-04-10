@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SGED.Context;
@@ -11,12 +6,14 @@ using SGED.Repositories.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Entities;
 using SGED.Services.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using System.Text;
 using Swashbuckle.AspNetCore.SwaggerUI;
-using SGED.DTO.Entities;
+using SGED.Helpers;
+using SGED.Services.Server.Tasks;
+using SGED.Services.Server.Attributes;
+using SGED.Services.Server.Middleware;
+using Newtonsoft.Json;
 
 namespace SGED
 {
@@ -72,16 +69,16 @@ namespace SGED
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    EntitySecurityDTO entitySecurity = new EntitySecurityDTO();
+                    SecurityEntity securityEntity = new SecurityEntity();
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = entitySecurity.Issuer,
-                        ValidAudience = entitySecurity.Audience,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(entitySecurity.Key)),
+                        ValidIssuer = securityEntity.Issuer,
+                        ValidAudience = securityEntity.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityEntity.Key)),
                     };
                 });
 
@@ -109,14 +106,40 @@ namespace SGED
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             // Injeção de dependências
+            
+            
+            // Conjunto: Pessoa
+
+            // Dependência: Municipe
+            services.AddScoped<IMunicipeRepository, MunicipeRepository>();
+            services.AddScoped<IMunicipeService, MunicipeService>();
+
+            // Dependência: Fiscal
+            services.AddScoped<IFiscalRepository, FiscalRepository>();
+            services.AddScoped<IFiscalService, FiscalService>();
+
+            // Dependência: Engenheiro
+            services.AddScoped<IEngenheiroRepository, EngenheiroRepository>();
+            services.AddScoped<IEngenheiroService, EngenheiroService>();
+
+            // Dependência: TipoUsuário
+            services.AddScoped<ITipoUsuarioRepository, TipoUsuarioRepository>();
+            services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
+
+            // Dependência: Usuário
+            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+            services.AddScoped<IUsuarioService, UsuarioService>();
+
+            // Dependência: Sessão
+            services.AddScoped<ISessaoRepository, SessaoRepository>();
+            services.AddScoped<ISessaoService, SessaoService>();
+
+
+            // Conjunto: Imóvel
 
             // Dependência: Estado
             services.AddScoped<IEstadoRepository, EstadoRepository>();
             services.AddScoped<IEstadoService, EstadoService>();
-
-            // Dependência: TipoUsuario
-            services.AddScoped<ITipoUsuarioRepository, TipoUsuarioRepository>();
-            services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
 
             // Dependência: Cidade
             services.AddScoped<ICidadeRepository, CidadeRepository>();
@@ -126,21 +149,45 @@ namespace SGED
             services.AddScoped<IBairroRepository, BairroRepository>();
             services.AddScoped<IBairroService, BairroService>();
 
-            // Dependência: TipoProcesso
-            //services.AddScoped<ITipoProcessoRepository, TipoProcessoRepository>();
-            //services.AddScoped<ITipoProcessoService, TipoProcessoService>();
-
-            // Dependência: Usuario
-            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-            services.AddScoped<IUsuarioService, UsuarioService>();
-
-            // Dependência: Municipe
-            services.AddScoped<IMunicipeRepository, MunicipeRepository>();
-            services.AddScoped<IMunicipeService, MunicipeService>();
-
             // Dependência: TipoLogradouro
             services.AddScoped<ITipoLogradouroRepository, TipoLogradouroRepository>();
             services.AddScoped<ITipoLogradouroService, TipoLogradouroService>();
+
+            // Dependência: Logradouro
+            services.AddScoped<ILogradouroRepository, LogradouroRepository>();
+            services.AddScoped<ILogradouroService, LogradouroService>();
+
+            // Dependência: Imóvel
+            services.AddScoped<IImovelRepository, ImovelRepository>();
+            services.AddScoped<IImovelService, ImovelService>();
+
+
+            // Conjunto: Processo
+
+            // Dependência: TipoProcesso
+            services.AddScoped<ITipoProcessoRepository, TipoProcessoRepository>();
+            services.AddScoped<ITipoProcessoService, TipoProcessoService>();
+
+            // Dependência: Etapa
+            services.AddScoped<IEtapaRepository, EtapaRepository>();
+            services.AddScoped<IEtapaService, EtapaService>();
+
+            // Dependência: TipoDocumento
+            services.AddScoped<ITipoDocumentoRepository, TipoDocumentoRepository>();
+            services.AddScoped<ITipoDocumentoService, TipoDocumentoService>();
+
+            // Dependência: TipoDocumentoEtapa
+            services.AddScoped<ITipoDocumentoEtapaRepository, TipoDocumentoEtapaRepository>();
+            services.AddScoped<ITipoDocumentoEtapaService, TipoDocumentoEtapaService>();
+
+
+            // Conjunto: Servidor
+
+            // Task: Fechar Sessão
+            services.AddHostedService<SessionCleanupService>();
+
+            // Task: Remover Sessões
+            services.AddHostedService<RemoveSessionService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -180,6 +227,19 @@ namespace SGED
 
             app.UseCors("MyPolicy");
 
+            /*app.UseWhen(context => context.Request.Path.StartsWithSegments("/api") && context.GetEndpoint()?.Metadata.GetMetadata<AnonymousAttribute>() == null,
+            appBuilder =>
+            {
+                appBuilder.UseValidateSessionMiddleware();
+            });
+
+            app.Use(async (context, next) =>
+            {
+                if (context.Response.StatusCode == StatusCodes.Status401Unauthorized) return;
+
+                await next(context);
+            });*/
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

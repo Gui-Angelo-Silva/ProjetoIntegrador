@@ -6,20 +6,22 @@ using System.Text.Json.Serialization;
 
 namespace SGED.DTO.Entities
 {
+    [Table("tipoprocesso")]
     public class TipoProcessoDTO
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "O nome da TipoProcesso é requerida!")]
+        [Required(ErrorMessage = "O nome do TipoProcesso é requerida!")]
         [MinLength(3)]
         [MaxLength(100)]
         public string NomeTipoProcesso { get; set; }
 
+		[Required(ErrorMessage = "A descrição do TipoProcesso é requerida!")]
+		[MinLength(3)]
+		[MaxLength(100)]
+		public string DescricaoTipoProcesso { get; set; }
+
         [JsonIgnore]
-        public CidadeDTO? CidadeDTO { get; set; }
-
-        [Required(ErrorMessage = "A Cidade é requerida!")]
-        public int IdCidade { get; set; }
-
+        public ICollection<EtapaDTO>? EtapaDTOs { get; set; }
     }
 }

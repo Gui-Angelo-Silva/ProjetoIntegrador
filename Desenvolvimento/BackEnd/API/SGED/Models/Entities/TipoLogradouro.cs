@@ -13,5 +13,7 @@ namespace SGED.Models.Entities
 
 		[Column("descricaotipologradouro")]
 		public string Descricao { get; set; }
+
+		public ICollection<Logradouro>? Logradouros { get; set;}
 	}
 }

@@ -25,5 +25,7 @@ namespace SGED.Models.Entities
         [ForeignKey("idtipousuario")]
         public int IdTipoUsuario { get; set; }
 
+        public ICollection<Sessao>? Sessoes { get; set; }
+
     }
 }

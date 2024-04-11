@@ -11,9 +11,13 @@ import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import SwitchAccountIcon from '@mui/icons-material/SwitchAccount';
 import PersonalVideoIcon from '@mui/icons-material/PersonalVideo';
 
+import { useServer } from "../../../../routes/serverRoute";
+
 export default function SideBarAdm() {
     const [isAtendenteOpen, setIsAtendenteOpen] = useState(false);
     const [isPerfilPublicoOpen, setIsPerfilPublicoOpen] = useState(false);
+    
+    const { clearSegment, inDevelopment } = useServer();
 
     function dropDownAtendente() {
         setIsAtendenteOpen(!isAtendenteOpen);
@@ -26,10 +30,9 @@ export default function SideBarAdm() {
     return (
         <div className="w-[40px] sm:w-[200px] md:w-[250px] lg:w-[260px] fixed h-full bg-white text-gray-600 border-r-[2.5px] border-[#f6f6f6]">
             <div className="">
-                <div className="inline-flex items-center justify-center h-[50px] sm:h-[65px] bg-[#2D636B] w-full">
-                    <img src={LogoJales} alt="" className="w-[45px] sm:w-[90px]" />
-                </div>
-                <div className="flex items-center pl-4 h-[50px] gap-2 w-full bg-[#ffffff] hover:bg-[#58AFAE] text-base hover:text-white hover:font-medium font-base cursor-pointer">
+                <div className="flex items-center pl-4 h-[50px] gap-2 w-full bg-[#ffffff] hover:bg-[#58AFAE] text-base hover:text-white hover:font-medium font-base cursor-pointer"
+                    onClick={() => clearSegment("home")}
+                >
                     <PersonalVideoIcon />
                     <span className="hidden sm:inline-block">
                         Página Inicial
@@ -46,13 +49,17 @@ export default function SideBarAdm() {
                     </div>
                 </div>
                 <div className={`items-center w-full bg-[#ffffff] text-base font-base text-gray-500 ${isAtendenteOpen ? '' : 'hidden'}`}>
-                    <h1 className="flex items-center pl-2 sm:pl-10 h-[50px] gap-2 cursor-pointer hover:bg-gray-200">
+                    <h1 className="flex items-center pl-2 sm:pl-10 h-[50px] gap-2 cursor-pointer hover:bg-gray-200"
+                        onClick={() => clearSegment("registration")}    
+                    >
                         <SaveIcon />
                         <span className="hidden sm:inline-block">
                             Cadastros
                         </span>
                     </h1>
-                    <h1 className="flex items-center pl-2 sm:pl-10 h-[50px] gap-2 cursor-pointer hover:bg-gray-200">
+                    <h1 className="flex items-center pl-2 sm:pl-10 h-[50px] gap-2 cursor-pointer hover:bg-gray-200"
+                        onClick={() => clearSegment("document")}
+                    >
                         <DescriptionIcon />
                         <span className="hidden sm:inline-block">
                             Documentos
@@ -72,25 +79,33 @@ export default function SideBarAdm() {
                     </div>
                 </div>
                 <div className={`items-center w-full bg-[#ffffff] text-base font-base text-gray-500 ${isPerfilPublicoOpen ? '' : 'hidden'}`}>
-                    <h1 className="flex items-center pl-2 sm:pl-10 h-[50px] gap-2 cursor-pointer hover:bg-gray-200">
+                    <h1 className="flex items-center pl-2 sm:pl-10 h-[50px] gap-2 cursor-pointer hover:bg-gray-200"
+                        onClick={() => inDevelopment("Controle de Munícipe")}
+                    >
                         <GroupsIcon />
                         <span className="hidden sm:inline-block">
                             Munícipe
                         </span>
                     </h1>
-                    <h1 className="flex items-center pl-2 sm:pl-10 h-[50px] gap-2 cursor-pointer hover:bg-gray-200">
+                    <h1 className="flex items-center pl-2 sm:pl-10 h-[50px] gap-2 cursor-pointer hover:bg-gray-200"
+                        onClick={() => inDevelopment("Controle de Fiscal")}
+                    >
                         <SupervisedUserCircleIcon />
                         <span className="hidden sm:inline-block">
                             Fiscal
                         </span>
                     </h1>
-                    <h1 className="flex items-center pl-2 sm:pl-10 h-[50px] gap-2 cursor-pointer hover:bg-gray-200">
+                    <h1 className="flex items-center pl-2 sm:pl-10 h-[50px] gap-2 cursor-pointer hover:bg-gray-200"
+                        onClick={() => inDevelopment("Controle de Engenheiro")}
+                    >
                         <EngineeringIcon />
                         <span className="hidden sm:inline-block">
                             Engenheiro
                         </span>
                     </h1>
-                    <h1 className="flex items-center pl-2 sm:pl-10 h-[50px] gap-2 cursor-pointer hover:bg-gray-200">
+                    <h1 className="flex items-center pl-2 sm:pl-10 h-[50px] gap-2 cursor-pointer hover:bg-gray-200"
+                        onClick={() => inDevelopment("Controle de Estagiário")}
+                    >
                         <AssignmentIndIcon />
                         <span className="hidden sm:inline-block">
                             Estagiário

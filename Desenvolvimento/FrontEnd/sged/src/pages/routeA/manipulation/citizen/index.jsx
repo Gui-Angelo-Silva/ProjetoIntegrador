@@ -7,6 +7,7 @@ import { FaPlus } from "react-icons/fa6";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 import LinkTitle from "../../components/Title/LinkTitle";
 import ButtonTable from "../../components/Table/ButtonTable";
+import SideBarAdm from "../../components/Adm/SideBarAdm";
 
 import { useMontage } from '../../../../object/modules/montage';
 import ConnectionService from '../../../../object/service/connection';
@@ -132,96 +133,98 @@ export default function Citizen() {
     }, [updateData]);
 
     return (
-        <div className="flex flex-1 min-h-screen">
-            <div className="flex flex-col h-full w-full">
-                <NavBar />
-                <div className="flex flex-1 min-h-full">
-                    <SideBar />
-                    <div className="flex-2 min-h-screen mr-[40px] ml-[80px] mt-[-5px] w-full">
-                        <br />
-                        <LinkTitle pageName="Munícipe" />
-                        <div className="flex items-center">
-                            <div className="flex justify-center items-center mx-auto">
-                                <div className="relative items-stretch self-center justify-center w-[500px]">
-                                    <label htmlFor="default-search" className="mb-5 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-                                    <div className="flex relative border rounded-lg border-[#BCBCBC]">
-                                        <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                            <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                                            </svg>
-                                        </div>
-                                        <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar usuário" required onChange={(e) => list.handleSearch(e.target.value)} />
-                                        <select className="form-control rounded-md w-28 text-gray-800" onChange={(e) => list.handleSearchBy(e.target.value)}>
-                                            <option key="nomePessoa" value="nomePessoa">
-                                                Nome
-                                            </option>
-                                            <option key="emailPessoa" value="emailPessoa">
-                                                E-mail
-                                            </option>
-                                            <option key="cpfCnpjPessoa" value="cpfCnpjPessoa">
-                                                CPF / CNPJ
-                                            </option>
-                                            <option key="rgIePessoa" value="rgIePessoa">
-                                                RG / IE
-                                            </option>
-                                        </select>
-                                        {/* <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-emerald-600 hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Pesquisar</button> */}
+        <div className="flex min-h-screen">
+            <div className="flex h-full w-full">
+                <div className="fixed w-full">
+                    <NavBar />
+                </div>
+                <div className="fixed mt-[64px]">
+                    <SideBarAdm />
+                </div>
+                <div className="mt-[64px] ml-[270px] pl-2 mr-[25px] w-full">
+                    <br />
+                    <LinkTitle pageName="Munícipe" />
+                    <div className="flex items-center">
+                        <div className="flex justify-center items-center mx-auto">
+                            <div className="relative items-stretch self-center justify-center w-[500px]">
+                                <label htmlFor="default-search" className="mb-5 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                                <div className="flex relative border rounded-lg border-[#BCBCBC]">
+                                    <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                        <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                        </svg>
                                     </div>
+                                    <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar usuário" required onChange={(e) => list.handleSearch(e.target.value)} />
+                                    <select className="form-control rounded-md w-28 text-gray-800" onChange={(e) => list.handleSearchBy(e.target.value)}>
+                                        <option key="nomePessoa" value="nomePessoa">
+                                            Nome
+                                        </option>
+                                        <option key="emailPessoa" value="emailPessoa">
+                                            E-mail
+                                        </option>
+                                        <option key="cpfCnpjPessoa" value="cpfCnpjPessoa">
+                                            CPF / CNPJ
+                                        </option>
+                                        <option key="rgIePessoa" value="rgIePessoa">
+                                            RG / IE
+                                        </option>
+                                    </select>
+                                    {/* <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-emerald-600 hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Pesquisar</button> */}
                                 </div>
                             </div>
-                            <div className="flex items-center">
-                                <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert(true)}>
-                                    Novo <FaPlus className="inline-block" style={{ alignItems: 'center' }} />
-                                </button>
-                            </div>
                         </div>
-                        <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
-                            <div className="grid grid-cols-6 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <div className="flex ml-5 justify-center items-center text-white text-lg font-semibold">Imagem</div>
-                                <div className="flex justify-center items-center text-white text-lg font-semibold">Nome</div>
-                                <div className="flex justify-center items-center text-white text-lg font-semibold">E-mail</div>
-                                <div className="flex justify-center items-center text-white text-lg font-semibold">CPF / CNPJ</div>
-                                <div className="flex justify-center items-center text-white text-lg font-semibold">RG / IE</div>
-                                <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
-                            </div>
-                            <ul className="w-full">
-                                {list.currentList.map((object) => {
-                                    return (
-                                        <li className="grid grid-cols-6 w-full" key={object.id}>
-                                            <div className="flex pl-5 justify-center items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">
-                                                <img src={object.imagemPessoa} className="cursor-pointer rounded-full w-[40px] h-[40px] object-cover shadow-md" />
-                                            </div>
-                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.nomePessoa}</div>
-                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.emailPessoa}</div>
-                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.cpfCnpjPessoa}</div>
-                                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.rgIePessoa}</div>
-                                            <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                                <ButtonTable text="Editar" func={() => SelectCitizen(object, "Editar")} />
-                                                <ButtonTable text="Excluir" func={() => SelectCitizen(object, "Excluir")} />
-                                            </div>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                            {/* Estilização dos botões de navegação */}
-                            <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
-                                <ButtonTable text="Esquerda" func={() => list.goToPage(list.currentPage - 1)} />
-                                <select
-                                    className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
-                                    value={list.currentPage}
-                                    onChange={(e) => list.goToPage(Number(e.target.value))}
-                                >
-                                    {[...Array(list.totalPages)].map((_, index) => (
-                                        <option key={index + 1} value={index + 1} >
-                                            {index + 1}
-                                        </option>
-                                    ))}
-                                </select>
-                                <ButtonTable text="Direita" func={() => list.goToPage(list.currentPage + 1)} />
-                            </div>
-                            {/* Espaçamento abaixo dos botões */}
-                            <div className="mt-4"></div>
+                        <div className="flex items-center">
+                            <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert(true)}>
+                                Novo <FaPlus className="inline-block" style={{ alignItems: 'center' }} />
+                            </button>
                         </div>
+                    </div>
+                    <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
+                        <div className="grid grid-cols-6 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
+                            <div className="flex ml-5 justify-center items-center text-white text-lg font-semibold">Imagem</div>
+                            <div className="flex justify-center items-center text-white text-lg font-semibold">Nome</div>
+                            <div className="flex justify-center items-center text-white text-lg font-semibold">E-mail</div>
+                            <div className="flex justify-center items-center text-white text-lg font-semibold">CPF / CNPJ</div>
+                            <div className="flex justify-center items-center text-white text-lg font-semibold">RG / IE</div>
+                            <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
+                        </div>
+                        <ul className="w-full">
+                            {list.currentList.map((object) => {
+                                return (
+                                    <li className="grid grid-cols-6 w-full" key={object.id}>
+                                        <div className="flex pl-5 justify-center items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">
+                                            <img src={object.imagemPessoa} className="cursor-pointer rounded-full w-[40px] h-[40px] object-cover shadow-md" />
+                                        </div>
+                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.nomePessoa}</div>
+                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.emailPessoa}</div>
+                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.cpfCnpjPessoa}</div>
+                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.rgIePessoa}</div>
+                                        <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                            <ButtonTable text="Editar" func={() => SelectCitizen(object, "Editar")} />
+                                            <ButtonTable text="Excluir" func={() => SelectCitizen(object, "Excluir")} />
+                                        </div>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                        {/* Estilização dos botões de navegação */}
+                        <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
+                            <ButtonTable text="Esquerda" func={() => list.goToPage(list.currentPage - 1)} />
+                            <select
+                                className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
+                                value={list.currentPage}
+                                onChange={(e) => list.goToPage(Number(e.target.value))}
+                            >
+                                {[...Array(list.totalPages)].map((_, index) => (
+                                    <option key={index + 1} value={index + 1} >
+                                        {index + 1}
+                                    </option>
+                                ))}
+                            </select>
+                            <ButtonTable text="Direita" func={() => list.goToPage(list.currentPage + 1)} />
+                        </div>
+                        {/* Espaçamento abaixo dos botões */}
+                        <div className="mt-4"></div>
                     </div>
                 </div>
                 <Modal isOpen={modalInsert}>

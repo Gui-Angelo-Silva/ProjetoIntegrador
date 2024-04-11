@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
+import SideBarAdm from "../../components/Adm/SideBarAdm";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -242,184 +243,186 @@ export default function TypeDocument() {
     }, [selectBoxStage.selectedOption]);
 
     return (
-        <div className="flex flex-1 min-h-screen">
-            <div className="flex flex-col h-full w-full">
-                {/* <NavBar /> */}
-                <NavBar />
-                <div className="flex flex-1 min-h-full">
+        <div className="flex min-h-screen">
+            <div className="flex h-full w-full">
+                <div className="fixed w-full">
+                    <NavBar />
+                </div>
+                <div className="fixed mt-[64px]">
                     <SideBar />
-                    <div className="flex-2 min-h-screen mr-[40px] ml-[80px] mt-[-5px] w-full">
-                        <br />
-                        <div className="flex flex-row mb-4">
-                            <Link to="/a/registration">
-                                <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
-                            </Link>
-                            <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
-                            <h3 className="text-2xl font-semibold text-gray-700">Tipo Documento p/ Etapa</h3>
-                        </div>
-                        <div className="grid grid-cols-2">
-                            <div className="w-full">
-                                <div className="w-[450px]">
-                                    <div className="text-gray-600 text-lg mb-1">Tipo Processo:</div>
-                                    <Select
-                                        value={selectBoxTypeProcess.selectedOption}
-                                        onChange={selectBoxTypeProcess.handleChange}
-                                        onInputChange={selectBoxTypeProcess.delayedSearch}
-                                        loadOptions={selectBoxTypeProcess.loadOptions}
-                                        options={selectBoxTypeProcess.options}
-                                        placeholder="Pesquisar tipo processo . . ."
-                                        isClearable
-                                        isSearchable
-                                        noOptionsMessage={() => {
-                                            if (listTypeProcess.listTypeProcess.length === 0) {
-                                                return "Nenhum Tipo Processo cadastrado!";
-                                            } else {
-                                                return "Nenhuma opção encontrada!";
-                                            }
-                                        }}
-                                        className="style-select rounded-md border-[#d9d9d9] mb-3"
-                                    />
-                                    <div className="text-gray-600 text-lg mb-1">Etapa:</div>
-                                    <Select
-                                        value={selectBoxStage.selectedOption}
-                                        onChange={selectBoxStage.handleChange}
-                                        onInputChange={selectBoxStage.delayedSearch}
-                                        loadOptions={selectBoxStage.loadOptions}
-                                        options={selectBoxStage.options}
-                                        placeholder="Pesquisar etapa . . ."
-                                        isClearable
-                                        isSearchable
-                                        noOptionsMessage={() => {
-                                            if (listStage.listTypeProcess.length === 0) {
-                                                return "Nenhuma Etapa cadastrado!";
-                                            } else {
-                                                return "Nenhuma opção encontrada!";
-                                            }
-                                        }}
-                                        className="style-select rounded-md border-[#d9d9d9]"
-                                    />
-                                </div>
-                            </div>
-                            <div className="w-full">
-                                <div className="grid grid-rows-2">
-                                    <div className="w-full rounded-[20px] border-1 border-[#C8E5E5]">
-                                        <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                            <span className="flex ml-5 text-white text-lg font-semibold">Tipo Documento</span>
-                                            <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
-                                            <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
-                                        </div>
-                                        <ul className="w-full">
-                                            {listTypeDocumentNoRelated.currentList.map((object) => {
-                                                return (
-                                                    <li className="grid grid-cols-3 w-full" key={object.id}>
-                                                        <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</span>
-                                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoDocumento}</span>
-                                                        <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                                            <button
-                                                                className=""
-                                                                onClick={() => SelectTypeDocument(object, "Editar")}
-                                                            >
-                                                                <PencilSimple size={20} className="hover:text-cyan-500" />
-                                                            </button>{" "}
-                                                            <button
-                                                                className=""
-                                                                onClick={() => SelectTypeDocument(object, "Excluir")}
-                                                            >
-                                                                <TrashSimple size={20} className="hover:text-red-600" />
-                                                            </button>
-                                                        </span>
-                                                    </li>
-                                                )
-                                            })}
-                                        </ul>
-                                        {/* Estilização dos botões de navegação */}
-                                        <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
-                                            <button
-                                                className=""
-                                                onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage - 1)}
-                                            >
-                                                <CaretLeft size={22} className="text-[#58AFAE]" />
-                                            </button>
-                                            <select
-                                                className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
-                                                value={listTypeProcess.currentPage}
-                                                onChange={(e) => listTypeProcess.goToPage(Number(e.target.value))}
-                                            >
-                                                {[...Array(listTypeProcess.totalPages)].map((_, index) => (
-                                                    <option key={index + 1} value={index + 1}>
-                                                        {index + 1}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            <button
-                                                className=""
-                                                onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage + 1)}
-                                            >
-                                                <CaretRight size={22} className="text-[#58AFAE]" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-4">
-                                        <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                            <span className="flex ml-5 text-white text-lg font-semibold">Etapa</span>
-                                            <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
-                                            <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
-                                        </div>
-                                        <ul className="w-full">
-                                            {listTypeDocumentRelated.currentList.map((object) => {
-                                                return (
-                                                    <li className="grid grid-cols-3 w-full" key={object.id}>
-                                                        <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</span>
-                                                        <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoDocumento}</span>
-                                                        <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                                            <button
-                                                                className=""
-                                                                onClick={() => SelectTypeDocument(object, "Editar")}
-                                                            >
-                                                                <PencilSimple size={20} className="hover:text-cyan-500" />
-                                                            </button>{" "}
-                                                            <button
-                                                                className=""
-                                                                onClick={() => SelectTypeDocument(object, "Excluir")}
-                                                            >
-                                                                <TrashSimple size={20} className="hover:text-red-600" />
-                                                            </button>
-                                                        </span>
-                                                    </li>
-                                                )
-                                            })}
-                                        </ul>
-                                        {/* Estilização dos botões de navegação */}
-                                        <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
-                                            <button
-                                                className=""
-                                                onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage - 1)}
-                                            >
-                                                <CaretLeft size={22} className="text-[#58AFAE]" />
-                                            </button>
-                                            <select
-                                                className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
-                                                value={listTypeProcess.currentPage}
-                                                onChange={(e) => listTypeProcess.goToPage(Number(e.target.value))}
-                                            >
-                                                {[...Array(listTypeProcess.totalPages)].map((_, index) => (
-                                                    <option key={index + 1} value={index + 1}>
-                                                        {index + 1}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            <button
-                                                className=""
-                                                onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage + 1)}
-                                            >
-                                                <CaretRight size={22} className="text-[#58AFAE]" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+                </div>
+                <div className="mt-[64px] ml-[270px] pl-2 mr-[25px] w-full">
+                    <br />
+                    <div className="flex flex-row mb-4">
+                        <Link to="/a/registration">
+                            <h3 className="text-2xl font-semibold text-gray-500 pr-2">Cadastros</h3>
+                        </Link>
+                        <h3 className="text-2xl font-semibold text-gray-600 pr-2">/</h3>
+                        <h3 className="text-2xl font-semibold text-gray-700">Tipo Documento p/ Etapa</h3>
+                    </div>
+                    <div className="grid grid-cols-2">
+                        <div className="w-full">
+                            <div className="w-[450px]">
+                                <div className="text-gray-600 text-lg mb-1">Tipo Processo:</div>
+                                <Select
+                                    value={selectBoxTypeProcess.selectedOption}
+                                    onChange={selectBoxTypeProcess.handleChange}
+                                    onInputChange={selectBoxTypeProcess.delayedSearch}
+                                    loadOptions={selectBoxTypeProcess.loadOptions}
+                                    options={selectBoxTypeProcess.options}
+                                    placeholder="Pesquisar tipo processo . . ."
+                                    isClearable
+                                    isSearchable
+                                    noOptionsMessage={() => {
+                                        if (listTypeProcess.listTypeProcess.length === 0) {
+                                            return "Nenhum Tipo Processo cadastrado!";
+                                        } else {
+                                            return "Nenhuma opção encontrada!";
+                                        }
+                                    }}
+                                    className="style-select rounded-md border-[#d9d9d9] mb-3"
+                                />
+                                <div className="text-gray-600 text-lg mb-1">Etapa:</div>
+                                <Select
+                                    value={selectBoxStage.selectedOption}
+                                    onChange={selectBoxStage.handleChange}
+                                    onInputChange={selectBoxStage.delayedSearch}
+                                    loadOptions={selectBoxStage.loadOptions}
+                                    options={selectBoxStage.options}
+                                    placeholder="Pesquisar etapa . . ."
+                                    isClearable
+                                    isSearchable
+                                    noOptionsMessage={() => {
+                                        if (listStage.listTypeProcess.length === 0) {
+                                            return "Nenhuma Etapa cadastrado!";
+                                        } else {
+                                            return "Nenhuma opção encontrada!";
+                                        }
+                                    }}
+                                    className="style-select rounded-md border-[#d9d9d9]"
+                                />
                             </div>
                         </div>
-                        {/* <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
+                        <div className="w-full">
+                            <div className="grid grid-rows-2">
+                                <div className="w-full rounded-[20px] border-1 border-[#C8E5E5]">
+                                    <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
+                                        <span className="flex ml-5 text-white text-lg font-semibold">Tipo Documento</span>
+                                        <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
+                                        <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                                    </div>
+                                    <ul className="w-full">
+                                        {listTypeDocumentNoRelated.currentList.map((object) => {
+                                            return (
+                                                <li className="grid grid-cols-3 w-full" key={object.id}>
+                                                    <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</span>
+                                                    <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoDocumento}</span>
+                                                    <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                                        <button
+                                                            className=""
+                                                            onClick={() => SelectTypeDocument(object, "Editar")}
+                                                        >
+                                                            <PencilSimple size={20} className="hover:text-cyan-500" />
+                                                        </button>{" "}
+                                                        <button
+                                                            className=""
+                                                            onClick={() => SelectTypeDocument(object, "Excluir")}
+                                                        >
+                                                            <TrashSimple size={20} className="hover:text-red-600" />
+                                                        </button>
+                                                    </span>
+                                                </li>
+                                            )
+                                        })}
+                                    </ul>
+                                    {/* Estilização dos botões de navegação */}
+                                    <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
+                                        <button
+                                            className=""
+                                            onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage - 1)}
+                                        >
+                                            <CaretLeft size={22} className="text-[#58AFAE]" />
+                                        </button>
+                                        <select
+                                            className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
+                                            value={listTypeProcess.currentPage}
+                                            onChange={(e) => listTypeProcess.goToPage(Number(e.target.value))}
+                                        >
+                                            {[...Array(listTypeProcess.totalPages)].map((_, index) => (
+                                                <option key={index + 1} value={index + 1}>
+                                                    {index + 1}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <button
+                                            className=""
+                                            onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage + 1)}
+                                        >
+                                            <CaretRight size={22} className="text-[#58AFAE]" />
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-4">
+                                    <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
+                                        <span className="flex ml-5 text-white text-lg font-semibold">Etapa</span>
+                                        <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
+                                        <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
+                                    </div>
+                                    <ul className="w-full">
+                                        {listTypeDocumentRelated.currentList.map((object) => {
+                                            return (
+                                                <li className="grid grid-cols-3 w-full" key={object.id}>
+                                                    <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</span>
+                                                    <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoDocumento}</span>
+                                                    <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                                        <button
+                                                            className=""
+                                                            onClick={() => SelectTypeDocument(object, "Editar")}
+                                                        >
+                                                            <PencilSimple size={20} className="hover:text-cyan-500" />
+                                                        </button>{" "}
+                                                        <button
+                                                            className=""
+                                                            onClick={() => SelectTypeDocument(object, "Excluir")}
+                                                        >
+                                                            <TrashSimple size={20} className="hover:text-red-600" />
+                                                        </button>
+                                                    </span>
+                                                </li>
+                                            )
+                                        })}
+                                    </ul>
+                                    {/* Estilização dos botões de navegação */}
+                                    <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
+                                        <button
+                                            className=""
+                                            onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage - 1)}
+                                        >
+                                            <CaretLeft size={22} className="text-[#58AFAE]" />
+                                        </button>
+                                        <select
+                                            className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
+                                            value={listTypeProcess.currentPage}
+                                            onChange={(e) => listTypeProcess.goToPage(Number(e.target.value))}
+                                        >
+                                            {[...Array(listTypeProcess.totalPages)].map((_, index) => (
+                                                <option key={index + 1} value={index + 1}>
+                                                    {index + 1}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <button
+                                            className=""
+                                            onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage + 1)}
+                                        >
+                                            <CaretRight size={22} className="text-[#58AFAE]" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/* <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
                             <div className="grid grid-cols-4 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
                                 <span className="flex ml-5 text-white text-lg font-semibold">Nome</span>
                                 <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
@@ -481,7 +484,6 @@ export default function TypeDocument() {
                             {/* Espaçamento abaixo dos botões 
                             <div className="mt-4"></div>
                         </div> */}
-                    </div>
                 </div>
             </div>
         </div>

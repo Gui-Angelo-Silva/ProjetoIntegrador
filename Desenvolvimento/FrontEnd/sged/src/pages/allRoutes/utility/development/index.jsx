@@ -8,6 +8,7 @@ import { useMontage } from '../../../../object/modules/montage';
 import { useEffect } from "react";
 import { useServer } from "../../../../routes/serverRoute";
 import SessionService from '../../../../object/service/session';
+import SideBarAdm from "../../../routeA/components/Adm/SideBarAdm";
 
 export default function Development() {
 
@@ -26,10 +27,14 @@ export default function Development() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <NavBar />
-      <div style={{ display: 'flex', flex: 1 }}> {/* Container principal flexível */}
-        <SideBar />
+    <div className="flex min-h-screen">
+      <div className="flex h-full w-full">
+        <div className="fixed w-full">
+          <NavBar />
+        </div>
+        <div className="fixed mt-[64px]">
+          <SideBarAdm />
+        </div>
         <div style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '90vh' }}>
           <br />
           <h3 className="text-3xl font-semibold text-gray-600">Em Desenvolvimento</h3>

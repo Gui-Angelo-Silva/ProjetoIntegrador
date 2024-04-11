@@ -1,10 +1,8 @@
 ﻿using SGED.Context;
 using SGED.Models.Entities;
-using SGED.DTO.Entities;
 using SGED.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Collections.Generic;
+using Npgsql;
 
 namespace SGED.Repositories.Entities;
 public class TipoProcessoRepository : ITipoProcessoRepository
@@ -27,26 +25,25 @@ public class TipoProcessoRepository : ITipoProcessoRepository
 		return await _dbContext.TipoProcesso.Where(objeto => objeto.Id == id).FirstOrDefaultAsync();
 	}
 
-
-	public async Task<TipoProcesso> Create(TipoProcesso TipoProcesso)
+	public async Task<TipoProcesso> Create(TipoProcesso tipoProcesso)
 	{
-		_dbContext.TipoProcesso.Add(TipoProcesso);
+		_dbContext.TipoProcesso.Add(tipoProcesso);
 		await _dbContext.SaveChangesAsync();
-		return TipoProcesso;
+		return tipoProcesso;
 	}
 
-	public async Task<TipoProcesso> Update(TipoProcesso TipoProcesso)
+	public async Task<TipoProcesso> Update(TipoProcesso tipoProcesso)
 	{
-		_dbContext.Entry(TipoProcesso).State = EntityState.Modified;
+		_dbContext.Entry(tipoProcesso).State = EntityState.Modified;
 		await _dbContext.SaveChangesAsync();
-		return TipoProcesso;
+		return tipoProcesso;
 	}
 
 	public async Task<TipoProcesso> Delete(int id)
 	{
-		var TipoProcesso = await GetById(id);
-		_dbContext.TipoProcesso.Remove(TipoProcesso);
+		var tipoProcesso = await GetById(id);
+		_dbContext.TipoProcesso.Remove(tipoProcesso);
 		await _dbContext.SaveChangesAsync();
-		return TipoProcesso;
+		return tipoProcesso;
 	}
 }

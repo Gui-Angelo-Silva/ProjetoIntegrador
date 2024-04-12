@@ -1795,6 +1795,9 @@ namespace SGED.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("tipoprocesso");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.ToTable("tipoprocesso");

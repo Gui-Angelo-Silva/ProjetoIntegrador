@@ -17,7 +17,7 @@ export const useServer = () => {
 export const ServerProvider = ({ children }) => {
 
     const [callFunctionRoute, setCallFunctionRoute] = useState(false);
-    const [liberateNavigate, setLiberateNavigate] = useState(false);
+    const [liberateNavigate, setLiberateNavigate] = useState(true);
     const { componentMontage, clearStateMontage } = useMontage();
     const session = Session();
     const navigate = useNavigate();
@@ -73,47 +73,70 @@ export const ServerProvider = ({ children }) => {
         const currentPathSegments = window.location.pathname.split('/');
         const firstRoute = currentPathSegments[1]?.toLowerCase();
         const initialPages = ["login"];
+    
+        // Função para validar a rota e navegar
+        const validateAndNavigate = async () => {
+            const autenticate = await updateAuthentication();
 
-        if (callFunctionRoute) {
-            clearStateMontage();
+            console.log(autenticate);
 
-            const validationRoute = async () => {
-                const autenticate = await updateAuthentication();
-
-                if (!autenticate && firstRoute !== "notfound" && !initialPages.includes(firstRoute)) {
+            if (callFunctionRoute) {
+                clearStateMontage();
+    
+                if (!autenticate && !["", "login", "notpermission", "development"].includes(firstRoute)) {
                     clearSegment("login");
-                }
-            };
-
-            validationRoute();
-
-        } else {
-            setLiberateNavigate(false);
-            clearStateMontage();
-
-            const validationRoute = async () => {
-                const autenticate = await updateAuthentication();
-
-                if (firstRoute === "") {
+                } setCallFunctionRoute(false);
+    
+            } else {
+                setLiberateNavigate(false); clearStateMontage();
+    
+                if (["", "notfound", "notpermission", "development"].includes(firstRoute)) {
                     clearSegment(autenticate ? "home" : "login");
-
+    
                 } else if (autenticate && initialPages.includes(firstRoute)) {
                     clearSegment("home");
-
-                } else if (!autenticate && firstRoute !== "login") {
+    
+                } else if (!autenticate && !initialPages.includes(firstRoute)) {
                     clearSegment("login");
+                } else {
+                    async function checkPageExistence(pageUrl) {
+                        try {
+                            const response = await fetch(pageUrl);
+                            if (response.status === 200) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        } catch (error) {
+                            return false;
+                        }
+                    }
 
-                } else if (["notfound", "notpermission", "development"].includes(firstRoute)) {
-                    clearSegment(autenticate ? "home" : "login");
-
+                    if (!await checkPageExistence(window.location.pathname)) {
+                        clearSegment("notfound");
+                    }
                 }
-
+    
                 setLiberateNavigate(true);
-            };
-
-            validationRoute();
-        } setCallFunctionRoute(false);
-    }, [window.location.pathname]);
+            }
+        };
+    
+        // Executar apenas quando a URL mudar
+        const handleLocationChange = async () => {
+            await validateAndNavigate();
+        };
+    
+        // Adicionar o ouvinte de evento para a mudança de URL
+        window.addEventListener('popstate', handleLocationChange);
+    
+        // Executar a validação na primeira renderização
+        validateAndNavigate();
+    
+        // Remover o ouvinte de evento quando o componente for desmontado
+        return () => {
+            window.removeEventListener('popstate', handleLocationChange);
+        };
+    }, []);
 
     useEffect(() => {
         var execute = true;

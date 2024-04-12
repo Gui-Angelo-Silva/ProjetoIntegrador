@@ -79,7 +79,7 @@ export default function Stage() {
     };
 
     const GetStage = async () => {
-        await connection.endpoint("Etapa").get(stage);
+        await connection.endpoint("Etapa").get();
         list.setList(connection.response.data);
     };
 

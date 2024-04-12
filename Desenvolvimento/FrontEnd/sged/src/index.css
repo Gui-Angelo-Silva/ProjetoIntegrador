@@ -5,4 +5,24 @@
 html {
     height: 100%;
     width: 100%;
+    overflow-y: auto;
+}
+
+html::-webkit-scrollbar {
+    width: 6px;
+    /* Width of the scrollbar */
+}
+
+html::-webkit-scrollbar-track {
+    background: #F5F5F5;
+    /* Background color of the scrollbar track */
+}
+
+html::-webkit-scrollbar-thumb {
+    background-color: #9CA3AF;
+    /* Background color of the scrollbar thumb */
+    border-radius: 4px;
+    /* Border radius of the scrollbar thumb */
+    /* border: 1px solid #E5E5E5; */
+    /* Border color of the scrollbar thumb */
 }

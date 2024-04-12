@@ -242,7 +242,7 @@ export default function Stage() {
                             <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
                         </div>
                         <ul className="w-full">
-                            {list.currentList.map((stage) => {
+                            {list.currentList && list.currentList.map((stage) => {
                                 const tipoprocesso = listTypeProcess.list.find((typeprocess) => typeprocess.id === stage.idTipoProcesso);
                                 return (
                                     <li className="grid grid-cols-4 w-full" key={stage.id}>

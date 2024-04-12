@@ -4,7 +4,7 @@ import CardDashboard from "../../components/Card/CardDashboard";
 import Title from "../../components/Title/Title";
 import Subtitle from "../../components/Title/Subtitle";
 import TableDashboard from "../../components/Table/TableDashboard";
-import { FaAngleRight, FaTableCellsLarge, FaFile } from "react-icons/fa6";
+import { FaTableCellsLarge, FaFile } from "react-icons/fa6";
 import { useMontage } from '../../../../object/modules/montage';
 import { useEffect } from "react";
 import SideBarAdm from "../../components/Adm/SideBarAdm";

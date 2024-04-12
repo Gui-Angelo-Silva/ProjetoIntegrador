@@ -17,7 +17,7 @@ const CardDashboard = ({ title, total }) => {
       <p className="truncate pl-5 pt-3 text-lg uppercase">{title}</p>
       <p className="pl-5 text-base pb-3">Total: {total}</p>
       <div className={`border-t-4 ${cardColor}`}></div>
-      <p className="flex justify-between items-center pl-5 text-base pt-2 pr-5">
+      <p className="flex justify-between items-center pl-5 text-base pt-2 pr-5 cursor-pointer">
         Detalhes <FaAngleRight className="text-end" />
       </p>
     </div>

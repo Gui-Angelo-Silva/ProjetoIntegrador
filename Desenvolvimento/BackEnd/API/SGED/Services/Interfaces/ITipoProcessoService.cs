@@ -8,6 +8,6 @@ namespace SGED.Services.Interfaces
         Task<TipoProcessoDTO> GetById(int id);
         Task Create(TipoProcessoDTO TipoProcessoDTO);
         Task Update(TipoProcessoDTO TipoProcessoDTO);
-        Task Remove(int id);
+        Task Delete(int id);
     }
 }

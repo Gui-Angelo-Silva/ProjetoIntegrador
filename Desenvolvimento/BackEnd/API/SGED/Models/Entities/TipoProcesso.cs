@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using System.Runtime.CompilerServices;
+using SGED.Helpers;
 
 namespace SGED.Models.Entities
 {
@@ -19,5 +20,6 @@ namespace SGED.Models.Entities
         public string DescricaoTipoProcesso { get; set; }
 
         public ICollection<Etapa>? Etapas { get; set; }
-    }
+		public Status Status { get; set; }
+	}
 }

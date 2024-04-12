@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
-import SideBar from "../../components/SideBar";
 import SideBarAdm from "../../components/Adm/SideBarAdm";
 import NavBar from "../../components/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 import LinkTitle from "../../components/Title/LinkTitle";
@@ -13,6 +11,7 @@ import { useMontage } from '../../../../object/modules/montage';
 import ConnectionService from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
 import StateClass from '../../../../object/class/state';
+import Search from "../../../../assets/pages/SearchImg";
 
 export default function State() {
 
@@ -137,29 +136,24 @@ export default function State() {
                     <br />
                     <LinkTitle pageName="Estado" />
                     <div className="flex items-center">
-                        <div className="flex justify-center items-center mx-auto">
-                            <div className="relative items-stretch self-center justify-center w-[500px] ">
-                                <label htmlFor="default-search" className="mb-5 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-                                <div className="flex relative border rounded-lg border-[#BCBCBC]">
-                                    <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                        <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                                        </svg>
-                                    </div>
-                                    <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar estado" required onChange={(e) => list.handleSearch(e.target.value)} />
-                                    <select className="appearance-none form-control rounded-md w-28 text-gray-800" onChange={(e) => list.handleSearchBy(e.target.value)} >
-                                        <option key="nomeEstado" value="nomeEstado">
-                                            Estado
-                                        </option>
-                                        <option key="ufEstado" value="ufEstado">
-                                            Sigla
-                                        </option>
-                                    </select>
+                        <div className="flex justify-center items-center mx-auto w-[450px]">
+                            <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
+                                <div className="pl-2">
+                                    <Search />
                                 </div>
+                                <input type="text" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar Estado" required onChange={(e) => list.handleSearch(e.target.value)} />
+                                <select className="form-control w-28 text-gray-800 h-full" onChange={(e) => list.handleSearchBy(e.target.value)} >
+                                    <option key="nomeEstado" value="nomeEstado">
+                                        Estado
+                                    </option>
+                                    <option key="ufEstado" value="ufEstado">
+                                        Sigla
+                                    </option>
+                                </select>
                             </div>
                         </div>
-                        <div className="flex items-center">
-                            <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 bg-[#004C57]" onClick={() => openCloseModalInsert(true)}>
+                        <div className="flex items-center justify-end">
+                            <button className="btn hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 bg-[#004C57]" onClick={() => openCloseModalInsert(true)}>
                                 Novo <FaPlus className="inline-block items-center" />
                             </button>
                         </div>

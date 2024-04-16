@@ -1,21 +1,16 @@
 import { useEffect, useState } from "react";
-import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
-import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import SideBarAdm from "../../components/Adm/SideBarAdm";
-import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Select from 'react-select';
-import { CaretLeft, CaretRight, FloppyDisk, PencilSimple, TrashSimple } from "@phosphor-icons/react";
+import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
 import { useMontage } from "../../../../object/modules/montage";
 import ConnectionEntity from "../../../../object/service/connection";
 import ListModule from "../../../../object/modules/list";
 import TypeDocumentClass from "../../../../object/class/typedocument";
 import SelectModule from '../../../../object/modules/select';
-import SidebarAdm from '../../components/Adm/SideBarAdm';
-import NavBarAdm from '../../components/Adm/NavBarAdm';
 
 export default function TypeDocument() {
 
@@ -25,7 +20,7 @@ export default function TypeDocument() {
         componentMounted();
     }, []);
 
-    const connection = ConnectionEntity();
+    const connection = new ConnectionEntity();
     const typedocument = TypeDocumentClass();
     const listTypeProcess = ListModule();
     const listStage = ListModule();
@@ -78,7 +73,7 @@ export default function TypeDocument() {
     };
 
     const GetTypeProcess = async () => {
-        const response = await connection.objectUrl("TipoProcesso").getOrder();
+        const response = await connection.objectUrl("TipoProcesso").get();
         if (response.status) {
             listTypeProcess.setList(response.data);
         } else {
@@ -111,50 +106,6 @@ export default function TypeDocument() {
         } else {
             console.error(response.data);
         }
-    };
-
-    const PostTypeDocument = async () => {
-        setInOperation(true);
-
-        if (typedocument.verifyData()) {
-            const response = await connection.objectUrl("TipoDocumento").postOrder(typedocument);
-
-            openCloseModalInsert(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
-        } else {
-            console.log('Dados Inválidos!');
-        }
-
-        setInOperation(false);
-    };
-
-    const PutTypeDocument = async () => {
-        setInOperation(true);
-
-        if (typedocument.verifyData()) {
-            const response = await connection.objectUrl("TipoDocumento").putOrder(typedocument);
-
-            openCloseModalEdit(!response.status);
-            setUpdateData(response.status);
-            console.log(response.message);
-        } else {
-            console.log('Dados Inválidos!');
-        }
-
-        setInOperation(false);
-    };
-
-    const DeleteTypeDocument = async () => {
-        setInOperation(true);
-
-        const response = await connection.objectUrl("TipoDocumento").deleteOrder(typedocument);
-
-        openCloseModalDelete(!response.status);
-        setUpdateData(response.status);
-        console.log(response.message);
-
-        setInOperation(false);
     };
 
     const [searchTerm, setSearchTerm] = useState('');
@@ -249,7 +200,7 @@ export default function TypeDocument() {
                     <NavBar />
                 </div>
                 <div className="fixed mt-[64px]">
-                    <SideBar />
+                    <SideBarAdm />
                 </div>
                 <div className="mt-[64px] ml-[270px] pl-2 mr-[25px] w-full">
                     <br />

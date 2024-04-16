@@ -15,6 +15,7 @@ import ConnectionService from "../../../../object/service/connection";
 import ListModule from "../../../../object/modules/list";
 import TypeDocumentClass from "../../../../object/class/typedocument";
 import SelectModule from '../../../../object/modules/select';
+import Search from "../../../../assets/pages/SearchImg";
 
 export default function TypeDocument() {
 
@@ -206,25 +207,21 @@ export default function TypeDocument() {
                     <br />
                     <LinkTitle pageName="Tipo Documento" />
                     <div className="flex items-center">
-                        <div className="flex justify-center items-center mx-auto">
-                            <div className="relative items-stretch self-center justify-center w-[500px]">
-                                <label htmlFor="default-search" className="mb-5 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-                                <div className="flex relative border rounded-lg border-[#BCBCBC]">
-                                    <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                        <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                                        </svg>
-                                    </div>
-                                    <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar tipo documento" required onChange={(e) => list.handleSearch(e.target.value)} />
-                                    <select className="appearance-none form-control rounded-md w-28 text-gray-800" onChange={(e) => list.handleSearchBy(e.target.value)} >
-                                        <option key="nomeTipoDocumento" value="nomeTipoDocumento">
-                                            Tipo Documento
-                                        </option>
-                                        <option key="descricaoTipoDocumento" value="descricaoTipoDocumento">
-                                            Descrição
-                                        </option>
-                                    </select>
+                        <div className="flex justify-center items-center mx-auto w-[450px]">
+                            <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
+                                <div className="pl-2">
+                                    <Search />
                                 </div>
+                                <input type="search" id="default-search" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar tipo documento" required onChange={(e) => list.handleSearch(e.target.value)} />
+                                {/* <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar tipo documento" required onChange={(e) => list.handleSearch(e.target.value)} /> */}
+                                <select className="form-control w-28 text-gray-800 h-full" onChange={(e) => list.handleSearchBy(e.target.value)} >
+                                    <option key="nomeTipoDocumento" value="nomeTipoDocumento">
+                                        Tipo Documento
+                                    </option>
+                                    <option key="descricaoTipoDocumento" value="descricaoTipoDocumento">
+                                        Descrição
+                                    </option>
+                                </select>
                             </div>
                         </div>
                         <div className="flex items-center">

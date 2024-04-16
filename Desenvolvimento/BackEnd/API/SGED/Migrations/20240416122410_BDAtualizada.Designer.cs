@@ -11,8 +11,8 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240411171146_Database")]
-    partial class Database
+    [Migration("20240416122410_BDAtualizada")]
+    partial class BDAtualizada
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

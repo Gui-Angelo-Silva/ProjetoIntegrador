@@ -28,7 +28,7 @@ export default function SideBarAdm() {
     }
 
     return (
-        <div className="w-[40px] sm:w-[200px] md:w-[250px] lg:w-[260px] fixed h-full bg-white text-gray-600 border-r-[2.5px] border-[#f6f6f6]">
+        <div className="w-[40px] sm:w-[200px] md:w-[250px] lg:w-[260px] fixed h-full bg-white text-gray-600 border-r-[2.5px] border-[#f6f6f6] shadow-md">
             <div className="">
                 <div className="flex items-center pl-4 h-[50px] gap-2 w-full bg-[#ffffff] hover:bg-[#58AFAE] text-base hover:text-white hover:font-medium font-base cursor-pointer"
                     onClick={() => clearSegment("home")}

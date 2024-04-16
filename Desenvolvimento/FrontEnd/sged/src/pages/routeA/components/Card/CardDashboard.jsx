@@ -13,7 +13,7 @@ const CardDashboard = ({ title, total }) => {
   const cardColor = cardColors[title] || "bg-gray-500"; // Defina uma cor padrão
 
   return (
-    <div className={`text-slate-100 rounded-md w-[20%] h-[130px] ${cardColor}`}>
+    <div className={`text-slate-100 rounded-md w-[20%] h-[130px] shadow-xl ${cardColor}`}>
       <p className="truncate pl-5 pt-3 text-lg uppercase">{title}</p>
       <p className="pl-5 text-base pb-3">Total: {total}</p>
       <div className={`border-t-4 ${cardColor}`}></div>

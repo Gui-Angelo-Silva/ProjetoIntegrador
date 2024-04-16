@@ -1,8 +1,4 @@
 import NavBar from "../../../routeA/components/NavBar";
-import SideBar from "../../../routeA/components/SideBar";
-
-import Button from '@mui/material/Button';
-//import { FaAngleRight, FaTableCellsLarge, FaFile } from "react-icons/fa6";
 
 import { useMontage } from '../../../../object/modules/montage';
 import { useEffect } from "react";

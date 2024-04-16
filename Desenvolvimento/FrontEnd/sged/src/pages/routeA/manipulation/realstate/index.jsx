@@ -239,7 +239,7 @@ export default function RealState() {
                                     <Search />
                                 </div>
                                 <input type="search" id="default-search" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar imóvel" required onChange={(e) => handleSearch(e.target.value)} />
-                                <select className="form-control w-28 text-gray-800 h-full" onChange={(e) => handleSearchBy(e.target.value)}>
+                                <select className="form-control w-28 text-gray-800 h-full cursor-pointer" onChange={(e) => handleSearchBy(e.target.value)}>
                                     <option key="numeroImovel" value="numeroImovel">
                                         N° Imóvel
                                     </option>

@@ -142,7 +142,7 @@ export default function State() {
                                     <Search />
                                 </div>
                                 <input type="text" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar Estado" required onChange={(e) => list.handleSearch(e.target.value)} />
-                                <select className="form-control w-28 text-gray-800 h-full" onChange={(e) => list.handleSearchBy(e.target.value)} >
+                                <select className="form-control w-28 text-gray-800 h-full cursor-pointer" onChange={(e) => list.handleSearchBy(e.target.value)} >
                                     <option key="nomeEstado" value="nomeEstado">
                                         Estado
                                     </option>

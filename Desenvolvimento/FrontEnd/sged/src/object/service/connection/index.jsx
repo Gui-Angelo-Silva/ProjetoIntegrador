@@ -102,6 +102,7 @@ class ConnectionService {
 
     async putMethod(object) {
         const data = object.setData();
+        console.log(data)
         return await axios.put(this.url, data, this.api.headerConfig());
     }
 

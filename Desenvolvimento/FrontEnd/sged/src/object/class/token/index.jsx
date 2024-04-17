@@ -17,7 +17,7 @@ function TokenClass() {
   function setData() {
     return {
       //token: storage.getLocal('token')
-      token: cookie.getCookie("token")
+      token: storage.getLocal("token")
     }
   }
 

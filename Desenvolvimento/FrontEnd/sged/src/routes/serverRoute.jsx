@@ -16,6 +16,7 @@ export const useServer = () => {
 
 export const ServerProvider = ({ children }) => {
 
+    const [blockNavigation, setBlockNavigation] = useState(false);
     const [callFunctionRoute, setCallFunctionRoute] = useState(false);
     const [liberateNavigate, setLiberateNavigate] = useState(true);
     const { componentMontage, clearStateMontage } = useMontage();
@@ -72,49 +73,33 @@ export const ServerProvider = ({ children }) => {
     useEffect(() => {
         const currentPathSegments = window.location.pathname.split('/');
         const firstRoute = currentPathSegments[1]?.toLowerCase();
-        const initialPages = ["login"];
     
         // Função para validar a rota e navegar
         const validateAndNavigate = async () => {
             const autenticate = await updateAuthentication();
-
+    
             console.log(autenticate);
-
+    
             if (callFunctionRoute) {
                 clearStateMontage();
     
                 if (!autenticate && !["", "login", "notpermission", "development"].includes(firstRoute)) {
                     clearSegment("login");
-                } setCallFunctionRoute(false);
+                } 
+                setCallFunctionRoute(false);
     
             } else {
-                setLiberateNavigate(false); clearStateMontage();
+                setLiberateNavigate(false); 
+                clearStateMontage();
     
                 if (["", "notfound", "notpermission", "development"].includes(firstRoute)) {
                     clearSegment(autenticate ? "home" : "login");
     
-                } else if (autenticate && initialPages.includes(firstRoute)) {
+                } else if (autenticate && ["login"].includes(firstRoute)) {
                     clearSegment("home");
     
-                } else if (!autenticate && !initialPages.includes(firstRoute)) {
+                } else if (!autenticate && !["login"].includes(firstRoute)) {
                     clearSegment("login");
-                } else {
-                    async function checkPageExistence(pageUrl) {
-                        try {
-                            const response = await fetch(pageUrl);
-                            if (response.status === 200) {
-                                return true;
-                            } else {
-                                return false;
-                            }
-                        } catch (error) {
-                            return false;
-                        }
-                    }
-
-                    if (!await checkPageExistence(window.location.pathname)) {
-                        clearSegment("notfound");
-                    }
                 }
     
                 setLiberateNavigate(true);
@@ -123,50 +108,46 @@ export const ServerProvider = ({ children }) => {
     
         // Executar apenas quando a URL mudar
         const handleLocationChange = async () => {
-            await validateAndNavigate();
+            if (blockNavigation) {
+                await validateAndNavigate();
+                setBlockNavigation(false);
+            }
+
+            return;
         };
     
         // Adicionar o ouvinte de evento para a mudança de URL
         window.addEventListener('popstate', handleLocationChange);
     
-        // Executar a validação na primeira renderização
+        // Executar a validação na primeira renderização e sempre que a rota mudar
         validateAndNavigate();
     
         // Remover o ouvinte de evento quando o componente for desmontado
         return () => {
             window.removeEventListener('popstate', handleLocationChange);
+            setBlockNavigation(true);
         };
-    }, []);
+    }, [window.location.pathname]);
 
     useEffect(() => {
-        var execute = true;
-
-        const delay = (milliseconds) => {
-            return new Promise(resolve => setTimeout(resolve, milliseconds));
-        };
-
-        const verifyMontage = async () => {
-            try {
-                await delay(2000);
-
-                if (!execute) return;
-
-                if (!componentMontage) {
-                    sessionStorage.setItem("page: non-existent", window.location.pathname);
-                    clearSegment("notfound");
+        const validateExistPage = async () => {
+            async function checkPageExistence(pageUrl) {
+                try {
+                    const response = await fetch(pageUrl);
+                    if (response.status === 200) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } catch (error) {
+                    return false;
                 }
-            } catch (error) {
-                return;
             }
-        };
 
-        if (liberateNavigate && !componentMontage) {
-            verifyMontage();
-        }
-
-        return () => {
-            execute = false;
-        };
+            if (!await checkPageExistence(window.location.pathname)) {
+                clearSegment("notfound");
+            }
+        }; validateExistPage();
     }, [liberateNavigate, componentMontage]);
 
     return (

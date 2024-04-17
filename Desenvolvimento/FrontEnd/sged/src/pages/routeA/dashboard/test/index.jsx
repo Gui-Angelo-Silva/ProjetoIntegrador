@@ -7,7 +7,7 @@ import Select from 'react-select';
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 
 import { useMontage } from "../../../../object/modules/montage";
-import ConnectionEntity from "../../../../object/service/connection";
+import ConnectionService from "../../../../object/service/connection";
 import ListModule from "../../../../object/modules/list";
 import TypeDocumentClass from "../../../../object/class/typedocument";
 import SelectModule from '../../../../object/modules/select';
@@ -20,7 +20,7 @@ export default function TypeDocument() {
         componentMounted();
     }, []);
 
-    const connection = new ConnectionEntity();
+    const connection = new ConnectionService();
     const typedocument = TypeDocumentClass();
     const listTypeProcess = ListModule();
     const listStage = ListModule();
@@ -73,39 +73,23 @@ export default function TypeDocument() {
     };
 
     const GetTypeProcess = async () => {
-        const response = await connection.objectUrl("TipoProcesso").get();
-        if (response.status) {
-            listTypeProcess.setList(response.data);
-        } else {
-            console.error(response.data);
-        }
+        await connection.endpoint("TipoProcesso").get();
+        listTypeProcess.setList(connection.response.data);
     };
 
     const GetStage = async () => {
-        const response = await connection.objectUrl("Etapa").actionUrl(`GetRelatedToTypeProcess/${selectBoxTypeProcess.selectedOption.value}`).getOrder();
-        if (response.status) {
-            listStage.setList(response.data);
-        } else {
-            console.log(response.message);
-        }
+        await connection.endpoint("Etapa").action(`GetRelatedToTypeProcess/${selectBoxTypeProcess.selectedOption.value}`).get();
+        listStage.setList(connection.response.data);
     }
 
     const GetTypeDocumentRelated = async () => {
-        const response = await connection.objectUrl("TipoDocumentoEtapa").actionUrl(`Related/${selectBoxStage.selectedOption.value}`).getOrder();
-        if (response.status) {
-            listTypeDocumentRelated.setList(response.data);
-        } else {
-            console.error(response.data);
-        }
+        await connection.endpoint("TipoDocumentoEtapa").action(`Related/${selectBoxStage.selectedOption.value}`).get();
+        listTypeDocumentRelated.setList(connection.response.data);
     };
 
     const GetTypeDocumentNoRelated = async () => {
-        const response = await connection.objectUrl("TipoDocumentoEtapa").actionUrl(`NoRelated/${selectBoxStage.selectedOption.value}`).getOrder();
-        if (response.status) {
-            listTypeDocumentNoRelated.setList(response.data);
-        } else {
-            console.error(response.data);
-        }
+        await connection.endpoint("TipoDocumentoEtapa").action(`NoRelated/${selectBoxStage.selectedOption.value}`).get();
+        listTypeDocumentNoRelated.setList(connection.response.data);
     };
 
     const [searchTerm, setSearchTerm] = useState('');

@@ -12,12 +12,12 @@ function SessionService() {
 
     const getLogin = () => {
         //return storage.getLocal('login');
-        return cookie.getCookie("login");
+        return storage.getLocal("login");
     };
 
     const getToken = () => {
         //return storage.getLocal('token');
-        return cookie.getCookie("token");
+        return storage.getLocal("token");
     };
 
     const getUser = async () => {
@@ -40,22 +40,22 @@ function SessionService() {
     const setLogin = (object) => {
         const login = { persist: object.persistLogin, emailPessoa: object.personEmail, senhaUsuario: object.userPassword };
         //storage.setLocal('login', login);
-        cookie.setCookie("login", login, 1);
+        storage.setLocal("login", login, 1);
     };
 
     const setToken = (token) => {
         //storage.setLocal('token', token);
-        cookie.setCookie("token", token, 1);
+        storage.setLocal("token", token, 1);
     };
 
     const defaultLogin = () => {
         //storage.setLocal('login', null);
-        cookie.deleteCookie("login");
+        storage.deleteCookie("login");
     };
 
     const defaultToken = () => {
         //storage.setLocal('token', null);
-        cookie.deleteCookie("token");
+        storage.deleteCookie("token");
     };
 
     const createSession = async (object) => {
@@ -115,6 +115,8 @@ function SessionService() {
     const validateToken = async () => {
         const token = getToken();
 
+        console.log(token);
+
         if (token) {
             try {
                 await connection.endpoint("Sessao").action("Validation").put(tokenClass);
@@ -122,7 +124,7 @@ function SessionService() {
                 if (connection.response.status) setToken(connection.response.data.response);
                 else defaultToken();
 
-                return connection.response.status;
+                return true;
 
             } catch (error) {
                 return false;

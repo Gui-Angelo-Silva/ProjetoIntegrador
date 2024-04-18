@@ -118,7 +118,7 @@ export default function Neighborhood() {
     const DeleteNeighborhood = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Bairro").remove(neighborhood);
+        await connection.endpoint("Bairro").delete(neighborhood);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

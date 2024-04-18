@@ -50,12 +50,12 @@ function SessionService() {
 
     const defaultLogin = () => {
         //storage.setLocal('login', null);
-        storage.deleteCookie("login");
+        storage.setLocal("login", null);
     };
 
     const defaultToken = () => {
         //storage.setLocal('token', null);
-        storage.deleteCookie("token");
+        storage.setLocal("token", null);
     };
 
     const createSession = async (object) => {
@@ -120,6 +120,8 @@ function SessionService() {
         if (token) {
             try {
                 await connection.endpoint("Sessao").action("Validation").put(tokenClass);
+
+                console.log(connection.response);
 
                 if (connection.response.status) setToken(connection.response.data.response);
                 else defaultToken();

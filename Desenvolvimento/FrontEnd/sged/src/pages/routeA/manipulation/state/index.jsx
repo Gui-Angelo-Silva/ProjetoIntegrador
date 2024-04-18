@@ -106,7 +106,7 @@ export default function State() {
     const DeleteState = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Estado").remove(state); //quando faço uma requisição, o statusPopUp já está false
+        await connection.endpoint("Estado").delete(state); //quando faço uma requisição, o statusPopUp já está false
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

@@ -107,7 +107,7 @@ export default function TypeProcess() {
     const DeleteTypeProcess = async () => {
         setInOperation(true);
 
-        await connection.endpoint("TipoProcesso").remove(typeprocess);
+        await connection.endpoint("TipoProcesso").delete(typeprocess);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

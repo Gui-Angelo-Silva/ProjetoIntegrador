@@ -116,7 +116,7 @@ export default function Stage() {
     const DeleteStage = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Etapa").remove(stage);
+        await connection.endpoint("Etapa").delete(stage);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

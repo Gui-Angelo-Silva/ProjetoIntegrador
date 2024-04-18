@@ -16,7 +16,7 @@ export const useServer = () => {
 
 export const ServerProvider = ({ children }) => {
 
-    const [blockNavigation, setBlockNavigation] = useState(false);
+    var blockNavigation = false;
     const [callFunctionRoute, setCallFunctionRoute] = useState(false);
     const [liberateNavigate, setLiberateNavigate] = useState(true);
     const { componentMontage, clearStateMontage } = useMontage();
@@ -27,7 +27,7 @@ export const ServerProvider = ({ children }) => {
         try {
             return await session.validateSession();
         } catch (error) {
-            return null;
+            return false;
         }
     }, []);
 
@@ -83,7 +83,7 @@ export const ServerProvider = ({ children }) => {
             if (callFunctionRoute) {
                 clearStateMontage();
     
-                if (!autenticate && !["", "login", "notpermission", "development"].includes(firstRoute)) {
+                if (!autenticate && !["", "login", "notfound", "notpermission", "development"].includes(firstRoute)) {
                     clearSegment("login");
                 } 
                 setCallFunctionRoute(false);
@@ -110,7 +110,7 @@ export const ServerProvider = ({ children }) => {
         const handleLocationChange = async () => {
             if (blockNavigation) {
                 await validateAndNavigate();
-                setBlockNavigation(false);
+                blockNavigation = false;
             }
 
             return;
@@ -125,7 +125,7 @@ export const ServerProvider = ({ children }) => {
         // Remover o ouvinte de evento quando o componente for desmontado
         return () => {
             window.removeEventListener('popstate', handleLocationChange);
-            setBlockNavigation(true);
+            blockNavigation = true;
         };
     }, [window.location.pathname]);
 
@@ -135,20 +135,26 @@ export const ServerProvider = ({ children }) => {
                 try {
                     const response = await fetch(pageUrl);
                     if (response.status === 200) {
-                        return true;
+                        return true; // A página existe
                     } else {
-                        return false;
+                        return false; // A página não existe
                     }
                 } catch (error) {
-                    return false;
+                    return false; // Ocorreu um erro ao tentar acessar a página
                 }
             }
+    
+            const pageExists = await checkPageExistence(window.location.pathname);
+            console.log(pageExists);
 
-            if (!await checkPageExistence(window.location.pathname)) {
+            if (!pageExists) {
                 clearSegment("notfound");
             }
-        }; validateExistPage();
+        };
+    
+        validateExistPage();
     }, [liberateNavigate, componentMontage]);
+    
 
     return (
         <ServerContext.Provider value={{ inDevelopment, addSegment, clearSegment, removeSegment }}>

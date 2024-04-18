@@ -114,7 +114,7 @@ export default function Citizen() {
     const DeleteCitizen = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Municipe").remove(citizen);
+        await connection.endpoint("Municipe").delete(citizen);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

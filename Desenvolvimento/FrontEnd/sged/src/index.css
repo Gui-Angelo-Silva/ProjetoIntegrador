@@ -14,7 +14,7 @@ html::-webkit-scrollbar {
 }
 
 html::-webkit-scrollbar-track {
-    background: #F5F5F5;
+    background-color: transparent;
     /* Background color of the scrollbar track */
 }
 

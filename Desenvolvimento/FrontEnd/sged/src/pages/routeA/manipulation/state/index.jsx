@@ -4,7 +4,7 @@ import SideBarAdm from "../../components/Adm/SideBarAdm";
 import NavBar from "../../components/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaPlus } from "react-icons/fa6";
-import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
+import { CaretLeft, CaretRight, PencilSimple, Trash, TrashSimple } from "@phosphor-icons/react";
 import LinkTitle from "../../components/Title/LinkTitle";
 
 import { useMontage } from '../../../../object/modules/montage';
@@ -12,6 +12,7 @@ import ConnectionService from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
 import StateClass from '../../../../object/class/state';
 import Search from "../../../../assets/pages/SearchImg";
+import ModalDelete from "../../components/Modal/ModalExclusao";
 
 export default function State() {
 
@@ -30,6 +31,7 @@ export default function State() {
     const [modalDelete, setModalDelete] = useState(false);
     const [updateData, setUpdateData] = useState(true);
     const [inOperation, setInOperation] = useState(false);
+    const [open, setOpen] = useState(false);
 
     const SelectState = (object, option) => {
         state.getData(object);
@@ -38,7 +40,7 @@ export default function State() {
             openCloseModalEdit(true);
         }
         else {
-            openCloseModalDelete(true);
+            setOpen(true);
         }
     };
 
@@ -106,9 +108,9 @@ export default function State() {
     const DeleteState = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Estado").remove(state); //quando faço uma requisição, o statusPopUp já está false
+        await connection.endpoint("Estado").delete(state); //quando faço uma requisição, o statusPopUp já está false
 
-        openCloseModalDelete(!connection.response.status);
+        setOpen(!connection.response.status);
         setUpdateData(connection.response.status);
 
         setInOperation(false);
@@ -283,6 +285,29 @@ export default function State() {
                         </div>
                     </ModalBody>
                 </Modal>
+                <ModalDelete open={open} onClose={() => setOpen(false)}>
+                    <div className="text-center w-56">
+                        <Trash size={56} className="mx-auto text-red-500" />
+                        <div className="mx-auto my-4 w-48">
+                            <h3 className="text-lg font-black text-gray-800">Confirma a exclusão?</h3>
+                            <p className="text-sm text-gray-500">
+                                Você realmente deseja excluir o estado de
+                                <span className="pl-1 text-[#BC2D2D]">
+                                    {state.stateName}
+                                </span>
+                            </p>
+                        </div>
+                        <div className="flex gap-4">
+                            <button
+                                className="btn btn-light w-full"
+                                onClick={() => setOpen(false)}
+                            >
+                                Cancel
+                            </button>
+                            <button className={`btn w-full h-[40px] ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#f05252] text-white hover:text-white hover:bg-[#BC2D2D]'}`} onClick={() => inOperation ? null : DeleteState()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Excluir'} </button>{"  "}
+                        </div>
+                    </div>
+                </ModalDelete>
             </div>
         </div>
     );

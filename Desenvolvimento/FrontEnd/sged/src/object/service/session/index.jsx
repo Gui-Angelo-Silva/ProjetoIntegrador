@@ -129,6 +129,7 @@ function SessionService() {
                 return true;
 
             } catch (error) {
+                defaultToken();
                 return false;
             }
         } else {

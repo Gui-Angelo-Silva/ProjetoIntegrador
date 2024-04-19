@@ -59,13 +59,13 @@ namespace SGED.Controllers
 			if (existingTipoProcesso.Status == Status.Inativo)
 				return BadRequest("O Tipo Processo informado não está ativo para esta operação!");
 
-			// Atualiza o status do TipoProcessoDTO para Ativo
-			existingTipoProcesso.Status = Status.Ativo;
+            // Atualiza o status do TipoProcessoDTO para Ativo
+            tipoProcesso.Status = Status.Ativo;
 
 			// Atualiza o TipoProcessoDTO no serviço
-			await _tipoProcessoService.Update(existingTipoProcesso);
+			await _tipoProcessoService.Update(tipoProcesso);
 
-			return Ok(existingTipoProcesso);
+			return Ok(tipoProcesso);
 		}
 
 		[HttpDelete("{id}")]

@@ -9,7 +9,7 @@ import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icon
 import { useMontage } from "../../../../object/modules/montage";
 import ConnectionService from "../../../../object/service/connection";
 import ListModule from "../../../../object/modules/list";
-import TypeDocumentClass from "../../../../object/class/typedocument";
+import TypeDocumentStageClass from "../../../../object/class/typedocumentstage";
 import SelectModule from '../../../../object/modules/select';
 
 export default function TypeDocument() {
@@ -21,14 +21,14 @@ export default function TypeDocument() {
     }, []);
 
     const connection = new ConnectionService();
-    const typedocument = TypeDocumentClass();
+    const typeDocumentStage = TypeDocumentStageClass();
     const listTypeProcess = ListModule();
     const listStage = ListModule();
     const listTypeDocumentRelated = ListModule();
     const listTypeDocumentNoRelated = ListModule();
-    const selectBoxTypeProcess = SelectModule();
-    const selectBoxStage = SelectModule();
-    const selectBoxTypeDocument = SelectModule();
+    const listTypeDocumentStage = ListModule();
+    const selectBoxTypeProcess = new SelectModule();
+    const selectBoxStage = new SelectModule();
 
     const [modalInsert, setModalInsert] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
@@ -38,19 +38,19 @@ export default function TypeDocument() {
 
     const openCloseModalInsert = (boolean) => {
         setModalInsert(boolean);
-        typedocument.clearError();
+        typeDocumentStage.clearError();
 
         if (!boolean) {
-            typedocument.clearData();
+            typeDocumentStage.clearData();
         }
     };
 
     const openCloseModalEdit = (boolean) => {
         setModalEdit(boolean);
-        typedocument.clearError();
+        typeDocumentStage.clearError();
 
         if (!boolean) {
-            typedocument.clearData();
+            typeDocumentStage.clearData();
         }
     };
 
@@ -58,12 +58,12 @@ export default function TypeDocument() {
         setModalDelete(boolean);
 
         if (!boolean) {
-            typedocument.clearData();
+            typeDocumentStage.clearData();
         }
     };
 
     const SelectTypeDocument = (object, option) => {
-        typedocument.getData(object);
+        typeDocumentStage.getData(object);
 
         if (option === "Editar") {
             openCloseModalEdit(true);
@@ -72,14 +72,30 @@ export default function TypeDocument() {
         }
     };
 
+    const GetTypeDocumentStage = async () => {
+        await connection.endpoint("TipoDocumentoEtapa").get();
+        listTypeDocumentStage.setList(connection.response.data);
+    };
+
     const GetTypeProcess = async () => {
         await connection.endpoint("TipoProcesso").get();
         listTypeProcess.setList(connection.response.data);
+
+        if (connection.response.data.length > 0) {
+            selectBoxTypeProcess.updateOptions(connection.response.data, "id", "nomeTipoProcesso");
+            selectBoxTypeProcess.selectOption(connection.response.data[0]?.id);
+        }
     };
 
     const GetStage = async () => {
         await connection.endpoint("Etapa").action(`GetRelatedToTypeProcess/${selectBoxTypeProcess.selectedOption.value}`).get();
         listStage.setList(connection.response.data);
+
+        if (connection.response.data.length > 0) {
+            selectBoxStage.updateOptions(connection.response.data, "id", "nomeEtapa");
+            selectBoxStage.selectOption(connection.response.data[0]?.id);
+            typeDocumentStage.setIdStage(connection.response.data[0]?.id);
+        }
     }
 
     const GetTypeDocumentRelated = async () => {
@@ -92,68 +108,42 @@ export default function TypeDocument() {
         listTypeDocumentNoRelated.setList(connection.response.data);
     };
 
-    const [searchTerm, setSearchTerm] = useState('');
-    const [searchBy, setSearchBy] = useState('nomeTipoDocumento');
+    const Relate = async (idTypeDocument) => {
+        setInOperation(true);
+        typeDocumentStage.setIdTypeDocument(idTypeDocument);
 
-    const handleSearch = (searchTerm) => {
-        setSearchTerm(searchTerm);
-    };
-
-    const handleSearchBy = (value) => {
-        setSearchBy(value);
-    };
-
-    const filterTypeDocument = () => {
-        const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-
-        if (!searchTerm) {
-            listTypeProcess.setListToRender(listTypeProcess.list);
+        if (typeDocumentStage.verifyData()) {
+            await connection.endpoint("TipoDocumentoEtapa").post(typeDocumentStage);
+            setUpdateData(connection.response.status);
         } else {
-            if (searchBy === 'nomeEtapa') {
-                const filteredStage = listStage.listTypeProcess.filter((stage) => {
-                    const stageFilter = stage[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                    return stageFilter.toLowerCase().includes(searchTermNormalized.toLowerCase());
-                });
-
-                const filteredIds = filteredStage.map((stage) => stage.id);
-
-                const filtered = listTypeProcess.listTypeProcess.filter((typedocument) => {
-                    return filteredIds.includes(typedocument.idEtapa);
-                });
-
-                listTypeProcess.setListToRender(filtered);
-            } else if (searchBy === 'descricaoTipoDocumento') {
-                const filtered = listTypeProcess.listTypeProcess.filter((typedocument) => {
-                    const typedocumentFilter = typedocument[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                    return typedocumentFilter.toLowerCase().includes(searchTermNormalized.toLowerCase());
-                });
-
-                listTypeProcess.setListToRender(filtered);
-            } else {
-                listTypeProcess.setSearchTerm(searchTerm);
-                listTypeProcess.setSearchBy(searchBy);
-            }
+            console.log('Dados inválidos!');
         }
+
+        setInOperation(false);
     };
 
-    useEffect(() => {
-        filterTypeDocument();
-    }, [searchTerm, searchBy, listTypeProcess.list]);
+    const RemoveRelation = async (idTypeDocument) => {
+        setInOperation(true);
+        typeDocumentStage.setIdTypeDocument(idTypeDocument);
+
+        if (typeDocumentStage.verifyData()) {
+            await connection.endpoint("TipoDocumentoEtapa").delete(typeDocumentStage);
+            setUpdateData(connection.response.status);
+        } else {
+            console.log('Dados inválidos!');
+        }
+
+        setInOperation(false);
+    };
 
     useEffect(() => {
         if (updateData) {
+            GetTypeDocumentStage();
             GetTypeProcess();
 
             setUpdateData(false);
         }
     }, [updateData]);
-
-    useEffect(() => {
-        if (!modalInsert && !modalEdit && !modalDelete) {
-            selectBoxTypeProcess.updateOptions(listTypeProcess.list, "id", "nomeTipoProcesso");
-            selectBoxTypeProcess.selectOption(listTypeProcess.list[0]?.id);
-        }
-    }, [listTypeProcess.list, modalInsert, modalEdit, modalDelete]);
 
     useEffect(() => {
         listStage.setList([]);
@@ -166,11 +156,9 @@ export default function TypeDocument() {
     }, [selectBoxTypeProcess.selectedOption]);
 
     useEffect(() => {
-        selectBoxStage.updateOptions(listStage.list, "id", "nomeEtapa");
-        selectBoxStage.selectOption(listStage.list[0]?.id);
-    }, [listStage.list]);
+        listTypeDocumentNoRelated.setList([]);
+        listTypeDocumentRelated.setList([]);
 
-    useEffect(() => {
         if (selectBoxStage.selectedOption.value) {
             GetTypeDocumentNoRelated();
             GetTypeDocumentRelated();
@@ -209,7 +197,7 @@ export default function TypeDocument() {
                                     isClearable
                                     isSearchable
                                     noOptionsMessage={() => {
-                                        if (listTypeProcess.listTypeProcess.length === 0) {
+                                        if (listTypeProcess.list.length === 0) {
                                             return "Nenhum Tipo Processo cadastrado!";
                                         } else {
                                             return "Nenhuma opção encontrada!";
@@ -228,7 +216,7 @@ export default function TypeDocument() {
                                     isClearable
                                     isSearchable
                                     noOptionsMessage={() => {
-                                        if (listStage.listTypeProcess.length === 0) {
+                                        if (listStage.list.length === 0) {
                                             return "Nenhuma Etapa cadastrado!";
                                         } else {
                                             return "Nenhuma opção encontrada!";
@@ -242,7 +230,7 @@ export default function TypeDocument() {
                             <div className="grid grid-rows-2">
                                 <div className="w-full rounded-[20px] border-1 border-[#C8E5E5]">
                                     <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                        <span className="flex ml-5 text-white text-lg font-semibold">Tipo Documento</span>
+                                        <span className="flex ml-5 text-white text-lg font-semibold">Etapa</span>
                                         <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
                                         <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                                     </div>
@@ -255,7 +243,7 @@ export default function TypeDocument() {
                                                     <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                                         <button
                                                             className=""
-                                                            onClick={() => SelectTypeDocument(object, "Editar")}
+                                                            onClick={() => Relate(object.id)}
                                                         >
                                                             <PencilSimple size={20} className="hover:text-cyan-500" />
                                                         </button>{" "}
@@ -312,7 +300,7 @@ export default function TypeDocument() {
                                                     <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                                         <button
                                                             className=""
-                                                            onClick={() => SelectTypeDocument(object, "Editar")}
+                                                            onClick={() => RemoveRelation(object.id)}
                                                         >
                                                             <PencilSimple size={20} className="hover:text-cyan-500" />
                                                         </button>{" "}

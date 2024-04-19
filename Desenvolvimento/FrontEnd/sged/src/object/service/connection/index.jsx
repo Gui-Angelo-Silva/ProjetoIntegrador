@@ -114,7 +114,7 @@ class ConnectionService {
 
     async deleteMethod(object) {
         const data = object.setData();
-        return await axios.delete(this.url, data.id, this.api.headerConfig());
+        return await axios.delete(`${this.url}${data.id}`, this.api.headerConfig());
     }
 
     messagePopUp() {

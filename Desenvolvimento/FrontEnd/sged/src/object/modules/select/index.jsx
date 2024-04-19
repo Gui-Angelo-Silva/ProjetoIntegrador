@@ -1,16 +1,16 @@
-import { useState } from 'react';
 import debounce from 'lodash.debounce';
+import { useState } from 'react';
 
 function ControlModule() {
-
     const [selectedOption, setSelectedOption] = useState({});
     const [options, setOptions] = useState([{}]);
 
     const updateOptions = (list, atributeId, atributeName) => {
-        setOptions(list.map(item => ({
+        const updatedOptions = list.map(item => ({
             value: item[atributeId],
             label: item[atributeName]
-        })));
+        }));
+        setOptions(updatedOptions);
     };
 
     const handleChange = (option) => {
@@ -38,10 +38,6 @@ function ControlModule() {
         );
     };
 
-    const delayedSearch = debounce((inputValue) => {
-        filterOptions(inputValue);
-    }, 300);
-
     const loadOptions = (inputValue, callback) => {
         callback(filterOptions(inputValue));
     };
@@ -49,19 +45,15 @@ function ControlModule() {
     return {
         // Atributos
         selectedOption,
-        setSelectedOption,
         options,
-        setOptions,
 
         // Funções
         updateOptions,
         handleChange,
         selectOption,
         filterOptions,
-        delayedSearch,
         loadOptions
     };
-
 }
 
 export default ControlModule;

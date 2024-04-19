@@ -70,42 +70,42 @@ export const ServerProvider = ({ children }) => {
         }
     }, []);
 
-    useEffect(() => {
+    /*useEffect(() => {
         const currentPathSegments = window.location.pathname.split('/');
         const firstRoute = currentPathSegments[1]?.toLowerCase();
-    
+
         // Função para validar a rota e navegar
         const validateAndNavigate = async () => {
             const autenticate = await updateAuthentication();
-    
+
             console.log(autenticate);
-    
+
             if (callFunctionRoute) {
                 clearStateMontage();
-    
+
                 if (!autenticate && !["", "login", "notfound", "notpermission", "development"].includes(firstRoute)) {
                     clearSegment("login");
-                } 
+                }
                 setCallFunctionRoute(false);
-    
+
             } else {
-                setLiberateNavigate(false); 
+                setLiberateNavigate(false);
                 clearStateMontage();
-    
+
                 if (["", "notfound", "notpermission", "development"].includes(firstRoute)) {
                     clearSegment(autenticate ? "home" : "login");
-    
+
                 } else if (autenticate && ["login"].includes(firstRoute)) {
                     clearSegment("home");
-    
+
                 } else if (!autenticate && !["login"].includes(firstRoute)) {
                     clearSegment("login");
                 }
-    
+
                 setLiberateNavigate(true);
             }
         };
-    
+
         // Executar apenas quando a URL mudar
         const handleLocationChange = async () => {
             if (blockNavigation) {
@@ -115,13 +115,13 @@ export const ServerProvider = ({ children }) => {
 
             return;
         };
-    
+
         // Adicionar o ouvinte de evento para a mudança de URL
         window.addEventListener('popstate', handleLocationChange);
-    
+
         // Executar a validação na primeira renderização e sempre que a rota mudar
         validateAndNavigate();
-    
+
         // Remover o ouvinte de evento quando o componente for desmontado
         return () => {
             window.removeEventListener('popstate', handleLocationChange);
@@ -130,31 +130,20 @@ export const ServerProvider = ({ children }) => {
     }, [window.location.pathname]);
 
     useEffect(() => {
-        const validateExistPage = async () => {
-            async function checkPageExistence(pageUrl) {
-                try {
-                    const response = await fetch(pageUrl);
-                    if (response.status === 200) {
-                        return true; // A página existe
-                    } else {
-                        return false; // A página não existe
-                    }
-                } catch (error) {
-                    return false; // Ocorreu um erro ao tentar acessar a página
-                }
-            }
-    
-            const pageExists = await checkPageExistence(window.location.pathname);
-            console.log(pageExists);
+        const delay = (milliseconds) => {
+            return new Promise(resolve => setTimeout(resolve, milliseconds));
+        };
 
-            if (!pageExists) {
-                clearSegment("notfound");
+        const validateExistPage = async () => {
+            while (true) {
+                await delay(2000);
+                console.log(await updateAuthentication());
             }
         };
-    
+
         validateExistPage();
-    }, [liberateNavigate, componentMontage]);
-    
+    }, [liberateNavigate, componentMontage]);*/
+
 
     return (
         <ServerContext.Provider value={{ inDevelopment, addSegment, clearSegment, removeSegment }}>

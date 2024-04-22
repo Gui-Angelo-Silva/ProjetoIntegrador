@@ -111,9 +111,9 @@ export default function Registrations() {
                             </select>
                         </div>
                     </div>
-                    <div className="flex mt-10">
+                    <div className="flex mt-10 w-full">
                         {Object.entries(categoryFiltered).map(([categoryName, categoryCards]) => (
-                            <div className="pr-[50px]" key={categoryName}>
+                            <div className="mr-[15px] sm:mr-[30px] md:mr-[40px] lg:mr-[50px]" key={categoryName}>
                                 <div className="text-gray-600 text-lg font-semibold mb-2">
                                     {categoryName}
                                 </div>

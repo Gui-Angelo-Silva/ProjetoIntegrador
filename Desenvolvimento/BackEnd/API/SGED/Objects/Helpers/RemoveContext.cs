@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SGED.Context;
 
-namespace SGED.Helpers
+namespace SGED.Objects.Helpers
 {
     public class RemoveContext
     {

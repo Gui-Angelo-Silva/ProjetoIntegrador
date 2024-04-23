@@ -6,17 +6,12 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace SGED.Helpers
+namespace SGED.Objects.Helpers
 {
-    public class DataSession
+    public class SecurityEntity
     {
-        public int Id { get; set; }
-
-        [EmailAddress]
-        public string EmailPessoa
-        {
-            get => _emailPessoa;
-            set => _emailPessoa = value?.ToLower();
-        } private string _emailPessoa;
+        public string Issuer { get; } = "Server API";
+        public string Audience { get; } = "WebSite";
+        public string Key { get; } = "SGED_BarramentUser_API_Autentication";
     }
 }

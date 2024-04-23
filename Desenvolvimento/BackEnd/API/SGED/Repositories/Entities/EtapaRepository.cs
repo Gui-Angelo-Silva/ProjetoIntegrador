@@ -1,18 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SGED.Context;
 using SGED.Models.Entities;
+using SGED.Objects.Helpers;
 using SGED.Repositories.Interfaces;
 
 namespace SGED.Repositories.Entities
 {
-	public class EtapaRepository : IEtapaRepository
+    public class EtapaRepository : IEtapaRepository
 	{
 		private readonly AppDBContext _dbContext;
+        private readonly RemoveContext _remove;
 
-		public EtapaRepository(AppDBContext dbContext)
+        public EtapaRepository(AppDBContext dbContext)
 		{
 			_dbContext = dbContext;
-		}
+            _remove = new RemoveContext(dbContext);
+        }
 
 		public async Task<IEnumerable<Etapa>> GetAll()
 		{

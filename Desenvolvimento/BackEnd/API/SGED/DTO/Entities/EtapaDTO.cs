@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SGED.Objects.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace SGED.DTO.Entities
 {
-	public class EtapaDTO
-	{
+    public class EtapaDTO : IStatus
+    {
 		public int Id { get; set; }
 
 		[Required(ErrorMessage = "O nome da etapa é requerido!")]
@@ -17,13 +18,16 @@ namespace SGED.DTO.Entities
 		[MaxLength(250)]
 		public string DescricaoEtapa { get; set; }
 
-		[JsonIgnore]
+        [Required(ErrorMessage = "O status é requerido!")]
+        public bool Status { get; set; }
+
+        [JsonIgnore]
 		public TipoProcessoDTO? TipoProcessoDTO { get; set; }
 
 		[Required(ErrorMessage = "O TipoProcesso é requerido!")]
 		public int IdTipoProcesso { get; set; }
 
-		[JsonIgnore]
+        [JsonIgnore]
 		public ICollection<TipoDocumentoDTO>? TipoDocumentoDTO { get; set; }
 	}
 }

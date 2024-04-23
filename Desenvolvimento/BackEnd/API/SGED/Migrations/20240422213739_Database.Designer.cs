@@ -11,7 +11,7 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240417192518_Database")]
+    [Migration("20240422213739_Database")]
     partial class Database
     {
         /// <inheritdoc />
@@ -653,30 +653,24 @@ namespace SGED.Migrations
 
             modelBuilder.Entity("SGED.Models.Entities.TipoDocumentoEtapa", b =>
                 {
-                    b.Property<int>("IdEtapa")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdEtapa"));
-
-                    b.Property<int>("EtapaId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("tipodocumentoetapa");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("IdEtapa")
+                        .HasColumnType("integer");
 
                     b.Property<int>("IdTipoDocumento")
                         .HasColumnType("integer");
 
-                    b.Property<int>("TipoDocumentoId")
-                        .HasColumnType("integer");
+                    b.HasKey("Id");
 
-                    b.HasKey("IdEtapa");
+                    b.HasIndex("IdEtapa");
 
-                    b.HasIndex("EtapaId");
-
-                    b.HasIndex("TipoDocumentoId");
+                    b.HasIndex("IdTipoDocumento");
 
                     b.ToTable("tipodocumentoetapa");
                 });
@@ -2053,13 +2047,13 @@ namespace SGED.Migrations
                 {
                     b.HasOne("SGED.Models.Entities.Etapa", "Etapa")
                         .WithMany("TipoDocumentoEtapas")
-                        .HasForeignKey("EtapaId")
+                        .HasForeignKey("IdEtapa")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SGED.Models.Entities.TipoDocumento", "TipoDocumento")
                         .WithMany("TipoDocumentoEtapas")
-                        .HasForeignKey("TipoDocumentoId")
+                        .HasForeignKey("IdTipoDocumento")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -4,101 +4,150 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SGED.Models.Entities;
-using SGED.Helpers;
 using SGED.Services.Interfaces;
+using SGED.Objects.Helpers;
+using SGED.Objects.Interfaces;
 
 namespace SGED.Controllers
 {
-	[Route("api/[controller]")]
-	[ApiController]
-	public class TipoProcessoController : Controller
-	{
-		private readonly ITipoProcessoService _tipoProcessoService;
+    [Route("api/[controller]")]
+    [ApiController]
+    public class TipoProcessoController : Controller
+    {
+        private readonly ITipoProcessoService _tipoProcessoService;
+        private Response _response;
 
-		public TipoProcessoController(ITipoProcessoService tipoProcessoService)
-		{
-			_tipoProcessoService = tipoProcessoService;
-		}
+        public TipoProcessoController(ITipoProcessoService tipoProcessoService)
+        {
+            _tipoProcessoService = tipoProcessoService;
+            _response = new Response();
+        }
 
-		[HttpGet]
-		public async Task<ActionResult<IEnumerable<TipoProcesso>>> Get()
-		{
-			var tipoProcessos = await _tipoProcessoService.GetAll();
-			return Ok(tipoProcessos);
-		}
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TipoProcesso>>> Get()
+        {
+            var tipoProcessos = await _tipoProcessoService.GetAll();
+            _response.Status = true; _response.Message = tipoProcessos;
+            return Ok(tipoProcessos);
+        }
 
-		[HttpGet("{id}", Name = "GetTipoProcesso")]
-		public async Task<ActionResult<TipoProcesso>> Get(int id)
-		{
-			var tipoProcesso = await _tipoProcessoService.GetById(id);
-			if (tipoProcesso == null) return NotFound("TipoProcesso não encontrado");
-			return Ok(tipoProcesso);
-		}
+        [HttpGet("{id}", Name = "GetTipoProcesso")]
+        public async Task<ActionResult<TipoProcesso>> Get(int id)
+        {
+            var tipoProcesso = await _tipoProcessoService.GetById(id);
+            if (tipoProcesso == null)
+            {
+                _response.Status = false; _response.Message = "Tipo Processo não encontrado!";
+                return NotFound(_response);
+            };
+            return Ok(tipoProcesso);
+        }
 
-		[HttpPost]
-		public async Task<ActionResult> Post([FromBody] TipoProcessoDTO tipoProcesso)
-		{
-			if (tipoProcesso == null) return BadRequest("Dado inválido!");
-			tipoProcesso.Status = Status.Ativo;
+        [HttpPost]
+        public async Task<ActionResult> Post([FromBody] TipoProcessoDTO tipoProcesso)
+        {
+            if (tipoProcesso == null)
+            {
+                _response.Status = false; _response.Message = "Dado inválido!";
+                return BadRequest(_response);
+            }
 
-			await _tipoProcessoService.Create(tipoProcesso);
-			return CreatedAtRoute("GetTipoProcesso", new { id = tipoProcesso.Id }, tipoProcesso);
-		}
+            var tipoProcessos = await _tipoProcessoService.GetAll();
 
-		[HttpPut()]
-		public async Task<ActionResult> Put([FromBody] TipoProcessoDTO tipoProcesso)
-		{
-			if (tipoProcesso == null)
-				return BadRequest("Dado inválido!");
+            if (tipoProcessos.FirstOrDefault(tp => tp.NomeTipoProcesso == tipoProcesso.NomeTipoProcesso) != null) 
+            {
+                _response.Status = false; _response.Message = "Já existe o Tipo Processo "+tipoProcesso.NomeTipoProcesso+"!";
+                return BadRequest(_response);
+            } else
+            {
+                StatusExtensions.Ativar(tipoProcesso);
+                await _tipoProcessoService.Create(tipoProcesso);
 
-			// Verifica se o TipoProcessoDTO existe e está ativo
-			var existingTipoProcesso = await _tipoProcessoService.GetById(tipoProcesso.Id);
-			if (existingTipoProcesso == null)
-				return BadRequest("Não existe o Tipo Processo informado!");
+                return CreatedAtRoute("GetTipoProcesso", new { id = tipoProcesso.Id }, tipoProcesso);
+            }
+        }
 
-			if (existingTipoProcesso.Status == Status.Inativo)
-				return BadRequest("O Tipo Processo informado não está ativo para esta operação!");
+        [HttpPut()]
+        public async Task<ActionResult> Put([FromBody] TipoProcessoDTO tipoProcesso)
+        {
+            if (tipoProcesso == null)
+            {
+                _response.Status = false; _response.Message = "Dado inválido!";
+                return BadRequest(_response);
+            }
 
-            // Atualiza o status do TipoProcessoDTO para Ativo
-            tipoProcesso.Status = Status.Ativo;
+            var existingTipoProcesso = await _tipoProcessoService.GetById(tipoProcesso.Id);
+            if (existingTipoProcesso == null)
+            {
+                _response.Status = false; _response.Message = "Não existe o Tipo Processo informado!";
+                return BadRequest(_response);
+            }
 
-			// Atualiza o TipoProcessoDTO no serviço
-			await _tipoProcessoService.Update(tipoProcesso);
+            if (existingTipoProcesso.Status)
+            {
+                _response.Status = false; _response.Message = "O Tipo Processo informado não está ativo para esta operação!";
+                return BadRequest(_response);
+            }
 
-			return Ok(tipoProcesso);
-		}
+            var tipoProcessos = await _tipoProcessoService.GetAll();
+            tipoProcessos = tipoProcessos.Where(tp => tp.Id != tipoProcesso.Id);
 
-		[HttpDelete("{id}")]
-		public async Task<ActionResult<TipoProcesso>> Delete(int id)
-		{
-			var tipoProcesso = await _tipoProcessoService.GetById(id);
-			if (tipoProcesso == null) return NotFound("TipoProcesso não encontrado!");
-			else if (tipoProcesso.Status == Status.Inativo) return BadRequest("O Tipo Processo informado não está ativo para está operação!");
+            if (tipoProcessos.FirstOrDefault(tp => tp.NomeTipoProcesso == tipoProcesso.NomeTipoProcesso) != null)
+            {
+                _response.Status = false; _response.Message = "Já existe o Tipo Processo " + tipoProcesso.NomeTipoProcesso + "!";
+                return BadRequest(_response);
+            }
+            else
+            {
+                StatusExtensions.Ativar(tipoProcesso);
+                await _tipoProcessoService.Update(tipoProcesso);
 
-			await _tipoProcessoService.Delete(id);
-			return Ok(tipoProcesso);
-		}
+                _response.Status = true; _response.Message = tipoProcesso;
+                return Ok(_response);
+            }
+        }
 
-		[HttpPut("{id}/Ativar")]
-		public async Task<ActionResult<TipoProcesso>> Activity(int id)
-		{
-			var tipoProcesso = await _tipoProcessoService.GetById(id);
-			if (tipoProcesso == null) return NotFound("TipoProcesso não encontrado!");
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<TipoProcesso>> Delete(int id)
+        {
+            var tipoProcesso = await _tipoProcessoService.GetById(id);
+            if (tipoProcesso == null)
+            {
+                _response.Status = false; _response.Message = "Tipo Processo não encontrado!";
+                return NotFound(_response);
+            }
+            else if (tipoProcesso.Status)
+            {
+                _response.Status = false; _response.Message = "O Tipo Processo informado não está ativo para está operação!";
+                return BadRequest(_response);
+            }
 
-			tipoProcesso.Status = Status.Ativo;
-			await _tipoProcessoService.Update(tipoProcesso);
-			return Ok(tipoProcesso);
-		}
+            await _tipoProcessoService.Delete(id);
 
-		[HttpPut("{id}/Desativar")]
-		public async Task<ActionResult<TipoProcesso>> Desactivity(int id)
-		{
-			var tipoProcesso = await _tipoProcessoService.GetById(id);
-			if (tipoProcesso == null) return NotFound("TipoProcesso não encontrado!");
+            _response.Status = true; _response.Message = tipoProcesso;
+            return Ok(_response);
+        }
 
-			tipoProcesso.Status = Status.Inativo;
-			await _tipoProcessoService.Update(tipoProcesso);
-			return Ok(tipoProcesso);
-		}
-	}
+        [HttpPut("{id}/Ativar")]
+        public async Task<ActionResult<TipoProcesso>> Activity(int id)
+        {
+            var tipoProcesso = await _tipoProcessoService.GetById(id);
+            if (tipoProcesso == null) return NotFound("TipoProcesso não encontrado!");
+
+            StatusExtensions.Ativar(tipoProcesso);
+            await _tipoProcessoService.Update(tipoProcesso);
+            return Ok(tipoProcesso);
+        }
+
+        [HttpPut("{id}/Desativar")]
+        public async Task<ActionResult<TipoProcesso>> Desactivity(int id)
+        {
+            var tipoProcesso = await _tipoProcessoService.GetById(id);
+            if (tipoProcesso == null) return NotFound("TipoProcesso não encontrado!");
+
+            StatusExtensions.Inativar(tipoProcesso);
+            await _tipoProcessoService.Update(tipoProcesso);
+            return Ok(tipoProcesso);
+        }
+    }
 }

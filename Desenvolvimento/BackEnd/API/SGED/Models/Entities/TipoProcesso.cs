@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using System.Runtime.CompilerServices;
-using SGED.Helpers;
+using SGED.Objects.Interfaces;
 
 namespace SGED.Models.Entities
 {
     [Table("tipoprocesso")]
-    public class TipoProcesso
+    public class TipoProcesso : IStatus
     {
         [Column("idtipoprocesso")]
         public int Id { get; set; }
@@ -19,7 +19,9 @@ namespace SGED.Models.Entities
         [Column("descricaotipoprocesso")]
         public string DescricaoTipoProcesso { get; set; }
 
+        [Column("statustipoprocesso")]
+        public bool Status { get; set; }
+
         public ICollection<Etapa>? Etapas { get; set; }
-		public Status Status { get; set; }
 	}
 }

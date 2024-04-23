@@ -9,10 +9,10 @@ namespace SGED.Repositories.Entities
 	{
 		private readonly AppDBContext _dbcontext;
 
-		public TipoDocumentoRepository(AppDBContext dbcontext)
+        public TipoDocumentoRepository(AppDBContext dbcontext)
 		{
 			_dbcontext = dbcontext;
-		}
+        }
 
 		public async Task<IEnumerable<TipoDocumento>> GetAll()
 		{

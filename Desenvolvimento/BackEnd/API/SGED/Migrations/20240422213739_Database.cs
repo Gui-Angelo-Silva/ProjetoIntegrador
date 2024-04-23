@@ -233,25 +233,23 @@ namespace SGED.Migrations
                 name: "tipodocumentoetapa",
                 columns: table => new
                 {
-                    IdEtapa = table.Column<int>(type: "integer", nullable: false)
+                    tipodocumentoetapa = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    tipodocumentoetapa = table.Column<int>(type: "integer", nullable: false),
-                    TipoDocumentoId = table.Column<int>(type: "integer", nullable: false),
                     IdTipoDocumento = table.Column<int>(type: "integer", nullable: false),
-                    EtapaId = table.Column<int>(type: "integer", nullable: false)
+                    IdEtapa = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tipodocumentoetapa", x => x.IdEtapa);
+                    table.PrimaryKey("PK_tipodocumentoetapa", x => x.tipodocumentoetapa);
                     table.ForeignKey(
-                        name: "FK_tipodocumentoetapa_etapa_EtapaId",
-                        column: x => x.EtapaId,
+                        name: "FK_tipodocumentoetapa_etapa_IdEtapa",
+                        column: x => x.IdEtapa,
                         principalTable: "etapa",
                         principalColumn: "idetapa",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_tipodocumentoetapa_tipodocumento_TipoDocumentoId",
-                        column: x => x.TipoDocumentoId,
+                        name: "FK_tipodocumentoetapa_tipodocumento_IdTipoDocumento",
+                        column: x => x.IdTipoDocumento,
                         principalTable: "tipodocumento",
                         principalColumn: "idTipoDocumento",
                         onDelete: ReferentialAction.Cascade);
@@ -635,14 +633,14 @@ namespace SGED.Migrations
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tipodocumentoetapa_EtapaId",
+                name: "IX_tipodocumentoetapa_IdEtapa",
                 table: "tipodocumentoetapa",
-                column: "EtapaId");
+                column: "IdEtapa");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tipodocumentoetapa_TipoDocumentoId",
+                name: "IX_tipodocumentoetapa_IdTipoDocumento",
                 table: "tipodocumentoetapa",
-                column: "TipoDocumentoId");
+                column: "IdTipoDocumento");
 
             migrationBuilder.CreateIndex(
                 name: "IX_usuario_IdTipoUsuario",

@@ -3,14 +3,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using System.Runtime.CompilerServices;
+using SGED.Objects.Interfaces;
 
 namespace SGED.Models.Entities
 {
     [Table("tipodocumentoetapa")]
-    public class TipoDocumentoEtapa
+    public class TipoDocumentoEtapa : IStatus
     {
         [Column("tipodocumentoetapa")]
         public int Id { get; set; }
+
+        [Column("statustipoprocesso")]
+        public bool Status { get; set; }
 
         public TipoDocumento? TipoDocumento { get; set; }
 

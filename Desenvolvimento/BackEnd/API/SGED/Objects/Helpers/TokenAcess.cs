@@ -1,4 +1,4 @@
-﻿namespace SGED.Helpers
+﻿namespace SGED.Objects.Helpers
 {
     public class TokenAcess
     {

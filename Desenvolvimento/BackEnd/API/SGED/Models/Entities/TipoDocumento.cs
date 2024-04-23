@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using SGED.Objects.Interfaces;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SGED.Models.Entities
 {
     [Table("tipodocumento")]
-    public class TipoDocumento
+    public class TipoDocumento : IStatus
     {
         [Column("idTipoDocumento")]
         public int Id { get; set; }
@@ -14,6 +15,9 @@ namespace SGED.Models.Entities
         [Column("descricaoTipoDocumento")]
         public string DescricaoTipoDocumento { get; set; }
 
-		public ICollection<TipoDocumentoEtapa>? TipoDocumentoEtapas { get; set; }
+        [Column("statustipoprocesso")]
+        public bool Status { get; set; }
+
+        public ICollection<TipoDocumentoEtapa>? TipoDocumentoEtapas { get; set; }
 	}
 }

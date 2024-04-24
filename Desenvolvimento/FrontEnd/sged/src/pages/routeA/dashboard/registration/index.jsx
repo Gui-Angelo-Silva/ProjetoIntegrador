@@ -7,6 +7,7 @@ import Cards from '../../components/Card/Cards';
 import CardIcon from "../../components/Card/CardIcon";
 import React, { useState, useEffect } from "react";
 import SideBarAdm from "../../components/Adm/SideBarAdm";
+import Search from "../../../../assets/pages/SearchImg";
 
 export default function Registrations() {
 
@@ -81,21 +82,19 @@ export default function Registrations() {
                 <div className="fixed w-full">
                     <NavBar />
                 </div>
-                <div className="fixed mt-[64px]">
+                <div className="fixed mt-[56px] sm:mt-[64px]">
                     <SideBarAdm />
                 </div>
-                <div className="mt-[64px] ml-[270px] pl-2 mr-[25px] w-full">
+                <div className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full">
                     <br />
                     <Title title="Cadastros" />
-                    <div className="bg-slate-200 rounded-md mt-[15px]">
-                        <div className="flex relative border rounded-lg border-[#BCBCBC] bg-white">
-                            <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                                </svg>
+                    <div className="rounded-md mt-[15px]">
+                        <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
+                            <div className="pl-2">
+                                <Search />
                             </div>
-                            <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar cartões" required onChange={(e) => handleSearch(e.target.value)} />
-                            <select className="appearance-none form-control rounded-md w-40 text-gray-800 cursor-pointer" onChange={(e) => handleSearchBy(e.target.value)} >
+                            <input type="search" id="default-search" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar cartões" required onChange={(e) => handleSearch(e.target.value)} />
+                            <select className="form-control w-28 text-gray-800 h-full cursor-pointer" onChange={(e) => handleSearchBy(e.target.value)} >
                                 <option key="Todos" value="Todos">
                                     Todos
                                 </option>

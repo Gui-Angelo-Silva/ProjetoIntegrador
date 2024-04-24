@@ -31,18 +31,17 @@ export default function Home() {
         <div className="fixed mt-[56px] sm:mt-[64px]">
           <SideBarAdm />
         </div>
-        <div className="mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[270px] pl-2 mr-[25px] w-full">
+        <div className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full">
           <br />
           <Title title="Visão Geral" />
           <Subtitle subtitle="Solicitações Gerais" />
-          <div className="flex gap-3 justify-around pt-[40px]">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 pt-4">
             <CardDashboard title="NOVAS" total={0} />
             <CardDashboard title="EM ANDAMENTO" total={0} />
             <CardDashboard title="PENDENTE" total={0} />
             <CardDashboard title="ATRASADO" total={0} />
             <CardDashboard title="PRAZO HOJE" total={0} />
           </div>
-
 
           {/* <button className="btn btn-primary mt-5" onClick={() => setOpen(true)}>
             Modal

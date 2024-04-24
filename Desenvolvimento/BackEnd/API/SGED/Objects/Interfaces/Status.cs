@@ -1,4 +1,4 @@
-﻿using SGED.Objects.Helpers;
+﻿using SGED.Objects.Utilities;
 
 namespace SGED.Objects.Interfaces
 {
@@ -7,8 +7,18 @@ namespace SGED.Objects.Interfaces
         Status Status { get; set; }
     }
 
-    public static class StatusUtilities
+    public static class IStatusExtensions
     {
+        public static bool CanOperation(IStatus statusHolder)
+        {
+            return StatusExtensions.CanOperation(statusHolder.Status);
+        }
+
+        public static bool CanRelationation(IStatus statusHolder)
+        {
+            return StatusExtensions.CanRelationation(statusHolder.Status);
+        }
+
         public static void DisableOperations(IStatus statusHolder)
         {
             statusHolder.Status = Status.Relation;
@@ -19,7 +29,7 @@ namespace SGED.Objects.Interfaces
             statusHolder.Status = Status.Reading;
         }
 
-        public static void EnableOperations(IStatus statusHolder)
+        public static void EnableAllActions(IStatus statusHolder)
         {
             statusHolder.Status = Status.All;
         }

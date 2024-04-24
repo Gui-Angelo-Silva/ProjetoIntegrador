@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SGED.Context;
-using SGED.Models.Entities;
+using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 
 namespace SGED.Repositories.Entities
 {
-	public class ImovelRepository : IImovelRepository
+    public class ImovelRepository : IImovelRepository
 	{
 		private readonly AppDBContext _dbContext;
 

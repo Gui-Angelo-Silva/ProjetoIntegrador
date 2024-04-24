@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using SGED.DTO.Entities;
-using SGED.Models.Entities;
+using SGED.Objects.DTO.Entities;
+using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
 
 namespace SGED.Services.Entities
 {
-	public class LogradouroService : ILogradouroService
+    public class LogradouroService : ILogradouroService
 	{
 		private readonly ILogradouroRepository _logradouroRepository;
 		private readonly IMapper _mapper;

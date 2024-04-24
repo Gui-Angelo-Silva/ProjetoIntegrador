@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using SGED.DTO.Entities;
-using SGED.Models.Entities;
+using SGED.Objects.DTO.Entities;
+using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
 

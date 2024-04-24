@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SGED.Context;
-using SGED.Models.Entities;
+using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 
 namespace SGED.Repositories.Entities

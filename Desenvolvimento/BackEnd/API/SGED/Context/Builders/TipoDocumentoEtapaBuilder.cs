@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SGED.DTO.Entities;
-using SGED.Models.Entities;
+using SGED.Objects.Models.Entities;
 
 namespace SGED.Context.Builders
 {

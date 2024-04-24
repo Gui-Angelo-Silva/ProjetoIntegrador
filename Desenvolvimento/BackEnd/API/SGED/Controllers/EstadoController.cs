@@ -1,11 +1,6 @@
-﻿using SGED.DTO.Entities;
-using SGED.Services.Entities;
-using SGED.Services.Interfaces;
+﻿using SGED.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection.Metadata.Ecma335;
-using Npgsql;
-using SGED.Models.Entities;
-using Microsoft.AspNetCore.Authorization;
+using SGED.Objects.DTO.Entities;
 
 namespace SGED.Controllers
 {

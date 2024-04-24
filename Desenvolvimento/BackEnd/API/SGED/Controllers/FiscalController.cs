@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SGED.DTO.Entities;
+using SGED.Objects.DTO.Entities;
+using SGED.Objects.Interfaces.Pessoa;
 using SGED.Services.Interfaces;
 
 namespace SGED.Controllers
@@ -40,13 +41,13 @@ namespace SGED.Controllers
         {
             if (fiscalDTO is null) return BadRequest("Dado inválido!");
 
-            int response = fiscalDTO.CpfCnpj(fiscalDTO.CpfCnpjPessoa);
+            int response = fiscalDTO.CpfCnpj();
             if (response == 0) return BadRequest("Documento incorreto!");
             else if (response == -1) return BadRequest("CPF inválido!");
             else if (response == -2) return BadRequest("CNPJ inválido!");
             else if (response == -3) return BadRequest("Documento incompleto!");
 
-            response = fiscalDTO.RgIe(fiscalDTO.RgIePessoa);
+            response = fiscalDTO.RgIe();
             if (response == 0) return BadRequest("Documento incorreto!");
             else if (response == -1) return BadRequest("RG inválido!");
             else if (response == -2) return BadRequest("IE inválido!");
@@ -61,13 +62,13 @@ namespace SGED.Controllers
         {
             if (fiscalDTO is null) return BadRequest("Dado inválido!");
 
-            int response = fiscalDTO.CpfCnpj(fiscalDTO.CpfCnpjPessoa);
+            int response = fiscalDTO.CpfCnpj();
             if (response == 0) return BadRequest("Documento incorreto!");
             else if (response == -1) return BadRequest("CPF inválido!");
             else if (response == -2) return BadRequest("CNPJ inválido!");
             else if (response == -3) return BadRequest("Documento incompleto!");
 
-            response = fiscalDTO.RgIe(fiscalDTO.RgIePessoa);
+            response = fiscalDTO.RgIe();
             if (response == 0) return BadRequest("Documento incorreto!");
             else if (response == -1) return BadRequest("RG inválido!");
             else if (response == -2) return BadRequest("IE inválido!");

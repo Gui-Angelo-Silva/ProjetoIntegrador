@@ -1,10 +1,10 @@
-﻿using SGED.Models.Entities;
+﻿using SGED.Objects.Models.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SGED.Repositories.Interfaces
 {
-	public interface ITipoProcessoRepository
+    public interface ITipoProcessoRepository
 	{
 		Task<IEnumerable<TipoProcesso>> GetAll();
 		Task<TipoProcesso> GetById(int id);

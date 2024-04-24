@@ -1,8 +1,8 @@
-﻿using SGED.Models.Entities;
+﻿using SGED.Objects.Models.Entities;
 
 namespace SGED.Repositories.Interfaces
 {
-	public interface IEtapaRepository
+    public interface IEtapaRepository
 	{
 		Task<IEnumerable<Etapa>> GetAll();
 		Task<Etapa> GetById(int id);

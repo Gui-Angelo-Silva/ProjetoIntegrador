@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
-using SGED.DTO.Entities;
-using SGED.Models.Entities;
+using SGED.Objects.DTO.Entities;
+using SGED.Objects.Models.Entities;
 using SGED.Repositories.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
 
 namespace SGED.Services.Entities
 {
-	public class ImovelService : IImovelService
+    public class ImovelService : IImovelService
 	{
 		private readonly IImovelRepository _imovelRepository;
 		private readonly IMapper _mapper;

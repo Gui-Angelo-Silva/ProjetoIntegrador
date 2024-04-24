@@ -1,8 +1,8 @@
-﻿using SGED.DTO.Entities;
+﻿using SGED.Objects.DTO.Entities;
 
 namespace SGED.Services.Interfaces
 {
-	public interface ILogradouroService
+    public interface ILogradouroService
 	{
 		Task<IEnumerable<LogradouroDTO>> GetAll();
 		Task<LogradouroDTO> GetById(int id);

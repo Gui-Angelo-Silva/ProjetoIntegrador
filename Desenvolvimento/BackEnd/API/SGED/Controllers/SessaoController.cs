@@ -1,19 +1,8 @@
-﻿using Jose;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using SGED.DTO.Entities;
-using SGED.Models.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
 using SGED.Services.Interfaces;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Newtonsoft.Json;
-using System.Diagnostics.Eventing.Reader;
-using MySqlX.XDevAPI;
-using SGED.Services.Entities;
-using Microsoft.AspNetCore.Authorization;
 using SGED.Services.Server.Attributes;
-using SGED.Objects.Helpers;
+using SGED.Objects.DTO.Entities;
+using SGED.Objects.Utilities;
 
 namespace SGED.Controllers
 {

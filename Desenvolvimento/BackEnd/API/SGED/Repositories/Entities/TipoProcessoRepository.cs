@@ -1,8 +1,8 @@
 ﻿using SGED.Context;
-using SGED.Models.Entities;
 using SGED.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using SGED.Objects.Models.Entities;
 
 namespace SGED.Repositories.Entities;
 public class TipoProcessoRepository : ITipoProcessoRepository

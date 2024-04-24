@@ -1,12 +1,10 @@
-﻿using SGED.DTO.Entities;
-using SGED.Repositories.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using SGED.Models.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
 using SGED.Services.Interfaces;
-using SGED.Objects.Helpers;
 using SGED.Objects.Interfaces;
+using SGED.Objects.Models.Entities;
+using SGED.Objects.DTO.Entities;
+using SGED.Objects.Utilities;
+using SGED.Services.Entities;
 
 namespace SGED.Controllers
 {
@@ -17,10 +15,16 @@ namespace SGED.Controllers
         private readonly ITipoProcessoService _tipoProcessoService;
         private Response _response;
 
-        public TipoProcessoController(ITipoProcessoService tipoProcessoService)
+        private readonly EtapaController _etapaController;
+        private readonly IEtapaService _etapaService;
+
+        public TipoProcessoController(ITipoProcessoService tipoProcessoService, EtapaController etapaController, IEtapaService etapaService)
         {
             _tipoProcessoService = tipoProcessoService;
             _response = new Response();
+
+            _etapaController = etapaController;
+            _etapaService = etapaService;
         }
 
         [HttpGet]
@@ -60,7 +64,7 @@ namespace SGED.Controllers
                 return BadRequest(_response);
             } else
             {
-                StatusUtilities.EnableOperations(tipoProcesso);
+                IStatusExtensions.EnableAllActions(tipoProcesso);
                 await _tipoProcessoService.Create(tipoProcesso);
 
                 return CreatedAtRoute("GetTipoProcesso", new { id = tipoProcesso.Id }, tipoProcesso);
@@ -85,7 +89,7 @@ namespace SGED.Controllers
 
             if (!StatusExtensions.CanOperation(existingTipoProcesso.Status))
             {
-                _response.Status = false; _response.Message = "O Tipo Processo informado não está ativo para esta operação!";
+                _response.Status = false; _response.Message = "O Tipo Processo " + tipoProcesso.NomeTipoProcesso + " não está ativo para esta operação!";
                 return BadRequest(_response);
             }
 
@@ -99,7 +103,7 @@ namespace SGED.Controllers
             }
             else
             {
-                StatusUtilities.EnableOperations(tipoProcesso);
+                IStatusExtensions.EnableAllActions(tipoProcesso);
                 await _tipoProcessoService.Update(tipoProcesso);
 
                 _response.Status = true; _response.Message = tipoProcesso;
@@ -118,7 +122,7 @@ namespace SGED.Controllers
             }
             if (!StatusExtensions.CanOperation(tipoProcesso.Status))
             {
-                _response.Status = false; _response.Message = "O Tipo Processo informado não está ativo para está operação!";
+                _response.Status = false; _response.Message = "O Tipo Processo " + tipoProcesso.NomeTipoProcesso + " não está ativo para esta operação!";
                 return BadRequest(_response);
             }
 
@@ -134,8 +138,23 @@ namespace SGED.Controllers
             var tipoProcesso = await _tipoProcessoService.GetById(id);
             if (tipoProcesso == null) return NotFound("TipoProcesso não encontrado!");
 
-            StatusUtilities.EnableOperations(tipoProcesso);
-            await _tipoProcessoService.Update(tipoProcesso);
+            var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(tipoProcesso.Id);
+
+            if (etapasDTO != null && etapasDTO.Count() != 0)
+            {
+                IStatusExtensions.EnableRelationation(tipoProcesso);
+                await _tipoProcessoService.Update(tipoProcesso);
+
+                foreach (var etapaDTO in etapasDTO)
+                {
+                    await _etapaController.Activity(etapaDTO.Id);
+                }
+            } else
+            {
+                IStatusExtensions.EnableAllActions(tipoProcesso);
+                await _tipoProcessoService.Update(tipoProcesso);
+            }
+
             return Ok(tipoProcesso);
         }
 
@@ -145,7 +164,7 @@ namespace SGED.Controllers
             var tipoProcesso = await _tipoProcessoService.GetById(id);
             if (tipoProcesso == null) return NotFound("TipoProcesso não encontrado!");
 
-            StatusUtilities.DisableAllActions(tipoProcesso);
+            IStatusExtensions.DisableAllActions(tipoProcesso);
             await _tipoProcessoService.Update(tipoProcesso);
             return Ok(tipoProcesso);
         }

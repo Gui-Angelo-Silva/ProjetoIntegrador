@@ -1,11 +1,8 @@
 ﻿using SGED.Context;
-using SGED.Models.Entities;
-using SGED.DTO.Entities;
 using SGED.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Collections.Generic;
-using SGED.Objects.Helpers;
+using SGED.Objects.Utilities;
+using SGED.Objects.Models.Entities;
 
 namespace SGED.Repositories.Entities;
 public class TipoDocumentoEtapaRepository : ITipoDocumentoEtapaRepository

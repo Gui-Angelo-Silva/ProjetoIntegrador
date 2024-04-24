@@ -7,10 +7,38 @@ using System.Text.RegularExpressions;
 
 namespace SGED.DTO.Entities
 {
-	public class EngenheiroDTO : PessoaDTO
+	public class EngenheiroDTO : IPessoa
 	{
 		public int Id { get; set; }
-		public string crea { get; set; }
+
+        [Required(ErrorMessage = "A imagem é requerida!")]
+        public string ImagemPessoa { get; set; }
+
+        [Required(ErrorMessage = "O nome é requerido!")]
+        [MinLength(5)]
+        [MaxLength(70)]
+        public string NomePessoa { get; set; }
+
+        [Required(ErrorMessage = "O e-mail é requerido!")]
+        [EmailAddress]
+        public string EmailPessoa { get; set; }
+
+        [Required(ErrorMessage = "O telefone é requerido!")]
+        [MinLength(15)]
+        [MaxLength(15)]
+        public string TelefonePessoa { get; set; }
+
+        [Required(ErrorMessage = "O CPF ou CNPJ é requerido!")]
+        [MinLength(14)]
+        [MaxLength(18)]
+        public string CpfCnpjPessoa { get; set; }
+
+        [Required(ErrorMessage = "O RG ou IE é requerido!")]
+        [MinLength(12)]
+        [MaxLength(15)]
+        public string RgIePessoa { get; set; }
+
+        public string CreaEngenheiro { get; set; }
 
 		public virtual int Crea(string crea)
 		{
@@ -23,16 +51,16 @@ namespace SGED.DTO.Entities
 					crea = crea.Replace(".", "").Replace("-", "");
 					if (!Regex.IsMatch(crea, @"^\d+$")) return -1;
 
-					var statusIdentity = VerificaIdentico(crea);
+					var statusIdentity = IPessoaExtensions.VerificaIdentico(crea);
 
-					if (VerificarCREA(crea) && !statusIdentity) return 1;
+					if (VerificarCrea(crea) && !statusIdentity) return 1;
 					else return -1;
 				}
 			}
 			return 0;
 
 		}
-		public virtual bool VerificarCREA(string crea)
+		public virtual bool VerificarCrea(string crea)
 		{
 			// Verifica se o CREA tem o tamanho correto
 			if (crea.Length != 9)

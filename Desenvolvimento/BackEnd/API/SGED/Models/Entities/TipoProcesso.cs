@@ -1,9 +1,6 @@
-﻿using SGED.DTO.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using System.Runtime.CompilerServices;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using SGED.Objects.Interfaces;
+using SGED.Objects.Helpers;
 
 namespace SGED.Models.Entities
 {
@@ -20,7 +17,7 @@ namespace SGED.Models.Entities
         public string DescricaoTipoProcesso { get; set; }
 
         [Column("statustipoprocesso")]
-        public bool Status { get; set; }
+        public Status Status { get; set; }
 
         public ICollection<Etapa>? Etapas { get; set; }
 	}

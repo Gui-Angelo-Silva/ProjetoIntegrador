@@ -1,12 +1,10 @@
-﻿using SGED.Objects.Interfaces;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using SGED.Objects.Interfaces;
+using SGED.Objects.Helpers;
 
 namespace SGED.DTO.Entities
 {
-    [Table("tipodocumento")]
-	public class TipoDocumentoDTO : IStatus
+    public class TipoDocumentoDTO : IStatus
     {
 		public int Id { get; set; }
 
@@ -21,7 +19,7 @@ namespace SGED.DTO.Entities
 		public string DescricaoTipoDocumento { get; set; }
 
         [Required(ErrorMessage = "O status é requerido!")]
-        public bool Status { get; set; }
+        public Status Status { get; set; }
 
     }
 }

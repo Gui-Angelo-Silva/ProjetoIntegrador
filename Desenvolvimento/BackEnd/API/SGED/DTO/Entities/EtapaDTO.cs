@@ -1,6 +1,7 @@
-﻿using SGED.Objects.Interfaces;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using SGED.Objects.Interfaces;
+using SGED.Objects.Helpers;
 
 namespace SGED.DTO.Entities
 {
@@ -19,7 +20,7 @@ namespace SGED.DTO.Entities
 		public string DescricaoEtapa { get; set; }
 
         [Required(ErrorMessage = "O status é requerido!")]
-        public bool Status { get; set; }
+        public Status Status { get; set; }
 
         [JsonIgnore]
 		public TipoProcessoDTO? TipoProcessoDTO { get; set; }

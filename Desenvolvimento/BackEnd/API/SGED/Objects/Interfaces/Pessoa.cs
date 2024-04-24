@@ -5,37 +5,17 @@ namespace SGED.DTO.Entities
 {
     public interface IPessoa
     {
-        [Required(ErrorMessage = "A imagem é requerida!")]
         string ImagemPessoa { get; set; }
-
-        [Required(ErrorMessage = "O nome é requerido!")]
-        [MinLength(5)]
-        [MaxLength(70)]
         string NomePessoa { get; set; }
-
-        [Required(ErrorMessage = "O e-mail é requerido!")]
-        [EmailAddress]
         string EmailPessoa { get; set; }
-
-        [Required(ErrorMessage = "O telefone é requerido!")]
-        [MinLength(15)]
-        [MaxLength(15)]
         string TelefonePessoa { get; set; }
-
-        [Required(ErrorMessage = "O CPF ou CNPJ é requerido!")]
-        [MinLength(14)]
-        [MaxLength(18)]
         string CpfCnpjPessoa { get; set; }
-
-        [Required(ErrorMessage = "O RG ou IE é requerido!")]
-        [MinLength(12)]
-        [MaxLength(15)]
         string RgIePessoa { get; set; }
     }
 
-    public static class PessoaExtensions
+    public static class IPessoaExtensions
     {
-        public static bool VerificaIdentico(this IPessoa pessoa, string documento)
+        public static bool VerificaIdentico(string documento)
         {
             var statusIdentity = true;
             for (int i = 1; i < documento.Length; i++)
@@ -46,33 +26,33 @@ namespace SGED.DTO.Entities
             return statusIdentity;
         }
 
-        public static int CpfCnpj(this IPessoa pessoa, string cpfCnpj)
+        public static int CpfCnpj(this IPessoa pessoa)
         {
-            cpfCnpj = cpfCnpj.Trim().Replace(".", "").Replace("-", "").Replace("/", "");
+            var cpfCnpj = pessoa.CpfCnpjPessoa.Trim().Replace(".", "").Replace("-", "").Replace("/", "");
 
             if (cpfCnpj.Length == 11)
             {
                 if (!Regex.IsMatch(cpfCnpj, @"^\d+$")) return -1;
 
-                var statusIdentity = pessoa.VerificaIdentico(cpfCnpj);
+                var statusIdentity = VerificaIdentico(cpfCnpj);
 
-                if (pessoa.VerificarCpf(cpfCnpj) && !statusIdentity) return 1;
+                if (VerificarCpf(cpfCnpj) && !statusIdentity) return 1;
                 else return -1;
             }
             else if (cpfCnpj.Length == 14)
             {
                 if (!Regex.IsMatch(cpfCnpj, @"^\d+$")) return -2;
 
-                var statusIdentity = pessoa.VerificaIdentico(cpfCnpj);
+                var statusIdentity = VerificaIdentico(cpfCnpj);
 
-                if (pessoa.VerificarCnpj(cpfCnpj) && !statusIdentity) return 2;
+                if (VerificarCnpj(cpfCnpj) && !statusIdentity) return 2;
                 else return -2;
             }
 
             return 0;
         }
 
-        public static bool VerificarCpf(this IPessoa pessoa, string cpf)
+        public static bool VerificarCpf(string cpf)
         {
             int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
             int[] multiplicador2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
@@ -108,7 +88,7 @@ namespace SGED.DTO.Entities
             return cpf.EndsWith(digito);
         }
 
-        public static bool VerificarCnpj(this IPessoa pessoa, string cnpj)
+        public static bool VerificarCnpj(string cnpj)
         {
             int[] multiplicador1 = new int[12] { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
             int[] multiplicador2 = new int[13] { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
@@ -143,32 +123,32 @@ namespace SGED.DTO.Entities
             return cnpj.EndsWith(digito);
         }
 
-        public static int RgIe(this IPessoa pessoa, string rgIe)
+        public static int RgIe(this IPessoa pessoa)
         {
-            rgIe = rgIe.Trim().Replace(".", "").Replace("-", "");
+            var rgIe = pessoa.RgIePessoa.Trim().Replace(".", "").Replace("-", "");
 
             if (rgIe.Length == 9)
             {
                 if (!Regex.IsMatch(rgIe, @"^\d+$")) return -1;
 
-                var statusIdentity = pessoa.VerificaIdentico(rgIe);
+                var statusIdentity = VerificaIdentico(rgIe);
 
-                if (pessoa.VerificarRg(rgIe) && !statusIdentity) return 1;
+                if (VerificarRg(rgIe) && !statusIdentity) return 1;
                 else return -1;
             }
             else if (rgIe.Length == 12)
             {
                 if (!Regex.IsMatch(rgIe, @"^\d+$")) return -2;
 
-                var statusIdentity = pessoa.VerificaIdentico(rgIe);
+                var statusIdentity = VerificaIdentico(rgIe);
 
-                if (pessoa.VerificarIe(rgIe) && !statusIdentity) return 2;
+                if (VerificarIe(rgIe) && !statusIdentity) return 2;
                 else return -2;
             }
             return 0;
         }
 
-        public static bool VerificarRg(this IPessoa pessoa, string rg)
+        public static bool VerificarRg(string rg)
         {
             int[] multiplicador1 = new int[8] { 2, 3, 4, 5, 6, 7, 8, 9 };
             string digito;
@@ -189,7 +169,7 @@ namespace SGED.DTO.Entities
             return rg.EndsWith(digito);
         }
 
-        public static bool VerificarIe(this IPessoa pessoa, string ie)
+        public static bool VerificarIe(string ie)
         {
             ie = ie.Trim().Replace(".", "").Replace("-", "");
 

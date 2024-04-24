@@ -1,23 +1,32 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SGED.Objects.Helpers;
 
 namespace SGED.Objects.Interfaces
 {
     public interface IStatus
     {
-        [Required(ErrorMessage = "O status é requerido!")]
-        bool Status { get; set; }
+        Status Status { get; set; }
     }
 
-    public static class StatusExtensions
+    public static class StatusUtilities
     {
-        public static void Ativar(IStatus status)
+        public static void DisableOperations(IStatus statusHolder)
         {
-            status.Status = true;
+            statusHolder.Status = Status.Relation;
         }
 
-        public static void Inativar(IStatus status)
+        public static void DisableAllActions(IStatus statusHolder)
         {
-            status.Status = false;
+            statusHolder.Status = Status.Reading;
+        }
+
+        public static void EnableOperations(IStatus statusHolder)
+        {
+            statusHolder.Status = Status.All;
+        }
+
+        public static void EnableRelationation(IStatus statusHolder)
+        {
+            statusHolder.Status = Status.Relation;
         }
     }
 }

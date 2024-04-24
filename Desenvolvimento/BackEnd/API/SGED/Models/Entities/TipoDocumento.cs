@@ -1,5 +1,6 @@
-﻿using SGED.Objects.Interfaces;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using SGED.Objects.Interfaces;
+using SGED.Objects.Helpers;
 
 namespace SGED.Models.Entities
 {
@@ -16,7 +17,7 @@ namespace SGED.Models.Entities
         public string DescricaoTipoDocumento { get; set; }
 
         [Column("statustipoprocesso")]
-        public bool Status { get; set; }
+        public Status Status { get; set; }
 
         public ICollection<TipoDocumentoEtapa>? TipoDocumentoEtapas { get; set; }
 	}

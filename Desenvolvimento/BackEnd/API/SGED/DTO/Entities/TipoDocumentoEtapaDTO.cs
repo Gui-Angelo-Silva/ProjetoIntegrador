@@ -1,9 +1,7 @@
-﻿using SGED.Models.Entities;
-using SGED.Objects.Interfaces;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Security.Cryptography.Xml;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using SGED.Objects.Interfaces;
+using SGED.Objects.Helpers;
 
 namespace SGED.DTO.Entities
 {
@@ -12,7 +10,7 @@ namespace SGED.DTO.Entities
         public int Id { get; set; }
 
         [Required(ErrorMessage = "O status é requerido!")]
-        public bool Status { get; set; }
+        public Status Status { get; set; }
 
         [JsonIgnore]
         public TipoDocumentoDTO? TipoDocumentoDTO { get; set; }
@@ -21,7 +19,7 @@ namespace SGED.DTO.Entities
         public int IdTipoDocumento { get; set; }
 
 		[JsonIgnore]
-		public Etapa? EtapaDTO { get; set; }
+		public EtapaDTO? EtapaDTO { get; set; }
 
 		[Required(ErrorMessage = "A Etapa é requerida!")]
 		public int IdEtapa { get; set; }

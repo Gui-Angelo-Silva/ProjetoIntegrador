@@ -12,7 +12,7 @@ import ConnectionService from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
 import StateClass from '../../../../object/class/state';
 import Search from "../../../../assets/pages/SearchImg";
-import ModalDelete from "../../components/Modal/ModalExclusao";
+import ModalDelete from "../../components/Modal/ModalDelete";
 
 export default function State() {
 

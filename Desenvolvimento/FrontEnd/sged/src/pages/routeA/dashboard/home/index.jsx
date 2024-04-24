@@ -8,7 +8,7 @@ import { FaTableCellsLarge, FaFile } from "react-icons/fa6";
 import { useMontage } from '../../../../object/modules/montage';
 import { useEffect, useState } from "react";
 import SideBarAdm from "../../components/Adm/SideBarAdm";
-import Modal from "../../components/Modal/ModalExclusao";
+import Modal from "../../components/Modal/ModalDelete";
 import { Trash } from "@phosphor-icons/react";
 
 export default function Home() {
@@ -28,10 +28,10 @@ export default function Home() {
         <div className="fixed w-full">
           <NavBar />
         </div>
-        <div className="fixed mt-[64px]">
+        <div className="fixed mt-[56px] sm:mt-[64px]">
           <SideBarAdm />
         </div>
-        <div className="mt-[64px] ml-[270px] pl-2 mr-[25px] w-full">
+        <div className="mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[270px] pl-2 mr-[25px] w-full">
           <br />
           <Title title="Visão Geral" />
           <Subtitle subtitle="Solicitações Gerais" />
@@ -42,6 +42,8 @@ export default function Home() {
             <CardDashboard title="ATRASADO" total={0} />
             <CardDashboard title="PRAZO HOJE" total={0} />
           </div>
+
+
           {/* <button className="btn btn-primary mt-5" onClick={() => setOpen(true)}>
             Modal
           </button> */}

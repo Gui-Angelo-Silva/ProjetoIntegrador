@@ -110,13 +110,13 @@ export default function Registrations() {
                             </select>
                         </div>
                     </div>
-                    <div className="flex mt-10 w-full">
+                    <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 my-[20px]">
                         {Object.entries(categoryFiltered).map(([categoryName, categoryCards]) => (
-                            <div className="mr-[15px] sm:mr-[30px] md:mr-[40px] lg:mr-[50px]" key={categoryName}>
-                                <div className="text-gray-600 text-lg font-semibold mb-2">
+                            <div className="mr-[15px] sm:mr-[30px] md:mr-[3px] lg:mr-[5px] mt-3 sm:mt-0" key={categoryName}>
+                                <div className="text-gray-600 text-lg font-semibold mb-2 ">
                                     {categoryName}
                                 </div>
-                                <div className="grid grid-cols-2">
+                                <div className="grid grid-cols-2 mr-8 sm:mr-0 md:mr-[0px] md:pr-5 lg:mr-0">
                                     {
                                         categoryCards.map((card, index) => (
                                             <CardIcon onClick={card.onClick} key={index} srcImage={card.image} title={card.title} module={card.module} />

@@ -35,7 +35,7 @@ export default function Home() {
           <br />
           <Title title="Visão Geral" />
           <Subtitle subtitle="Solicitações Gerais" />
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 pt-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 pt-4">
             <CardDashboard title="NOVAS" total={0} />
             <CardDashboard title="EM ANDAMENTO" total={0} />
             <CardDashboard title="PENDENTE" total={0} />

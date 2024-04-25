@@ -116,7 +116,7 @@ export default function Registrations() {
                                 <div className="text-gray-600 text-lg font-semibold mb-2 ">
                                     {categoryName}
                                 </div>
-                                <div className="grid grid-cols-2 mr-8 sm:mr-0 md:mr-[0px] md:pr-5 lg:mr-0">
+                                <div className="grid grid-cols-2 -mr-6 sm:mr-0 md:mr-[0px] md:pr-5 lg:mr-0">
                                     {
                                         categoryCards.map((card, index) => (
                                             <CardIcon onClick={card.onClick} key={index} srcImage={card.image} title={card.title} module={card.module} />

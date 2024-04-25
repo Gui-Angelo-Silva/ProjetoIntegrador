@@ -43,27 +43,79 @@ namespace SGED.Controllers
 
             var tipoProcessoDTO = await _tipoProcessoService.GetById(etapaDTO.IdTipoProcesso);
             if (tipoProcessoDTO == null) return BadRequest("O Tipo Processo não existe!");
-            else if (tipoProcessoDTO.CanOperation())
+
+            var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(etapaDTO.IdTipoProcesso);
+            if (etapasDTO.FirstOrDefault(etapa => etapa.NomeEtapa == etapaDTO.NomeEtapa) != null)
             {
-                tipoProcessoDTO.DisableOperations();
-                await _tipoProcessoService.Update(tipoProcessoDTO);
+                return BadRequest("Já existe a Etapa " + etapaDTO.NomeEtapa + " no Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + "!");
             }
 
             if (tipoProcessoDTO.CanRelationation())
             {
+                if (tipoProcessoDTO.CanOperation())
+                {
+                    tipoProcessoDTO.DisableOperations();
+                    await _tipoProcessoService.Update(tipoProcessoDTO);
+                }
+
                 await _etapaService.Create(etapaDTO);
                 return new CreatedAtRouteResult("GetEtapa", new { id = etapaDTO.Id }, etapaDTO);
             }
             else
             {
-                return BadRequest("O Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " não está ativo para esta operação!");
+                return BadRequest("O Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " não está ativo para adicionar novas etapas!");
             }
         }
 
         [HttpPut()]
         public async Task<ActionResult> Put([FromBody] EtapaDTO etapaDTO)
         {
-            if (etapaDTO is null) return BadRequest("Dado Inválido!");
+            if (etapaDTO == null)
+            {
+                return BadRequest("Dado Inválido!");
+            }
+
+            var existingEtapa = await _etapaService.GetById(etapaDTO.Id);
+            if (existingEtapa == null)
+            {
+                return BadRequest("Não existe a Etapa informada!");
+            }
+            else if (!StatusExtensions.CanOperation(existingEtapa.Status))
+            {
+                return BadRequest("A Etapa " + existingEtapa.NomeEtapa + " não está ativa para alteração!");
+            }
+
+            var tipoProcessoDTO = await _tipoProcessoService.GetById(etapaDTO.IdTipoProcesso);
+            if (tipoProcessoDTO == null)
+            {
+                return BadRequest("O Tipo Processo não existe!");
+            }
+            else if (!tipoProcessoDTO.CanRelationation())
+            {
+                return BadRequest("O Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " não está ativo para adicionar novas etapas!");
+            }
+
+            var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(tipoProcessoDTO.Id);
+            if (etapasDTO.FirstOrDefault(etapa => etapa.NomeEtapa == etapaDTO.NomeEtapa) != null)
+            {
+                return BadRequest("Já existe a Etapa " + etapaDTO.NomeEtapa + " no Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + "!");
+            }
+            else if (tipoProcessoDTO.CanOperation() && (etapasDTO != null && etapasDTO.Count() == 0))
+            {
+                tipoProcessoDTO.DisableOperations();
+                await _tipoProcessoService.Update(tipoProcessoDTO);
+            }
+
+            tipoProcessoDTO = await _tipoProcessoService.GetById(existingEtapa.IdTipoProcesso);
+            etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(tipoProcessoDTO.Id);
+            etapasDTO = etapasDTO.Where(etapa => etapa.Id != etapaDTO.Id);
+
+            if (tipoProcessoDTO.CanRelationation() && (etapasDTO != null && etapasDTO.Count() == 0))
+            {
+                tipoProcessoDTO.EnableAllActions();
+                await _tipoProcessoService.Update(tipoProcessoDTO);
+            }
+
             await _etapaService.Update(etapaDTO);
             return Ok(etapaDTO);
         }

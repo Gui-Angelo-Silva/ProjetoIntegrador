@@ -89,7 +89,7 @@ namespace SGED.Controllers
 
             if (!StatusExtensions.CanOperation(existingTipoProcesso.Status))
             {
-                _response.Status = false; _response.Message = "O Tipo Processo " + tipoProcesso.NomeTipoProcesso + " não está ativo para esta operação!";
+                _response.Status = false; _response.Message = "O Tipo Processo " + tipoProcesso.NomeTipoProcesso + " não está ativo para alteração!";
                 return BadRequest(_response);
             }
 
@@ -122,7 +122,7 @@ namespace SGED.Controllers
             }
             if (!StatusExtensions.CanOperation(tipoProcesso.Status))
             {
-                _response.Status = false; _response.Message = "O Tipo Processo " + tipoProcesso.NomeTipoProcesso + " não está ativo para esta operação!";
+                _response.Status = false; _response.Message = "O Tipo Processo " + tipoProcesso.NomeTipoProcesso + " não está ativo para exclusão!";
                 return BadRequest(_response);
             }
 
@@ -132,7 +132,7 @@ namespace SGED.Controllers
             return Ok(_response);
         }
 
-        [HttpPut("{id}/Ativar")]
+        /*[HttpPut("{id}/Ativar")]
         public async Task<ActionResult<TipoProcesso>> Activity(int id)
         {
             var tipoProcesso = await _tipoProcessoService.GetById(id);
@@ -166,7 +166,14 @@ namespace SGED.Controllers
 
             IStatusExtensions.DisableAllActions(tipoProcesso);
             await _tipoProcessoService.Update(tipoProcesso);
+
+            var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(tipoProcesso.Id);
+            foreach (var etapaDTO in etapasDTO)
+            {
+                await _etapaController.Desactivity(etapaDTO.Id);
+            }
+
             return Ok(tipoProcesso);
-        }
+        }*/
     }
 }

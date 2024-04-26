@@ -27,7 +27,7 @@ export default function User() {
   }, []);
 
   const session = SessionService();
-  const connection = ConnectionService();
+  const connection = new ConnectionService();
   const user = UserClass();
   const login = LoginClass();
   const list = ListModule();
@@ -45,17 +45,13 @@ export default function User() {
   };
 
   const selectUser = () => {
-    const object = session.getSession();
+    const object = session.validateSession();
     user.getData(object);
   };
 
   const GetUser = async () => {
-    const response = await connection.objectUrl("Usuario").getOrder();
-    if (response.status) {
-      list.setList(response.data);
-    } else {
-      console.log(response.message);
-    }
+    await connection.endpoint("Usuario").get();
+    list.setList(connection.response.data);
   };
 
   const PutUser = async () => {
@@ -63,7 +59,7 @@ export default function User() {
 
     if (user.verifyData()) {
       setInOperation('Enviando Dados...');
-      let response = await connection.objectUrl("Usuario").putOrder(user);
+      let response = await connection.endpoint("Usuario").put(user);
 
       if (!response.status) { user.getError(response.data); setInOperation(''); }
       else {

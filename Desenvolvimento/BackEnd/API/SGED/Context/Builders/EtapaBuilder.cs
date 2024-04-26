@@ -11,6 +11,8 @@ namespace SGED.Context.Builders
             modelBuilder.Entity<Etapa>().HasKey(b => b.Id);
             modelBuilder.Entity<Etapa>().Property(b => b.NomeEtapa).HasMaxLength(50).IsRequired();
             modelBuilder.Entity<Etapa>().Property(b => b.DescricaoEtapa).HasMaxLength(250).IsRequired();
+            modelBuilder.Entity<Etapa>().Property(b => b.Posicao).IsRequired();
+            modelBuilder.Entity<Etapa>().Property(b => b.Status).IsRequired();
             modelBuilder.Entity<Etapa>().HasOne(b => b.TipoProcesso).WithMany().HasForeignKey(b => b.IdTipoProcesso);
 
             // Relacionamento: TipoProcesso -> Etapa

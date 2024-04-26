@@ -5,12 +5,15 @@ using SGED.Objects.Utilities;
 
 namespace SGED.Objects.DTO.Entities
 {
-    public class TipoDocumentoEtapaDTO //: IStatus
+    public class TipoDocumentoEtapaDTO : IStatus, IPosicao
     {
         public int Id { get; set; }
 
-        /*[Required(ErrorMessage = "O status é requerido!")]
-        public Status Status { get; set; }*/
+        [Required(ErrorMessage = "O status é requerido!")]
+        public bool Status { get; set; }
+
+        [Required(ErrorMessage = "A posição é requerida!")]
+        public int Posicao { get; set; }
 
         [JsonIgnore]
         public TipoDocumentoDTO? TipoDocumentoDTO { get; set; }

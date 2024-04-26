@@ -10,6 +10,8 @@ namespace SGED.Context.Builders
         {
             // Builder
             modelBuilder.Entity<TipoDocumentoEtapa>().HasKey(b => b.Id);
+            modelBuilder.Entity<TipoDocumentoEtapa>().Property(b => b.Posicao).IsRequired();
+            modelBuilder.Entity<TipoDocumentoEtapa>().Property(b => b.Status).IsRequired();
             modelBuilder.Entity<TipoDocumentoEtapa>().HasOne(b => b.TipoDocumento).WithMany().HasForeignKey(b => b.IdTipoDocumento);
             modelBuilder.Entity<TipoDocumentoEtapa>().HasOne(b => b.Etapa).WithMany().HasForeignKey(b => b.IdEtapa);
 

@@ -5,7 +5,7 @@ using SGED.Objects.Utilities;
 
 namespace SGED.Objects.DTO.Entities
 {
-    public class EtapaDTO //: IStatus
+    public class EtapaDTO : IStatus, IPosicao
     {
         public int Id { get; set; }
 
@@ -19,8 +19,11 @@ namespace SGED.Objects.DTO.Entities
         [MaxLength(250)]
         public string DescricaoEtapa { get; set; }
 
-        /*[Required(ErrorMessage = "O status é requerido!")]
-        public Status Status { get; set; }*/
+        [Required(ErrorMessage = "O status é requerido!")]
+        public bool Status { get; set; }
+
+        [Required(ErrorMessage = "A posição é requerida!")]
+        public int Posicao { get; set; }
 
         [JsonIgnore]
         public TipoProcessoDTO? TipoProcessoDTO { get; set; }

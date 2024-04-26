@@ -227,10 +227,10 @@ export default function PublicPlace() {
                 <div className="fixed w-full">
                     <NavBar />
                 </div>
-                <div className="fixed mt-[64px]">
+                <div className="fixed mt-[56px] sm:mt-[64px]">
                     <SideBarAdm />
                 </div>
-                <div className="mt-[64px] ml-[270px] pl-2 mr-[25px] w-full">
+                <div className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full">
                     <br />
                     <LinkTitle pageName="Logradouro" />
                     <div className="flex items-center">

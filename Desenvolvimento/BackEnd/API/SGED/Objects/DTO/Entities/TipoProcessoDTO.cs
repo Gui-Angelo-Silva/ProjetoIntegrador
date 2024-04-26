@@ -20,14 +20,10 @@ namespace SGED.Objects.DTO.Entities
         public string DescricaoTipoProcesso { get; set; }
 
         [Required(ErrorMessage = "O status é requerido!")]
-        public Status Status { get; set; }
+        public bool Status { get; set; }
 
 
-        public bool CanOperation() => IStatusExtensions.CanOperation(this);
-        public bool CanRelationation() => IStatusExtensions.CanRelationation(this);
-        public void DisableAllActions() => IStatusExtensions.DisableAllActions(this);
-        public void DisableOperations() => IStatusExtensions.DisableOperations(this);
-        public void EnableRelationation() => IStatusExtensions.EnableRelationation(this);
-        public void EnableAllActions() => IStatusExtensions.EnableAllActions(this);
+        public void DisableAllOperations() => IStatusExtensions.DisableAllOperations(this);
+        public void EnableAllOperations() => IStatusExtensions.EnableAllOperations(this);
     }
 }

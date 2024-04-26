@@ -11,7 +11,7 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240424182934_Database")]
+    [Migration("20240426172922_Database")]
     partial class Database
     {
         /// <inheritdoc />
@@ -404,10 +404,6 @@ namespace SGED.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("nomeetapa");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer")
-                        .HasColumnName("statustipoprocesso");
-
                     b.HasKey("Id");
 
                     b.HasIndex("IdTipoProcesso");
@@ -651,10 +647,6 @@ namespace SGED.Migrations
                         .HasColumnType("character varying(30)")
                         .HasColumnName("nomeTipoDocumento");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer")
-                        .HasColumnName("statustipoprocesso");
-
                     b.HasKey("Id");
 
                     b.ToTable("tipodocumento");
@@ -674,10 +666,6 @@ namespace SGED.Migrations
 
                     b.Property<int>("IdTipoDocumento")
                         .HasColumnType("integer");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer")
-                        .HasColumnName("statustipoprocesso");
 
                     b.HasKey("Id");
 
@@ -1805,8 +1793,8 @@ namespace SGED.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("tipoprocesso");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer")
+                    b.Property<bool>("Status")
+                        .HasColumnType("boolean")
                         .HasColumnName("statustipoprocesso");
 
                     b.HasKey("Id");

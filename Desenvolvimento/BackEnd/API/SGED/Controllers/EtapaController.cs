@@ -39,10 +39,20 @@ namespace SGED.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] EtapaDTO etapaDTO)
         {
-            if (etapaDTO == null) return BadRequest("Dado Inválido!");
+            if (etapaDTO == null)
+            {
+                return BadRequest("Dado Inválido!");
+            }
 
             var tipoProcessoDTO = await _tipoProcessoService.GetById(etapaDTO.IdTipoProcesso);
-            if (tipoProcessoDTO == null) return BadRequest("O Tipo Processo não existe!");
+            if (tipoProcessoDTO == null)
+            {
+                return NotFound("O Tipo Processo não existe!");
+            }
+            else if (!tipoProcessoDTO.Status)
+            {
+                return BadRequest("O Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " está desabilitado para adicionar novas etapas!");
+            }
 
             var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(etapaDTO.IdTipoProcesso);
             if (etapasDTO.FirstOrDefault(etapa => etapa.NomeEtapa == etapaDTO.NomeEtapa) != null)
@@ -50,21 +60,9 @@ namespace SGED.Controllers
                 return BadRequest("Já existe a Etapa " + etapaDTO.NomeEtapa + " no Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + "!");
             }
 
-            if (tipoProcessoDTO.CanRelationation())
-            {
-                if (tipoProcessoDTO.CanOperation())
-                {
-                    tipoProcessoDTO.DisableOperations();
-                    await _tipoProcessoService.Update(tipoProcessoDTO);
-                }
-
-                await _etapaService.Create(etapaDTO);
-                return new CreatedAtRouteResult("GetEtapa", new { id = etapaDTO.Id }, etapaDTO);
-            }
-            else
-            {
-                return BadRequest("O Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " não está ativo para adicionar novas etapas!");
-            }
+            //Etapa.EnableAllOperations();
+            await _etapaService.Create(etapaDTO);
+            return new CreatedAtRouteResult("GetEtapa", new { id = etapaDTO.Id }, etapaDTO);
         }
 
         [HttpPut()]
@@ -80,19 +78,19 @@ namespace SGED.Controllers
             {
                 return BadRequest("Não existe a Etapa informada!");
             }
-            else if (!StatusExtensions.CanOperation(existingEtapa.Status))
+            /*else if (!existingEtapa.Status)
             {
-                return BadRequest("A Etapa " + existingEtapa.NomeEtapa + " não está ativa para alteração!");
-            }
+                return BadRequest("A Etapa " + existingEtapa.NomeEtapa + " está desabilitada para alteração!");
+            }*/
 
             var tipoProcessoDTO = await _tipoProcessoService.GetById(etapaDTO.IdTipoProcesso);
             if (tipoProcessoDTO == null)
             {
                 return BadRequest("O Tipo Processo não existe!");
             }
-            else if (!tipoProcessoDTO.CanRelationation())
+            else if (!tipoProcessoDTO.Status)
             {
-                return BadRequest("O Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " não está ativo para adicionar novas etapas!");
+                return BadRequest("O Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " está desabilitado para adicionar novas etapas!");
             }
 
             var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(tipoProcessoDTO.Id);
@@ -100,22 +98,8 @@ namespace SGED.Controllers
             {
                 return BadRequest("Já existe a Etapa " + etapaDTO.NomeEtapa + " no Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + "!");
             }
-            else if (tipoProcessoDTO.CanOperation() && (etapasDTO != null && etapasDTO.Count() == 0))
-            {
-                tipoProcessoDTO.DisableOperations();
-                await _tipoProcessoService.Update(tipoProcessoDTO);
-            }
 
-            tipoProcessoDTO = await _tipoProcessoService.GetById(existingEtapa.IdTipoProcesso);
-            etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(tipoProcessoDTO.Id);
-            etapasDTO = etapasDTO.Where(etapa => etapa.Id != etapaDTO.Id);
-
-            if (tipoProcessoDTO.CanRelationation() && (etapasDTO != null && etapasDTO.Count() == 0))
-            {
-                tipoProcessoDTO.EnableAllActions();
-                await _tipoProcessoService.Update(tipoProcessoDTO);
-            }
-
+            //Etapa.EnableAllOperations();
             await _etapaService.Update(etapaDTO);
             return Ok(etapaDTO);
         }
@@ -124,17 +108,14 @@ namespace SGED.Controllers
         public async Task<ActionResult<EtapaDTO>> Delete(int id)
         {
             var etapaDTO = await _etapaService.GetById(id);
-            if (etapaDTO == null) return BadRequest("Etapa não encontrada!");
-
-            var tipoProcessoDTO = await _tipoProcessoService.GetById(etapaDTO.IdTipoProcesso);
-            var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(tipoProcessoDTO.Id);
-            etapasDTO = etapasDTO.Where(etapa => etapa.Id != etapaDTO.Id);
-
-            if (tipoProcessoDTO.CanRelationation() && (etapasDTO != null && etapasDTO.Count() == 0))
+            if (etapaDTO == null)
             {
-                tipoProcessoDTO.EnableAllActions();
-                await _tipoProcessoService.Update(tipoProcessoDTO);
+                return BadRequest("Etapa não encontrada!");
             }
+            /*else if (etapaDTO.Status)
+            {
+                return BadRequest("Etapa está desabilitada para exclusão!");
+            }*/
 
             await _etapaService.Remove(id);
             return Ok(etapaDTO);
@@ -146,6 +127,12 @@ namespace SGED.Controllers
             if (idTipoProcesso == 0) return BadRequest("Informe o Id do Tipo Processo!");
             var etapaDTO = await _etapaService.GetStagesRelatedToTypeProcess(idTipoProcesso);
             return Ok(etapaDTO);
+        }
+
+        [HttpPut("{id}/Desativar")]
+        public async Task<ActionResult<EtapaDTO>> Desactivity(int id)
+        {
+            return Ok();
         }
     }
 }

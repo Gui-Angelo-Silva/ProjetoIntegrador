@@ -89,8 +89,7 @@ namespace SGED.Migrations
                     idTipoDocumento = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     nomeTipoDocumento = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
-                    descricaoTipoDocumento = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false),
-                    statustipoprocesso = table.Column<int>(type: "integer", nullable: false)
+                    descricaoTipoDocumento = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -119,7 +118,7 @@ namespace SGED.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     tipoprocesso = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     descricaotipoprocesso = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    statustipoprocesso = table.Column<int>(type: "integer", nullable: false)
+                    statustipoprocesso = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -169,7 +168,6 @@ namespace SGED.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     nomeetapa = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     descricaoetapa = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
-                    statustipoprocesso = table.Column<int>(type: "integer", nullable: false),
                     IdTipoProcesso = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -237,7 +235,6 @@ namespace SGED.Migrations
                 {
                     tipodocumentoetapa = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    statustipoprocesso = table.Column<int>(type: "integer", nullable: false),
                     IdTipoDocumento = table.Column<int>(type: "integer", nullable: false),
                     IdEtapa = table.Column<int>(type: "integer", nullable: false)
                 },

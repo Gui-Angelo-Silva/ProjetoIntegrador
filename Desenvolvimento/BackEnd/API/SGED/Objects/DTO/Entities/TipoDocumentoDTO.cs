@@ -4,7 +4,7 @@ using SGED.Objects.Utilities;
 
 namespace SGED.Objects.DTO.Entities
 {
-    public class TipoDocumentoDTO : IStatus
+    public class TipoDocumentoDTO //: IStatus
     {
         public int Id { get; set; }
 
@@ -18,8 +18,8 @@ namespace SGED.Objects.DTO.Entities
         [MaxLength(450)]
         public string DescricaoTipoDocumento { get; set; }
 
-        [Required(ErrorMessage = "O status é requerido!")]
-        public Status Status { get; set; }
+        /*[Required(ErrorMessage = "O status é requerido!")]
+        public Status Status { get; set; }*/
 
     }
 }

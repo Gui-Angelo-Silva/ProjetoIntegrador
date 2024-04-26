@@ -5,13 +5,13 @@ using SGED.Objects.Utilities;
 namespace SGED.Objects.Models.Entities
 {
     [Table("tipodocumentoetapa")]
-    public class TipoDocumentoEtapa : IStatus
+    public class TipoDocumentoEtapa //: IStatus
     {
         [Column("tipodocumentoetapa")]
         public int Id { get; set; }
 
-        [Column("statustipoprocesso")]
-        public Status Status { get; set; }
+        /*[Column("statustipoprocesso")]
+        public Status Status { get; set; }*/
 
         public TipoDocumento? TipoDocumento { get; set; }
 

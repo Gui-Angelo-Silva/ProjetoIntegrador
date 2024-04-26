@@ -17,7 +17,7 @@ namespace SGED.Objects.Models.Entities
         public string DescricaoTipoProcesso { get; set; }
 
         [Column("statustipoprocesso")]
-        public Status Status { get; set; }
+        public bool Status { get; set; }
 
         public ICollection<Etapa>? Etapas { get; set; }
     }

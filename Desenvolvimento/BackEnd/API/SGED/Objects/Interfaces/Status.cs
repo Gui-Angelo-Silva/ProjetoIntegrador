@@ -4,39 +4,19 @@ namespace SGED.Objects.Interfaces
 {
     public interface IStatus
     {
-        Status Status { get; set; }
+        bool Status { get; set; }
     }
 
     public static class IStatusExtensions
     {
-        public static bool CanOperation(IStatus statusHolder)
+        public static void DisableAllOperations(IStatus status)
         {
-            return StatusExtensions.CanOperation(statusHolder.Status);
+            status.Status = false;
         }
 
-        public static bool CanRelationation(IStatus statusHolder)
+        public static void EnableAllOperations(IStatus status)
         {
-            return StatusExtensions.CanRelationation(statusHolder.Status);
-        }
-
-        public static void DisableOperations(IStatus statusHolder)
-        {
-            statusHolder.Status = Status.Relation;
-        }
-
-        public static void DisableAllActions(IStatus statusHolder)
-        {
-            statusHolder.Status = Status.Reading;
-        }
-
-        public static void EnableAllActions(IStatus statusHolder)
-        {
-            statusHolder.Status = Status.All;
-        }
-
-        public static void EnableRelationation(IStatus statusHolder)
-        {
-            statusHolder.Status = Status.Relation;
+            status.Status = true;
         }
     }
 }

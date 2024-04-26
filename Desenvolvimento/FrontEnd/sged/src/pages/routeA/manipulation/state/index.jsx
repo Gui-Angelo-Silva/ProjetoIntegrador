@@ -13,6 +13,7 @@ import ListModule from '../../../../object/modules/list';
 import StateClass from '../../../../object/class/state';
 import Search from "../../../../assets/pages/SearchImg";
 import ModalDelete from "../../components/Modal/ModalDelete";
+import CustomTable from "../../components/Table/Table";
 
 export default function State() {
 
@@ -160,65 +161,18 @@ export default function State() {
                             </button>
                         </div>
                     </div>
-                    <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
-                        <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                            <div className="flex ml-5 text-white text-lg font-semibold">Estado</div>
-                            <div className="flex justify-center items-center text-white text-lg font-semibold">UF</div>
-                            <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
-                        </div>
-                        <ul className="w-full">
-                            {list.currentList.map((object) => (
-                                <li className="grid grid-cols-3 w-full" key={object.id}>
-                                    <div className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeEstado}</div>
-                                    <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.ufEstado}</div>
-                                    <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                        <button
-                                            className=""
-                                            onClick={() => SelectState(object, "Editar")}
-                                        >
-                                            <PencilSimple size={20} className="hover:text-cyan-500" />
-                                        </button>{" "}
-                                        <button
-                                            className=""
-                                            onClick={() => SelectState(object, "Excluir")}
-                                        >
-                                            <TrashSimple size={20} className="hover:text-red-600" />
-                                        </button>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                        {/* Estilização dos botões de navegação */}
-                        <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
-                            <button
-                                className=""
-                                onClick={() => list.goToPage(list.currentPage - 1)}
-                            >
-                                <CaretLeft size={22} className="text-[#58AFAE]" />
-                            </button>
-                            <select
-                                className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
-                                value={list.currentPage}
-                                onChange={(e) => list.goToPage(Number(e.target.value))}
-                            >
-                                {[...Array(list.totalPages)].map((_, index) => (
-                                    <option key={index + 1} value={index + 1}>
-                                        {index + 1}
-                                    </option>
-                                ))}
-                            </select>
-                            <button
-                                className=""
-                                onClick={() => list.goToPage(list.currentPage + 1)}
-                            >
-                                <CaretRight size={22} className="text-[#58AFAE]" />
-                            </button>
-                        </div>
-                        {/* Espaçamento abaixo dos botões */}
-                        <div className="mt-4"></div>
-                    </div>
+                    <CustomTable
+                        totalColumns={3}
+                        headers={["Estado", "UF", "Ações"]}
+                        data={list.currentList} 
+                        onEdit={(item) => SelectState(item, "Editar")} 
+                        onDelete={(item) => SelectState(item, "Excluir")}
+                        onPageChange={(page) => list.goToPage(page)} 
+                        currentPage={list.currentPage} 
+                        totalPages={list.totalPages} 
+                    />
                 </div>
-                {/* Usar centered para centralizar o modal */}
+                
                 <Modal isOpen={modalInsert} >
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Estado</ModalHeader>
                     <ModalBody>

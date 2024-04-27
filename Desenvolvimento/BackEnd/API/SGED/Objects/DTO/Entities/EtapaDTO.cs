@@ -19,11 +19,11 @@ namespace SGED.Objects.DTO.Entities
         [MaxLength(250)]
         public string DescricaoEtapa { get; set; }
 
-        [Required(ErrorMessage = "O status é requerido!")]
-        public bool Status { get; set; }
-
         [Required(ErrorMessage = "A posição é requerida!")]
         public int Posicao { get; set; }
+
+        [Required(ErrorMessage = "O status é requerido!")]
+        public bool Status { get; set; }
 
         [JsonIgnore]
         public TipoProcessoDTO? TipoProcessoDTO { get; set; }

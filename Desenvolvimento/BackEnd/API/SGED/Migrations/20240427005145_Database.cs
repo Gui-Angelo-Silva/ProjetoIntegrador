@@ -89,7 +89,8 @@ namespace SGED.Migrations
                     idTipoDocumento = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     nomeTipoDocumento = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
-                    descricaoTipoDocumento = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false)
+                    descricaoTipoDocumento = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false),
+                    statustipoprocesso = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -168,6 +169,8 @@ namespace SGED.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     nomeetapa = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     descricaoetapa = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
+                    posicaoetapa = table.Column<int>(type: "integer", nullable: false),
+                    statusetapa = table.Column<bool>(type: "boolean", nullable: false),
                     IdTipoProcesso = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -233,14 +236,16 @@ namespace SGED.Migrations
                 name: "tipodocumentoetapa",
                 columns: table => new
                 {
-                    tipodocumentoetapa = table.Column<int>(type: "integer", nullable: false)
+                    idtipodocumentoetapa = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    posicaotipodocumentoetapa = table.Column<int>(type: "integer", nullable: false),
+                    statustipodocumentoetapa = table.Column<bool>(type: "boolean", nullable: false),
                     IdTipoDocumento = table.Column<int>(type: "integer", nullable: false),
                     IdEtapa = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tipodocumentoetapa", x => x.tipodocumentoetapa);
+                    table.PrimaryKey("PK_tipodocumentoetapa", x => x.idtipodocumentoetapa);
                     table.ForeignKey(
                         name: "FK_tipodocumentoetapa_etapa_IdEtapa",
                         column: x => x.IdEtapa,

@@ -16,11 +16,11 @@ namespace SGED.Objects.Models.Entities
         [Column("descricaoetapa")]
         public string DescricaoEtapa { get; set; }
 
-        [Column("statusetapa")]
-        public bool Status { get; set; }
-
         [Column("posicaoetapa")]
         public int Posicao { get; set; }
+
+        [Column("statusetapa")]
+        public bool Status { get; set; }
 
         public TipoProcesso? TipoProcesso { get; set; }
 

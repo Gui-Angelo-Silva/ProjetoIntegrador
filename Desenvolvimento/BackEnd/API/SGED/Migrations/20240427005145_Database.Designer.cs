@@ -11,7 +11,7 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240426172922_Database")]
+    [Migration("20240427005145_Database")]
     partial class Database
     {
         /// <inheritdoc />
@@ -404,6 +404,14 @@ namespace SGED.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("nomeetapa");
 
+                    b.Property<int>("Posicao")
+                        .HasColumnType("integer")
+                        .HasColumnName("posicaoetapa");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("boolean")
+                        .HasColumnName("statusetapa");
+
                     b.HasKey("Id");
 
                     b.HasIndex("IdTipoProcesso");
@@ -647,6 +655,10 @@ namespace SGED.Migrations
                         .HasColumnType("character varying(30)")
                         .HasColumnName("nomeTipoDocumento");
 
+                    b.Property<bool>("Status")
+                        .HasColumnType("boolean")
+                        .HasColumnName("statustipoprocesso");
+
                     b.HasKey("Id");
 
                     b.ToTable("tipodocumento");
@@ -657,7 +669,7 @@ namespace SGED.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("tipodocumentoetapa");
+                        .HasColumnName("idtipodocumentoetapa");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
@@ -666,6 +678,14 @@ namespace SGED.Migrations
 
                     b.Property<int>("IdTipoDocumento")
                         .HasColumnType("integer");
+
+                    b.Property<int>("Posicao")
+                        .HasColumnType("integer")
+                        .HasColumnName("posicaotipodocumentoetapa");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("boolean")
+                        .HasColumnName("statustipodocumentoetapa");
 
                     b.HasKey("Id");
 

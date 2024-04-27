@@ -9,11 +9,11 @@ namespace SGED.Objects.DTO.Entities
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "O status é requerido!")]
-        public bool Status { get; set; }
-
         [Required(ErrorMessage = "A posição é requerida!")]
         public int Posicao { get; set; }
+
+        [Required(ErrorMessage = "O status é requerido!")]
+        public bool Status { get; set; }
 
         [JsonIgnore]
         public TipoDocumentoDTO? TipoDocumentoDTO { get; set; }

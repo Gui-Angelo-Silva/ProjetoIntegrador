@@ -16,15 +16,13 @@ namespace SGED.Controllers
         private Response _response;
 
         private readonly EtapaController _etapaController;
-        private readonly IEtapaService _etapaService;
 
-        public TipoProcessoController(ITipoProcessoService tipoProcessoService, EtapaController etapaController, IEtapaService etapaService)
+        public TipoProcessoController(ITipoProcessoService tipoProcessoService, EtapaController etapaController)
         {
             _tipoProcessoService = tipoProcessoService;
             _response = new Response();
 
             _etapaController = etapaController;
-            _etapaService = etapaService;
         }
 
         [HttpGet]
@@ -167,13 +165,13 @@ namespace SGED.Controllers
                 await _tipoProcessoService.Update(tipoProcesso);
             }
 
-            var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(tipoProcesso.Id);
-            //etapasDTO = etapasDTO.Where(etapa => etapa.Status);
+            /*var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(tipoProcesso.Id);
+            etapasDTO = etapasDTO.Where(etapa => etapa.Status);
 
             foreach (var etapaDTO in etapasDTO)
             {
                 await _etapaController.Desactivity(etapaDTO.Id);
-            }
+            }*/
 
             _response.Status = true; _response.Message = tipoProcesso;
             return Ok(_response);

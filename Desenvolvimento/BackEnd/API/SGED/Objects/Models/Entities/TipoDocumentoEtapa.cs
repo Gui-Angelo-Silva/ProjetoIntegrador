@@ -10,11 +10,11 @@ namespace SGED.Objects.Models.Entities
         [Column("idtipodocumentoetapa")]
         public int Id { get; set; }
 
-        [Column("statustipodocumentoetapa")]
-        public bool Status { get; set; }
-
         [Column("posicaotipodocumentoetapa")]
         public int Posicao { get; set; }
+
+        [Column("statustipodocumentoetapa")]
+        public bool Status { get; set; }
 
         public TipoDocumento? TipoDocumento { get; set; }
 

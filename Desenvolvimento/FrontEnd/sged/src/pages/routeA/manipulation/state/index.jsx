@@ -4,7 +4,7 @@ import SideBarAdm from "../../components/Adm/SideBarAdm";
 import NavBar from "../../components/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaPlus } from "react-icons/fa6";
-import { CaretLeft, CaretRight, PencilSimple, Trash, TrashSimple } from "@phosphor-icons/react";
+import { PencilSimple, Trash, TrashSimple } from "@phosphor-icons/react";
 import LinkTitle from "../../components/Title/LinkTitle";
 
 import { useMontage } from '../../../../object/modules/montage';
@@ -126,6 +126,23 @@ export default function State() {
         list.searchBy ? null : list.setSearchBy('nomeEstado');
     }, [updateData]);
 
+    const dataForTable = list.currentList.map((estado) => {
+        return {
+            nomeEstado: estado.nomeEstado,
+            ufEstado: estado.ufEstado,
+            acoes: (
+                <div className="flex items-center justify-center gap-2 text-gray-700 "> 
+                    <button onClick={() => SelectState(cidade, "Editar")}>
+                        <PencilSimple size={20} className="hover:text-cyan-500" />
+                    </button>
+                    <button onClick={() => SelectState(cidade, "Excluir")}>
+                        <TrashSimple size={20} className="hover:text-red-600" />
+                    </button>
+                </div>
+            )
+        };
+    });
+
     return (
         <div className="flex min-h-screen">
             <div className="flex h-full w-full">
@@ -164,7 +181,7 @@ export default function State() {
                     <CustomTable
                         totalColumns={3}
                         headers={["Estado", "UF", "Ações"]}
-                        data={list.currentList} 
+                        data={dataForTable} 
                         onEdit={(item) => SelectState(item, "Editar")} 
                         onDelete={(item) => SelectState(item, "Excluir")}
                         onPageChange={(page) => list.goToPage(page)} 

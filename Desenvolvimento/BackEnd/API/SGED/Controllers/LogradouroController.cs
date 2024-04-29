@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SGED.DTO.Entities;
+using SGED.Objects.DTO.Entities;
 using SGED.Services.Interfaces;
 
 namespace SGED.Controllers
 {
-	[Route("api/[controller]")]
+    [Route("api/[controller]")]
 	[ApiController]
 	public class LogradouroController : Controller
 	{

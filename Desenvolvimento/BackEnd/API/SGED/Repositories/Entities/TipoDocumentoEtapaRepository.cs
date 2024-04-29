@@ -1,20 +1,20 @@
 ﻿using SGED.Context;
-using SGED.Models.Entities;
-using SGED.DTO.Entities;
 using SGED.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Collections.Generic;
+using SGED.Objects.Utilities;
+using SGED.Objects.Models.Entities;
 
 namespace SGED.Repositories.Entities;
 public class TipoDocumentoEtapaRepository : ITipoDocumentoEtapaRepository
 {
 
     private readonly AppDBContext _dbContext;
+    private readonly RemoveContext _remove;
 
     public TipoDocumentoEtapaRepository(AppDBContext dbContext)
     {
         _dbContext = dbContext;
+        _remove = new RemoveContext(dbContext);
     }
 
     public async Task<IEnumerable<TipoDocumentoEtapa>> GetAll()

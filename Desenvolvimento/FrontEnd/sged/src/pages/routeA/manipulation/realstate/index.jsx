@@ -127,7 +127,7 @@ export default function RealState() {
     const DeleteRealState = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Imovel").remove(realstate);
+        await connection.endpoint("Imovel").delete(realstate);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

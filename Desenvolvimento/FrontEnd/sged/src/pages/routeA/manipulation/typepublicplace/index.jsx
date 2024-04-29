@@ -108,7 +108,7 @@ export default function TypePublicPlace() {
     const DeleteTypePublicPlace = async () => {
         setInOperation(true);
 
-        await connection.endpoint("TipoLogradouro").remove(typepublicplace);
+        await connection.endpoint("TipoLogradouro").delete(typepublicplace);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

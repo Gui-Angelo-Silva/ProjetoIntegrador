@@ -80,7 +80,7 @@ export default function Stage() {
     };
 
     const GetStage = async () => {
-        await connection.endpoint("Etapa").get(stage);
+        await connection.endpoint("Etapa").get();
         list.setList(connection.response.data);
     };
 
@@ -116,7 +116,7 @@ export default function Stage() {
     const DeleteStage = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Etapa").remove(stage);
+        await connection.endpoint("Etapa").delete(stage);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

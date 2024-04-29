@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using SGED.DTO.Entities;
-using SGED.Models.Entities;
+using SGED.Objects.DTO.Entities;
+using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
 
 namespace SGED.Services.Entities
 {
-	public class EtapaService : IEtapaService
+    public class EtapaService : IEtapaService
 	{
 		private readonly IEtapaRepository _etaparepository;
 		private readonly IMapper _mapper;

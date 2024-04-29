@@ -1,14 +1,8 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using SGED.Context;
-using SGED.DTO.Entities;
-using SGED.Models.Entities;
+using SGED.Objects.Interfaces.Pessoa;
+using SGED.Objects.DTO.Entities;
 using SGED.Services.Interfaces;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace SGED.Controllers
 {
@@ -52,12 +46,12 @@ namespace SGED.Controllers
             string cpfcnpj = "";
             string rgie = "";
 
-            int response = usuarioDTO.CpfCnpj(usuarioDTO.CpfCnpjPessoa);
+            int response = usuarioDTO.CpfCnpj();
             if (response == 0) cpfcnpj = "Documento incompleto!";
             else if (response == -1) cpfcnpj = "CPF inválido!";
             else if (response == -2) cpfcnpj = "CNPJ inválido!";
 
-            response = usuarioDTO.RgIe(usuarioDTO.RgIePessoa);
+            response = usuarioDTO.RgIe();
             if (response == 0) rgie = "Documento incompleto!";
             else if (response == -1) rgie = "RG inválido!";
             else if (response == -2) rgie = "IE inválido!";
@@ -113,12 +107,12 @@ namespace SGED.Controllers
             string cpfcnpj = "";
             string rgie = "";
 
-            int response = usuarioDTO.CpfCnpj(usuarioDTO.CpfCnpjPessoa);
+            int response = usuarioDTO.CpfCnpj();
             if (response == 0) cpfcnpj = "Documento incompleto!";
             else if (response == -1) cpfcnpj = "CPF inválido!";
             else if (response == -2) cpfcnpj = "CNPJ inválido!";
 
-            response = usuarioDTO.RgIe(usuarioDTO.RgIePessoa);
+            response = usuarioDTO.RgIe();
             if (response == 0) rgie = "Documento incompleto!";
             else if (response == -1) rgie = "RG inválido!";
             else if (response == -2) rgie = "IE inválido!";

@@ -1,8 +1,8 @@
-﻿using SGED.Models.Entities;
+﻿using SGED.Objects.Models.Entities;
 
 namespace SGED.Repositories.Interfaces
 {
-	public interface ITipoUsuarioRepository
+    public interface ITipoUsuarioRepository
 	{
 		Task<IEnumerable<TipoUsuario>> GetAll();
 		Task<TipoUsuario> GetById(int id);

@@ -1,4 +1,4 @@
-﻿using SGED.DTO.Entities;
+﻿using SGED.Objects.DTO.Entities;
 using SGED.Repositories.Interfaces;
 
 namespace SGED.Services.Server.Tasks

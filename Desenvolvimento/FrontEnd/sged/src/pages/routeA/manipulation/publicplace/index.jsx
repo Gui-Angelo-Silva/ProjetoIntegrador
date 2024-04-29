@@ -127,7 +127,7 @@ export default function PublicPlace() {
     const DeletePublicPlace = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Logradouro").remove(publicplace);
+        await connection.endpoint("Logradouro").delete(publicplace);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

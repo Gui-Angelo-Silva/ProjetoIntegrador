@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SGED.Models.Entities;
+using SGED.Objects.Models.Entities;
 
 namespace SGED.Context.Builders
 {
@@ -12,6 +12,7 @@ namespace SGED.Context.Builders
             modelBuilder.Entity<TipoDocumento>().HasKey(b => b.Id);
             modelBuilder.Entity<TipoDocumento>().Property(b => b.NomeTipoDocumento).HasMaxLength(30).IsRequired();
             modelBuilder.Entity<TipoDocumento>().Property(b => b.DescricaoTipoDocumento).HasMaxLength(450).IsRequired();
+            modelBuilder.Entity<TipoDocumento>().Property(b => b.Status).IsRequired();
 
 
             // Inserções

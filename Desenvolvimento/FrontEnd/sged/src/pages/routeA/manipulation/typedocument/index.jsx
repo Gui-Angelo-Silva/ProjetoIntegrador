@@ -116,7 +116,7 @@ export default function TypeDocument() {
     const DeleteTypeDocument = async () => {
         setInOperation(true);
 
-        await connection.endpoint("TipoDocumento").remove(typedocument);
+        await connection.endpoint("TipoDocumento").delete(typedocument);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

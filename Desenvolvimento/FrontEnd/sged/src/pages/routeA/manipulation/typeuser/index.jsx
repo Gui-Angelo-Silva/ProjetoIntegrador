@@ -107,7 +107,7 @@ export default function TypeUser() {
     const DeleteTypeUser = async () => {
         setInOperation(true);
 
-        await connection.endpoint("TipoUsuario").remove(typeuser);
+        await connection.endpoint("TipoUsuario").delete(typeuser);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

@@ -32,7 +32,7 @@ namespace SGED.Controllers
 			var tipoDocumentoDTO = await _tipoDocumentoService.GetById(id);
 			if (tipoDocumentoDTO == null)
 			{
-				_response.Status = false; _response.Message = "Tipo Processo não encontrado!";
+				_response.Status = false; _response.Message = "Tipo Documento não encontrado!";
 				return NotFound(_response);
 			};
 
@@ -53,7 +53,7 @@ namespace SGED.Controllers
 
 			if (tipoDocumentos.FirstOrDefault(tipodocumento => tipodocumento.NomeTipoDocumento == tipoDocumentoDTO.NomeTipoDocumento) != null)
 			{
-				_response.Status = false; _response.Message = "Já existe o Tipo Processo " + tipoDocumentoDTO.NomeTipoDocumento + "!";
+				_response.Status = false; _response.Message = "Já existe o Tipo Documento " + tipoDocumentoDTO.NomeTipoDocumento + "!";
 				return BadRequest(_response);
 			}
 			else

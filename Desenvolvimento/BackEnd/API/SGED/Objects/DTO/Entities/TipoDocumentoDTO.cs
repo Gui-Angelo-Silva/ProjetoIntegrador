@@ -20,7 +20,6 @@ namespace SGED.Objects.DTO.Entities
 
 		[Required(ErrorMessage = "O status é requerido!")]
 		public bool Status { get; set; }
-
 		public void DisableAllOperations() => IStatusExtensions.DisableAllOperations(this);
 		public void EnableAllOperations() => IStatusExtensions.EnableAllOperations(this);
 	}

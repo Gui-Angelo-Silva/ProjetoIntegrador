@@ -45,11 +45,37 @@ namespace SGED.Controllers
 		}
 
 		[HttpPost]
-		public async Task<ActionResult> Post([FromBody] TipoDocumentoEtapaDTO TipoDocumentoEtapaDTO)
+		public async Task<ActionResult> Post([FromBody] TipoDocumentoEtapaDTO tipoDocumentoEtapaDTO)
 		{
-			if (TipoDocumentoEtapaDTO is null) return BadRequest("Dado inválido!");
-			await _TipoDocumentoEtapaService.Create(TipoDocumentoEtapaDTO);
-			return new CreatedAtRouteResult("GetTipoDocumentoEtapa", new { id = TipoDocumentoEtapaDTO.Id }, TipoDocumentoEtapaDTO);
+			if (tipoDocumentoEtapaDTO == null)
+			{
+				_response.Status = false; _response.Message = "Dado inválido!";
+				return BadRequest(_response);
+			}
+
+			var existingTipoDocumentoEtapa = await _TipoDocumentoEtapaService.GetById(tipoDocumentoEtapaDTO.IdTipoDocumento);
+
+			if (existingTipoDocumentoEtapa == null)
+			{
+				_response.Status = false; _response.Message = "O Tipo Processo não existe!";
+				return NotFound(_response);
+			}
+			else if (!existingTipoDocumentoEtapa.Status)
+			{
+				_response.Status = false; _response.Message = "O Tipo Documento Etapa está desabilitado para adicionar novas etapas!";
+				return BadRequest(_response);
+			}
+
+			var etapasDTO = await _TipoDocumentoEtapaService.GetStagesRelatedToTypeProcess(etapaDTO.IdTipoProcesso);
+			if (etapasDTO.FirstOrDefault(etapa => etapa.NomeEtapa == etapaDTO.NomeEtapa) != null)
+			{
+				_response.Status = false; _response.Message = "Já existe a Etapa " + etapaDTO.NomeEtapa + " no Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + "!";
+				return BadRequest(_response);
+			}
+
+			etapaDTO.EnableAllOperations();
+			await _etapaService.Create(etapaDTO);
+			return new CreatedAtRouteResult("GetEtapa", new { id = etapaDTO.Id }, etapaDTO);
 		}
 
 		[HttpPut()]

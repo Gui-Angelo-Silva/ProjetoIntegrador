@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
-import SideBar from "../../components/SideBar";
 import SideBarAdm from "../../components/Adm/SideBarAdm";
 import NavBar from "../../components/NavBar";
 import { FaPlus } from "react-icons/fa6";
-import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Select from "react-select";
-import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 import LinkTitle from "../../components/Title/LinkTitle";
 
 import { useMontage } from "../../../../object/modules/montage";
@@ -18,6 +15,7 @@ import ControlModule from '../../../../object/modules/control';
 import SelectModule from "../../../../object/modules/select";
 import ButtonTable from "../../components/Table/ButtonTable";
 import Search from "../../../../assets/pages/SearchImg";
+import CustomTable from "../../components/Table/Table";
 
 export default function PublicPlace() {
 
@@ -221,6 +219,32 @@ export default function PublicPlace() {
         publicplace.setIdTypePublicPlace(selectBoxTypePublicPlace.selectedOption.value ? selectBoxTypePublicPlace.selectedOption.value : '');
     }, [selectBoxTypePublicPlace.selectedOption, selectBoxNeighborhood.selectedOption]);
 
+    const getBairro = (idBairro) => {
+        const neighborhood = listNeighborhood.list.find((bairro) => bairro.id === idBairro);
+        return neighborhood ? neighborhood.nomeBairro : "N/A";
+    };
+
+    const getTipoLogradouro = (idTipoLogradouro) => {
+        const typePublicPlace = listTypePublicPlace.list.find((tipoLogradouro) => tipoLogradouro.id === idTipoLogradouro);
+        return typePublicPlace ? typePublicPlace.descricao : "N/A";
+    };
+
+    const dataForTable = list.currentList.map((logradouro) => {
+        return {
+            cep: logradouro.cep,
+            numeroInicial: logradouro.numeroInicial,
+            numeroFinal: logradouro.numeroFinal,
+            nomeBairro: getBairro(logradouro.idBairro),
+            descricao: getTipoLogradouro(logradouro.idTipoLogradouro),
+            acoes: (
+                <div className="flex items-center justify-center gap-2 text-gray-700 ">
+                    <ButtonTable func={() => SelectPublicPlace(logradouro, "Editar")} text="Editar" />
+                    <ButtonTable func={() => SelectPublicPlace(logradouro, "Excluir")} text="Excluir" />
+                </div>
+            )
+        };
+    });
+
     return (
         <div className="flex min-h-screen">
             <div className="flex h-full w-full">
@@ -259,53 +283,15 @@ export default function PublicPlace() {
                             </button>
                         </div>
                     </div>
-                    <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
-                        <div className="grid grid-cols-6 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                            <div className="flex ml-5 text-white text-lg font-semibold">CEP</div>
-                            <div className="flex justify-center items-center text-white text-lg font-semibold">Número Inicial</div>
-                            <div className="flex justify-center items-center text-white text-lg font-semibold">Número Final</div>
-                            <div className="flex justify-center items-center text-white text-lg font-semibold">Bairro</div>
-                            <div className="flex justify-center items-center text-white text-lg font-semibold">Tipo Logradouro</div>
-                            <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
-                        </div>
-                        <ul className="w-full">
-                            {list.currentList.map((publicplace) => {
-                                const bairro = listNeighborhood.list.find((neighborhood) => neighborhood.id === publicplace.idBairro);
-                                const tipoLogradouro = listTypePublicPlace.list.find((typepublicplace) => typepublicplace.id === publicplace.idTipoLogradouro)
-                                return (
-                                    <li className="grid grid-cols-6 w-full" key={publicplace.id}>
-                                        <div className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{publicplace.cep}</div>
-                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{publicplace.numeroInicial}</div>
-                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{publicplace.numeroFinal}</div>
-                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{bairro ? bairro.nomeBairro : "Bairro não encontrado!"}</div>
-                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoLogradouro ? tipoLogradouro.descricao : "Tipo Logradouro não encontrado!"}</div>
-                                        <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                            <ButtonTable text="Editar" func={() => SelectPublicPlace(publicplace, "Editar")} />
-                                            <ButtonTable text="Excluir" func={() => SelectPublicPlace(publicplace, "Excluir")} />
-                                        </div>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                        {/* Estilização dos botões de navegação */}
-                        <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
-                            <ButtonTable text="Esquerda" func={() => list.goToPage(list.currentPage - 1)} />
-                            <select
-                                className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
-                                value={list.currentPage}
-                                onChange={(e) => list.goToPage(Number(e.target.value))}
-                            >
-                                {[...Array(list.totalPages)].map((_, index) => (
-                                    <option key={index + 1} value={index + 1}>
-                                        {index + 1}
-                                    </option>
-                                ))}
-                            </select>
-                            <ButtonTable text="Direita" func={() => list.goToPage(list.currentPage + 1)} />
-                        </div>
-                        {/* Espaçamento abaixo dos botões */}
-                        <div className="mt-4"></div>
-                    </div>
+
+                    <CustomTable 
+                        totalColumns={6}
+                        headers={["CEP", "Número Inicial", "Número Final", "Bairro", "Descrição", "Ações"]}
+                        data={dataForTable}
+                        onPageChange={(page) => list.goToPage(page)}
+                        currentPage={list.currentPage}
+                        totalPages={list.totalPages}
+                    />
                 </div>
                 <Modal isOpen={modalInsert}>
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Logradouro</ModalHeader>

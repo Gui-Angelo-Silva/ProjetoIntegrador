@@ -144,7 +144,7 @@ export default function City() {
         if (!searchTerm) {
             list.setListToRender(list.list);
         } else {
-            if (searchBy === 'nomeEstado') {
+            if (searchBy === 'ufEstado') {
 
                 const filteredState = listState.list.filter((state) => {
                     const stateFilter = state[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -218,7 +218,6 @@ export default function City() {
                 <div className="fixed w-full">
                     <NavBar />
                 </div>
-                
                 <div className="fixed mt-[56px] sm:mt-[64px]">
                     <SideBarAdm />
                 </div>
@@ -236,8 +235,8 @@ export default function City() {
                                     <option key="nomeCidade" value="nomeCidade">
                                         Cidade
                                     </option>
-                                    <option key="nomeEstado" value="nomeEstado">
-                                        Estado
+                                    <option key="ufEstado" value="ufEstado">
+                                        UF
                                     </option>
                                 </select>
                             </div>
@@ -253,8 +252,6 @@ export default function City() {
                         totalColumns={3}
                         headers={["Cidade", "UF", "Ações"]}
                         data={dataForTable}
-                        onEdit={(item) => SelectCity(item, "Editar")}
-                        onDelete={(item) => SelectCity(item, "Excluir")}
                         onPageChange={(page) => list.goToPage(page)}
                         currentPage={list.currentPage}
                         totalPages={list.totalPages}

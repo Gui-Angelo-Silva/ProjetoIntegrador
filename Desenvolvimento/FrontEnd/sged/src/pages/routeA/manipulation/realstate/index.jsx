@@ -18,6 +18,8 @@ import SelectModule from "../../../../object/modules/select";
 import LinkTitle from "../../components/Title/LinkTitle";
 import { list } from "postcss";
 import Search from "../../../../assets/pages/SearchImg";
+import ButtonTable from "../../components/Table/ButtonTable";
+import CustomTable from "../../components/Table/Table";
 
 export default function RealState() {
 
@@ -220,6 +222,30 @@ export default function RealState() {
         realstate.setIdCitizen(selectboxCitizen.selectedOption.value ? selectboxCitizen.selectedOption.value : '');
     }, [selectboxPublicPlace.selectedOption, selectboxCitizen.selectedOption]);
 
+    const getCEP = (idLogradouro) => {
+        const publicplace = listPublicPlace.list.find((logradouro) => logradouro.id === idLogradouro);
+        return publicplace ? publicplace.cep : "N/A";
+    }
+
+    const getNomeMunicipe = (idMunicipe) => {
+        const citizen = listCitizen.list.find((municipe) => municipe.id === idMunicipe);
+        return citizen ? citizen.nomePessoa : "N/A";
+    }
+
+    const dataForTable = list.currentList.map((imovel) => {
+        return {
+            numeroImovel: imovel.numeroImovel,
+            cep: getCEP(imovel.idLogradouro),
+            nomePessoa: getNomeMunicipe(imovel.idMunicipe),
+            acoes: (
+                <div className="flex items-center justify-center gap-2 text-gray-700 ">
+                    <ButtonTable func={() => SelectRealState(imovel, "Editar")} text="Editar" />
+                    <ButtonTable func={() => SelectRealState(imovel, "Excluir")} text="Excluir" />
+                </div>
+            )
+        };
+    });
+
     return (
         <div className="flex min-h-screen">
             <div className="flex h-full w-full">
@@ -258,69 +284,15 @@ export default function RealState() {
                             </button>
                         </div>
                     </div>
-                    <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
-                        <div className="grid grid-cols-4 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                            <div className="flex ml-5 text-white text-lg font-semibold">Número Imóvel</div>
-                            <div className="flex justify-center items-center text-white text-lg font-semibold">CEP</div>
-                            <div className="flex justify-center items-center text-white text-lg font-semibold">Proprietário</div>
-                            <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
-                        </div>
-                        <ul className="w-full">
-                            {list.currentList.map((realstate) => {
-                                const logradouro = listPublicPlace.list.find((publicplace) => publicplace.id === realstate.idLogradouro);
-                                const municipe = listCitizen.list.find((citizen) => citizen.id === realstate.idMunicipe)
-                                return (
-                                    <li className="grid grid-cols-4 w-full" key={realstate.id}>
-                                        <div className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{realstate.numeroImovel}</div>
-                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{logradouro ? logradouro.cep : "CEP não encontrado!"}</div>
-                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{municipe ? municipe.nomePessoa : "Munícipe não encontrado"}</div>
-                                        <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                            <button
-                                                className=""
-                                                onClick={() => SelectRealState(realstate, "Editar")}
-                                            >
-                                                <PencilSimple size={20} className="hover:text-cyan-500" />
-                                            </button>{" "}
-                                            <button
-                                                className=""
-                                                onClick={() => SelectRealState(realstate, "Excluir")}
-                                            >
-                                                <TrashSimple size={20} className="hover:text-red-600" />
-                                            </button>
-                                        </div>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                        {/* Estilização dos botões de navegação */}
-                        <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
-                            <button
-                                className=""
-                                onClick={() => list.goToPage(list.currentPage - 1)}
-                            >
-                                <CaretLeft size={22} className="text-[#58AFAE]" />
-                            </button>
-                            <select
-                                className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
-                                value={list.currentPage}
-                                onChange={(e) => list.goToPage(Number(e.target.value))}
-                            >
-                                {[...Array(list.totalPages)].map((_, index) => (
-                                    <option key={index + 1} value={index + 1}>
-                                        {index + 1}
-                                    </option>
-                                ))}
-                            </select>
-                            <button
-                                className=""
-                                onClick={() => list.goToPage(list.currentPage + 1)}
-                            >
-                                <CaretRight size={22} className="text-[#58AFAE]" />
-                            </button>
-                        </div>
-                        {/* Espaçamento abaixo dos botões */}
-                        <div className="mt-4"></div>
-                    </div>
+                    
+                    <CustomTable 
+                        totalColumns={4}
+                        headers={["Número Imóvel", "CEP", "Nome Proprietário", "Ações"]}
+                        data={dataForTable}
+                        onPageChange={(page) => list.goToPage(page)}
+                        currentPage={list.currentPage}
+                        totalPages={list.totalPages}
+                    />
                 </div>
                 <Modal isOpen={modalInsert}>
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Imóvel</ModalHeader>

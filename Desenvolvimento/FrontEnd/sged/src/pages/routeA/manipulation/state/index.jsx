@@ -132,10 +132,10 @@ export default function State() {
             ufEstado: estado.ufEstado,
             acoes: (
                 <div className="flex items-center justify-center gap-2 text-gray-700 "> 
-                    <button onClick={() => SelectState(cidade, "Editar")}>
+                    <button onClick={() => SelectState(estado, "Editar")}>
                         <PencilSimple size={20} className="hover:text-cyan-500" />
                     </button>
-                    <button onClick={() => SelectState(cidade, "Excluir")}>
+                    <button onClick={() => SelectState(estado, "Excluir")}>
                         <TrashSimple size={20} className="hover:text-red-600" />
                     </button>
                 </div>
@@ -182,8 +182,6 @@ export default function State() {
                         totalColumns={3}
                         headers={["Estado", "UF", "Ações"]}
                         data={dataForTable} 
-                        onEdit={(item) => SelectState(item, "Editar")} 
-                        onDelete={(item) => SelectState(item, "Excluir")}
                         onPageChange={(page) => list.goToPage(page)} 
                         currentPage={list.currentPage} 
                         totalPages={list.totalPages} 

@@ -251,7 +251,7 @@ export default function Stage() {
                                                 onClick={() => SelectStage(stage, "Editar")}
                                             >
                                                 <PencilSimple size={20} className="hover:text-cyan-500" />
-                                            </button>{" "}
+                                            </button>
                                             <button
                                                 className=""
                                                 onClick={() => SelectStage(stage, "Excluir")}

@@ -17,6 +17,7 @@ import SelectModule from '../../../../object/modules/select';
 import Search from "../../../../assets/pages/SearchImg";
 import CustomTable from "../../components/Table/Table";
 import { PencilSimple, TrashSimple } from "@phosphor-icons/react";
+import RegistrationButton from "../../components/Button/RegistrationButton";
 
 export default function City() {
 
@@ -242,9 +243,7 @@ export default function City() {
                             </div>
                         </div>
                         <div className="flex items-center">
-                            <button className="btn hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 item bg-[#004C57]" onClick={() => openCloseModalInsert(true)}>
-                                Novo <FaPlus className="inline-block items-center" />
-                            </button>
+                            <RegistrationButton action={() => openCloseModalInsert(true)} />
                         </div>
                     </div>
 

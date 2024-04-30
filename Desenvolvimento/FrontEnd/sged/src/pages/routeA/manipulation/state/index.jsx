@@ -14,6 +14,7 @@ import StateClass from '../../../../object/class/state';
 import Search from "../../../../assets/pages/SearchImg";
 import ModalDelete from "../../components/Modal/ModalDelete";
 import CustomTable from "../../components/Table/Table";
+import RegistrationButton from "../../components/Button/RegistrationButton";
 
 export default function State() {
 
@@ -156,7 +157,7 @@ export default function State() {
                     <br />
                     <LinkTitle pageName="Estado" />
                     <div className="flex items-center">
-                        <div className="flex justify-center items-center mx-auto w-[450px]">
+                        <div className="flex justify-center items-center mx-auto w-[350px] sm:w-[400px] md:w-[450px]">
                             <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
                                 <div className="pl-2">
                                     <Search />
@@ -172,10 +173,8 @@ export default function State() {
                                 </select>
                             </div>
                         </div>
-                        <div className="flex items-center justify-end">
-                            <button className="btn hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 bg-[#004C57]" onClick={() => openCloseModalInsert(true)}>
-                                Novo <FaPlus className="inline-block items-center" />
-                            </button>
+                        <div className="flex items-center">
+                            <RegistrationButton action={() => openCloseModalInsert(true)}/>
                         </div>
                     </div>
                     <CustomTable

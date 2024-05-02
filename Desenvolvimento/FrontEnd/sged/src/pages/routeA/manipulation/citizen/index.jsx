@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import NavBar from "../../components/NavBar";
-import { FaPlus } from "react-icons/fa6";
 import LinkTitle from "../../components/Title/LinkTitle";
 import ButtonTable from "../../components/Table/ButtonTable";
 import SideBarAdm from "../../components/Adm/SideBarAdm";
@@ -13,6 +12,9 @@ import ConnectionService from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
 import CitizenClass from '../../../../object/class/citizen';
 import SelectModule from '../../../../object/modules/select';
+import CustomTable from "../../components/Table/Table";
+import RegistrationButton from "../../components/Button/RegistrationButton";
+import { motion } from "framer-motion";
 
 export default function Citizen() {
 
@@ -131,6 +133,28 @@ export default function Citizen() {
         if (!list.searchBy) list.setSearchBy('nomePessoa');
     }, [updateData]);
 
+    const dataForTable = list.currentList.map((municipe) => {
+        return {
+            imagemPessoa: (
+                <img
+                    src={municipe.imagemPessoa}
+                    alt={`Imagem de ${municipe.nomePessoa}`}
+                    className="w-[40px] h-[40px]"
+                />
+            ),
+            nomePessoa: municipe.nomePessoa,
+            emailPessoa: municipe.emailPessoa,
+            cpfCnpjPessoa: municipe.cpfCnpjPessoa,
+            rgIePessoa: municipe.rgIePessoa,
+            acoes: (
+                <div className="flex items-center justify-center gap-2 text-gray-700 ">
+                    <ButtonTable func={() => SelectCity(cidade, "Editar")} text="Editar" />
+                    <ButtonTable func={() => SelectCity(cidade, "Excluir")} text="Excluir" />
+                </div>
+            )
+        }
+    })
+
     return (
         <div className="flex min-h-screen">
             <div className="flex h-full w-full">
@@ -140,7 +164,9 @@ export default function Citizen() {
                 <div className="fixed mt-[56px] sm:mt-[64px]">
                     <SideBarAdm />
                 </div>
-                <div className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full">
+                <motion.div initial={{ opacity: 0.5 }} animate={{ opacity: 1 }} transition={{ type: 'spring', velocity: 2 }}
+                    className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full"
+                >
                     <br />
                     <LinkTitle pageName="Munícipe" />
                     <div className="flex items-center">
@@ -167,59 +193,19 @@ export default function Citizen() {
                             </div>
                         </div>
                         <div className="flex items-center">
-                            <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100" style={{ backgroundColor: '#004C57' }} onClick={() => openCloseModalInsert(true)}>
-                                Novo <FaPlus className="inline-block" style={{ alignItems: 'center' }} />
-                            </button>
+                            <RegistrationButton action={() => openCloseModalInsert(true)} />
                         </div>
                     </div>
-                    <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
-                        <div className="grid grid-cols-6 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                            <div className="flex ml-5 justify-center items-center text-white text-lg font-semibold">Imagem</div>
-                            <div className="flex justify-center items-center text-white text-lg font-semibold">Nome</div>
-                            <div className="flex justify-center items-center text-white text-lg font-semibold">E-mail</div>
-                            <div className="flex justify-center items-center text-white text-lg font-semibold">CPF / CNPJ</div>
-                            <div className="flex justify-center items-center text-white text-lg font-semibold">RG / IE</div>
-                            <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
-                        </div>
-                        <ul className="w-full">
-                            {list.currentList.map((object) => {
-                                return (
-                                    <li className="grid grid-cols-6 w-full" key={object.id}>
-                                        <div className="flex pl-5 justify-center items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">
-                                            <img src={object.imagemPessoa} className="cursor-pointer rounded-full w-[40px] h-[40px] object-cover shadow-md" />
-                                        </div>
-                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.nomePessoa}</div>
-                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.emailPessoa}</div>
-                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.cpfCnpjPessoa}</div>
-                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.rgIePessoa}</div>
-                                        <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                            <ButtonTable text="Editar" func={() => SelectCitizen(object, "Editar")} />
-                                            <ButtonTable text="Excluir" func={() => SelectCitizen(object, "Excluir")} />
-                                        </div>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                        {/* Estilização dos botões de navegação */}
-                        <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
-                            <ButtonTable text="Esquerda" func={() => list.goToPage(list.currentPage - 1)} />
-                            <select
-                                className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
-                                value={list.currentPage}
-                                onChange={(e) => list.goToPage(Number(e.target.value))}
-                            >
-                                {[...Array(list.totalPages)].map((_, index) => (
-                                    <option key={index + 1} value={index + 1} >
-                                        {index + 1}
-                                    </option>
-                                ))}
-                            </select>
-                            <ButtonTable text="Direita" func={() => list.goToPage(list.currentPage + 1)} />
-                        </div>
-                        {/* Espaçamento abaixo dos botões */}
-                        <div className="mt-4"></div>
-                    </div>
-                </div>
+
+                    <CustomTable
+                        totalColumns={6}
+                        headers={["Imagem Pessoa", "Nome", "Email", "CPF/CNPJ", "RG/IE", "Ações"]}
+                        data={dataForTable}
+                        onPageChange={(page) => list.goToPage(page)}
+                        currentPage={list.currentPage}
+                        totalPages={list.totalPages}
+                    />
+                </motion.div>
                 <Modal isOpen={modalInsert}>
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Munícipe</ModalHeader>
                     <ModalBody>

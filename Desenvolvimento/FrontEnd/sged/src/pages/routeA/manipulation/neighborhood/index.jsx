@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
-import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import SideBarAdm from "../../components/Adm/SideBarAdm";
-import { FaPlus } from "react-icons/fa6";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Select from 'react-select';
-import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 import LinkTitle from "../../components/Title/LinkTitle";
 import ButtonTable from "../../components/Table/ButtonTable";
 
@@ -16,6 +13,9 @@ import ListModule from '../../../../object/modules/list';
 import NeighborhoodClass from '../../../../object/class/neighborhood';
 import SelectModule from '../../../../object/modules/select';
 import Search from "../../../../assets/pages/SearchImg";
+import CustomTable from "../../components/Table/Table";
+import RegistrationButton from "../../components/Button/RegistrationButton";
+import { motion } from "framer-motion";
 
 export default function Neighborhood() {
 
@@ -193,6 +193,24 @@ export default function Neighborhood() {
         neighborhood.setIdCity(selectBox.selectedOption.value ? selectBox.selectedOption.value : '');
     }, [selectBox.selectedOption]);
 
+    const getNomeCidade = (idCidade) => {
+        const city = listCity.list.find((cidade) => cidade.id === idCidade);
+        return city ? city.nomeCidade : "N/A";
+    };
+
+    const dataForTable = list.currentList.map((bairro) => {
+        return {
+            nomeBairro: bairro.nomeBairro,
+            nomeCidade: getNomeCidade(bairro.idCidade),
+            acoes: (
+                <div className="flex items-center justify-center gap-2 text-gray-700 ">
+                    <ButtonTable func={() => SelectNeighborhood(bairro, "Editar")} text="Editar" />
+                    <ButtonTable func={() => SelectNeighborhood(bairro, "Excluir")} text="Excluir" />
+                </div>
+            )
+        };
+    });
+
     return (
         <div className="flex min-h-screen">
             <div className="flex h-full w-full">
@@ -202,7 +220,9 @@ export default function Neighborhood() {
                 <div className="fixed mt-[56px] sm:mt-[64px]">
                     <SideBarAdm />
                 </div>
-                <div className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full">
+                <motion.div initial={{ opacity: 0.5 }} animate={{ opacity: 1 }} transition={{ type: 'spring', velocity: 2 }}
+                    className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full"
+                >
                     <br />
                     <LinkTitle pageName="Bairro" />
                     <div className="flex items-center">
@@ -223,52 +243,19 @@ export default function Neighborhood() {
                             </div>
                         </div>
                         <div className="flex items-center">
-                            <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 bg-[#004C57]" onClick={() => openCloseModalInsert(true)}>
-                                Novo <FaPlus className="inline-block items-center" />
-                            </button>
+                            <RegistrationButton action={() => openCloseModalInsert(true)} />
                         </div>
                     </div>
-                    <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
-                        <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                            <div className="flex ml-5 text-white text-lg font-semibold">Bairro</div>
-                            <div className="flex justify-center items-center text-white text-lg font-semibold">Cidade</div>
-                            <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
-                        </div>
-                        <ul className="w-full">
-                            {list.currentList.map((neighborhood) => {
-                                const cidade = listCity.list.find((city) => city.id === neighborhood.idCidade);
-                                return (
-                                    <li className="grid grid-cols-3 w-full" key={neighborhood.id}>
-                                        <div className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{neighborhood.nomeBairro}</div>
-                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{cidade ? cidade.nomeCidade : "Cidade não encontrada!"}</div>
-                                        <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                            <ButtonTable text="Editar" func={() => SelectNeighborhood(neighborhood, "Editar")} />
-                                            <ButtonTable text="Excluir" func={() => SelectNeighborhood(neighborhood, "Excluir")} />
-                                        </div>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                        {/* Estilização dos botões de navegação */}
-                        <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
-                            <ButtonTable text="Esquerda" func={() => list.goToPage(list.currentPage - 1)} />
-                            <select
-                                className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
-                                value={list.currentPage}
-                                onChange={(e) => list.goToPage(Number(e.target.value))}
-                            >
-                                {[...Array(list.totalPages)].map((_, index) => (
-                                    <option key={index + 1} value={index + 1}>
-                                        {index + 1}
-                                    </option>
-                                ))}
-                            </select>
-                            <ButtonTable text="Direita" func={() => list.goToPage(list.currentPage + 1)} />
-                        </div>
-                        {/* Espaçamento abaixo dos botões */}
-                        <div className="mt-4"></div>
-                    </div>
-                </div>
+
+                    <CustomTable
+                        totalColumns={3}
+                        headers={["Bairro", "Cidade", "Ações"]}
+                        data={dataForTable}
+                        onPageChange={(page) => list.goToPage(page)}
+                        currentPage={list.currentPage}
+                        totalPages={list.totalPages}
+                    />
+                </motion.div>
                 <Modal isOpen={modalInsert}>
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Bairro</ModalHeader>
                     <ModalBody>
@@ -315,7 +302,7 @@ export default function Neighborhood() {
                         </button>
                         <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostNeighborhood()} disabled={inOperation} >
                             {inOperation ? 'Aguarde' : 'Cadastrar'}
-                        </button>{" "}
+                        </button>
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalEdit}>

@@ -1,4 +1,3 @@
-import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import CardDashboard from "../../components/Card/CardDashboard";
 import Title from "../../components/Title/Title";
@@ -8,8 +7,7 @@ import { FaTableCellsLarge, FaFile } from "react-icons/fa6";
 import { useMontage } from '../../../../object/modules/montage';
 import { useEffect, useState } from "react";
 import SideBarAdm from "../../components/Adm/SideBarAdm";
-import Modal from "../../components/Modal/ModalDelete";
-import { Trash } from "@phosphor-icons/react";
+import { motion } from "framer-motion";
 
 export default function Home() {
 
@@ -31,7 +29,9 @@ export default function Home() {
         <div className="fixed mt-[56px] sm:mt-[64px]">
           <SideBarAdm />
         </div>
-        <div className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full">
+        <motion.div initial={{ opacity: 0.5 }} animate={{ opacity: 1 }} transition={{ type: 'spring', velocity: 2 }}
+          className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full"
+        >
           <br />
           <Title title="Visão Geral" />
           <Subtitle subtitle="Solicitações Gerais" />
@@ -71,7 +71,7 @@ export default function Home() {
           <TableDashboard title="Últimos Arquivos" data={data.slice(0, 4)} icon={<FaFile />} />
           <TableDashboard title="Últimos Arquivos" data={data.slice(0, 4)} icon={<FaFile />} />
           <TableDashboard title="Últimos Arquivos" data={data.slice(0, 4)} icon={<FaFile />} />
-        </div>
+        </motion.div>
       </div>
     </div>
   );

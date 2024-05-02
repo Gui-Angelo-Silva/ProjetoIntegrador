@@ -1,6 +1,4 @@
 import NavBar from "../../components/NavBar";
-import SideBar from "../../components/SideBar";
-//import { Link } from "react-router-dom";
 import Title from "../../components/Title/Title";
 import { useMontage } from '../../../../object/modules/montage';
 import Cards from '../../components/Card/Cards';
@@ -8,6 +6,7 @@ import CardIcon from "../../components/Card/CardIcon";
 import React, { useState, useEffect } from "react";
 import SideBarAdm from "../../components/Adm/SideBarAdm";
 import Search from "../../../../assets/pages/SearchImg";
+import { motion } from "framer-motion";
 
 export default function Registrations() {
 
@@ -85,7 +84,9 @@ export default function Registrations() {
                 <div className="fixed mt-[56px] sm:mt-[64px]">
                     <SideBarAdm />
                 </div>
-                <div className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full">
+                <motion.div initial={{ opacity: 0.5 }} animate={{ opacity: 1 }} transition={{ type: 'spring', velocity: 2 }}
+                    className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full"
+                >
                     <br />
                     <Title title="Cadastros" />
                     <div className="rounded-md mt-[15px]">
@@ -126,7 +127,7 @@ export default function Registrations() {
                             </div>
                         ))}
                     </div>
-                </div>
+                </motion.div>
             </div>
         </div>
     );

@@ -11,6 +11,7 @@ import ConnectionService from "../../../../object/service/connection";
 import ListModule from "../../../../object/modules/list";
 import TypeDocumentStageClass from "../../../../object/class/typedocumentstage";
 import SelectModule from '../../../../object/modules/select';
+import { motion } from "framer-motion";
 
 export default function TypeDocument() {
 
@@ -78,14 +79,24 @@ export default function TypeDocument() {
     };
 
     const GetTypeProcess = async () => {
-        await connection.endpoint("TipoProcesso").get();
-        listTypeProcess.setList(connection.response.data);
-
-        if (connection.response.data.length > 0) {
-            selectBoxTypeProcess.updateOptions(connection.response.data, "id", "nomeTipoProcesso");
-            selectBoxTypeProcess.selectOption(connection.response.data[0]?.id);
+        try {
+            await connection.endpoint("TipoProcesso").get();
+    
+            if (connection.response.data && Array.isArray(connection.response.data)) {
+                listTypeProcess.setList(connection.response.data);
+    
+                if (connection.response.data.length > 0) {
+                    selectBoxTypeProcess.updateOptions(connection.response.data, "id", "nomeTipoProcesso");
+                    selectBoxTypeProcess.selectOption(connection.response.data[0]?.id);
+                }
+            } else {
+                console.error("TipoProcesso não retornou uma lista de processos válidos.");
+            }
+        } catch (error) {
+            console.error("Erro ao buscar TipoProcesso:", error);
         }
     };
+    
 
     const GetStage = async () => {
         await connection.endpoint("Etapa").action(`GetRelatedToTypeProcess/${selectBoxTypeProcess.selectedOption.value}`).get();
@@ -174,7 +185,9 @@ export default function TypeDocument() {
                 <div className="fixed mt-[64px]">
                     <SideBarAdm />
                 </div>
-                <div className="mt-[64px] ml-[270px] pl-2 mr-[25px] w-full">
+                <motion.div initial={{ opacity: 0.5 }} animate={{ opacity: 1 }} transition={{ type: 'spring', velocity: 2 }}
+                    className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full"
+                >
                     <br />
                     <div className="flex flex-row mb-4">
                         <Link to="/a/registration">
@@ -341,6 +354,7 @@ export default function TypeDocument() {
                                             <CaretRight size={22} className="text-[#58AFAE]" />
                                         </button>
                                     </div>
+                                    <div className="mt-4"></div>
                                 </div>
                             </div>
                         </div>
@@ -407,7 +421,7 @@ export default function TypeDocument() {
                             {/* Espaçamento abaixo dos botões 
                             <div className="mt-4"></div>
                         </div> */}
-                </div>
+                </motion.div>
             </div>
         </div>
     );

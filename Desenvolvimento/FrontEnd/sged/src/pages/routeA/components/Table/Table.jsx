@@ -14,8 +14,9 @@ const TableRow = ({ item }) => {
       {filteredItem.map(([key, value], index) => (
         <div
           key={index}
-          className={`flex border-t-[1px] py-2 border-r-[1px] border-[#C8E5E5] text-gray-700 ${index === 0 ? "justify-start pl-5" : "justify-center"
-            }`}
+          className={`flex items-center border-t-[1px] truncate py-2 border-r-[1px] border-[#C8E5E5] text-gray-700 
+          justify-center`}
+          // ${index === 0 ? "justify-start pl-5" : "justify-center" }
         >
           {value}
         </div>

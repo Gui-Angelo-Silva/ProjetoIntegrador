@@ -16,7 +16,8 @@ import CityClass from '../../../../object/class/city';
 import SelectModule from '../../../../object/modules/select';
 import Search from "../../../../assets/pages/SearchImg";
 import CustomTable from "../../components/Table/Table";
-import { PencilSimple, TrashSimple } from "@phosphor-icons/react";
+import RegistrationButton from "../../components/Button/RegistrationButton";
+import { motion } from "framer-motion";
 
 export default function City() {
 
@@ -144,7 +145,7 @@ export default function City() {
         if (!searchTerm) {
             list.setListToRender(list.list);
         } else {
-            if (searchBy === 'nomeEstado') {
+            if (searchBy === 'ufEstado') {
 
                 const filteredState = listState.list.filter((state) => {
                     const stateFilter = state[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -218,11 +219,12 @@ export default function City() {
                 <div className="fixed w-full">
                     <NavBar />
                 </div>
-                
                 <div className="fixed mt-[56px] sm:mt-[64px]">
                     <SideBarAdm />
                 </div>
-                <div className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full">
+                <motion.div initial={{ opacity: 0.5 }} animate={{ opacity: 1 }} transition={{ type: 'spring', velocity: 2 }}
+                    className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full"
+                >
                     <br />
                     <LinkTitle pageName="Cidade" />
                     <div className="flex items-center">
@@ -236,16 +238,14 @@ export default function City() {
                                     <option key="nomeCidade" value="nomeCidade">
                                         Cidade
                                     </option>
-                                    <option key="nomeEstado" value="nomeEstado">
-                                        Estado
+                                    <option key="ufEstado" value="ufEstado">
+                                        UF
                                     </option>
                                 </select>
                             </div>
                         </div>
                         <div className="flex items-center">
-                            <button className="btn hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 item bg-[#004C57]" onClick={() => openCloseModalInsert(true)}>
-                                Novo <FaPlus className="inline-block items-center" />
-                            </button>
+                            <RegistrationButton action={() => openCloseModalInsert(true)} />
                         </div>
                     </div>
 
@@ -253,13 +253,11 @@ export default function City() {
                         totalColumns={3}
                         headers={["Cidade", "UF", "Ações"]}
                         data={dataForTable}
-                        onEdit={(item) => SelectCity(item, "Editar")}
-                        onDelete={(item) => SelectCity(item, "Excluir")}
                         onPageChange={(page) => list.goToPage(page)}
                         currentPage={list.currentPage}
                         totalPages={list.totalPages}
                     />
-                </div>
+                </motion.div>
                 <Modal isOpen={modalInsert}>
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Cidade</ModalHeader>
                     <ModalBody>

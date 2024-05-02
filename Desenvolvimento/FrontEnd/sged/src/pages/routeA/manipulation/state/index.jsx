@@ -3,7 +3,6 @@ import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import SideBarAdm from "../../components/Adm/SideBarAdm";
 import NavBar from "../../components/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FaPlus } from "react-icons/fa6";
 import { PencilSimple, Trash, TrashSimple } from "@phosphor-icons/react";
 import LinkTitle from "../../components/Title/LinkTitle";
 
@@ -14,6 +13,8 @@ import StateClass from '../../../../object/class/state';
 import Search from "../../../../assets/pages/SearchImg";
 import ModalDelete from "../../components/Modal/ModalDelete";
 import CustomTable from "../../components/Table/Table";
+import RegistrationButton from "../../components/Button/RegistrationButton";
+import { motion } from "framer-motion";
 
 export default function State() {
 
@@ -132,10 +133,10 @@ export default function State() {
             ufEstado: estado.ufEstado,
             acoes: (
                 <div className="flex items-center justify-center gap-2 text-gray-700 "> 
-                    <button onClick={() => SelectState(cidade, "Editar")}>
+                    <button onClick={() => SelectState(estado, "Editar")}>
                         <PencilSimple size={20} className="hover:text-cyan-500" />
                     </button>
-                    <button onClick={() => SelectState(cidade, "Excluir")}>
+                    <button onClick={() => SelectState(estado, "Excluir")}>
                         <TrashSimple size={20} className="hover:text-red-600" />
                     </button>
                 </div>
@@ -152,11 +153,13 @@ export default function State() {
                 <div className="fixed mt-[56px] sm:mt-[64px]">
                     <SideBarAdm />
                 </div>
-                <div className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full">
+                <motion.div initial={{ opacity: 0.5 }} animate={{ opacity: 1 }} transition={{ type: 'spring', velocity: 2 }}
+                    className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full"
+                >
                     <br />
                     <LinkTitle pageName="Estado" />
                     <div className="flex items-center">
-                        <div className="flex justify-center items-center mx-auto w-[450px]">
+                        <div className="flex justify-center items-center mx-auto w-[350px] sm:w-[400px] md:w-[450px]">
                             <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
                                 <div className="pl-2">
                                     <Search />
@@ -172,23 +175,19 @@ export default function State() {
                                 </select>
                             </div>
                         </div>
-                        <div className="flex items-center justify-end">
-                            <button className="btn hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 bg-[#004C57]" onClick={() => openCloseModalInsert(true)}>
-                                Novo <FaPlus className="inline-block items-center" />
-                            </button>
+                        <div className="flex items-center">
+                            <RegistrationButton action={() => openCloseModalInsert(true)}/>
                         </div>
                     </div>
                     <CustomTable
                         totalColumns={3}
                         headers={["Estado", "UF", "Ações"]}
                         data={dataForTable} 
-                        onEdit={(item) => SelectState(item, "Editar")} 
-                        onDelete={(item) => SelectState(item, "Excluir")}
                         onPageChange={(page) => list.goToPage(page)} 
                         currentPage={list.currentPage} 
                         totalPages={list.totalPages} 
                     />
-                </div>
+                </motion.div>
                 
                 <Modal isOpen={modalInsert} >
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Estado</ModalHeader>

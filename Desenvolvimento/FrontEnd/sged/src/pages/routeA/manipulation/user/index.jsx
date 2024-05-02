@@ -9,7 +9,6 @@ import Select from 'react-select';
 import LinkTitle from "../../components/Title/LinkTitle";
 
 import defaultProfilePicture from '../../../../assets/user/defaultProfilePicture.png';
-
 import { useMontage } from '../../../../object/modules/montage';
 import { useServer } from '../../../../routes/serverRoute';
 import ConnectionService from '../../../../object/service/connection';
@@ -18,6 +17,8 @@ import UserClass from '../../../../object/class/user';
 import SelectModule from '../../../../object/modules/select';
 import Search from "../../../../assets/pages/SearchImg";
 import RegistrationButton from "../../components/Button/RegistrationButton";
+import CustomTable from "../../components/Table/Table";
+import ButtonTable from "../../components/Table/ButtonTable";
 
 export default function User() {
 
@@ -227,6 +228,33 @@ export default function User() {
         }
     };
 
+    const getTipoUsuario = (idTipoUsuario) => {
+        const typeuser = listTypeUser.list.find((tipousuario) => tipousuario.id === idTipoUsuario);
+        return typeuser ? typeuser.nomeTipoUsuario : "N/A";
+    }
+
+    const dataForTable = list.currentList.map((usuario) => {
+        return {
+            imagemPessoa: (
+                <img
+                    src={usuario.imagemPessoa}
+                    alt={`Imagem de ${usuario.nomePessoa}`}
+                    className="w-[40px] h-[40px]"
+                />
+            ),
+            nomePessoa: usuario.nomePessoa,
+            emailPessoa: usuario.emailPessoa,
+            nomeTipoUsuario: getTipoUsuario(usuario.idTipoUsuario),
+            cargoUsuario: usuario.cargoUsuario,
+            acoes: (
+                <div className="flex items-center justify-center gap-2 text-gray-700 ">
+                    <ButtonTable func={() => SelectUser(usuario, "Editar")} text="Editar" />
+                    <ButtonTable func={() => SelectUser(usuario, "Excluir")} text="Excluir" />
+                </div>
+            )
+        };
+    });
+
     return (
         <div className="flex min-h-screen">
             <div className="flex h-full w-full">
@@ -272,64 +300,14 @@ export default function User() {
                             <RegistrationButton action={() => openCloseModalInsert(true)} />
                         </div>
                     </div>
-                    <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
-                        <div className="grid grid-cols-6 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                            <div className="flex ml-5 justify-center items-center text-white text-lg font-semibold">Imagem</div>
-                            <div className="flex justify-center items-center text-white text-lg font-semibold">Nome</div>
-                            <div className="flex justify-center items-center text-white text-lg font-semibold">E-mail</div>
-                            <div className="flex justify-center items-center text-white text-lg font-semibold">Tipo Usuário</div>
-                            <div className="flex justify-center items-center text-white text-lg font-semibold">Cargo</div>
-                            <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
-                        </div>
-                        <ul className="w-full">
-                            {list.currentList.map(user => {
-                                const tipoUsuario = listTypeUser.list.find(typeuser => typeuser.id === user.idTipoUsuario);
-                                return (
-                                    <li className="grid grid-cols-6 w-full" key={user.id}>
-                                        <div className="flex pl-5 justify-center items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">
-                                            <img src={user.imagemPessoa ? user.imagemPessoa : defaultProfilePicture} style={{ cursor: 'pointer', borderRadius: '50%', width: '40px', height: '40px', objectFit: 'cover', boxShadow: '0 0 0 1px black', }} />
-                                        </div>
-                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.nomePessoa}</div>
-                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.emailPessoa}</div>
-                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipoUsuario ? tipoUsuario.nomeTipoUsuario : 'Tipo Usuário não encontrado!'}</div>
-                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{user.cargoUsuario}</div>
-                                        <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                            <button className="" onClick={() => SelectUser(user, "Editar")}><PencilSimple size={20} className="hover:text-cyan-500" /></button>{"  "}
-                                            <button className="" onClick={() => SelectUser(user, "Excluir")}><TrashSimple size={20} className="hover:text-red-600" /></button>
-                                        </div>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                        {/* Estilização dos botões de navegação */}
-                        <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
-                            <button
-                                className=""
-                                onClick={() => list.goToPage(list.currentPage - 1)}
-                            >
-                                <CaretLeft size={22} className="text-[#58AFAE]" />
-                            </button>
-                            <select
-                                className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
-                                value={list.currentPage}
-                                onChange={(e) => list.goToPage(Number(e.target.value))}
-                            >
-                                {[...Array(list.totalPages)].map((_, index) => (
-                                    <option key={index + 1} value={index + 1} >
-                                        {index + 1}
-                                    </option>
-                                ))}
-                            </select>
-                            <button
-                                className=""
-                                onClick={() => list.goToPage(list.currentPage + 1)}
-                            >
-                                <CaretRight size={22} className="text-[#58AFAE]" />
-                            </button>
-                        </div>
-                        {/* Espaçamento abaixo dos botões */}
-                        <div className="mt-4"></div>
-                    </div>
+                    <CustomTable 
+                        totalColumns={6}
+                        headers={["Imagem", "Nome", "Email", "Tipo Usuário", "Cargo", "Ações"]}
+                        data={dataForTable}
+                        onPageChange={(page) => list.goToPage(page)}
+                        currentPage={list.currentPage}
+                        totalPages={list.totalPages}
+                    />
                 </motion.div>
                 <Modal isOpen={modalInsert}>
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Usuário</ModalHeader>

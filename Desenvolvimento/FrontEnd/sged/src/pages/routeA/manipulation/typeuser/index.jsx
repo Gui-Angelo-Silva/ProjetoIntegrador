@@ -3,7 +3,6 @@ import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap'
 import NavBar from "../../components/NavBar";
 import SideBarAdm from "../../components/Adm/SideBarAdm";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FaPlus } from "react-icons/fa6";
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 import LinkTitle from "../../components/Title/LinkTitle";
 
@@ -14,6 +13,8 @@ import TypeUserClass from '../../../../object/class/typeuser';
 import Search from "../../../../assets/pages/SearchImg";
 import RegistrationButton from "../../components/Button/RegistrationButton";
 import { motion } from "framer-motion";
+import CustomTable from "../../components/Table/Table";
+import ButtonTable from "../../components/Table/ButtonTable";
 
 export default function TypeUser() {
 
@@ -125,6 +126,20 @@ export default function TypeUser() {
         list.searchBy ? null : list.setSearchBy('nomeTipoUsuario');
     }, [updateData]);
 
+    const dataForTable = list.currentList.map((tipousuario) => {
+        return {
+            nomeTipoUsuario: tipousuario.nomeTipoUsuario,
+            nivelAcesso: tipousuario.nivelAcesso,
+            descricaoTipoUsuario: tipousuario.descricaoTipoUsuario,
+            acoes: (
+                <div className="flex items-center justify-center gap-2 text-gray-700 ">
+                    <ButtonTable func={() => SelectTypeUser(tipousuario, "Editar")} text="Editar" />
+                    <ButtonTable func={() => SelectTypeUser(tipousuario, "Excluir")} text="Excluir" />
+                </div>
+            )
+        };
+    });
+
     return (
         <div className="flex min-h-screen">
             <div className="flex h-full w-full">
@@ -163,64 +178,14 @@ export default function TypeUser() {
                             <RegistrationButton action={() => openCloseModalInsert(true)} />
                         </div>
                     </div>
-                    <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
-                        <div className="grid grid-cols-4 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                            <div className="flex ml-5 text-white text-lg font-semibold">Tipo de Usuário</div>
-                            <div className="flex justify-center items-center text-white text-lg font-semibold">Nível de Acesso</div>
-                            <div className="flex justify-center items-center text-white text-lg font-semibold">Descrição</div>
-                            <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
-                        </div>
-                        <ul className="w-full">
-                            {list.currentList.map((typeuser) => (
-                                <li className="grid grid-cols-4 w-full" key={typeuser.id}>
-                                    <div className="flex pl-5 items-center border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{typeuser.nomeTipoUsuario}</div>
-                                    <div className="flex justify-center pl-2 pr-2 items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{typeuser.nivelAcesso}</div>
-                                    <div className="flex justify-start pl-2 pr-2 items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{typeuser.descricaoTipoUsuario}</div>
-                                    <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                        <button
-                                            className=""
-                                            onClick={() => SelectTypeUser(typeuser, "Editar")}
-                                        >
-                                            <PencilSimple size={20} className="hover:text-cyan-500" />
-                                        </button>{"  "}
-                                        <button
-                                            className=""
-                                            onClick={() => SelectTypeUser(typeuser, "Excluir")}
-                                        >
-                                            <TrashSimple size={20} className="hover:text-red-600" />
-                                        </button>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                        {/* Estilização dos botões de navegação */}
-                        <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
-                            <button
-                                className=""
-                                onClick={() => list.goToPage(list.currentPage - 1)}
-                            >
-                                <CaretLeft size={22} className="text-[#58AFAE]" />
-                            </button>
-                            <select
-                                className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
-                                value={list.currentPage}
-                                onChange={(e) => list.goToPage(Number(e.target.value))}
-                            >
-                                {[...Array(list.totalPages)].map((_, index) => (
-                                    <option key={index + 1} value={index + 1} >
-                                        {index + 1}
-                                    </option>
-                                ))}
-                            </select>
-                            <button
-                                className=""
-                                onClick={() => list.goToPage(list.currentPage + 1)}
-                            >
-                                <CaretRight size={22} className="text-[#58AFAE]" />
-                            </button>
-                        </div>
-                        <div className="mt-4"></div>
-                    </div>
+                    <CustomTable 
+                        totalColumns={4}
+                        headers={["Tipo Usuário", "Nível de Acesso", "Descrição", "Ações"]}
+                        data={dataForTable}
+                        onPageChange={(page) => list.goToPage(page)}
+                        currentPage={list.currentPage}
+                        totalPages={list.totalPages}
+                    />
                 </motion.div>
                 <Modal isOpen={modalInsert}>
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Usuário</ModalHeader>

@@ -300,7 +300,7 @@ export default function Neighborhood() {
                         </button>
                         <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostNeighborhood()} disabled={inOperation} >
                             {inOperation ? 'Aguarde' : 'Cadastrar'}
-                        </button>{" "}
+                        </button>
                     </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalEdit}>

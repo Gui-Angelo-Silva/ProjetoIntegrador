@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap'
-import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import SideBarAdm from "../../components/Adm/SideBarAdm";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -13,6 +12,8 @@ import ConnectionService from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
 import TypeUserClass from '../../../../object/class/typeuser';
 import Search from "../../../../assets/pages/SearchImg";
+import RegistrationButton from "../../components/Button/RegistrationButton";
+import { motion } from "framer-motion";
 
 export default function TypeUser() {
 
@@ -133,7 +134,9 @@ export default function TypeUser() {
                 <div className="fixed mt-[56px] sm:mt-[64px]">
                     <SideBarAdm />
                 </div>
-                <div className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full">
+                <motion.div initial={{ opacity: 0.5 }} animate={{ opacity: 1 }} transition={{ type: 'spring', velocity: 2 }}
+                    className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full"
+                >
                     <br />
                     <LinkTitle pageName="Tipo Usuário" />
                     <div className="flex items-center">
@@ -157,9 +160,7 @@ export default function TypeUser() {
                             </div>
                         </div>
                         <div className="flex items-center">
-                            <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 bg-[#004C57]" onClick={() => openCloseModalInsert(true)}>
-                                Novo <FaPlus className="inline-block items-baseline" />
-                            </button>
+                            <RegistrationButton action={() => openCloseModalInsert(true)} />
                         </div>
                     </div>
                     <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
@@ -218,10 +219,9 @@ export default function TypeUser() {
                                 <CaretRight size={22} className="text-[#58AFAE]" />
                             </button>
                         </div>
-                        {/* Espaçamento abaixo dos botões */}
                         <div className="mt-4"></div>
                     </div>
-                </div>
+                </motion.div>
                 <Modal isOpen={modalInsert}>
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Usuário</ModalHeader>
                     <ModalBody>

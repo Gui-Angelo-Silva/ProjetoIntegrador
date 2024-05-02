@@ -3,7 +3,6 @@ import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import SideBarAdm from "../../components/Adm/SideBarAdm";
 import NavBar from "../../components/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FaPlus } from "react-icons/fa6";
 import { PencilSimple, Trash, TrashSimple } from "@phosphor-icons/react";
 import LinkTitle from "../../components/Title/LinkTitle";
 
@@ -15,6 +14,7 @@ import Search from "../../../../assets/pages/SearchImg";
 import ModalDelete from "../../components/Modal/ModalDelete";
 import CustomTable from "../../components/Table/Table";
 import RegistrationButton from "../../components/Button/RegistrationButton";
+import { motion } from "framer-motion";
 
 export default function State() {
 
@@ -153,7 +153,9 @@ export default function State() {
                 <div className="fixed mt-[56px] sm:mt-[64px]">
                     <SideBarAdm />
                 </div>
-                <div className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full">
+                <motion.div initial={{ opacity: 0.5 }} animate={{ opacity: 1 }} transition={{ type: 'spring', velocity: 2 }}
+                    className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full"
+                >
                     <br />
                     <LinkTitle pageName="Estado" />
                     <div className="flex items-center">
@@ -185,7 +187,7 @@ export default function State() {
                         currentPage={list.currentPage} 
                         totalPages={list.totalPages} 
                     />
-                </div>
+                </motion.div>
                 
                 <Modal isOpen={modalInsert} >
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Estado</ModalHeader>

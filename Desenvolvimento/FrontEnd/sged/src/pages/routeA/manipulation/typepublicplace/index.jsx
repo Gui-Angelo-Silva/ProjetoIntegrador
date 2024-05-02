@@ -4,7 +4,6 @@ import NavBar from "../../components/NavBar";
 import SideBarAdm from "../../components/Adm/SideBarAdm";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaPlus } from "react-icons/fa6";
-import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
 import LinkTitle from "../../components/Title/LinkTitle";
 
 import { useMontage } from '../../../../object/modules/montage';
@@ -14,6 +13,8 @@ import TypePublicPlaceClass from "../../../../object/class/typepublicplace";
 import Search from "../../../../assets/pages/SearchImg";
 import CustomTable from "../../components/Table/Table";
 import ButtonTable from "../../components/Table/ButtonTable";
+import RegistrationButton from "../../components/Button/RegistrationButton";
+import { motion } from "framer-motion";
 
 export default function TypePublicPlace() {
 
@@ -147,7 +148,9 @@ export default function TypePublicPlace() {
                 <div className="fixed mt-[56px] sm:mt-[64px]">
                     <SideBarAdm />
                 </div>
-                <div className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full">
+                <motion.div initial={{ opacity: 0.5 }} animate={{ opacity: 1 }} transition={{ type: 'spring', velocity: 2 }}
+                    className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full"
+                >
                     <br />
                     <LinkTitle pageName="Tipo Logradouro" />
                     <div className="flex items-center">
@@ -168,20 +171,18 @@ export default function TypePublicPlace() {
                             </div>
                         </div>
                         <div className="flex items-center">
-                            <button className="btn  hover:bg-emerald-900 pt-2 pb-2 text-lg text-center hover:text-slate-100 text-slate-100 bg-[#004C57]" onClick={() => openCloseModalInsert(true)}>
-                                Novo <FaPlus className="inline-block items-center" />
-                            </button>
+                            <RegistrationButton action={() => openCloseModalInsert(true)} />
                         </div>
                     </div>
-                    <CustomTable 
+                    <CustomTable
                         totalColumns={3}
                         headers={["Codigo Informativo", "Descrição", "Ações"]}
                         data={dataForTable}
-                        onPageChange={(page) => list.goToPage(page)} 
-                        currentPage={list.currentPage} 
-                        totalPages={list.totalPages} 
+                        onPageChange={(page) => list.goToPage(page)}
+                        currentPage={list.currentPage}
+                        totalPages={list.totalPages}
                     />
-                </div>
+                </motion.div>
                 <Modal isOpen={modalInsert} >
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Tipo de Logradouro</ModalHeader>
                     <ModalBody>

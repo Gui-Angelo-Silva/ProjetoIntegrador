@@ -16,8 +16,8 @@ import CityClass from '../../../../object/class/city';
 import SelectModule from '../../../../object/modules/select';
 import Search from "../../../../assets/pages/SearchImg";
 import CustomTable from "../../components/Table/Table";
-import { PencilSimple, TrashSimple } from "@phosphor-icons/react";
 import RegistrationButton from "../../components/Button/RegistrationButton";
+import { motion } from "framer-motion";
 
 export default function City() {
 
@@ -222,7 +222,9 @@ export default function City() {
                 <div className="fixed mt-[56px] sm:mt-[64px]">
                     <SideBarAdm />
                 </div>
-                <div className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full">
+                <motion.div initial={{ opacity: 0.5 }} animate={{ opacity: 1 }} transition={{ type: 'spring', velocity: 2 }}
+                    className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full"
+                >
                     <br />
                     <LinkTitle pageName="Cidade" />
                     <div className="flex items-center">
@@ -255,7 +257,7 @@ export default function City() {
                         currentPage={list.currentPage}
                         totalPages={list.totalPages}
                     />
-                </div>
+                </motion.div>
                 <Modal isOpen={modalInsert}>
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Cidade</ModalHeader>
                     <ModalBody>

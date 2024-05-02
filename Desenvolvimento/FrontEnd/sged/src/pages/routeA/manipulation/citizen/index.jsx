@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import NavBar from "../../components/NavBar";
-import { FaPlus } from "react-icons/fa6";
 import LinkTitle from "../../components/Title/LinkTitle";
 import ButtonTable from "../../components/Table/ButtonTable";
 import SideBarAdm from "../../components/Adm/SideBarAdm";
@@ -15,6 +14,7 @@ import CitizenClass from '../../../../object/class/citizen';
 import SelectModule from '../../../../object/modules/select';
 import CustomTable from "../../components/Table/Table";
 import RegistrationButton from "../../components/Button/RegistrationButton";
+import { motion } from "framer-motion";
 
 export default function Citizen() {
 
@@ -164,7 +164,9 @@ export default function Citizen() {
                 <div className="fixed mt-[56px] sm:mt-[64px]">
                     <SideBarAdm />
                 </div>
-                <div className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full">
+                <motion.div initial={{ opacity: 0.5 }} animate={{ opacity: 1 }} transition={{ type: 'spring', velocity: 2 }}
+                    className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full"
+                >
                     <br />
                     <LinkTitle pageName="Munícipe" />
                     <div className="flex items-center">
@@ -203,7 +205,7 @@ export default function Citizen() {
                         currentPage={list.currentPage}
                         totalPages={list.totalPages}
                     />
-                </div>
+                </motion.div>
                 <Modal isOpen={modalInsert}>
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Munícipe</ModalHeader>
                     <ModalBody>

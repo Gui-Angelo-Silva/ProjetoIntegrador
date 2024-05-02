@@ -16,6 +16,8 @@ namespace SGED.Controllers
 		public TipoDocumentoController(ITipoDocumentoService tipoDocumentoService)
 		{
 			_tipoDocumentoService = tipoDocumentoService;
+
+			_response = new Response();
 		}
 
 		[HttpGet]

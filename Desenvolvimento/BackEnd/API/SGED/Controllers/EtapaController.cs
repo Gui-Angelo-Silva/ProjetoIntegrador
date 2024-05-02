@@ -176,7 +176,7 @@ namespace SGED.Controllers
 		[HttpPut("{id}/Desativar")]
 		public async Task<ActionResult<EtapaDTO>> Desactivity(int id)
 		{
-			var etapaDTO = await _tipoProcessoService.GetById(id);
+			var etapaDTO = await _etapaService.GetById(id);
 			if (etapaDTO == null)
 			{
 				_response.Status = false; _response.Message = "Etapa não encontrada!";
@@ -186,7 +186,7 @@ namespace SGED.Controllers
 			if (etapaDTO.Status)
 			{
 				etapaDTO.DisableAllOperations();
-				await _tipoProcessoService.Update(etapaDTO);
+				await _etapaService.Update(etapaDTO);
 			}
 
 			_response.Status = true; _response.Message = etapaDTO;

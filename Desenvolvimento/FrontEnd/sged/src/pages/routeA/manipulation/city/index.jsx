@@ -18,6 +18,7 @@ import Search from "../../../../assets/pages/SearchImg";
 import CustomTable from "../../components/Table/Table";
 import RegistrationButton from "../../components/Button/RegistrationButton";
 import { motion } from "framer-motion";
+import LayoutPage from "../../components/Layout/LayoutPage";
 
 export default function City() {
 
@@ -214,169 +215,156 @@ export default function City() {
     });
 
     return (
-        <div className="flex min-h-screen">
-            <div className="flex h-full w-full">
-                <div className="fixed w-full">
-                    <NavBar />
-                </div>
-                <div className="fixed mt-[56px] sm:mt-[64px]">
-                    <SideBarAdm />
-                </div>
-                <motion.div initial={{ opacity: 0.5 }} animate={{ opacity: 1 }} transition={{ type: 'spring', velocity: 2 }}
-                    className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full"
-                >
-                    <br />
-                    <LinkTitle pageName="Cidade" />
-                    <div className="flex items-center">
-                        <div className="flex justify-center items-center mx-auto w-[450px]">
-                            <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
-                                <div className="pl-2">
-                                    <Search />
-                                </div>
-                                <input type="search" id="default-search" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar cidade" required onChange={(e) => handleSearch(e.target.value)} />
-                                <select className="form-control w-28 text-gray-800 h-full cursor-pointer" onChange={(e) => handleSearchBy(e.target.value)}>
-                                    <option key="nomeCidade" value="nomeCidade">
-                                        Cidade
-                                    </option>
-                                    <option key="ufEstado" value="ufEstado">
-                                        UF
-                                    </option>
-                                </select>
-                            </div>
+        <LayoutPage>
+            <LinkTitle pageName="Cidade" />
+            <div className="flex items-center">
+                <div className="flex justify-center items-center mx-auto w-[450px]">
+                    <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
+                        <div className="pl-2">
+                            <Search />
                         </div>
-                        <div className="flex items-center">
-                            <RegistrationButton action={() => openCloseModalInsert(true)} />
-                        </div>
+                        <input type="search" id="default-search" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar cidade" required onChange={(e) => handleSearch(e.target.value)} />
+                        <select className="form-control w-28 text-gray-800 h-full cursor-pointer" onChange={(e) => handleSearchBy(e.target.value)}>
+                            <option key="nomeCidade" value="nomeCidade">
+                                Cidade
+                            </option>
+                            <option key="ufEstado" value="ufEstado">
+                                UF
+                            </option>
+                        </select>
                     </div>
-
-                    <CustomTable
-                        totalColumns={3}
-                        headers={["Cidade", "UF", "Ações"]}
-                        data={dataForTable}
-                        onPageChange={(page) => list.goToPage(page)}
-                        currentPage={list.currentPage}
-                        totalPages={list.totalPages}
-                    />
-                </motion.div>
-                <Modal isOpen={modalInsert}>
-                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Cidade</ModalHeader>
-                    <ModalBody>
-                        <div className="form-group">
-                            <label className="text-[#444444]">Nome: </label>
-                            <br />
-                            <input
-                                type="text"
-                                className="form-control rounded-md border-[#BCBCBC]"
-                                onChange={(e) => city.setCityName(e.target.value)}
-                            />
-                            <div className="text-sm text-red-600">
-                                {city.errorCityName}
-                            </div>
-                            <br />
-                            <label className="text-[#444444]">Estado:</label>
-                            <br />
-                            <Select
-                                value={selectBox.selectedOption}
-                                onChange={selectBox.handleChange}
-                                onInputChange={selectBox.delayedSearch}
-                                loadOptions={selectBox.loadOptions}
-                                options={selectBox.options}
-                                placeholder="Pesquisar estado . . ."
-                                isClearable
-                                isSearchable
-                                noOptionsMessage={() => {
-                                    if (listState.list.length === 0) {
-                                        return "Nenhum Estado cadastrado!";
-                                    } else {
-                                        return "Nenhuma opção encontrada!";
-                                    }
-                                }}
-                                className="style-select"
-                            />
-                        </div>
-                    </ModalBody>
-                    <ModalFooter>
-                        <ButtonModal textBtn="Cancelar" func={() => openCloseModalInsert(false)} />
-                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostCity()} disabled={inOperation} >
-                            {inOperation ? 'Aguarde' : 'Cadastrar'}
-                        </button>
-                        {/* <ButtonModal textBtn={inOperation ? 'Aguarde' : 'Cadastrar'} func={() => inOperation ? null : PostCity()}/> */}
-                    </ModalFooter>
-                </Modal>
-                <Modal isOpen={modalEdit}>
-                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Cidade</ModalHeader>
-                    <ModalBody>
-                        <div className="form-group">
-                            <label className="text-[#444444]">ID: </label>
-                            <br />
-                            <input
-                                type="text"
-                                className="form-control rounded-md border-[#BCBCBC]"
-                                readOnly
-                                value={city.cityId}
-                            />
-                            <br />
-                            <label className="text-[#444444]">Nome:</label>
-                            <input
-                                type="text"
-                                className="form-control rounded-md border-[#BCBCBC]"
-                                name="nomeCidade"
-                                onChange={(e) => city.setCityName(e.target.value)}
-                                value={city.cityName}
-                            />
-                            <div className="text-sm text-red-600">
-                                {city.errorCityName}
-                            </div>
-                            <br />
-                            <label className="text-[#444444]">Estado:</label>
-                            <br />
-                            <Select
-                                value={selectBox.selectedOption}
-                                onChange={selectBox.handleChange}
-                                onInputChange={selectBox.delayedSearch}
-                                loadOptions={selectBox.loadOptions}
-                                options={selectBox.options}
-                                placeholder="Pesquisar estado . . ."
-                                isClearable
-                                isSearchable
-                                noOptionsMessage={() => {
-                                    if (listState.list.length === 0) {
-                                        return "Nenhum Estado cadastrado!";
-                                    } else {
-                                        return "Nenhuma opção encontrada!";
-                                    }
-                                }}
-                            />
-                            <br />
-                        </div>
-                    </ModalBody>
-                    <ModalFooter>
-                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit(false)}>
-                            Cancelar
-                        </button>
-                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutCity()} disabled={inOperation} >
-                            {inOperation ? 'Aguarde' : 'Atualizar'}
-                        </button>{" "}
-                    </ModalFooter>
-                </Modal>
-                <Modal isOpen={modalDelete}>
-                    <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
-                    <ModalBody className="justify-center">
-                        <div className="flex flex-row justify-center p-2">
-                            Confirmar a exclusão desta(e) cidade:
-                            <div className="text-[#059669] ml-1">
-                                {city.cityName}
-                            </div> ?
-                        </div>
-                        <div className="flex justify-center gap-2 pt-3">
-                            <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete(false)}>Cancelar</button>
-                            <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteCity()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'}</button>
-                        </div>
-                        {/* <ModalFooter>
-                    </ModalFooter> */}
-                    </ModalBody>
-                </Modal>
+                </div>
+                <div className="flex items-center">
+                    <RegistrationButton action={() => openCloseModalInsert(true)} />
+                </div>
             </div>
-        </div>
+
+            <CustomTable
+                totalColumns={3}
+                headers={["Cidade", "UF", "Ações"]}
+                data={dataForTable}
+                onPageChange={(page) => list.goToPage(page)}
+                currentPage={list.currentPage}
+                totalPages={list.totalPages}
+            />
+            <Modal isOpen={modalInsert}>
+                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Cidade</ModalHeader>
+                <ModalBody>
+                    <div className="form-group">
+                        <label className="text-[#444444]">Nome: </label>
+                        <br />
+                        <input
+                            type="text"
+                            className="form-control rounded-md border-[#BCBCBC]"
+                            onChange={(e) => city.setCityName(e.target.value)}
+                        />
+                        <div className="text-sm text-red-600">
+                            {city.errorCityName}
+                        </div>
+                        <br />
+                        <label className="text-[#444444]">Estado:</label>
+                        <br />
+                        <Select
+                            value={selectBox.selectedOption}
+                            onChange={selectBox.handleChange}
+                            onInputChange={selectBox.delayedSearch}
+                            loadOptions={selectBox.loadOptions}
+                            options={selectBox.options}
+                            placeholder="Pesquisar estado . . ."
+                            isClearable
+                            isSearchable
+                            noOptionsMessage={() => {
+                                if (listState.list.length === 0) {
+                                    return "Nenhum Estado cadastrado!";
+                                } else {
+                                    return "Nenhuma opção encontrada!";
+                                }
+                            }}
+                            className="style-select"
+                        />
+                    </div>
+                </ModalBody>
+                <ModalFooter>
+                    <ButtonModal textBtn="Cancelar" func={() => openCloseModalInsert(false)} />
+                    <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostCity()} disabled={inOperation} >
+                        {inOperation ? 'Aguarde' : 'Cadastrar'}
+                    </button>
+                    {/* <ButtonModal textBtn={inOperation ? 'Aguarde' : 'Cadastrar'} func={() => inOperation ? null : PostCity()}/> */}
+                </ModalFooter>
+            </Modal>
+            <Modal isOpen={modalEdit}>
+                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Cidade</ModalHeader>
+                <ModalBody>
+                    <div className="form-group">
+                        <label className="text-[#444444]">ID: </label>
+                        <br />
+                        <input
+                            type="text"
+                            className="form-control rounded-md border-[#BCBCBC]"
+                            readOnly
+                            value={city.cityId}
+                        />
+                        <br />
+                        <label className="text-[#444444]">Nome:</label>
+                        <input
+                            type="text"
+                            className="form-control rounded-md border-[#BCBCBC]"
+                            name="nomeCidade"
+                            onChange={(e) => city.setCityName(e.target.value)}
+                            value={city.cityName}
+                        />
+                        <div className="text-sm text-red-600">
+                            {city.errorCityName}
+                        </div>
+                        <br />
+                        <label className="text-[#444444]">Estado:</label>
+                        <br />
+                        <Select
+                            value={selectBox.selectedOption}
+                            onChange={selectBox.handleChange}
+                            onInputChange={selectBox.delayedSearch}
+                            loadOptions={selectBox.loadOptions}
+                            options={selectBox.options}
+                            placeholder="Pesquisar estado . . ."
+                            isClearable
+                            isSearchable
+                            noOptionsMessage={() => {
+                                if (listState.list.length === 0) {
+                                    return "Nenhum Estado cadastrado!";
+                                } else {
+                                    return "Nenhuma opção encontrada!";
+                                }
+                            }}
+                        />
+                        <br />
+                    </div>
+                </ModalBody>
+                <ModalFooter>
+                    <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit(false)}>
+                        Cancelar
+                    </button>
+                    <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutCity()} disabled={inOperation} >
+                        {inOperation ? 'Aguarde' : 'Atualizar'}
+                    </button>{" "}
+                </ModalFooter>
+            </Modal>
+            <Modal isOpen={modalDelete}>
+                <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
+                <ModalBody className="justify-center">
+                    <div className="flex flex-row justify-center p-2">
+                        Confirmar a exclusão desta(e) cidade:
+                        <div className="text-[#059669] ml-1">
+                            {city.cityName}
+                        </div> ?
+                    </div>
+                    <div className="flex justify-center gap-2 pt-3">
+                        <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete(false)}>Cancelar</button>
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteCity()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'}</button>
+                    </div>
+                    {/* <ModalFooter>
+                    </ModalFooter> */}
+                </ModalBody>
+            </Modal>
+        </LayoutPage>
     );
 }

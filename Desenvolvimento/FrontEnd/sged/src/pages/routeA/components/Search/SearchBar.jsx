@@ -1,6 +1,5 @@
 import React from 'react'
 import Search from '../../../../assets/pages/SearchImg'
-import { FaPlus } from 'react-icons/fa6'
 
 const SearchBar = ({ placeholder, onSearchChange, onSearchByChange, options, button }) => {
   return (

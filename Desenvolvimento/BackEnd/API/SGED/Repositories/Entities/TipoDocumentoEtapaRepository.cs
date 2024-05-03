@@ -19,12 +19,12 @@ public class TipoDocumentoEtapaRepository : ITipoDocumentoEtapaRepository
 
     public async Task<IEnumerable<TipoDocumentoEtapa>> GetAll()
     {
-        return await _dbContext.TipoDocumentoEtapa.Include(objeto => objeto.Etapa).Include(objeto => objeto.TipoDocumento).ToListAsync();
+        return await _dbContext.TipoDocumentoEtapa.Include(objeto => objeto.Etapa).Include(objeto => objeto.TipoDocumento).AsNoTracking().ToListAsync();
     }
 
     public async Task<TipoDocumentoEtapa> GetById(int id)
     {
-        return await _dbContext.TipoDocumentoEtapa.Include(objeto => objeto.Etapa).Include(objeto => objeto.TipoDocumento).Where(b => b.Id == id).FirstOrDefaultAsync();
+        return await _dbContext.TipoDocumentoEtapa.Include(objeto => objeto.Etapa).Include(objeto => objeto.TipoDocumento).AsNoTracking().FirstOrDefaultAsync(objeto => objeto.Id == id);
     }
 
 

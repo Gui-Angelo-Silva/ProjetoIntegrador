@@ -19,12 +19,12 @@ namespace SGED.Repositories.Entities
 
 		public async Task<IEnumerable<Etapa>> GetAll()
 		{
-			return await _dbContext.Etapa.Include(objeto => objeto.TipoProcesso).ToListAsync();
+			return await _dbContext.Etapa.Include(objeto => objeto.TipoProcesso).AsNoTracking().ToListAsync();
 		}
 
 		public async Task<Etapa> GetById(int id)
 		{
-			return await _dbContext.Etapa.Include(objeto => objeto.TipoProcesso).Where(objeto => objeto.Id == id).FirstOrDefaultAsync();
+			return await _dbContext.Etapa.Include(objeto => objeto.TipoProcesso).AsNoTracking().FirstOrDefaultAsync(objeto => objeto.Id == id);
 		}
 
 		public async Task<Etapa> Create(Etapa etapa)

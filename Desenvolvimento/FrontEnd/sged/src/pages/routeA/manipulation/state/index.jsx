@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { PencilSimple, Trash, TrashSimple } from "@phosphor-icons/react";
+import { Trash } from "@phosphor-icons/react";
 import LinkTitle from "../../components/Title/LinkTitle";
 
 import { useMontage } from '../../../../object/modules/montage';
@@ -14,8 +14,9 @@ import CustomTable from "../../components/Table/Table";
 import RegistrationButton from "../../components/Button/RegistrationButton";
 import CancelButton from "../../components/Button/CancelButton";
 import CustomModalFooter from "../../components/Modal/CustomModalFooter";
-import Layout from "../../components/Layout/Layout";
+import LayoutPage from "../../components/Layout/LayoutPage";
 import ButtonTable from "../../components/Table/ButtonTable";
+import SearchBar from "../../components/Search/SearchBar";
 
 export default function State() {
 
@@ -142,29 +143,18 @@ export default function State() {
     });
 
     return (
-        <Layout>
+        <LayoutPage>
             <LinkTitle pageName="Estado" />
-            <div className="flex items-center">
-                <div className="flex justify-center items-center mx-auto w-[350px] sm:w-[400px] md:w-[450px]">
-                    <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
-                        <div className="pl-2">
-                            <Search />
-                        </div>
-                        <input type="text" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar Estado" required onChange={(e) => list.handleSearch(e.target.value)} />
-                        <select className="form-control w-28 text-gray-800 h-full cursor-pointer" onChange={(e) => list.handleSearchBy(e.target.value)} >
-                            <option key="nomeEstado" value="nomeEstado">
-                                Estado
-                            </option>
-                            <option key="ufEstado" value="ufEstado">
-                                Sigla
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <div className="flex items-center">
-                    <RegistrationButton action={() => openCloseModalInsert(true)} />
-                </div>
-            </div>
+            <SearchBar
+                placeholder="Pesquisar Estado"
+                onSearchChange={(value) => list.handleSearch(value)}
+                onSearchByChange={(value) => list.handleSearchBy(value)}
+                options={[
+                    { label: 'Estado', value: 'nomeEstado' },
+                    { label: 'Sigla', value: 'ufEstado' },
+                ]}
+                button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
+            />
             <CustomTable
                 totalColumns={3}
                 headers={["Estado", "UF", "Ações"]}
@@ -253,6 +243,6 @@ export default function State() {
                     </div>
                 </div>
             </ModalDelete>
-        </Layout>
+        </LayoutPage>
     );
 }

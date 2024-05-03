@@ -3,7 +3,7 @@ import NavBar from '../NavBar';
 import SideBarAdm from '../Adm/SideBarAdm';
 import { motion } from 'framer-motion';
 
-const Layout = ({ children }) => {
+const LayoutPage = ({ children }) => {
     return (
         <div className="flex min-h-screen">
             <div className="flex h-full w-full">
@@ -24,4 +24,4 @@ const Layout = ({ children }) => {
     )
 }
 
-export default Layout
+export default LayoutPage;

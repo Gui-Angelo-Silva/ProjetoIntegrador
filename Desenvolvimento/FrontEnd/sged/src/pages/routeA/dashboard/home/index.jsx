@@ -8,6 +8,7 @@ import { useMontage } from '../../../../object/modules/montage';
 import { useEffect, useState } from "react";
 import SideBarAdm from "../../components/Adm/SideBarAdm";
 import { motion } from "framer-motion";
+import LayoutPage from "../../components/Layout/LayoutPage";
 
 export default function Home() {
 
@@ -21,33 +22,22 @@ export default function Home() {
   const data = ["Guilherme", "Gabriel", "Neto", "Lopes", "Victor", "Pedro"];
 
   return (
-    <div className="flex min-h-screen">
-      <div className="flex h-full w-full">
-        <div className="fixed w-full">
-          <NavBar />
-        </div>
-        <div className="fixed mt-[56px] sm:mt-[64px]">
-          <SideBarAdm />
-        </div>
-        <motion.div initial={{ opacity: 0.5 }} animate={{ opacity: 1 }} transition={{ type: 'spring', velocity: 2 }}
-          className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full"
-        >
-          <br />
-          <Title title="Visão Geral" />
-          <Subtitle subtitle="Solicitações Gerais" />
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 pt-4">
-            <CardDashboard title="NOVAS" total={0} />
-            <CardDashboard title="EM ANDAMENTO" total={0} />
-            <CardDashboard title="PENDENTE" total={0} />
-            <CardDashboard title="ATRASADO" total={0} />
-            <CardDashboard title="PRAZO HOJE" total={0} />
-          </div>
+    <LayoutPage>
+      <Title title="Visão Geral" />
+      <Subtitle subtitle="Solicitações Gerais" />
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 pt-4">
+        <CardDashboard title="NOVAS" total={0} />
+        <CardDashboard title="EM ANDAMENTO" total={0} />
+        <CardDashboard title="PENDENTE" total={0} />
+        <CardDashboard title="ATRASADO" total={0} />
+        <CardDashboard title="PRAZO HOJE" total={0} />
+      </div>
 
-          {/* <button className="btn btn-primary mt-5" onClick={() => setOpen(true)}>
+      {/* <button className="btn btn-primary mt-5" onClick={() => setOpen(true)}>
             Modal
           </button> */}
 
-          {/* <Modal open={open} onClose={() => setOpen(false)}>
+      {/* <Modal open={open} onClose={() => setOpen(false)}>
             <div className="text-center w-56">
               <Trash size={56} className="mx-auto text-red-500" />
               <div className="mx-auto my-4 w-48">
@@ -67,12 +57,10 @@ export default function Home() {
               </div>
             </div>
           </Modal> */}
-          <TableDashboard title="Últimos Andamentos" data={data.slice(0, 4)} icon={<FaTableCellsLarge />} />
-          <TableDashboard title="Últimos Arquivos" data={data.slice(0, 4)} icon={<FaFile />} />
-          <TableDashboard title="Últimos Arquivos" data={data.slice(0, 4)} icon={<FaFile />} />
-          <TableDashboard title="Últimos Arquivos" data={data.slice(0, 4)} icon={<FaFile />} />
-        </motion.div>
-      </div>
-    </div>
+      <TableDashboard title="Últimos Andamentos" data={data.slice(0, 4)} icon={<FaTableCellsLarge />} />
+      <TableDashboard title="Últimos Arquivos" data={data.slice(0, 4)} icon={<FaFile />} />
+      <TableDashboard title="Últimos Arquivos" data={data.slice(0, 4)} icon={<FaFile />} />
+      <TableDashboard title="Últimos Arquivos" data={data.slice(0, 4)} icon={<FaFile />} />
+    </LayoutPage>
   );
 }

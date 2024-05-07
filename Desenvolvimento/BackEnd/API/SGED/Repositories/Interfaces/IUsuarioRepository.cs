@@ -1,4 +1,4 @@
-﻿using SGED.Models.Entities;
+﻿using SGED.Objects.Models.Entities;
 
 namespace SGED.Repositories.Interfaces;
 public interface IUsuarioRepository

@@ -13,11 +13,11 @@ function ApiService() {
 
   const updateToken = (newToken) => {
     //storage.setLocal('token', newToken? newToken.startsWith('Front ') ? newToken.replace('Front ', '') : newToken : null);
-    cookie.setCookie("token", newToken? newToken.startsWith('Front ') ? newToken.replace('Front ', '') : newToken : null);
+    storage.setLocal("token", newToken? newToken.startsWith('Front ') ? newToken.replace('Front ', '') : newToken : null);
   };
 
   const headerConfig = () => {
-    const token = cookie.getCookie("token");
+    const token = storage.getLocal("token");
 
     if (token) {
       return {

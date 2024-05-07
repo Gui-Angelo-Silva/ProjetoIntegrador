@@ -16,8 +16,9 @@ export const useServer = () => {
 
 export const ServerProvider = ({ children }) => {
 
+    var blockNavigation = false;
     const [callFunctionRoute, setCallFunctionRoute] = useState(false);
-    const [liberateNavigate, setLiberateNavigate] = useState(false);
+    const [liberateNavigate, setLiberateNavigate] = useState(true);
     const { componentMontage, clearStateMontage } = useMontage();
     const session = Session();
     const navigate = useNavigate();
@@ -26,7 +27,7 @@ export const ServerProvider = ({ children }) => {
         try {
             return await session.validateSession();
         } catch (error) {
-            return null;
+            return false;
         }
     }, []);
 
@@ -69,82 +70,80 @@ export const ServerProvider = ({ children }) => {
         }
     }, []);
 
-    useEffect(() => {
+    /*useEffect(() => {
         const currentPathSegments = window.location.pathname.split('/');
         const firstRoute = currentPathSegments[1]?.toLowerCase();
-        const initialPages = ["login"];
 
-        if (callFunctionRoute) {
-            clearStateMontage();
+        // Função para validar a rota e navegar
+        const validateAndNavigate = async () => {
+            const autenticate = await updateAuthentication();
 
-            const validationRoute = async () => {
-                const autenticate = await updateAuthentication();
+            console.log(autenticate);
 
-                if (!autenticate && firstRoute !== "notfound" && !initialPages.includes(firstRoute)) {
+            if (callFunctionRoute) {
+                clearStateMontage();
+
+                if (!autenticate && !["", "login", "notfound", "notpermission", "development"].includes(firstRoute)) {
                     clearSegment("login");
                 }
-            };
+                setCallFunctionRoute(false);
 
-            validationRoute();
+            } else {
+                setLiberateNavigate(false);
+                clearStateMontage();
 
-        } else {
-            setLiberateNavigate(false);
-            clearStateMontage();
-
-            const validationRoute = async () => {
-                const autenticate = await updateAuthentication();
-
-                if (firstRoute === "") {
+                if (["", "notfound", "notpermission", "development"].includes(firstRoute)) {
                     clearSegment(autenticate ? "home" : "login");
 
-                } else if (autenticate && initialPages.includes(firstRoute)) {
+                } else if (autenticate && ["login"].includes(firstRoute)) {
                     clearSegment("home");
 
-                } else if (!autenticate && firstRoute !== "login") {
+                } else if (!autenticate && !["login"].includes(firstRoute)) {
                     clearSegment("login");
-
-                } else if (["notfound", "notpermission", "development"].includes(firstRoute)) {
-                    clearSegment(autenticate ? "home" : "login");
-
                 }
 
                 setLiberateNavigate(true);
-            };
+            }
+        };
 
-            validationRoute();
-        } setCallFunctionRoute(false);
+        // Executar apenas quando a URL mudar
+        const handleLocationChange = async () => {
+            if (blockNavigation) {
+                await validateAndNavigate();
+                blockNavigation = false;
+            }
+
+            return;
+        };
+
+        // Adicionar o ouvinte de evento para a mudança de URL
+        window.addEventListener('popstate', handleLocationChange);
+
+        // Executar a validação na primeira renderização e sempre que a rota mudar
+        validateAndNavigate();
+
+        // Remover o ouvinte de evento quando o componente for desmontado
+        return () => {
+            window.removeEventListener('popstate', handleLocationChange);
+            blockNavigation = true;
+        };
     }, [window.location.pathname]);
 
     useEffect(() => {
-        var execute = true;
-
         const delay = (milliseconds) => {
             return new Promise(resolve => setTimeout(resolve, milliseconds));
         };
 
-        const verifyMontage = async () => {
-            try {
+        const validateExistPage = async () => {
+            while (true) {
                 await delay(2000);
-
-                if (!execute) return;
-
-                if (!componentMontage) {
-                    sessionStorage.setItem("page: non-existent", window.location.pathname);
-                    clearSegment("notfound");
-                }
-            } catch (error) {
-                return;
+                console.log(await updateAuthentication());
             }
         };
 
-        if (liberateNavigate && !componentMontage) {
-            verifyMontage();
-        }
+        validateExistPage();
+    }, [liberateNavigate, componentMontage]);*/
 
-        return () => {
-            execute = false;
-        };
-    }, [liberateNavigate, componentMontage]);
 
     return (
         <ServerContext.Provider value={{ inDevelopment, addSegment, clearSegment, removeSegment }}>

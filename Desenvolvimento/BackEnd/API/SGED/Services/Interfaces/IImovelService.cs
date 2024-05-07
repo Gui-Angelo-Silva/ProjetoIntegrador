@@ -1,8 +1,8 @@
-﻿using SGED.DTO.Entities;
+﻿using SGED.Objects.DTO.Entities;
 
 namespace SGED.Services.Interfaces
 {
-	public interface IImovelService
+    public interface IImovelService
 	{
 		Task<IEnumerable<ImovelDTO>> GetAll();
 		Task<ImovelDTO> GetById(int id);

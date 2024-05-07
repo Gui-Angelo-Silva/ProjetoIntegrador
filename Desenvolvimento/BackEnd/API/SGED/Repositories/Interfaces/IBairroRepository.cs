@@ -1,5 +1,5 @@
-﻿using SGED.Models.Entities;
-using SGED.DTO.Entities;
+﻿using SGED.DTO.Entities;
+using SGED.Objects.Models.Entities;
 
 namespace SGED.Repositories.Interfaces;
 public interface IBairroRepository

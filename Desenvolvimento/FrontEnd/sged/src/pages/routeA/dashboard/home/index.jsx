@@ -1,79 +1,66 @@
-import SideBar from "../../components/SideBar";
 import NavBar from "../../components/NavBar";
 import CardDashboard from "../../components/Card/CardDashboard";
 import Title from "../../components/Title/Title";
 import Subtitle from "../../components/Title/Subtitle";
-import { FaAngleRight, FaTableCellsLarge, FaFile } from "react-icons/fa6";
+import TableDashboard from "../../components/Table/TableDashboard";
+import { FaTableCellsLarge, FaFile } from "react-icons/fa6";
 import { useMontage } from '../../../../object/modules/montage';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import SideBarAdm from "../../components/Adm/SideBarAdm";
+import { motion } from "framer-motion";
+import LayoutPage from "../../components/Layout/LayoutPage";
 
 export default function Home() {
 
+  const [open, setOpen] = useState(false)
   const { componentMounted } = useMontage();
 
   useEffect(() => {
     componentMounted();
   }, []);
 
+  const data = ["Guilherme", "Gabriel", "Neto", "Lopes", "Victor", "Pedro"];
+
   return (
-    <div className="flex flex-1 min-h-screen">
-      <div className="flex flex-col h-full w-full">
-        <NavBar />
-        <div className="flex flex-1 min-h-full">
-          <SideBar />
-          <div className="flex-2 min-h-screen w-full ml-[80px] mr-[40px] mt-[-5px]">
-            <br />
-            <Title title="Visão Geral"/>
-            <Subtitle subtitle="Solicitações Gerais"/> 
-            <div className="flex gap-3 justify-around pt-[40px]">
-              <CardDashboard title="NOVAS" total={0}/>
-              <CardDashboard title="EM ANDAMENTO" total={0}/>
-              <CardDashboard title="PENDENTE" total={0}/>
-              <CardDashboard title="ATRASADO" total={0}/>
-              <CardDashboard title="PRAZO HOJE" total={0}/>
-            </div>
-            <div className="pt-[40px]">
-              <div className="border-2 border-[#E2E8F0] rounded-[6px]">
-                <div className="bg-slate-200">
-                  <h3 className="flex items-center pl-4 py-2 text-gray-600"><FaTableCellsLarge className="mr-2" /> Últimos Andamentos</h3>
-                </div>
-                <p className="pl-4">
-                  djasjdkajskdlsa
-                </p>
-                <p className="pl-4">
-                  asdajsdkasjdlk
-                </p>
-              </div>
-            </div>
-            <div className="pt-[40px]">
-              <div className="border-2 border-[#E2E8F0] rounded-[6px]">
-                <div className="bg-slate-200">
-                  <h3 className="flex items-center pl-4 py-2 text-gray-600"><FaFile className="mr-2" />Últimos Arquivos</h3>
-                </div>
-                <p className="pl-4">
-                  djasjdkajskdlsa
-                </p>
-                <p className="pl-4">
-                  asdajsdkasjdlk
-                </p>
-              </div>
-            </div>
-            <div className="pt-[40px]">
-              <div className="border-2 border-[#E2E8F0] rounded-[6px]">
-                <div className="bg-slate-200">
-                  <h3 className="flex items-center pl-4 py-2 text-gray-600"><FaFile className="mr-2" />Últimos Arquivos</h3>
-                </div>
-                <p className="pl-4">
-                  djasjdkajskdlsa
-                </p>
-                <p className="pl-4">
-                  asdajsdkasjdlk
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+    <LayoutPage>
+      <Title title="Visão Geral" />
+      <Subtitle subtitle="Solicitações Gerais" />
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 pt-4">
+        <CardDashboard title="NOVAS" total={0} />
+        <CardDashboard title="EM ANDAMENTO" total={0} />
+        <CardDashboard title="PENDENTE" total={0} />
+        <CardDashboard title="ATRASADO" total={0} />
+        <CardDashboard title="PRAZO HOJE" total={0} />
       </div>
-    </div>
+
+      {/* <button className="btn btn-primary mt-5" onClick={() => setOpen(true)}>
+            Modal
+          </button> */}
+
+      {/* <Modal open={open} onClose={() => setOpen(false)}>
+            <div className="text-center w-56">
+              <Trash size={56} className="mx-auto text-red-500" />
+              <div className="mx-auto my-4 w-48">
+                <h3 className="text-lg font-black text-gray-800">Confirm Delete</h3>
+                <p className="text-sm text-gray-500">
+                  Are you sure you want to delete this item?
+                </p>
+              </div>
+              <div className="flex gap-4">
+                <button className="btn btn-danger w-full">Delete</button>
+                <button
+                  className="btn btn-light w-full"
+                  onClick={() => setOpen(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </Modal> */}
+      <TableDashboard title="Últimos Andamentos" data={data.slice(0, 4)} icon={<FaTableCellsLarge />} />
+      <TableDashboard title="Últimos Arquivos" data={data.slice(0, 4)} icon={<FaFile />} />
+      <TableDashboard title="Últimos Arquivos" data={data.slice(0, 4)} icon={<FaFile />} />
+      <TableDashboard title="Últimos Arquivos" data={data.slice(0, 4)} icon={<FaFile />} />
+    </LayoutPage>
   );
 }

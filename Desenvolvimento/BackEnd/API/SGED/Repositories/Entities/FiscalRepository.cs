@@ -1,7 +1,7 @@
 ﻿using SGED.Context;
-using SGED.Models.Entities;
 using SGED.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using SGED.Objects.Models.Entities;
 
 namespace SGED.Repositories.Entities;
 public class FiscalRepository : IFiscalRepository

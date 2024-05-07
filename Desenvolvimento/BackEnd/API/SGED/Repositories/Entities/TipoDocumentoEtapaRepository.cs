@@ -1,30 +1,30 @@
 ﻿using SGED.Context;
-using SGED.Models.Entities;
-using SGED.DTO.Entities;
 using SGED.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Collections.Generic;
+using SGED.Objects.Utilities;
+using SGED.Objects.Models.Entities;
 
 namespace SGED.Repositories.Entities;
 public class TipoDocumentoEtapaRepository : ITipoDocumentoEtapaRepository
 {
 
     private readonly AppDBContext _dbContext;
+    private readonly RemoveContext _remove;
 
     public TipoDocumentoEtapaRepository(AppDBContext dbContext)
     {
         _dbContext = dbContext;
+        _remove = new RemoveContext(dbContext);
     }
 
     public async Task<IEnumerable<TipoDocumentoEtapa>> GetAll()
     {
-        return await _dbContext.TipoDocumentoEtapa.Include(objeto => objeto.Etapa).Include(objeto => objeto.TipoDocumento).ToListAsync();
+        return await _dbContext.TipoDocumentoEtapa.Include(objeto => objeto.Etapa).Include(objeto => objeto.TipoDocumento).AsNoTracking().ToListAsync();
     }
 
     public async Task<TipoDocumentoEtapa> GetById(int id)
     {
-        return await _dbContext.TipoDocumentoEtapa.Include(objeto => objeto.Etapa).Include(objeto => objeto.TipoDocumento).Where(b => b.Id == id).FirstOrDefaultAsync();
+        return await _dbContext.TipoDocumentoEtapa.Include(objeto => objeto.Etapa).Include(objeto => objeto.TipoDocumento).AsNoTracking().FirstOrDefaultAsync(objeto => objeto.Id == id);
     }
 
 

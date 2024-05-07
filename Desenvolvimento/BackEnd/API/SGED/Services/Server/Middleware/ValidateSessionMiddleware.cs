@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using MySqlX.XDevAPI;
-using Newtonsoft.Json;
-using SGED.Context;
-using SGED.DTO.Entities;
-using SGED.Models.Entities;
+﻿using Newtonsoft.Json;
+using SGED.Objects.DTO.Entities;
 using SGED.Repositories.Interfaces;
 using System.Net;
 

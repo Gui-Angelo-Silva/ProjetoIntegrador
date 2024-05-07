@@ -16,7 +16,7 @@ const ButtonTable = ({ func, text }) => {
             Editar: "hover:text-cyan-500",
             Excluir: "hover:text-red-600",
             Esquerda: "text-[#58AFAE]",
-            Direita: "text-[#58AFAE]" // Corrigido de "Direta" para "Direita"
+            Direita: "text-[#58AFAE]"
         }
     });
 

@@ -1,8 +1,8 @@
-﻿using SGED.DTO.Entities;
+﻿using SGED.Objects.DTO.Entities;
 
 namespace SGED.Services.Interfaces
 {
-	public interface IEtapaService
+    public interface IEtapaService
 	{
 		Task<IEnumerable<EtapaDTO>> GetAll();
 		Task<EtapaDTO> GetById(int id);	

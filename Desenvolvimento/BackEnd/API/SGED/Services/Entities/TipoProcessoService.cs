@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using SGED.DTO.Entities;
-using SGED.Models.Entities;
+using SGED.Objects.DTO.Entities;
+using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
 
@@ -42,7 +42,7 @@ public class TipoProcessoService : ITipoProcessoService
         await _tipoProcessoRepository.Update(tipoProcesso);
     }
 
-    public async Task Remove(int id)
+    public async Task Delete(int id)
     {
         await _tipoProcessoRepository.Delete(id);
     }

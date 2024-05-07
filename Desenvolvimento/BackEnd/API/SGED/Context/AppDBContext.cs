@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SGED.Models.Entities;
 using SGED.Context.Builders;
+using SGED.Objects.Models.Entities;
 
 namespace SGED.Context;
 public class AppDBContext : DbContext

@@ -1,12 +1,15 @@
-﻿using SGED.Models.Entities;
-using SGED.DTO.Entities;
+﻿using SGED.Objects.Models.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace SGED.Repositories.Interfaces;
-public interface ITipoProcessoRepository
+namespace SGED.Repositories.Interfaces
 {
-    Task<IEnumerable<TipoProcesso>> GetAll();
-    Task<TipoProcesso> GetById(int id);
-    Task<TipoProcesso> Create(TipoProcesso TipoProcesso);
-    Task<TipoProcesso> Update(TipoProcesso TipoProcesso);
-    Task<TipoProcesso> Delete(int id);
+    public interface ITipoProcessoRepository
+	{
+		Task<IEnumerable<TipoProcesso>> GetAll();
+		Task<TipoProcesso> GetById(int id);
+		Task<TipoProcesso> Create(TipoProcesso TipoProcesso);
+		Task<TipoProcesso> Update(TipoProcesso tipoProcesso);
+		Task<TipoProcesso> Delete(int id);
+	}
 }

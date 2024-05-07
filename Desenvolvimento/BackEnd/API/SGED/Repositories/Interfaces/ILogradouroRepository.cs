@@ -1,8 +1,8 @@
-﻿using SGED.Models.Entities;
+﻿using SGED.Objects.Models.Entities;
 
 namespace SGED.Repositories.Interfaces
 {
-	public interface ILogradouroRepository
+    public interface ILogradouroRepository
 	{
 		Task<IEnumerable<Logradouro>> GetAll();
 		Task<Logradouro> GetById(int id);

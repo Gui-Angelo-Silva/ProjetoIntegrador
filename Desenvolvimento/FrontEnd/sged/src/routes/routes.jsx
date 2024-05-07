@@ -21,9 +21,6 @@ export default function AppRoutes() {
                     <Route path="/notpermission" element={<NotPermission />} />
                 </Routes>
                 <RouteA />
-                <RouteB />
-                <RouteC />
-                <RouteD />
             </ServerProvider>
         </Router>
     );

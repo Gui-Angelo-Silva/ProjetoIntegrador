@@ -102,6 +102,7 @@ class ConnectionService {
 
     async putMethod(object) {
         const data = object.setData();
+        console.log(data)
         return await axios.put(this.url, data, this.api.headerConfig());
     }
 
@@ -113,7 +114,7 @@ class ConnectionService {
 
     async deleteMethod(object) {
         const data = object.setData();
-        return await axios.delete(this.url, data.id, this.api.headerConfig());
+        return await axios.delete(`${this.url}${data.id}`, this.api.headerConfig());
     }
 
     messagePopUp() {

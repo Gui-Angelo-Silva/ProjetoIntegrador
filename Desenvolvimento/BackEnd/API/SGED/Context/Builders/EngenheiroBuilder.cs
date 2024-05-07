@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SGED.Models.Entities;
+using SGED.Objects.Models.Entities;
 
 namespace SGED.Context.Builders
 {
@@ -13,9 +13,9 @@ namespace SGED.Context.Builders
             modelBuilder.Entity<Engenheiro>().Property(b => b.NomePessoa).HasMaxLength(70).IsRequired();
             modelBuilder.Entity<Engenheiro>().Property(b => b.EmailPessoa).IsRequired();
             modelBuilder.Entity<Engenheiro>().Property(b => b.TelefonePessoa).HasMaxLength(15).IsRequired();
-            modelBuilder.Entity<Engenheiro>().Property(b => b.CpfCNPJPessoa).HasMaxLength(18).IsRequired();
-            modelBuilder.Entity<Engenheiro>().Property(b => b.RgIEPessoa).HasMaxLength(15).IsRequired();
-            modelBuilder.Entity<Engenheiro>().Property(b => b.crea).HasMaxLength(9).IsRequired();
+            modelBuilder.Entity<Engenheiro>().Property(b => b.CpfCnpjPessoa).HasMaxLength(18).IsRequired();
+            modelBuilder.Entity<Engenheiro>().Property(b => b.RgIePessoa).HasMaxLength(15).IsRequired();
+            modelBuilder.Entity<Engenheiro>().Property(b => b.CreaEngenheiro).HasMaxLength(8).IsRequired();
 
 
             // Inserções

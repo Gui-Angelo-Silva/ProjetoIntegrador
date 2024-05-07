@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SGED.Models.Entities;
+using SGED.Objects.Models.Entities;
 
 namespace SGED.Context.Builders
 {
@@ -11,10 +11,11 @@ namespace SGED.Context.Builders
             modelBuilder.Entity<TipoProcesso>().HasKey(b => b.Id);
             modelBuilder.Entity<TipoProcesso>().Property(b => b.NomeTipoProcesso).HasMaxLength(100).IsRequired();
             modelBuilder.Entity<TipoProcesso>().Property(b => b.DescricaoTipoProcesso).HasMaxLength(100).IsRequired();
+			modelBuilder.Entity<TipoProcesso>().Property(b => b.Status).IsRequired();
 
 
-            // Inserções
-        }
+			// Inserções
+		}
     }
 
 }

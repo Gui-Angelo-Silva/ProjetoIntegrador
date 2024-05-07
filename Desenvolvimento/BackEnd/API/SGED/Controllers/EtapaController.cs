@@ -8,189 +8,277 @@ using SGED.Services.Interfaces;
 
 namespace SGED.Controllers
 {
-	[Route("api/[controller]")]
-	[ApiController]
-	public class EtapaController : Controller
-	{
-		private readonly ITipoProcessoService _tipoProcessoService;
-		private readonly IEtapaService _etapaService;
-		private Response _response;
+    [Route("api/[controller]")]
+    [ApiController]
+    public class EtapaController : Controller
+    {
+        private readonly ITipoProcessoService _tipoProcessoService;
+        private readonly IEtapaService _etapaService;
+        private Response _response;
 
-		public EtapaController(ITipoProcessoService tipoprocessoservice, IEtapaService etapaservice)
-		{
-			_tipoProcessoService = tipoprocessoservice;
-			_etapaService = etapaservice;
-			_response = new Response();
-		}
+        public EtapaController(ITipoProcessoService tipoprocessoservice, IEtapaService etapaservice)
+        {
+            _tipoProcessoService = tipoprocessoservice;
+            _etapaService = etapaservice;
 
-		[HttpGet]
-		public async Task<ActionResult<IEnumerable<EtapaDTO>>> Get()
-		{
-			var etapaDTO = await _etapaService.GetAll();
-			_response.Status = true; _response.Message = etapaDTO;
-			return Ok(_response);
-		}
+            _response = new Response();
+        }
 
-		[HttpGet("id", Name = "GetEtapa")]
-		public async Task<ActionResult<EtapaDTO>> GetById(int id)
-		{
-			var etapaDTO = await _etapaService.GetById(id);
-			if (etapaDTO == null)
-			{
-				_response.Status = false; _response.Message = "Tipo Processo não encontrado!";
-				return NotFound(_response);
-			};
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<EtapaDTO>>> GetAll()
+        {
+            var etapas = await _etapaService.GetAll();
+            _response.Status = true; _response.Data = etapas;
+            _response.Message = etapas.Any() ?
+                "Lista da(s) Etapa(s) obtida com sucesso." :
+                "Nenhuma Etapa encontrada!";
+            return Ok(_response);
+        }
 
-			_response.Status = true; _response.Message = etapaDTO;
-			return Ok(_response);
-		}
+        [HttpGet("id", Name = "GetEtapa")]
+        public async Task<ActionResult<EtapaDTO>> GetById(int id)
+        {
+            var etapaDTO = await _etapaService.GetById(id);
+            if (etapaDTO == null)
+            {
+                _response.Status = false; _response.Message = "Etapa não encontrada!"; _response.Data = etapaDTO;
+                return NotFound(_response);
+            };
 
-		[HttpPost]
-		public async Task<ActionResult> Post([FromBody] EtapaDTO etapaDTO)
-		{
-			if (etapaDTO == null)
-			{
-				_response.Status = false; _response.Message = "Dado inválido!";
-				return BadRequest(_response);
-			}
+            _response.Status = true; _response.Message = "Etapa " + etapaDTO.NomeEtapa + " obtida com sucesso."; _response.Data = etapaDTO;
+            return Ok(_response);
+        }
 
-			var tipoProcessoDTO = await _tipoProcessoService.GetById(etapaDTO.IdTipoProcesso);
+        [HttpPost]
+        public async Task<ActionResult> Post([FromBody] EtapaDTO etapaDTO)
+        {
+            if (etapaDTO == null)
+            {
+                _response.Status = false; _response.Message = "Dado inválido!"; _response.Data = etapaDTO;
+                return BadRequest(_response);
+            }
 
-			if (tipoProcessoDTO == null)
-			{
-				_response.Status = false; _response.Message = "O Tipo Processo não existe!";
-				return NotFound(_response);
-			}
-			else if (!tipoProcessoDTO.Status)
-			{
-				_response.Status = false; _response.Message = "O Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " está desabilitado para adicionar novas etapas!";
-				return BadRequest(_response);
-			}
+            var tipoProcessoDTO = await _tipoProcessoService.GetById(etapaDTO.IdTipoProcesso);
 
-			var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(etapaDTO.IdTipoProcesso);
-			if (etapasDTO.FirstOrDefault(etapa => etapa.NomeEtapa == etapaDTO.NomeEtapa) != null)
-			{
-				_response.Status = false; _response.Message = "Já existe a Etapa " + etapaDTO.NomeEtapa + " no Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + "!";
-				return BadRequest(_response);
-			}
+            if (tipoProcessoDTO == null)
+            {
+                _response.Status = false; _response.Message = "O Tipo Processo não existe!"; _response.Data = etapaDTO;
+                return NotFound(_response);
+            }
+            else if (!tipoProcessoDTO.Status)
+            {
+                _response.Status = false; _response.Message = "O Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " está desabilitado para adicionar novas etapas!"; _response.Data = etapaDTO;
+                return BadRequest(_response);
+            }
 
-			etapaDTO.EnableAllOperations();
-			await _etapaService.Create(etapaDTO);
-			return new CreatedAtRouteResult("GetEtapa", new { id = etapaDTO.Id }, etapaDTO);
-		}
+            var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(etapaDTO.IdTipoProcesso);
+            if (etapasDTO.FirstOrDefault(etapa => etapa.NomeEtapa == etapaDTO.NomeEtapa) != null)
+            {
+                _response.Status = false; _response.Message = "Já existe a Etapa " + etapaDTO.NomeEtapa + " no Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + "!"; _response.Data = etapaDTO;
+                return BadRequest(_response);
+            }
 
-		[HttpPut()]
-		public async Task<ActionResult> Put([FromBody] EtapaDTO etapaDTO)
-		{
-			if (etapaDTO == null)
-			{
-				return BadRequest("Dado Inválido!");
-			}
+            etapaDTO.EnableAllOperations();
+            await _etapaService.Create(etapaDTO);
 
-			var existingEtapa = await _etapaService.GetById(etapaDTO.Id);
-			if (existingEtapa == null)
-			{
-				return BadRequest("Não existe a Etapa informada!");
-			}
-			else if (!existingEtapa.Status)
-			{
-				return BadRequest("A Etapa " + existingEtapa.NomeEtapa + " está desabilitada para alteração!");
-			}
+            _response.Status = true; _response.Message = "Etapa " + etapaDTO.NomeEtapa + " cadastrada com sucesso."; _response.Data = etapaDTO;
+            return Ok(_response);
 
-			var tipoProcessoDTO = await _tipoProcessoService.GetById(etapaDTO.IdTipoProcesso);
+            //return new CreatedAtRouteResult("GetEtapa", new { id = etapaDTO.Id }, etapaDTO);
+        }
 
-			if (tipoProcessoDTO == null)
-			{
-				return BadRequest("O Tipo Processo não existe!");
-			}
-			else if (!tipoProcessoDTO.Status)
-			{
-				return BadRequest("O Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " está desabilitado para adicionar novas etapas!");
-			}
+        [HttpPut()]
+        public async Task<ActionResult> Put([FromBody] EtapaDTO etapaDTO)
+        {
+            if (etapaDTO == null)
+            {
+                _response.Status = false; _response.Message = "Dado Inválido!"; _response.Data = etapaDTO;
+                return BadRequest(_response);
+            }
 
-			var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(tipoProcessoDTO.Id);
+            var existingEtapa = await _etapaService.GetById(etapaDTO.Id);
+            if (existingEtapa == null)
+            {
+                _response.Status = false; _response.Message = "Não existe a Etapa informada!"; _response.Data = etapaDTO;
+                return BadRequest(_response);
+            }
+            else if (!existingEtapa.Status)
+            {
+                _response.Status = false; _response.Message = "A Etapa " + existingEtapa.NomeEtapa + " está desabilitada para alteração!"; _response.Data = etapaDTO;
+                return BadRequest(_response);
+            }
 
-			if (etapasDTO.FirstOrDefault(etapa => etapa.NomeEtapa == etapaDTO.NomeEtapa) != null)
-			{
-				return BadRequest("Já existe a Etapa " + etapaDTO.NomeEtapa + " no Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + "!");
-			}
+            var tipoProcessoDTO = await _tipoProcessoService.GetById(etapaDTO.IdTipoProcesso);
 
-			etapaDTO.EnableAllOperations();
-			await _etapaService.Update(etapaDTO);
-			return Ok(etapaDTO);
-		}
+            if (tipoProcessoDTO == null)
+            {
+                _response.Status = false; _response.Message = "O Tipo Processo não existe!"; _response.Data = etapaDTO;
+                return BadRequest(_response);
+            }
+            else if (!tipoProcessoDTO.Status)
+            {
+                _response.Status = false; _response.Message = "O Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " está desabilitado para adicionar novas etapas!"; _response.Data = etapaDTO;
+                return BadRequest(_response);
+            }
 
-		[HttpDelete("{id}")]
-		public async Task<ActionResult<EtapaDTO>> Delete(int id)
-		{
-			var etapaDTO = await _etapaService.GetById(id);
-			if (etapaDTO == null)
-			{
-				_response.Status = false; _response.Message = "Etapa não encontrada!";
-				return NotFound(_response);
-			}
-			if (!etapaDTO.Status)
-			{
-				_response.Status = false; _response.Message = "A Etapa " + etapaDTO.NomeEtapa + " está desabilitada para exclusão!";
-				return BadRequest(_response);
-			}
+            var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(tipoProcessoDTO.Id);
 
-			await _etapaService.Remove(id);
-			return Ok(etapaDTO);
-		}
+            if (etapasDTO.FirstOrDefault(etapa => etapa.NomeEtapa == etapaDTO.NomeEtapa) != null)
+            {
+                _response.Status = false; _response.Message = "Já existe a Etapa " + etapaDTO.NomeEtapa + " no Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + "!"; _response.Data = etapaDTO;
+                return BadRequest(_response);
+            }
 
-		[HttpGet("GetRelatedToTypeProcess/{idTipoProcesso}")]
-		public async Task<ActionResult<IEnumerable<EtapaDTO>>> GetStagesRelatedToTypeProcess(int idTipoProcesso)
-		{
-			if (idTipoProcesso == 0)
-			{
-				_response.Status = false; _response.Message = "Informe o Id do Tipo Processo!";
-				return BadRequest(_response);
-			}
+            etapaDTO.EnableAllOperations();
+            await _etapaService.Update(etapaDTO);
 
-			var etapaDTO = await _etapaService.GetStagesRelatedToTypeProcess(idTipoProcesso);
-			_response.Status = true; _response.Message = etapaDTO;
-			return Ok(_response);
-		}
+            _response.Status = true; _response.Message = "Etapa " + etapaDTO.NomeEtapa + " alterada com sucesso."; _response.Data = etapaDTO;
+            return Ok(_response);
+        }
 
-		[HttpPut("{id}/Ativar")]
-		public async Task<ActionResult<EtapaDTO>> Activity(int id)
-		{
-			var etapaDTO = await _etapaService.GetById(id);
-			if (etapaDTO == null)
-			{
-				_response.Status = false; _response.Message = "Etapa não encontrada!";
-				return NotFound(_response);
-			}
+        [HttpPut()]
+        public async Task<ActionResult> UpdatePosition(int id, int position)
+        {
+            if (position == 0)
+            {
+                _response.Status = false; _response.Message = "Dado Inválido!"; _response.Data = null;
+                return BadRequest(_response);
+            }
 
-			if (!etapaDTO.Status)
-			{
-				etapaDTO.EnableAllOperations();
-				await _etapaService.Update(etapaDTO);
-			}
+            var etapaDTO = await _etapaService.GetById(id);
+            if (etapaDTO == null)
+            {
+                _response.Status = false; _response.Message = "Etapa não encontrada!"; _response.Data = etapaDTO;
+                return NotFound(_response);
+            }
+            else if (etapaDTO.Status)
+            {
+                _response.Status = false; _response.Message = "A Etapa " + etapaDTO.NomeEtapa + " está desabilitada para alteração!"; _response.Data = etapaDTO;
+                return BadRequest(_response);
+            } else if (etapaDTO.Posicao == position) {
+                _response.Status = true; _response.Message = "A Etapa " + etapaDTO.NomeEtapa + " já está na posição " + position + "º."; _response.Data = etapaDTO;
+            }
 
-			_response.Status = true; _response.Message = etapaDTO;
-			return Ok(_response);
-		}
+            var tipoProcessoDTO = await _tipoProcessoService.GetById(etapaDTO.IdTipoProcesso);
+            var etapas = await _etapaService.GetStagesRelatedToTypeProcess(etapaDTO.IdTipoProcesso);
 
-		[HttpPut("{id}/Desativar")]
-		public async Task<ActionResult<EtapaDTO>> Desactivity(int id)
-		{
-			var etapaDTO = await _etapaService.GetById(id);
-			if (etapaDTO == null)
-			{
-				_response.Status = false; _response.Message = "Etapa não encontrada!";
-				return NotFound(_response);
-			}
+            if (etapas.Count() < position)
+            {
+                _response.Status = false; _response.Message = "A Etapa " + etapaDTO.NomeEtapa + " não pode assumir a posição " + position + "º porque existe somente " + etapas.Count() + " Etapa(s) relacionada(s) ao Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + "!"; _response.Data = etapaDTO;
+                return BadRequest(_response);
+            }
+            else if (etapas.Where(etapa => etapa.Id != etapaDTO.Id) != null)
+            {
+                etapas = etapas.Where(etapa => etapa.Id != etapaDTO.Id);
+                List<EtapaDTO> selecionadas;
 
-			if (etapaDTO.Status)
-			{
-				etapaDTO.DisableAllOperations();
-				await _etapaService.Update(etapaDTO);
-			}
+                if (position < etapaDTO.Posicao)
+                {
+                    selecionadas = etapas
+                        .Skip(position - 1)
+                        .Take(etapaDTO.Posicao - position)
+                        .ToList();
+                }
+                else
+                {
+                    selecionadas = etapas
+                        .Skip(etapaDTO.Posicao - 1)
+                        .Take(position - etapaDTO.Posicao)
+                        .ToList();
+                }
 
-			_response.Status = true; _response.Message = etapaDTO;
-			return Ok(_response);
-		}
-	}
+                foreach (var etapa in selecionadas)
+                {
+                    etapa.Posicao++;
+                    await _etapaService.Update(etapa);
+                }
+            }
+
+            etapaDTO.Posicao = position;
+            await _etapaService.Update(etapaDTO);
+
+            _response.Status = true; _response.Message = "Posição da Etapa " + etapaDTO.NomeEtapa + " atualizada para " + position + "º."; _response.Data = etapaDTO;
+            return Ok(_response);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<EtapaDTO>> Delete(int id)
+        {
+            var etapaDTO = await _etapaService.GetById(id);
+            if (etapaDTO == null)
+            {
+                _response.Status = false; _response.Message = "Etapa não encontrada!"; _response.Data = etapaDTO;
+                return NotFound(_response);
+            }
+            if (!etapaDTO.Status)
+            {
+                _response.Status = false; _response.Message = "A Etapa " + etapaDTO.NomeEtapa + " está desabilitada para exclusão!"; _response.Data = etapaDTO;
+                return BadRequest(_response);
+            }
+
+            await _etapaService.Remove(id);
+
+            _response.Status = true; _response.Message = "Etapa " + etapaDTO.NomeEtapa + " excluída com sucesso."; _response.Data = etapaDTO;
+            return Ok(etapaDTO);
+        }
+
+        [HttpGet("GetRelatedToTypeProcess/{idTipoProcesso}")]
+        public async Task<ActionResult<IEnumerable<EtapaDTO>>> GetStagesRelatedToTypeProcess(int idTipoProcesso)
+        {
+            var tipoProcessoDTO = await _tipoProcessoService.GetById(idTipoProcesso);
+            if (tipoProcessoDTO == null)
+            {
+                _response.Status = false; _response.Message = "O Tipo Processo informado não existe!"; _response.Data = null;
+                return BadRequest(_response);
+            }
+
+            var etapas = await _etapaService.GetStagesRelatedToTypeProcess(idTipoProcesso);
+
+            _response.Status = true; _response.Data = etapas;
+            _response.Message = etapas.Any() ?
+                "Lista da(s) Etapa(s) relacionada(s) ao Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " obtida com sucesso." :
+                "Nenhuma Etapa relacionada ao Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " foi encontrada!";
+            return Ok(_response);
+        }
+
+        [HttpPut("{id}/Ativar")]
+        public async Task<ActionResult<EtapaDTO>> Activity(int id)
+        {
+            var etapaDTO = await _etapaService.GetById(id);
+            if (etapaDTO == null)
+            {
+                _response.Status = false; _response.Message = "Etapa não encontrada!"; _response.Data = etapaDTO;
+                return NotFound(_response);
+            }
+
+            if (!etapaDTO.Status)
+            {
+                etapaDTO.EnableAllOperations();
+                await _etapaService.Update(etapaDTO);
+            }
+
+            _response.Status = true; _response.Message = "Etapa " + etapaDTO.NomeEtapa + " ativada com sucesso."; _response.Data = etapaDTO;
+            return Ok(_response);
+        }
+
+        [HttpPut("{id}/Desativar")]
+        public async Task<ActionResult<EtapaDTO>> Desactivity(int id)
+        {
+            var etapaDTO = await _etapaService.GetById(id);
+            if (etapaDTO == null)
+            {
+                _response.Status = false; _response.Message = "Etapa não encontrada!"; _response.Data = etapaDTO;
+                return NotFound(_response);
+            }
+
+            if (etapaDTO.Status)
+            {
+                etapaDTO.DisableAllOperations();
+                await _etapaService.Update(etapaDTO);
+            }
+
+            _response.Status = true; _response.Message = "Etapa " + etapaDTO.NomeEtapa + " desativada com sucesso."; _response.Data = etapaDTO;
+            return Ok(_response);
+        }
+    }
 }

@@ -8,7 +8,7 @@ import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icon
 import LinkTitle from "../../components/Title/LinkTitle";
 
 import { useMontage } from "../../../../object/modules/montage";
-import ConnectionService from "../../../../object/service/connection";
+import { ConnectionService } from "../../../../object/service/connection";
 import ListModule from "../../../../object/modules/list";
 import TypeProcessClass from "../../../../object/class/typeprocess";
 import RegistrationButton from "../../components/Button/RegistrationButton";
@@ -23,7 +23,7 @@ export default function TypeProcess() {
         componentMounted();
     }, []);
 
-    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
+    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp(); 
     const list = ListModule();
     const typeprocess = TypeProcessClass();
 
@@ -70,15 +70,15 @@ export default function TypeProcess() {
     };
 
     const GetTypeProcess = async () => {
-        await connection.endpoint("TipoProcesso").get();
-        list.setList(connection.response.data);
+        await connection.get();
+        list.setList(connection.response.status? connection.response.data.data : []);
     };
 
     const PostTypeProcess = async () => {
         setInOperation(true);
 
         if (typeprocess.verifyData()) {
-            await connection.endpoint("TipoProcesso").post(typeprocess);
+            await connection.post(typeprocess);
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -93,7 +93,7 @@ export default function TypeProcess() {
         setInOperation(true);
 
         if (typeprocess.verifyData()) {
-            await connection.endpoint("TipoProcesso").put(typeprocess);
+            await connection.put(typeprocess);
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -107,7 +107,7 @@ export default function TypeProcess() {
     const DeleteTypeProcess = async () => {
         setInOperation(true);
 
-        await connection.endpoint("TipoProcesso").delete(typeprocess);
+        await connection.delete(typeprocess);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

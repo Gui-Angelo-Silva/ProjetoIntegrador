@@ -139,7 +139,7 @@ namespace SGED.Controllers
         [HttpPut()]
         public async Task<ActionResult> UpdatePosition(int id, int position)
         {
-            if (position == 0)
+            if (position <= 0)
             {
                 _response.Status = false; _response.Message = "Dado Inválido!"; _response.Data = null;
                 return BadRequest(_response);
@@ -175,22 +175,30 @@ namespace SGED.Controllers
                 if (position < etapaDTO.Posicao)
                 {
                     selecionadas = etapas
+                        .OrderBy(etapa => etapa.Posicao)
                         .Skip(position - 1)
                         .Take(etapaDTO.Posicao - position)
                         .ToList();
+
+                    foreach (var etapa in selecionadas)
+                    {
+                        etapa.Posicao++;
+                        await _etapaService.Update(etapa);
+                    }
                 }
                 else
                 {
                     selecionadas = etapas
+                        .OrderBy(etapa => etapa.Posicao)
                         .Skip(etapaDTO.Posicao - 1)
                         .Take(position - etapaDTO.Posicao)
                         .ToList();
-                }
 
-                foreach (var etapa in selecionadas)
-                {
-                    etapa.Posicao++;
-                    await _etapaService.Update(etapa);
+                    foreach (var etapa in selecionadas)
+                    {
+                        etapa.Posicao--;
+                        await _etapaService.Update(etapa);
+                    }
                 }
             }
 

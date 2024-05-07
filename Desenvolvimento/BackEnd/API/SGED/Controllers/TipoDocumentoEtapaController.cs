@@ -177,7 +177,7 @@ namespace SGED.Controllers
         [HttpPut()]
         public async Task<ActionResult> UpdatePosition(int id, int position)
         {
-            if (position == 0)
+            if (position <= 0)
             {
                 _response.Status = false; _response.Message = "Dado Inválido!"; _response.Data = null;
                 return BadRequest(_response);
@@ -216,22 +216,30 @@ namespace SGED.Controllers
                 if (position < tipoDocumentoEtapaDTO.Posicao)
                 {
                     selecionadas = tipoDocumentoEtapas
+                        .OrderBy(tipoDocumentoEtapa => tipoDocumentoEtapa.Posicao)
                         .Skip(position - 1)
                         .Take(tipoDocumentoEtapaDTO.Posicao - position)
                         .ToList();
+
+                    foreach (var tipoDocumentoEtapa in selecionadas)
+                    {
+                        tipoDocumentoEtapa.Posicao++;
+                        await _tipoDocumentoEtapaService.Update(tipoDocumentoEtapa);
+                    }
                 }
                 else
                 {
                     selecionadas = tipoDocumentoEtapas
+                        .OrderBy(tipoDocumentoEtapa => tipoDocumentoEtapa.Posicao)
                         .Skip(tipoDocumentoEtapaDTO.Posicao - 1)
                         .Take(position - tipoDocumentoEtapaDTO.Posicao)
                         .ToList();
-                }
 
-                foreach (var tipoDocumentoEtapa in selecionadas)
-                {
-                    tipoDocumentoEtapa.Posicao++;
-                    await _tipoDocumentoEtapaService.Update(tipoDocumentoEtapa);
+                    foreach (var tipoDocumentoEtapa in selecionadas)
+                    {
+                        tipoDocumentoEtapa.Posicao--;
+                        await _tipoDocumentoEtapaService.Update(tipoDocumentoEtapa);
+                    }
                 }
             }
 

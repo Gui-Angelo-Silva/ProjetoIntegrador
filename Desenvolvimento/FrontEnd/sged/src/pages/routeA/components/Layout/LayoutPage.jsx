@@ -19,7 +19,7 @@ const LayoutPage = ({ children }) => {
                     initial={{ opacity: 0.5 }}
                     animate={{ opacity: 1 }}
                     transition={{ type: 'spring', velocity: 2 }}
-                    className="flex-grow overflow-y-auto pl-[70px] sm:pl-[220px] md:pl-[240px] lg:pl-[260px] xl:pl-[275px] pr-4 pb-10"
+                    className="flex-grow overflow-y-auto pl-[70px] sm:pl-[220px] md:pl-[240px] lg:pl-[260px] xl:pl-[275px] pr-4 pb-10 scrollable-container"
                     style={{ maxHeight: 'calc(100vh - 64px)', overflowY: 'auto' }}
                 >
                     <div className='mt-3'>

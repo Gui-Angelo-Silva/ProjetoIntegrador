@@ -74,7 +74,13 @@ function PublicPlaceClass() {
         const status = cepExists ? false : true;
 
         return { status, cepExists };
-    };
+    }
+
+    function checkNumberBetweenInterval(number) {
+        return (publicPlaceInitialNumber && publicPlaceFinalNumber)? 
+            ((publicPlaceInitialNumber <= number) && (number <= publicPlaceFinalNumber)) : 
+            false;
+    }
 
     function verifyData(list) {
         clearError();
@@ -100,6 +106,9 @@ function PublicPlaceClass() {
             if (publicPlaceInitialNumber === publicPlaceFinalNumber) {
                 initial = 'O número inicial não pode ser igual ao número final!';
                 status = false;
+            } else if (publicPlaceInitialNumber >= publicPlaceFinalNumber) {
+                initial = 'O número inicial não pode ser maior que o número final!';
+                status = false;
             }
         } else {
             initial = 'O número inicial é requerido!';
@@ -109,6 +118,9 @@ function PublicPlaceClass() {
         if (publicPlaceFinalNumber) {
             if (publicPlaceFinalNumber === publicPlaceInitialNumber) {
                 final = 'O número final não pode ser igual ao número inicial!';
+                status = false;
+            } else if (publicPlaceFinalNumber <= publicPlaceInitialNumber) {
+                final = 'O número final não pode ser menor que número inicial!';
                 status = false;
             }
         } else {
@@ -126,7 +138,7 @@ function PublicPlaceClass() {
             status = false;
         }
 
-        if (list.some(object => true) && (!postalcode)) {
+        /*if (list.any() && (!postalcode)) {
             const publicplaces = list.map(object => ({
                 id: object.id,
                 cep: object.cep
@@ -138,7 +150,7 @@ function PublicPlaceClass() {
             if (response.cepExists) {
                 postalcode = 'O CEP informado já existe!';
             }
-        }
+        }*/
 
         setErrorPublicPlaceCep(postalcode);
         setErrorPublicPlaceInitialNumber(initial);
@@ -203,6 +215,7 @@ function PublicPlaceClass() {
         verifyData,
 
         // Função de Controle
+        checkNumberBetweenInterval,
         handleCEP
     };
 }

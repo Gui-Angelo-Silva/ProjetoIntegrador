@@ -1,15 +1,15 @@
 import { useState } from "react";
-import ControlModule from "../../modules/control";
+import PublicPlaceClass from "../publicplace";
 
 function RealStateClass() {
-    const control = ControlModule();
+    const publicplaceClass = PublicPlaceClass();
 
     const [realStateId, setRealStateId] = useState("");
     const [realStateNumber, setRealStateNumber] = useState("");
     const [idPublicPlace, setIdPublicPlace] = useState("");
     const [idCitizen, setIdCitizen] = useState("");
 
-    //const [errorRealStateNumber, setErrorRealStateNumber] = useState("");
+    const [errorRealStateNumber, setErrorRealStateNumber] = useState("");
     const [errorIdPublicPlace, setErrorIdPublicPlace] = useState("");
     const [errorIdCitizen, setErrorIdCitizen] = useState("");
 
@@ -49,12 +49,23 @@ function RealStateClass() {
         setErrorIdCitizen('');
     }
 
-    function verifyData(list) {
+    function verifyData() {
         clearError();
         let status = true;
 
+        let number = '';
         let publicplace = '';
         let citizen = '';
+
+        if (realStateNumber) {
+            if (!publicplaceClass.checkNumberBetweenInterval(realStateNumber)) {
+                number = 'O número do imóvel deve estar entre o intervalo do logradouro!';
+                status = false;
+            }
+        } else {
+            number = 'O Munícipe é requerido!';
+            status = false;
+        }
 
         if (!idPublicPlace) {
             publicplace = 'O Logradouro é requerido!';
@@ -66,11 +77,12 @@ function RealStateClass() {
             status = false;
         }
 
+        setErrorRealStateNumber(number);
         setErrorIdCitizen(citizen);
         setErrorIdPublicPlace(publicplace)
 
         return status;
-    };
+    }
 
     return {
         // Atributos
@@ -84,6 +96,7 @@ function RealStateClass() {
         setIdCitizen,
 
         // Erros
+        errorRealStateNumber,
         errorIdPublicPlace,
         errorIdCitizen,
 
@@ -94,7 +107,10 @@ function RealStateClass() {
         setData,
         clearData,
         clearError,
-        verifyData
+        verifyData,
+
+        // Funções de Controle
+        publicplaceClass
     }
 }
 

@@ -65,6 +65,10 @@ export default function RealState() {
         }
     };
 
+    const GetIntervalPublicPlace = () => {
+        realstate.publicplaceClass = listPublicPlace.currentList.find(publicplace => publicplace.publicPlaceId === selectboxPublicPlace.value);
+    };
+
     const SelectRealState = (object, option) => {
         realstate.getData(object);
         selectboxPublicPlace.selectOption(object.idLogradouro);
@@ -94,6 +98,9 @@ export default function RealState() {
 
     const PostRealState = async () => {
         setInOperation(false);
+
+        GetIntervalPublicPlace();
+
         if (realstate.verifyData(list.list)) {
             await connection.endpoint("Imovel").post(realstate);
 
@@ -108,6 +115,8 @@ export default function RealState() {
 
     const PutRealState = async () => {
         setInOperation(true);
+
+        GetIntervalPublicPlace();
 
         if (realstate.verifyData(list.list)) {
             await connection.endpoint("Imovel").put(realstate);
@@ -284,6 +293,9 @@ export default function RealState() {
                         <label className="text-[#444444]">Número do Imóvel: </label>
                         <br />
                         <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => realstate.setRealStateNumber(e.target.value)} value={realstate.realStateNumber} />
+                        <div className="text-sm text-red-600">
+                            {realstate.errorRealStateNumber}
+                        </div>
                         <br />
                         <label className="text-[#444444]">Logradouro:</label>
                         <br />
@@ -308,7 +320,8 @@ export default function RealState() {
                         <div className="text-sm text-red-600">
                             {realstate.errorIdPublicPlace}
                         </div>
-                        <br /><label className="text-[#444444]">Munícipe:</label>
+                        <br />
+                        <label className="text-[#444444]">Munícipe:</label>
                         <br />
                         <Select
                             value={selectboxCitizen.selectedOption}
@@ -357,6 +370,9 @@ export default function RealState() {
                         <br />
                         <label className="text-[#444444]">Número Imóvel:</label>
                         <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => realstate.setRealStateNumber(e.target.value)} value={realstate.realStateNumber} />
+                        <div className="text-sm text-red-600">
+                            {realstate.errorRealStateNumber}
+                        </div>
                         <br />
                         <label className="text-[#444444]">Logradouro:</label>
                         <br />

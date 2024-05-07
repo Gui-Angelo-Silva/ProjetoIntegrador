@@ -32,17 +32,24 @@ class ConnectionService {
     }
 
     endpoint(endpointUrl) {
-        this.clearData(); this.url = this.api.appendRoute(endpointUrl) + "/";
+        this.clearData(); this.url = this.api.appendRoute(endpointUrl);
         return this;
     }
 
     action(actionUrl) {
-        const parts = this.url.split("/");
+        /*const parts = this.url.split("/");
         const objectUrl = parts.slice(0, 5);
 
         objectUrl.push(actionUrl);
-        this.url = objectUrl.join("/") + "/";
+        this.url = objectUrl.join("/") + "/";*/
 
+        objectUrl = objectUrl + `/${actionUrl}`;
+        return this;
+        
+    }
+
+    data(dataUrl) {
+        objectUrl = objectUrl + `/${dataUrl}`;
         return this;
     }
 
@@ -72,49 +79,48 @@ class ConnectionService {
         }
     }
 
-    async get(data) {
-        const result = await this.execute(() => this.getMethod(data), 'GET');
+    async get() {
+        const result = await this.execute(() => this.getMethod(), 'GET');
         if (!result.status) this.clearData();
         else this.messageRequest = { type: 'success', content: `Dados obtidos com sucesso.` };
         this.updateResponse(result); if (this.statusPopUp) this.messagePopUp();
     }
 
-    async getMethod(data) {
-        return await axios.get(data ? `${this.url}${data}` : this.url, this.api.headerConfig());
+    async getMethod() {
+        return await axios.get(this.url, this.api.headerConfig());
     }
 
-    async post(object) {
-        const result = await this.execute(() => this.postMethod(object), 'POST');
-        if (result.status) this.messageRequest = { type: 'success', content: `${object.propertyName()} cadastrad${object.gender()} com sucesso.` };
+    async post(parameter) {
+        const result = await this.execute(() => this.postMethod(parameter), 'POST');
+        if (result.status) this.messageRequest = { type: 'success', content: `${parameter.propertyName()} cadastrad${parameter.gender()} com sucesso.` };
         this.updateResponse(result); if (this.statusPopUp) this.messagePopUp(); 
     }
 
-    async postMethod(object) {
-        const data = object.setData(); delete data.id;
-        return await axios.post(this.url, data, this.api.headerConfig());
+    async postMethod(parameter) {
+        //const data = parameter.setData(); delete data.id;
+        return await axios.post(this.url, parameter, this.api.headerConfig());
     }
 
-    async put(object) {
-        const result = await this.execute(() => this.putMethod(object), 'PUT');
-        if (result.status) this.messageRequest = { type: 'success', content: `${object.propertyName()} alterad${object.gender()} com sucesso.` };
+    async put(parameter) {
+        const result = await this.execute(() => this.putMethod(parameter), 'PUT');
+        if (result.status) this.messageRequest = { type: 'success', content: `${parameter.propertyName()} alterad${parameter.gender()} com sucesso.` };
         this.updateResponse(result); if (this.statusPopUp) this.messagePopUp();
     }
 
-    async putMethod(object) {
-        const data = object.setData();
-        console.log(data)
-        return await axios.put(this.url, data, this.api.headerConfig());
+    async putMethod(parameter) {
+        //const data = parameter.setData();
+        return await axios.put(this.url, parameter, this.api.headerConfig());
     }
 
-    async delete(object) {
-        const result = await this.execute(() => this.deleteMethod(object), 'DELETE');
-        if (result.status) this.messageRequest = { type: 'success', content: `${object.propertyName()} excluíd${object.gender()} com sucesso.` };
+    async delete(parameter) {
+        const result = await this.execute(() => this.deleteMethod(parameter), 'DELETE');
+        if (result.status) this.messageRequest = { type: 'success', content: `${parameter.propertyName()} excluíd${parameter.gender()} com sucesso.` };
         this.updateResponse(result); if (this.statusPopUp) this.messagePopUp();
     }
 
-    async deleteMethod(object) {
-        const data = object.setData();
-        return await axios.delete(`${this.url}${data.id}`, this.api.headerConfig());
+    async deleteMethod(parameter) {
+        //const data = parameter.setData();
+        return await axios.delete(`${this.url}${parameter}`, this.api.headerConfig());
     }
 
     messagePopUp() {

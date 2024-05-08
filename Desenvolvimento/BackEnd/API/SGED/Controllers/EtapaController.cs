@@ -136,7 +136,7 @@ namespace SGED.Controllers
             return Ok(_response);
         }
 
-        [HttpPut()]
+        [HttpPut("UpdatePosition")]
         public async Task<ActionResult> UpdatePosition(int id, int position)
         {
             if (position <= 0)
@@ -151,7 +151,7 @@ namespace SGED.Controllers
                 _response.Status = false; _response.Message = "Etapa não encontrada!"; _response.Data = etapaDTO;
                 return NotFound(_response);
             }
-            else if (etapaDTO.Status)
+            else if (!etapaDTO.Status)
             {
                 _response.Status = false; _response.Message = "A Etapa " + etapaDTO.NomeEtapa + " está desabilitada para alteração!"; _response.Data = etapaDTO;
                 return BadRequest(_response);
@@ -169,7 +169,6 @@ namespace SGED.Controllers
             }
             else if (etapas.Where(etapa => etapa.Id != etapaDTO.Id) != null)
             {
-                etapas = etapas.Where(etapa => etapa.Id != etapaDTO.Id);
                 List<EtapaDTO> selecionadas;
 
                 if (position < etapaDTO.Posicao)
@@ -190,7 +189,7 @@ namespace SGED.Controllers
                 {
                     selecionadas = etapas
                         .OrderBy(etapa => etapa.Posicao)
-                        .Skip(etapaDTO.Posicao - 1)
+                        .Skip(etapaDTO.Posicao)
                         .Take(position - etapaDTO.Posicao)
                         .ToList();
 

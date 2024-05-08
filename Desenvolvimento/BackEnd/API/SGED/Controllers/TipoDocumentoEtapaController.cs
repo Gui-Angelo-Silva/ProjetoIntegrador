@@ -174,7 +174,7 @@ namespace SGED.Controllers
             return Ok(_response);
         }
 
-        [HttpPut()]
+        [HttpPut("UpdatePosition")]
         public async Task<ActionResult> UpdatePosition(int id, int position)
         {
             if (position <= 0)
@@ -189,7 +189,7 @@ namespace SGED.Controllers
                 _response.Status = false; _response.Message = "Relacionamento entre Etapa e Tipo Documento não encontrado!"; _response.Data = tipoDocumentoEtapaDTO;
                 return NotFound(_response);
             }
-            else if (tipoDocumentoEtapaDTO.Status)
+            else if (!tipoDocumentoEtapaDTO.Status)
             {
                 _response.Status = false; _response.Message = "O relacionamento entre Etapa e Tipo Documento está desabilitado para alteração!"; _response.Data = tipoDocumentoEtapaDTO;
                 return BadRequest(_response);
@@ -210,7 +210,6 @@ namespace SGED.Controllers
             }
             else if (tipoDocumentoEtapas.Where(tipoDocumentoEtapa => tipoDocumentoEtapa.Id != tipoDocumentoEtapaDTO.Id) != null)
             {
-                tipoDocumentoEtapas = tipoDocumentoEtapas.Where(tipoDocumentoEtapa => tipoDocumentoEtapa.Id != tipoDocumentoEtapaDTO.Id);
                 List<TipoDocumentoEtapaDTO> selecionadas;
 
                 if (position < tipoDocumentoEtapaDTO.Posicao)
@@ -231,7 +230,7 @@ namespace SGED.Controllers
                 {
                     selecionadas = tipoDocumentoEtapas
                         .OrderBy(tipoDocumentoEtapa => tipoDocumentoEtapa.Posicao)
-                        .Skip(tipoDocumentoEtapaDTO.Posicao - 1)
+                        .Skip(tipoDocumentoEtapaDTO.Posicao)
                         .Take(position - tipoDocumentoEtapaDTO.Posicao)
                         .ToList();
 

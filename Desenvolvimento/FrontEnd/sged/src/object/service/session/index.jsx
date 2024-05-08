@@ -12,12 +12,12 @@ function SessionService() {
 
     const getLogin = () => {
         //return storage.getLocal('login');
-        return storage.getLocal("login");
+        return cookie.getCookie("login");
     };
 
     const getToken = () => {
         //return storage.getLocal('token');
-        return storage.getLocal("token");
+        return cookie.getCookie("token");
     };
 
     const getUser = async () => {
@@ -40,22 +40,22 @@ function SessionService() {
     const setLogin = (object) => {
         const login = { persist: object.persistLogin, emailPessoa: object.personEmail, senhaUsuario: object.userPassword };
         //storage.setLocal('login', login);
-        storage.setLocal("login", login, 1);
+        cookie.setCookie("login", login, 1);
     };
 
     const setToken = (token) => {
         //storage.setLocal('token', token);
-        storage.setLocal("token", token, 1);
+        cookie.setCookie("token", token, 1);
     };
 
     const defaultLogin = () => {
         //storage.setLocal('login', null);
-        storage.setLocal("login", null);
+        cookie.setCookie("login", null);
     };
 
     const defaultToken = () => {
         //storage.setLocal('token', null);
-        storage.setLocal("token", null);
+        cookie.setCookie("token", null);
     };
 
     const createSession = async (object) => {
@@ -149,10 +149,12 @@ function SessionService() {
         getLogin,
         getToken,
         getUser,
+
         setLogin,
         setToken,
         defaultLogin,
         defaultToken,
+
         createSession,
         closeSession,
         validateToken,

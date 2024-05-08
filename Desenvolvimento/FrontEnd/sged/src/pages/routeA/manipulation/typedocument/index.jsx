@@ -12,7 +12,6 @@ import { useMontage } from "../../../../object/modules/montage";
 import ConnectionService from "../../../../object/service/connection";
 import ListModule from "../../../../object/modules/list";
 import TypeDocumentClass from "../../../../object/class/typedocument";
-import SelectModule from '../../../../object/modules/select';
 import Search from "../../../../assets/pages/SearchImg";
 import { motion } from "framer-motion";
 import RegistrationButton from "../../components/Button/RegistrationButton";
@@ -28,8 +27,6 @@ export default function TypeDocument() {
     const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
     const typedocument = TypeDocumentClass();
     const list = ListModule();
-    const listStage = ListModule();
-    const selectBox = SelectModule();
 
     const [modalInsert, setModalInsert] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
@@ -73,14 +70,9 @@ export default function TypeDocument() {
         }
     };
 
-    const GetStage = async () => {
-        await connection.endpoint("Etapa").get();
-        listStage.setList(connection.response.data);
-    }
-
     const GetTypeDocument = async () => {
         await connection.endpoint("TipoDocumento").get();
-        list.setList(connection.response.data);
+        list.setList(connection.getList());
     };
 
     const PostTypeDocument = async () => {
@@ -91,8 +83,6 @@ export default function TypeDocument() {
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
-        } else {
-            console.log('Dados Inválidos!');
         }
 
         setInOperation(false);
@@ -106,8 +96,6 @@ export default function TypeDocument() {
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
-        } else {
-            console.log('Dados Inválidos!');
         }
 
         setInOperation(false);
@@ -175,24 +163,10 @@ export default function TypeDocument() {
     useEffect(() => {
         if (updateData) {
             GetTypeDocument();
-            GetStage();
-
-            typedocument.setIdStage(listStage.list[0]?.id);
 
             setUpdateData(false);
         }
     }, [updateData]);
-
-    useEffect(() => {
-        if (!modalInsert && !modalEdit && !modalDelete) {
-            selectBox.updateOptions(listStage.list, "id", "nomeEtapa");
-            selectBox.selectOption(listStage.list[0]?.id);
-        }
-    }, [listStage.list, modalInsert, modalEdit, modalDelete]);
-
-    useEffect(() => {
-        typedocument.setIdStage(selectBox.selectedOption.value ? selectBox.selectedOption.value : '');
-    }, [selectBox.selectedOption]);
 
     return (
         <div className="flex min-h-screen">
@@ -234,17 +208,14 @@ export default function TypeDocument() {
                         <div className="grid grid-cols-4 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
                             <div className="flex ml-5 text-white text-lg font-semibold">Nome</div>
                             <div className="flex justify-center items-center text-white text-lg font-semibold">Descrição</div>
-                            <div className="flex justify-center items-center text-white text-lg font-semibold">Etapa</div>
                             <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
                         </div>
                         <ul className="w-full">
                             {list.currentList.map((object) => {
-                                const etapa = listStage.list.find((stage) => stage.id === object.idEtapa);
                                 return (
                                     <li className="grid grid-cols-4 w-full" key={object.id}>
                                         <div className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</div>
                                         <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoDocumento}</div>
-                                        <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{etapa ? etapa.nomeEtapa : "Etapa não encontrada!"}</div>
                                         <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
                                             <button
                                                 className=""
@@ -311,27 +282,6 @@ export default function TypeDocument() {
                                 {typedocument.errorTypeDocumentDescription}
                             </div>
                             <br />
-                            <label className="text-[#444444]">Etapa:</label>
-                            <br />
-                            <Select
-                                value={selectBox.selectedOption}
-                                onChange={selectBox.handleChange}
-                                onInputChange={selectBox.delayedSearch}
-                                loadOptions={selectBox.loadOptions}
-                                options={selectBox.options}
-                                placeholder="Pesquisar etapa . . ."
-                                isClearable
-                                isSearchable
-                                noOptionsMessage={() => {
-                                    if (listStage.list.length === 0) {
-                                        return "Nenhum Etapa cadastrado!";
-                                    } else {
-                                        return "Nenhuma opção encontrada!";
-                                    }
-                                }}
-                                className="style-select"
-                            />
-                            <br />
                         </div>
                     </ModalBody>
                     <ModalFooter>
@@ -357,27 +307,6 @@ export default function TypeDocument() {
                             <div className="text-sm text-red-600">
                                 {typedocument.errorTypeDocumentDescription}
                             </div>
-                            <br />
-                            <label className="text-[#444444]">Etapa:</label>
-                            <br />
-                            <Select
-                                value={selectBox.selectedOption}
-                                onChange={selectBox.handleChange}
-                                onInputChange={selectBox.delayedSearch}
-                                loadOptions={selectBox.loadOptions}
-                                options={selectBox.options}
-                                placeholder="Pesquisar etapa . . ."
-                                isClearable
-                                isSearchable
-                                noOptionsMessage={() => {
-                                    if (listState.list.length === 0) {
-                                        return "Nenhum Etapa cadastrado!";
-                                    } else {
-                                        return "Nenhuma opção encontrada!";
-                                    }
-                                }}
-                                className="style-select"
-                            />
                             <br />
                         </div>
                     </ModalBody>

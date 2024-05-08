@@ -1,7 +1,7 @@
 import axios from 'axios';
 import ApiService from '../api';
 
-class ConnectionService {
+export default class ConnectionService {
     constructor() {
         this.api = new ApiService();
         this.shootPopUp = false;
@@ -22,7 +22,7 @@ class ConnectionService {
     }
 
     endpoint(url) {
-        resetData();
+        this.resetData();
 
         this.url = this.api.appendRoute(url);
         return this;
@@ -44,16 +44,18 @@ class ConnectionService {
             const result = await method();
 
             if (this.isSuccessResponse(result)) {
-                this.messageRequest = { type: 'sucess', content: result.data };
+                this.messageRequest = { type: 'sucess', content: result.data.data? result.data.data : 'Requisição realizada com sucesso!' };
                 return { status: true, data: result.data };
+
             } else {
-                this.messageRequest = { type: 'bad', content: result.data };
+                this.messageRequest = { type: 'bad', content: result.data.data? result.data.data : 'Requisição negada!' };
                 return { status: false, data: result.data };
             }
             
         } catch (error) {
-            if (this.isNoResponseError(error)) {
+            if (this.isNoServerResponse(error)) {
                 this.messageRequest = { type: 'error', content: 'Sem resposta do servidor!' };
+
             } else {
                 this.messageRequest = { type: 'error', content: 'Erro ao executar a requisição!' };
             }
@@ -66,13 +68,15 @@ class ConnectionService {
         return result.status && [200, 201].includes(result.status);
     }
     
-    isNoResponseError(error) {
-        return error.response.status && [500].includes(error.response.status);
+    isNoServerResponse(error) {
+        return (
+            (error.status && [500].includes(error.result.status)) || // Verifica se o status é 500
+            error.code === "ERR_NETWORK" // Verifica se o código de erro é ERR_NETWORK, que pode ser conexão recusada ou servidor inoperante
+        );
     }
 
     async get() {
-        const result = await this.execute(() => this.getMethod(), 'GET'); 
-        this.updateResponse(result); this.messagePopUp();
+        this.updateResponse(await this.execute(() => this.getMethod(), 'GET')); this.messagePopUp();
     }
 
     async getMethod() {
@@ -80,8 +84,7 @@ class ConnectionService {
     }
 
     async post(parameter) {
-        const result = await this.execute(() => this.postMethod(parameter), 'POST');
-        this.updateResponse(result); this.messagePopUp();
+        this.updateResponse(await this.execute(() => this.postMethod(parameter), 'POST')); this.messagePopUp();
     }
 
     async postMethod(parameter) {
@@ -91,8 +94,7 @@ class ConnectionService {
     }
 
     async put(parameter) {
-        const result = await this.execute(() => this.putMethod(parameter), 'PUT'); 
-        this.updateResponse(result); this.messagePopUp();
+        this.updateResponse(await this.execute(() => this.putMethod(parameter), 'PUT')); this.messagePopUp();
     }
 
     async putMethod(parameter) {
@@ -102,8 +104,7 @@ class ConnectionService {
     }
 
     async delete(parameter) {
-        const result = await this.execute(() => this.deleteMethod(parameter), 'DELETE'); 
-        this.updateResponse(result); this.messagePopUp();
+        this.updateResponse(await this.execute(() => this.deleteMethod(parameter), 'DELETE')); this.messagePopUp();
     }
 
     async deleteMethod(parameter) {
@@ -136,5 +137,21 @@ class ConnectionService {
     disableGetPopUp() {
         this.getPopUp = false;
         return this;
+    }
+
+    getList() {
+        return this.response.status?
+            this.response.status.data.data?
+                this.response.status.data.data
+                : this.response.status.data
+            : [];
+    }
+
+    getObject() {
+        return this.response.status?
+            this.response.status.data.data?
+                this.response.status.data.data
+                : this.response.status.data
+            : null;
     }
 }

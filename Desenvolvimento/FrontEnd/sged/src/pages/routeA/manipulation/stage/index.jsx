@@ -76,12 +76,12 @@ export default function Stage() {
 
     const GetTypeProcess = async () => {
         await connection.endpoint("TipoProcesso").get();
-        listTypeProcess.setList(connection.response.data);
+        listTypeProcess.setList(connection.getList());
     };
 
     const GetStage = async () => {
         await connection.endpoint("Etapa").get();
-        list.setList(connection.response.data);
+        list.setList(connection.getList());
     };
 
     const PostStage = async () => {
@@ -92,8 +92,6 @@ export default function Stage() {
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
-        } else {
-            console.log('Dados inválidos!');
         }
 
         setInOperation(false);
@@ -107,9 +105,8 @@ export default function Stage() {
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
-        } else {
-            console.log('Dados inválidos!');
         }
+        
         setInOperation(false);
     };
 

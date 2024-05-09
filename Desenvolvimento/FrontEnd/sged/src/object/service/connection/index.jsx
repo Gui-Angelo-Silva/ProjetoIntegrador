@@ -29,7 +29,7 @@ export default class ConnectionService {
     }
 
     action(url) {
-        this.url += `/${actionUrl}`;
+        this.url += `/${url}`;
         return this;
     }
 
@@ -44,12 +44,12 @@ export default class ConnectionService {
             const result = await method();
 
             if (this.isSuccessResponse(result)) {
-                this.messageRequest = { type: 'sucess', content: result.data.data? result.data.data : 'Requisição realizada com sucesso!' };
-                return { status: true, data: result.data };
+                this.messageRequest = { type: 'sucess', content: result.data.message? result.data.message : 'Requisição realizada com sucesso!' };
+                return { status: true, data: result.data.data? result.data.data : result.data };
 
             } else {
-                this.messageRequest = { type: 'bad', content: result.data.data? result.data.data : 'Requisição negada!' };
-                return { status: false, data: result.data };
+                this.messageRequest = { type: 'bad', content: result.data.message? result.data.message : 'Requisição negada!' };
+                return { status: false, data: result.data.data? result.data.data : result.data };
             }
             
         } catch (error) {
@@ -109,12 +109,12 @@ export default class ConnectionService {
 
     async deleteMethod(parameter) {
         return parameter ? 
-            await axios.delete(`${this.url}${parameter}`, this.api.headerConfig()) :
+            await axios.delete(`${this.url}/${parameter}`, this.api.headerConfig()) :
             await axios.delete(this.url, this.api.headerConfig());
     }
 
     messagePopUp() {
-        if (this.shootPopUp && (this.typeMethod !== 'GET' || this.getPopUp)) {
+        if (!this.response.status) {
             console.log(this.messageRequest);
         }
     }
@@ -141,17 +141,13 @@ export default class ConnectionService {
 
     getList() {
         return this.response.status?
-            this.response.status.data.data?
-                this.response.status.data.data
-                : this.response.status.data
+            this.response.data
             : [];
     }
 
     getObject() {
         return this.response.status?
-            this.response.status.data.data?
-                this.response.status.data.data
-                : this.response.status.data
+            this.response.data
             : null;
     }
 }

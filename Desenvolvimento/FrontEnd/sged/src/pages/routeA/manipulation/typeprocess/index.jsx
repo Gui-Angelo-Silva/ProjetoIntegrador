@@ -34,7 +34,7 @@ export default function TypeProcess() {
     const [inOperation, setInOperation] = useState(false);
 
     const SelectTypeProcess = (object, option) => {
-        typeprocess.getData(object);
+        typeprocess.setData(object);
 
         if (option === "Editar") {
             openCloseModalEdit(true);
@@ -78,7 +78,7 @@ export default function TypeProcess() {
         setInOperation(true);
 
         if (typeprocess.verifyData()) {
-            await connection.endpoint("TipoProcesso").post(typeprocess);
+            await connection.endpoint("TipoProcesso").post(typeprocess.getData());
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -91,7 +91,7 @@ export default function TypeProcess() {
         setInOperation(true);
 
         if (typeprocess.verifyData()) {
-            await connection.endpoint("TipoProcesso").put(typeprocess);
+            await connection.endpoint("TipoProcesso").put(typeprocess.getData());
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -103,7 +103,7 @@ export default function TypeProcess() {
     const DeleteTypeProcess = async () => {
         setInOperation(true);
 
-        await connection.endpoint("TipoProcesso").delete(typeprocess);
+        await connection.endpoint("TipoProcesso").delete(typeprocess.getData().id);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

@@ -1,7 +1,15 @@
 import { useState } from "react";
+import StatusInterface from "../../interface/status";
 
 function TypeDocumentClass() {
-    const [typeDocumentId, setTypeDocumentId] = useState('');
+
+    const IStatus = StatusInterface();
+
+    // Atributos
+    const status = IStatus.status;
+    const setStatus = IStatus.setStatus;
+
+    const [typeDocumentId, setTypeDocumentId] = useState(0);
     const [typeDocumentName, setTypeDocumentName] = useState('');
     const [typeDocumentDescription, setTypeDocumentDescription] = useState('');
 
@@ -16,25 +24,27 @@ function TypeDocumentClass() {
         return "o";
     }
 
-    function getData(object) {
-        setTypeDocumentId(object.id);
-        setTypeDocumentName(object.nomeTipoDocumento);
-        setTypeDocumentDescription(object.descricaoTipoDocumento);
-    }
-
-    function setData() {
+    function getData() {
         return {
             id: typeDocumentId,
             nomeTipoDocumento: typeDocumentName,
             descricaoTipoDocumento: typeDocumentDescription,
-            idEtapa: idStage
+            status: status
         };
     }
 
+    function setData(object) {
+        setTypeDocumentId(object.id);
+        setTypeDocumentName(object.nomeTipoDocumento);
+        setTypeDocumentDescription(object.descricaoTipoDocumento);
+        setStatus(object.status);
+    }
+
     function clearData() {
-        setTypeDocumentId('');
+        setTypeDocumentId(0);
         setTypeDocumentName('');
         setTypeDocumentDescription('');
+        setStatus(false);
     }
 
     function clearError() {
@@ -80,6 +90,8 @@ function TypeDocumentClass() {
         setTypeDocumentName,
         typeDocumentDescription,
         setTypeDocumentDescription,
+        status,
+        setStatus,
         typeDocumentId,
 
         errorTypeDocumentName,

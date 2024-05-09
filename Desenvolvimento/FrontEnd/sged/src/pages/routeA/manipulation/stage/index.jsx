@@ -64,7 +64,7 @@ export default function Stage() {
     };
 
     const SelectStage = (object, option) => {
-        stage.getData(object);
+        stage.setData(object);
         selectBox.selectOption(object.idTypeProcess);
 
         if (option === "Editar") {
@@ -88,7 +88,7 @@ export default function Stage() {
         setInOperation(true);
 
         if (stage.verifyData(list.list)) {
-            await connection.endpoint("Etapa").post(stage);
+            await connection.endpoint("Etapa").post(stage.getData());
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -101,7 +101,7 @@ export default function Stage() {
         setInOperation(true);
 
         if (stage.verifyData(list.list)) {
-            await connection.endpoint("Etapa").put(stage);
+            await connection.endpoint("Etapa").put(stage.getData());
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -113,7 +113,7 @@ export default function Stage() {
     const DeleteStage = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Etapa").delete(stage);
+        await connection.endpoint("Etapa").delete(stage.getData().id);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

@@ -61,7 +61,7 @@ export default function TypeDocument() {
     };
 
     const SelectTypeDocument = (object, option) => {
-        typedocument.getData(object);
+        typedocument.setData(object);
 
         if (option === "Editar") {
             openCloseModalEdit(true);
@@ -79,7 +79,7 @@ export default function TypeDocument() {
         setInOperation(true);
 
         if (typedocument.verifyData()) {
-            await connection.endpoint("TipoDocumento").post(typedocument);
+            await connection.endpoint("TipoDocumento").post(typedocument.getData());
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -92,7 +92,7 @@ export default function TypeDocument() {
         setInOperation(true);
 
         if (typedocument.verifyData()) {
-            await connection.endpoint("TipoDocumento").put(typedocument);
+            await connection.endpoint("TipoDocumento").put(typedocument.getData());
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -104,7 +104,7 @@ export default function TypeDocument() {
     const DeleteTypeDocument = async () => {
         setInOperation(true);
 
-        await connection.endpoint("TipoDocumento").delete(typedocument);
+        await connection.endpoint("TipoDocumento").delete(typedocument.getData().id);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);
@@ -205,7 +205,7 @@ export default function TypeDocument() {
                         </div>
                     </div>
                     <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
-                        <div className="grid grid-cols-4 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
+                        <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
                             <div className="flex ml-5 text-white text-lg font-semibold">Nome</div>
                             <div className="flex justify-center items-center text-white text-lg font-semibold">Descrição</div>
                             <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
@@ -213,7 +213,7 @@ export default function TypeDocument() {
                         <ul className="w-full">
                             {list.currentList.map((object) => {
                                 return (
-                                    <li className="grid grid-cols-4 w-full" key={object.id}>
+                                    <li className="grid grid-cols-3 w-full" key={object.id}>
                                         <div className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</div>
                                         <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoDocumento}</div>
                                         <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">

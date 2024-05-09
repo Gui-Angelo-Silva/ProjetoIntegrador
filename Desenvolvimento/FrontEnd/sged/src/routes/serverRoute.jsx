@@ -16,7 +16,7 @@ export const useServer = () => {
 
 export const ServerProvider = ({ children }) => {
 
-    var blockNavigation = false;
+    var inOperation = false;
     const [callFunctionRoute, setCallFunctionRoute] = useState(false);
     const [liberateNavigate, setLiberateNavigate] = useState(true);
     const { componentMontage, clearStateMontage } = useMontage();
@@ -70,15 +70,14 @@ export const ServerProvider = ({ children }) => {
         }
     }, []);
 
-    /*useEffect(() => {
+    useEffect(() => {
         const currentPathSegments = window.location.pathname.split('/');
         const firstRoute = currentPathSegments[1]?.toLowerCase();
 
         // Função para validar a rota e navegar
         const validateAndNavigate = async () => {
+            inOperation = true;
             const autenticate = await updateAuthentication();
-
-            console.log(autenticate);
 
             if (callFunctionRoute) {
                 clearStateMontage();
@@ -104,32 +103,14 @@ export const ServerProvider = ({ children }) => {
 
                 setLiberateNavigate(true);
             }
+
+            inOperation = false;
         };
 
-        // Executar apenas quando a URL mudar
-        const handleLocationChange = async () => {
-            if (blockNavigation) {
-                await validateAndNavigate();
-                blockNavigation = false;
-            }
+        if (!inOperation) validateAndNavigate();
+    }, []);
 
-            return;
-        };
-
-        // Adicionar o ouvinte de evento para a mudança de URL
-        window.addEventListener('popstate', handleLocationChange);
-
-        // Executar a validação na primeira renderização e sempre que a rota mudar
-        validateAndNavigate();
-
-        // Remover o ouvinte de evento quando o componente for desmontado
-        return () => {
-            window.removeEventListener('popstate', handleLocationChange);
-            blockNavigation = true;
-        };
-    }, [window.location.pathname]);
-
-    useEffect(() => {
+    /*useEffect(() => {
         const delay = (milliseconds) => {
             return new Promise(resolve => setTimeout(resolve, milliseconds));
         };

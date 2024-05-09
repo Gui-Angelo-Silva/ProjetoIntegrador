@@ -1,11 +1,9 @@
-import TokenClass from '../../class/token';
 import ConnectionService from '../connection';
 import StorageModule from '../../modules/storage';
 import CookieModule from '../../modules/cookie';
 
 function SessionService() {
 
-    const tokenClass = TokenClass();
     const connection = new ConnectionService();
     const storage = StorageModule();
     const cookie = CookieModule();
@@ -25,7 +23,7 @@ function SessionService() {
 
         if (token) {
             try {
-                await connection.endpoint("Sessao").action("GetUser").get(token);
+                await connection.endpoint("Sessao").action("GetUser").data(token).get();
                 return connection.response.status? connection.response.data : null;
 
             } catch (error) {
@@ -63,7 +61,7 @@ function SessionService() {
         var autentication = false;
 
         try {
-            await connection.endpoint("Sessao").action("Autentication").post(object);
+            await connection.endpoint("Sessao").action("Autentication").post(object.setData());
 
             if (connection.response.status) {
                 setToken(connection.response.data.response);
@@ -95,11 +93,15 @@ function SessionService() {
     };
 
     const closeSession = async () => {
-        const token = getToken();
+        const tokenUser = getToken();
 
         if (token) {
+            const data = {
+                token: tokenUser
+            };
+
             try {
-                await connection.endpoint("Sessao").action("Close").put(tokenClass);
+                await connection.endpoint("Sessao").action("Close").put(data);
                 defaultToken();
 
                 return connection.response.status;
@@ -113,15 +115,15 @@ function SessionService() {
     };
 
     const validateToken = async () => {
-        const token = getToken();
+        const tokenUser = getToken();
 
-        console.log(token);
+        if (tokenUser) {
+            const data = {
+                token: tokenUser
+            };
 
-        if (token) {
             try {
-                await connection.endpoint("Sessao").action("Validation").put(tokenClass);
-
-                console.log(connection.response);
+                await connection.endpoint("Sessao").action("Validation").put(data);
 
                 if (connection.response.status) setToken(connection.response.data.response);
                 else defaultToken();

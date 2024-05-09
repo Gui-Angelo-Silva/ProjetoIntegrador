@@ -72,11 +72,10 @@ namespace SGED.Controllers
                     IdUsuario = usuarioDTO.Id,
                     DataHoraInicio = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"),
                     StatusSessao = true,
-                    TokenSessao = SessaoDTO.GenerateToken(usuarioDTO.EmailPessoa),
 
                     EmailPessoa = usuarioDTO.EmailPessoa,
                     NivelAcesso = tipoUsuarioDTO.NivelAcesso
-                };
+                }; sessaoDTO.GenerateToken();
 
                 if (ultimaSessao is null || !ultimaSessao.StatusSessao)
                 {
@@ -105,29 +104,12 @@ namespace SGED.Controllers
             var sessaoDTO = await _sessaoService.GetByToken(token.Token);
             if (sessaoDTO is null) return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
 
-            if (sessaoDTO.StatusSessao && SessaoDTO.ValidateToken(sessaoDTO.TokenSessao, sessaoDTO.EmailPessoa))
+            if (sessaoDTO.StatusSessao && sessaoDTO.ValidateToken())
             {
-                var authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
-                if (!string.IsNullOrEmpty(authorizationHeader))
-                {
-                    var tokenParts = authorizationHeader.Split(' ');
-                    if (tokenParts.Length == 2 && tokenParts[0] == "Front")
-                    {
-                        sessaoDTO.TokenSessao = SessaoDTO.GenerateToken(sessaoDTO.EmailPessoa);
-                        await _sessaoService.Update(sessaoDTO);
-
-                        Response.Headers.Add("Token", $"Front {sessaoDTO.TokenSessao}");
-                    }
-
-                    return Ok(new { status = true, response = sessaoDTO.TokenSessao });
-                }
-
-                sessaoDTO.StatusSessao = false;
-                sessaoDTO.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                sessaoDTO.GenerateToken();
                 await _sessaoService.Update(sessaoDTO);
 
-                Response.Headers.Remove("Authorization");
-                return Unauthorized(new { status = false, response = "Token não informado!" });
+                return Ok(new { status = true, response = sessaoDTO.TokenSessao });
             }
             else
             {

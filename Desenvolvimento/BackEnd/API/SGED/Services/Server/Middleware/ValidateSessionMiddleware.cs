@@ -57,7 +57,7 @@ namespace SGED.Services.Server.Middleware
                         await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = "Erro: Sessão não encontrada!" }));
                         return;
                     }
-                    else if (!sessao.StatusSessao || !SessaoDTO.ValidateToken(sessao.TokenSessao, sessao.EmailPessoa))
+                    else if (!sessao.StatusSessao || !sessao.ValidateToken())
                     {
                         context.Response.Headers.Remove("Authorization");
 
@@ -137,7 +137,7 @@ namespace SGED.Services.Server.Middleware
 
                     sessaoAfter.EmailPessoa = user.EmailPessoa;
                     if (user.TipoUsuario != null) { sessaoAfter.NivelAcesso = user.TipoUsuario.NivelAcesso; }
-                    sessaoAfter.TokenSessao = SessaoDTO.GenerateToken(sessaoAfter.EmailPessoa);
+                    sessaoAfter.GenerateToken();
                     await _sessaoRepository.Update(sessaoAfter);
 
                     context.Request.Headers.Add("Token", $"Front {sessaoAfter.TokenSessao}");

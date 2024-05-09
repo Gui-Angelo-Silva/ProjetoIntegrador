@@ -113,7 +113,47 @@ namespace SGED.Controllers
 			}
 		}
 
-		[HttpDelete("{id}")]
+        [HttpPut("{id}/Ativar")]
+        public async Task<ActionResult<TipoDocumentoDTO>> Activity(int id)
+        {
+            var tipoDocumentoDTO = await _tipoDocumentoService.GetById(id);
+            if (tipoDocumentoDTO == null)
+            {
+                _response.Status = false; _response.Message = "Tipo Documento não encontrado!"; _response.Data = tipoDocumentoDTO;
+                return NotFound(_response);
+            }
+
+            if (!tipoDocumentoDTO.Status)
+            {
+                tipoDocumentoDTO.EnableAllOperations();
+                await _tipoDocumentoService.Update(tipoDocumentoDTO);
+            }
+
+            _response.Status = true; _response.Message = "Tipo Documento " + tipoDocumentoDTO.NomeTipoDocumento + " ativado com sucesso."; _response.Data = tipoDocumentoDTO;
+            return Ok(_response);
+        }
+
+        [HttpPut("{id}/Desativar")]
+        public async Task<ActionResult<TipoProcessoDTO>> Desactivity(int id)
+        {
+            var tipoDocumentoDTO = await _tipoDocumentoService.GetById(id);
+            if (tipoDocumentoDTO == null)
+            {
+                _response.Status = false; _response.Message = "Tipo Documento não encontrado!"; _response.Data = tipoDocumentoDTO;
+                return NotFound(_response);
+            }
+
+            if (tipoDocumentoDTO.Status)
+            {
+                tipoDocumentoDTO.DisableAllOperations();
+                await _tipoDocumentoService.Update(tipoDocumentoDTO);
+            }
+
+            _response.Status = true; _response.Message = "Tipo Documento " + tipoDocumentoDTO.NomeTipoDocumento + " desativado com sucesso."; _response.Data = tipoDocumentoDTO;
+            return Ok(_response);
+        }
+
+        [HttpDelete("{id}")]
 		public async Task<ActionResult<TipoDocumentoDTO>> Delete(int id)
 		{
 			var tipoDocumentoDTO = await _tipoDocumentoService.GetById(id);
@@ -131,47 +171,6 @@ namespace SGED.Controllers
 			await _tipoDocumentoService.Remove(id);
 
             _response.Status = true; _response.Message = "Tipo Documento " + tipoDocumentoDTO.NomeTipoDocumento + " excluído com sucesso."; _response.Data = tipoDocumentoDTO;
-            return Ok(_response);
-		}
-
-
-		[HttpPut("{id}/Ativar")]
-		public async Task<ActionResult<TipoDocumentoDTO>> Activity(int id)
-		{
-			var tipoDocumentoDTO = await _tipoDocumentoService.GetById(id);
-			if (tipoDocumentoDTO == null)
-			{
-				_response.Status = false; _response.Message = "Tipo Documento não encontrado!"; _response.Data = tipoDocumentoDTO;
-                return NotFound(_response);
-			}
-
-			if (!tipoDocumentoDTO.Status)
-			{
-				tipoDocumentoDTO.EnableAllOperations();
-				await _tipoDocumentoService.Update(tipoDocumentoDTO);
-			}
-
-			_response.Status = true; _response.Message = "Tipo Documento " + tipoDocumentoDTO.NomeTipoDocumento + " ativado com sucesso."; _response.Data = tipoDocumentoDTO;
-            return Ok(_response);
-		}
-
-		[HttpPut("{id}/Desativar")]
-		public async Task<ActionResult<TipoProcessoDTO>> Desactivity(int id)
-		{
-			var tipoDocumentoDTO = await _tipoDocumentoService.GetById(id);
-			if (tipoDocumentoDTO == null)
-			{
-				_response.Status = false; _response.Message = "Tipo Documento não encontrado!"; _response.Data = tipoDocumentoDTO;
-                return NotFound(_response);
-			}
-
-			if (tipoDocumentoDTO.Status)
-			{
-				tipoDocumentoDTO.DisableAllOperations();
-				await _tipoDocumentoService.Update(tipoDocumentoDTO);
-			}
-
-			_response.Status = true; _response.Message = "Tipo Documento " + tipoDocumentoDTO.NomeTipoDocumento + " desativado com sucesso."; _response.Data = tipoDocumentoDTO;
             return Ok(_response);
 		}
 	}

@@ -52,7 +52,7 @@ namespace SGED.Repositories.Entities
 
 		public async Task<IEnumerable<Etapa>> GetStagesRelatedToTypeProcess(int idTipoProcesso)
 		{
-			return await _dbContext.Etapa.Where(objeto => objeto.IdTipoProcesso == idTipoProcesso).ToListAsync();
+			return await _dbContext.Etapa.Where(objeto => objeto.IdTipoProcesso == idTipoProcesso).AsNoTracking().ToListAsync();
 		}
 
 	}

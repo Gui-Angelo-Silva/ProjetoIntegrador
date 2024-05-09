@@ -57,6 +57,63 @@ namespace SGED.Controllers
             return Ok(_response);
         }
 
+        [HttpGet("GetTypeDocumentStagesRelatedToStage/{idEtapa}")]
+        public async Task<ActionResult<IEnumerable<TipoDocumentoEtapaDTO>>> GetTypeDocumentStagesRelatedToStage(int idEtapa)
+        {
+            var etapaDTO = await _etapaService.GetById(idEtapa);
+            if (etapaDTO == null)
+            {
+                _response.Status = false; _response.Message = "A Etapa informada não existe!"; _response.Data = null;
+                return BadRequest(_response);
+            }
+
+            var tipoDocumentoEtapas = await _tipoDocumentoEtapaService.GetTypeDocumentStagesRelatedToStage(idEtapa);
+
+            _response.Status = true; _response.Data = tipoDocumentoEtapas.OrderBy(tipoDocumentoEtapa => tipoDocumentoEtapa.Posicao);
+            _response.Message = tipoDocumentoEtapas.Any() ?
+                "Lista do(s) relacionamento(s) de Tipo(s) Documento com a Etapa " + etapaDTO.NomeEtapa + " obtida com sucesso." :
+                "Nenhum relacionamento de Tipo Documento com a Etapa " + etapaDTO.NomeEtapa + " foi encontrado!";
+            return Ok(_response);
+        }
+
+        [HttpGet("GetTypeDocumentsRelatedToStage/{idEtapa}")]
+        public async Task<ActionResult<IEnumerable<TipoDocumentoDTO>>> GetTypeDocumentsRelatedToStage(int idEtapa)
+        {
+            var etapaDTO = await _etapaService.GetById(idEtapa);
+            if (etapaDTO == null)
+            {
+                _response.Status = false; _response.Message = "A Etapa informada não existe!"; _response.Data = null;
+                return BadRequest(_response);
+            }
+
+            var tipoDocumentos = await _tipoDocumentoEtapaService.GetTypeDocumentsRelatedToStage(idEtapa);
+
+            _response.Status = true; _response.Data = tipoDocumentos;
+            _response.Message = tipoDocumentos.Any() ?
+                "Lista do(s) Tipo(s) Documento relacionado(s) a Etapa " + etapaDTO.NomeEtapa + " obtida com sucesso." :
+                "Nenhum Tipo Documento relacionado a Etapa " + etapaDTO.NomeEtapa + " foi encontrado!";
+            return Ok(_response);
+        }
+
+        [HttpGet("GetTypeDocumentsNoRelatedToStage/{idEtapa}")]
+        public async Task<ActionResult<TipoDocumentoDTO>> GetTypeDocumentsNoRelatedToStage(int idEtapa)
+        {
+            var etapaDTO = await _etapaService.GetById(idEtapa);
+            if (etapaDTO == null)
+            {
+                _response.Status = false; _response.Message = "A Etapa informada não existe!"; _response.Data = null;
+                return BadRequest(_response);
+            }
+
+            var tipoDocumentos = await _tipoDocumentoEtapaService.GetTypeDocumentsNoRelatedToStage(idEtapa);
+
+            _response.Status = true; _response.Data = tipoDocumentos;
+            _response.Message = tipoDocumentos.Any() ?
+                "Lista do(s) Tipo(s) Documento não relacionado(s) a Etapa " + etapaDTO.NomeEtapa + " obtida com sucesso." :
+                "Nenhum Tipo Documento não relacionado a Etapa " + etapaDTO.NomeEtapa + " foi encontrado!";
+            return Ok(_response);
+        }
+
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] TipoDocumentoEtapaDTO tipoDocumentoEtapaDTO)
         {
@@ -92,13 +149,14 @@ namespace SGED.Controllers
                 return BadRequest(_response);
             }
 
-            var tipoDocumentoEtapasDTO = await _tipoDocumentoEtapaService.GetAll();
+            var tipoDocumentoEtapasDTO = await _tipoDocumentoEtapaService.GetTypeDocumentStagesRelatedToStage(etapaDTO.Id);
             if (tipoDocumentoEtapasDTO.FirstOrDefault(tipoDocumentoEtapa => tipoDocumentoEtapa.IdTipoDocumento == tipoDocumentoDTO.Id && tipoDocumentoEtapa.IdEtapa == etapaDTO.Id) != null)
             {
                 _response.Status = false; _response.Message = "Já existe um relacionamento da Etapa " + etapaDTO.NomeEtapa + " com o Tipo Documento " + tipoDocumentoDTO.NomeTipoDocumento + "!"; _response.Data = tipoDocumentoEtapaDTO;
                 return BadRequest(_response);
             }
 
+            tipoDocumentoEtapaDTO.Posicao = tipoDocumentoEtapasDTO.Count() + 1;
             tipoDocumentoEtapaDTO.EnableAllOperations();
             await _tipoDocumentoEtapaService.Create(tipoDocumentoEtapaDTO);
 
@@ -167,6 +225,7 @@ namespace SGED.Controllers
                 return BadRequest(_response);
             }
 
+            tipoDocumentoEtapaDTO.Posicao = existingTipoDocumentoEtapa.Posicao;
             tipoDocumentoEtapaDTO.EnableAllOperations();
             await _tipoDocumentoEtapaService.Update(tipoDocumentoEtapaDTO);
 
@@ -249,69 +308,6 @@ namespace SGED.Controllers
             return Ok(_response);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<TipoDocumentoEtapaDTO>> Delete(int id)
-        {
-            var tipoDocumentoEtapaDTO = await _tipoDocumentoEtapaService.GetById(id);
-            if (tipoDocumentoEtapaDTO == null)
-            {
-                _response.Status = false; _response.Message = "Relacionamento entre Etapa e Tipo Documento não encontrado!"; _response.Data = tipoDocumentoEtapaDTO;
-                return NotFound(_response);
-            }
-
-            var etapaDTO = await _etapaService.GetById(tipoDocumentoEtapaDTO.IdEtapa);
-            var tipoDocumentoDTO = await _tipoDocumentoService.GetById(tipoDocumentoEtapaDTO.IdTipoDocumento);
-
-            if (!tipoDocumentoEtapaDTO.Status)
-            {
-                _response.Status = false; _response.Message = "O relacionamento entre a Etapa " + etapaDTO.NomeEtapa + " e o Tipo Documento " + tipoDocumentoDTO.NomeTipoDocumento + " está desabilitado para exclusão!"; _response.Data = tipoDocumentoEtapaDTO;
-                return BadRequest(_response);
-            }
-
-            await _tipoDocumentoEtapaService.Remove(id);
-
-            _response.Status = true; _response.Message = "Relacionamento entre a Etapa " + etapaDTO.NomeEtapa + " e o Tipo Documento " + tipoDocumentoDTO.NomeTipoDocumento + " excluído com sucesso."; _response.Data = tipoDocumentoEtapaDTO;
-            return Ok(_response);
-        }
-
-        [HttpGet("GetTypeDocumentsRelatedToStage/{idEtapa}")]
-        public async Task<ActionResult<IEnumerable<TipoDocumentoDTO>>> GetTypeDocumentsRelatedToStage(int idEtapa)
-        {
-            var etapaDTO = await _etapaService.GetById(idEtapa);
-            if (etapaDTO == null)
-            {
-                _response.Status = false; _response.Message = "A Etapa informada não existe!"; _response.Data = null;
-                return BadRequest(_response);
-            }
-
-            var tipoDocumentos = await _tipoDocumentoEtapaService.GetTypeDocumentsRelatedToStage(idEtapa);
-
-            _response.Status = true; _response.Data = tipoDocumentos;
-            _response.Message = tipoDocumentos.Any() ?
-                "Lista do(s) Tipo(s) Documento relacionado(s) a Etapa " + etapaDTO.NomeEtapa + " obtida com sucesso." :
-                "Nenhum Tipo Documento relacionado a Etapa " + etapaDTO.NomeEtapa + " foi encontrado!";
-            return Ok(_response);
-        }
-
-        [HttpGet("GetTypeDocumentsNoRelatedToStage/{idEtapa}")]
-        public async Task<ActionResult<TipoDocumentoDTO>> GetTypeDocumentsNoRelatedToStage(int idEtapa)
-        {
-            var etapaDTO = await _etapaService.GetById(idEtapa);
-            if (etapaDTO == null)
-            {
-                _response.Status = false; _response.Message = "A Etapa informada não existe!"; _response.Data = null;
-                return BadRequest(_response);
-            }
-
-            var tipoDocumentos = await _tipoDocumentoEtapaService.GetTypeDocumentsNoRelatedToStage(idEtapa);
-
-            _response.Status = true; _response.Data = tipoDocumentos;
-            _response.Message = tipoDocumentos.Any() ?
-                "Lista do(s) Tipo(s) Documento não relacionado(s) a Etapa " + etapaDTO.NomeEtapa + " obtida com sucesso." :
-                "Nenhum Tipo Documento não relacionado a Etapa " + etapaDTO.NomeEtapa + " foi encontrado!";
-            return Ok(_response);
-        }
-
         [HttpPut("{id}/Ativar")]
         public async Task<ActionResult<TipoDocumentoEtapaDTO>> Activity(int id)
         {
@@ -360,11 +356,46 @@ namespace SGED.Controllers
 
                 _response.Status = true; _response.Message = "Relacionamento entre a Etapa " + etapaDTO.NomeEtapa + " e o Tipo Documento " + tipoDocumentoDTO.NomeTipoDocumento + " desativado com sucesso."; _response.Data = tipoDocumentoEtapaDTO;
                 return Ok(_response);
-            } else
+            }
+            else
             {
                 _response.Status = true; _response.Message = "Relacionamento entre a Etapa " + etapaDTO.NomeEtapa + " e o Tipo Documento " + tipoDocumentoDTO.NomeTipoDocumento + " já está desativado!"; _response.Data = tipoDocumentoEtapaDTO;
                 return Ok(_response);
             }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<TipoDocumentoEtapaDTO>> Delete(int id)
+        {
+            var tipoDocumentoEtapaDTO = await _tipoDocumentoEtapaService.GetById(id);
+            if (tipoDocumentoEtapaDTO == null)
+            {
+                _response.Status = false; _response.Message = "Relacionamento entre Etapa e Tipo Documento não encontrado!"; _response.Data = tipoDocumentoEtapaDTO;
+                return NotFound(_response);
+            }
+
+            var etapaDTO = await _etapaService.GetById(tipoDocumentoEtapaDTO.IdEtapa);
+            var tipoDocumentoDTO = await _tipoDocumentoService.GetById(tipoDocumentoEtapaDTO.IdTipoDocumento);
+
+            if (!tipoDocumentoEtapaDTO.Status)
+            {
+                _response.Status = false; _response.Message = "O relacionamento entre a Etapa " + etapaDTO.NomeEtapa + " e o Tipo Documento " + tipoDocumentoDTO.NomeTipoDocumento + " está desabilitado para exclusão!"; _response.Data = tipoDocumentoEtapaDTO;
+                return BadRequest(_response);
+            }
+
+            var tipoDocumentoEtapasDTO = await _tipoDocumentoEtapaService.GetTypeDocumentStagesRelatedToStage(tipoDocumentoEtapaDTO.IdEtapa);
+            tipoDocumentoEtapasDTO = tipoDocumentoEtapasDTO.Where(tipoDocumentoEtapa => tipoDocumentoEtapa.Id != tipoDocumentoEtapaDTO.Id).OrderBy(tipoDocumentoEtapa => tipoDocumentoEtapa.Posicao).Skip(tipoDocumentoEtapaDTO.Posicao - 1).ToList();
+
+            foreach (var tipoDocumentoEtapa in tipoDocumentoEtapasDTO)
+            {
+                tipoDocumentoEtapa.Posicao--;
+                await _tipoDocumentoEtapaService.Update(tipoDocumentoEtapa);
+            }
+
+            await _tipoDocumentoEtapaService.Remove(id);
+
+            _response.Status = true; _response.Message = "Relacionamento entre a Etapa " + etapaDTO.NomeEtapa + " e o Tipo Documento " + tipoDocumentoDTO.NomeTipoDocumento + " excluído com sucesso."; _response.Data = tipoDocumentoEtapaDTO;
+            return Ok(_response);
         }
     }
 }

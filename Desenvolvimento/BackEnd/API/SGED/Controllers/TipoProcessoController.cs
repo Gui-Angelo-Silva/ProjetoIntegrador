@@ -114,27 +114,6 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<TipoProcessoDTO>> Delete(int id)
-        {
-            var tipoProcessoDTO = await _tipoProcessoService.GetById(id);
-            if (tipoProcessoDTO == null)
-            {
-                _response.Status = false; _response.Message = "Tipo Processo não encontrado!"; _response.Data = tipoProcessoDTO;
-                return NotFound(_response);
-            }
-            if (!tipoProcessoDTO.Status)
-            {
-                _response.Status = false; _response.Message = "O Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " está desabilitado para exclusão!"; _response.Data = tipoProcessoDTO;
-                return BadRequest(_response);
-            }
-
-            await _tipoProcessoService.Delete(id);
-
-            _response.Status = true; _response.Message = "Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " excluído com sucesso."; _response.Data = tipoProcessoDTO;
-            return Ok(_response);
-        }
-
         [HttpPut("{id}/Ativar")]
         public async Task<ActionResult<TipoProcessoDTO>> Activity(int id)
         {
@@ -172,6 +151,27 @@ namespace SGED.Controllers
             }
 
             _response.Status = true; _response.Message = "Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " desativado com sucesso."; _response.Data = tipoProcessoDTO;
+            return Ok(_response);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<TipoProcessoDTO>> Delete(int id)
+        {
+            var tipoProcessoDTO = await _tipoProcessoService.GetById(id);
+            if (tipoProcessoDTO == null)
+            {
+                _response.Status = false; _response.Message = "Tipo Processo não encontrado!"; _response.Data = tipoProcessoDTO;
+                return NotFound(_response);
+            }
+            if (!tipoProcessoDTO.Status)
+            {
+                _response.Status = false; _response.Message = "O Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " está desabilitado para exclusão!"; _response.Data = tipoProcessoDTO;
+                return BadRequest(_response);
+            }
+
+            await _tipoProcessoService.Delete(id);
+
+            _response.Status = true; _response.Message = "Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " excluído com sucesso."; _response.Data = tipoProcessoDTO;
             return Ok(_response);
         }
     }

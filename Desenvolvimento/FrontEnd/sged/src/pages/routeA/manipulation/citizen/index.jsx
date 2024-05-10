@@ -149,8 +149,8 @@ export default function Citizen() {
             rgIePessoa: municipe.rgIePessoa,
             acoes: (
                 <div className="flex items-center justify-center gap-2 text-gray-700 ">
-                    <ButtonTable func={() => SelectCity(cidade, "Editar")} text="Editar" />
-                    <ButtonTable func={() => SelectCity(cidade, "Excluir")} text="Excluir" />
+                    <ButtonTable func={() => SelectCitizen(municipe, "Editar")} text="Editar" />
+                    <ButtonTable func={() => SelectCitizen(municipe, "Excluir")} text="Excluir" />
                 </div>
             )
         }

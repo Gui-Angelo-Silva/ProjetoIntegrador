@@ -144,14 +144,14 @@ export default function Engineer() {
                 />
             ),
             nomePessoa: engenheiro.nomePessoa,
-            creaEngenheiro: engenheiro.creaEngenheiro,
             emailPessoa: engenheiro.emailPessoa,
+            creaEngenheiro: engenheiro.creaEngenheiro,
             cpfCnpjPessoa: engenheiro.cpfCnpjPessoa,
             rgIePessoa: engenheiro.rgIePessoa,
             acoes: (
                 <div className="flex items-center justify-center gap-2 text-gray-700 ">
-                    <ButtonTable func={() => SelectCity(cidade, "Editar")} text="Editar" />
-                    <ButtonTable func={() => SelectCity(cidade, "Excluir")} text="Excluir" />
+                    <ButtonTable func={() => SelectEngineer(engenheiro, "Editar")} text="Editar" />
+                    <ButtonTable func={() => SelectEngineer(engenheiro, "Excluir")} text="Excluir" />
                 </div>
             )
         }
@@ -192,8 +192,8 @@ export default function Engineer() {
             </div>
 
             <CustomTable
-                totalColumns={6}
-                headers={["Imagem Pessoa", "Nome", "CREA", "Email", "CPF/CNPJ", "RG/IE", "Ações"]}
+                totalColumns={7}
+                headers={["Imagem Pessoa", "Nome", "Email", "CREA", "CPF/CNPJ", "RG/IE", "Ações"]}
                 data={dataForTable}
                 onPageChange={(page) => list.goToPage(page)}
                 currentPage={list.currentPage}

@@ -16,10 +16,11 @@ export const useServer = () => {
 
 export const ServerProvider = ({ children }) => {
 
-    var inOperation = false;
+    let inOperation = false;
+    const [verifyExistPage, setVerifyExistPage] = useState(false);
     const [callFunctionRoute, setCallFunctionRoute] = useState(false);
     const [liberateNavigate, setLiberateNavigate] = useState(true);
-    const { componentMontage, clearStateMontage } = useMontage();
+    const montage = useMontage();
     const session = Session();
     const navigate = useNavigate();
 
@@ -80,7 +81,7 @@ export const ServerProvider = ({ children }) => {
             const autenticate = await updateAuthentication();
 
             if (callFunctionRoute) {
-                clearStateMontage();
+                montage.clearStateMontage();
 
                 if (!autenticate && !["", "login", "notfound", "notpermission", "development"].includes(firstRoute)) {
                     clearSegment("login");
@@ -89,7 +90,7 @@ export const ServerProvider = ({ children }) => {
 
             } else {
                 setLiberateNavigate(false);
-                clearStateMontage();
+                montage.clearStateMontage();
 
                 if (["", "notfound", "notpermission", "development"].includes(firstRoute)) {
                     clearSegment(autenticate ? "home" : "login");
@@ -105,26 +106,47 @@ export const ServerProvider = ({ children }) => {
             }
 
             inOperation = false;
+            setVerifyExistPage(true);
         };
 
         if (!inOperation) validateAndNavigate();
     }, []);
 
-    /*useEffect(() => {
+    useEffect(() => {
         const delay = (milliseconds) => {
             return new Promise(resolve => setTimeout(resolve, milliseconds));
         };
 
-        const validateExistPage = async () => {
-            while (true) {
+        let isExecuting = true;
+
+        const verifyMontage = async () => {
+            try {
                 await delay(2000);
-                console.log(await updateAuthentication());
+
+                if (!isExecuting) {
+                    return;
+                } else {
+                    isExecuting = false;
+                }
+
+                if (!montage.componentMontage) {
+                    sessionStorage.setItem("page: non-existent", window.location.pathname);
+                    clearSegment("notfound");
+                }
+            } catch (error) {
+                return;
             }
+        }; if (verifyExistPage) verifyMontage();
+
+        return () => {
+            isExecuting = false;
         };
 
-        validateExistPage();
-    }, [liberateNavigate, componentMontage]);*/
+    }, [verifyExistPage]);
 
+    useEffect(() => {
+        setVerifyExistPage(false);
+    }, [montage.componentMontage]);
 
     return (
         <ServerContext.Provider value={{ inDevelopment, addSegment, clearSegment, removeSegment }}>

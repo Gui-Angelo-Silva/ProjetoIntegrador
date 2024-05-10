@@ -14,12 +14,12 @@ import TypeDocumentStageClass from "../../../../object/class/typedocumentstage";
 import SelectModule from '../../../../object/modules/select';
 import { motion } from "framer-motion";
 
-export default function TypeDocument() {
+export default function Test() {
 
-    const { componentMounted } = useMontage();
+    const montage = useMontage();
 
     useEffect(() => {
-        componentMounted();
+        montage.componentMounted();
     }, []);
 
     const connection = new ConnectionService();

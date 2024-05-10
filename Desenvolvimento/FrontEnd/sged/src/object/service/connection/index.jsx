@@ -42,13 +42,14 @@ export default class ConnectionService {
         try {
             this.typeMethod = type;
             const result = await method();
+            //this.api.updateToken(result.headers.get('Authorization'));
 
             if (this.isSuccessResponse(result)) {
                 this.messageRequest = { type: 'sucess', content: result.data.message? result.data.message : 'Requisição realizada com sucesso!' };
                 return { status: true, data: result.data.data? result.data.data : result.data };
 
             } else {
-                this.messageRequest = { type: 'bad', content: result.data.message? result.data.message : 'Requisição negada!' };
+                this.messageRequest = { type: 'bad', content: result.data.message? result.data.message : `Requisição negada!` };
                 return { status: false, data: result.data.data? result.data.data : result.data };
             }
             

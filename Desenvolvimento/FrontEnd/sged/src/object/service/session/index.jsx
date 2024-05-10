@@ -24,7 +24,7 @@ function SessionService() {
         if (token) {
             try {
                 await connection.endpoint("Sessao").action("GetUser").data(token).get();
-                return connection.response.status? connection.response.data : null;
+                return connection.response.status && connection.response.data.status? connection.response.data.response : null;
 
             } catch (error) {
                 return null;

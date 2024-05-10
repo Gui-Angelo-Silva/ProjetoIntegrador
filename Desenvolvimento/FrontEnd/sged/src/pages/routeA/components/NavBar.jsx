@@ -37,6 +37,7 @@ export default function NavBar() {
   const session = SessionService();
   const server = useServer();
   const user = UserClass();
+  let getUser = true;
 
   const encerateSession = () => {
     session.defaultToken();
@@ -45,13 +46,15 @@ export default function NavBar() {
 
   useEffect(() => {
     const GetUser = async () => {
+      getUser = false;
+
       if (session.getToken()) {
         const data = await session.getUser();
         if (data) user.getData(data);
       }
     };
 
-    GetUser();
+    if (getUser) GetUser();
   }, []);
 
   const [anchorEl, setAnchorEl] = React.useState(null);

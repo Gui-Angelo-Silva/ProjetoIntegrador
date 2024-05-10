@@ -1,9 +1,17 @@
 import { useState } from "react";
+import StatusInterface from "../../interface/status";
 
 function TypeProcessClass() {
+
+    const IStatus = StatusInterface();
+
+    // Atributos
+    const status = IStatus.status;
+    const setStatus = IStatus.setStatus;
+
     const [typeProcessName, setTypeProcessName] = useState('');
     const [typeProcessDescription, setTypeProcessDescription] = useState('');
-    const [typeProcessId, setTypeProcessId] = useState('');
+    const [typeProcessId, setTypeProcessId] = useState(0);
 
     const [errorTypeProcessName, setErrorTypeProcessName] = useState('');
     const [errorTypeProcessDescription, setErrorTypeProcessDescription] = useState('');
@@ -16,24 +24,27 @@ function TypeProcessClass() {
         return "o";
     }
 
-    function getData(object) {
-        setTypeProcessName(object.nomeTipoProcesso);
-        setTypeProcessDescription(object.descricaoTipoProcesso);
-        setTypeProcessId(object.id);
-    }
-
-    function setData() {
+    function getData() {
         return {
             id: typeProcessId,
             nomeTipoProcesso: typeProcessName,
-            descricaoTipoProcesso: typeProcessDescription
+            descricaoTipoProcesso: typeProcessDescription,
+            status: status
         };
     }
 
+    function setData(object) {
+        setTypeProcessId(object.id);
+        setTypeProcessName(object.nomeTipoProcesso);
+        setTypeProcessDescription(object.descricaoTipoProcesso);
+        setStatus(object.status);
+    }
+
     function clearData() {
+        setTypeProcessId(0);
         setTypeProcessName('');
         setTypeProcessDescription('');
-        setTypeProcessId('');
+        setStatus(false);
     }
 
     function clearError() {
@@ -73,12 +84,14 @@ function TypeProcessClass() {
 
         return status;
     }
-    
+
     return {
         typeProcessName,
         setTypeProcessName,
         typeProcessDescription,
         setTypeProcessDescription,
+        status,
+        setStatus,
         typeProcessId,
 
         errorTypeProcessName,

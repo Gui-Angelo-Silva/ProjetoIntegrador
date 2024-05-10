@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Select from 'react-select';
 import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
+import { CaretUp, CaretDown, CheckCircle, XCircle, Check, X } from "@phosphor-icons/react";
 
 import { useMontage } from "../../../../object/modules/montage";
 import ConnectionService from "../../../../object/service/connection";
@@ -13,18 +14,19 @@ import TypeDocumentStageClass from "../../../../object/class/typedocumentstage";
 import SelectModule from '../../../../object/modules/select';
 import { motion } from "framer-motion";
 
-export default function TypeDocument() {
+export default function Test() {
 
-    const { componentMounted } = useMontage();
+    const montage = useMontage();
 
     useEffect(() => {
-        componentMounted();
+        montage.componentMounted();
     }, []);
 
     const connection = new ConnectionService();
     const typeDocumentStage = TypeDocumentStageClass();
     const listTypeProcess = ListModule();
     const listStage = ListModule();
+    const listTypeDocumentStageRelated = ListModule();
     const listTypeDocumentRelated = ListModule();
     const listTypeDocumentNoRelated = ListModule();
     const listTypeDocumentStage = ListModule();
@@ -34,7 +36,7 @@ export default function TypeDocument() {
     const [modalInsert, setModalInsert] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
-    const [updateData, setUpdateData] = useState(true);
+    const [updateData, setUpdateData] = useState(false);
     const [inOperation, setInOperation] = useState(false);
 
     const openCloseModalInsert = (boolean) => {
@@ -75,82 +77,121 @@ export default function TypeDocument() {
 
     const GetTypeDocumentStage = async () => {
         await connection.endpoint("TipoDocumentoEtapa").get();
-        listTypeDocumentStage.setList(connection.response.data);
+        listTypeDocumentStage.setList(connection.getList());
     };
 
     const GetTypeProcess = async () => {
-        try {
-            await connection.endpoint("TipoProcesso").get();
-    
-            if (connection.response.data && Array.isArray(connection.response.data)) {
-                listTypeProcess.setList(connection.response.data);
-    
-                if (connection.response.data.length > 0) {
-                    selectBoxTypeProcess.updateOptions(connection.response.data, "id", "nomeTipoProcesso");
-                    selectBoxTypeProcess.selectOption(connection.response.data[0]?.id);
-                }
-            } else {
-                console.error("TipoProcesso não retornou uma lista de processos válidos.");
-            }
-        } catch (error) {
-            console.error("Erro ao buscar TipoProcesso:", error);
+        await connection.endpoint("TipoProcesso").get();
+        listTypeProcess.setList(connection.getList());
+
+        if (connection.getList().length > 0) {
+            selectBoxTypeProcess.updateOptions(connection.getList(), "id", "nomeTipoProcesso");
         }
     };
-    
+
+    useEffect(() => {
+        if (selectBoxTypeProcess.options.length > 0) {
+            selectBoxTypeProcess.selectOption(selectBoxTypeProcess.options[0]?.value);
+        }
+    }, [selectBoxTypeProcess.options]);
 
     const GetStage = async () => {
         await connection.endpoint("Etapa").action(`GetRelatedToTypeProcess/${selectBoxTypeProcess.selectedOption.value}`).get();
-        listStage.setList(connection.response.data);
+        listStage.setList(connection.getList());
 
-        if (connection.response.data.length > 0) {
-            selectBoxStage.updateOptions(connection.response.data, "id", "nomeEtapa");
-            selectBoxStage.selectOption(connection.response.data[0]?.id);
-            typeDocumentStage.setIdStage(connection.response.data[0]?.id);
+        if (connection.getList().length > 0) {
+            selectBoxStage.updateOptions(connection.getList(), "id", "nomeEtapa");
+            typeDocumentStage.setIdStage(connection.getList()[0]?.id);
         }
     }
 
+    useEffect(() => {
+        if (selectBoxStage.options.length > 0) {
+            selectBoxStage.selectOption(selectBoxStage.options[0]?.value);
+        }
+    }, [selectBoxStage.options]);
+
     const GetTypeDocumentRelated = async () => {
-        await connection.endpoint("TipoDocumentoEtapa").action(`Related/${selectBoxStage.selectedOption.value}`).get();
-        listTypeDocumentRelated.setList(connection.response.data);
+        await connection.endpoint("TipoDocumentoEtapa").action(`GetTypeDocumentsRelatedToStage/${selectBoxStage.selectedOption.value}`).get();
+        listTypeDocumentRelated.setList(connection.getList());
+
+        await connection.endpoint("TipoDocumentoEtapa").action(`GetTypeDocumentStagesRelatedToStage/${selectBoxStage.selectedOption.value}`).get();
+        listTypeDocumentStageRelated.setList(connection.getList());
     };
 
     const GetTypeDocumentNoRelated = async () => {
-        await connection.endpoint("TipoDocumentoEtapa").action(`NoRelated/${selectBoxStage.selectedOption.value}`).get();
-        listTypeDocumentNoRelated.setList(connection.response.data);
+        await connection.endpoint("TipoDocumentoEtapa").action(`GetTypeDocumentsNoRelatedToStage/${selectBoxStage.selectedOption.value}`).get();
+        listTypeDocumentNoRelated.setList(connection.getList());
     };
 
     const Relate = async (idTypeDocument) => {
         setInOperation(true);
-        typeDocumentStage.setIdTypeDocument(idTypeDocument);
 
-        if (typeDocumentStage.verifyData()) {
-            await connection.endpoint("TipoDocumentoEtapa").post(typeDocumentStage);
-            setUpdateData(connection.response.status);
-        } else {
-            console.log('Dados inválidos!');
+        const data = {
+            idEtapa: selectBoxStage.selectedOption.value,
+            idTipoDocumento: idTypeDocument
         }
+
+        await connection.endpoint("TipoDocumentoEtapa").post(data);
+        setUpdateData(connection.response.status);
 
         setInOperation(false);
     };
 
-    const RemoveRelation = async (idTypeDocument) => {
+    const RemoveRelate = async (idTypeDocumentStage) => {
         setInOperation(true);
-        typeDocumentStage.setIdTypeDocument(idTypeDocument);
 
-        if (typeDocumentStage.verifyData()) {
-            await connection.endpoint("TipoDocumentoEtapa").delete(typeDocumentStage);
-            setUpdateData(connection.response.status);
-        } else {
-            console.log('Dados inválidos!');
-        }
+        await connection.endpoint("TipoDocumentoEtapa").delete(idTypeDocumentStage);
+        setUpdateData(connection.response.status);
+
+        setInOperation(false);
+    };
+
+    const EnableTypeDocumentStage = async (idTypeDocumentStage) => {
+        setInOperation(true);
+
+        await connection.endpoint("TipoDocumentoEtapa").data(idTypeDocumentStage).action("Ativar").put(idTypeDocumentStage);
+        setUpdateData(connection.response.status);
+
+        setInOperation(false);
+    };
+
+    const DisableTypeDocumentStage = async (idTypeDocumentStage) => {
+        setInOperation(true);
+
+        await connection.endpoint("TipoDocumentoEtapa").data(idTypeDocumentStage).action("Desativar").put(idTypeDocumentStage);
+        setUpdateData(connection.response.status);
+
+        setInOperation(false);
+    };
+
+    const EnableTypeDocument = async (idTypeDocument) => {
+        setInOperation(true);
+
+        await connection.endpoint("TipoDocumento").data(idTypeDocument).action("Ativar").put(idTypeDocument);
+        setUpdateData(connection.response.status);
+
+        setInOperation(false);
+    };
+
+    const DisableTypeDocument = async (idTypeDocument) => {
+        setInOperation(true);
+
+        await connection.endpoint("TipoDocumento").data(idTypeDocument).action("Desativar").put(idTypeDocument);
+        setUpdateData(connection.response.status);
 
         setInOperation(false);
     };
 
     useEffect(() => {
+        GetTypeDocumentStage();
+        GetTypeProcess();
+    }, []);
+
+    useEffect(() => {
         if (updateData) {
-            GetTypeDocumentStage();
-            GetTypeProcess();
+            GetTypeDocumentRelated();
+            GetTypeDocumentNoRelated();
 
             setUpdateData(false);
         }
@@ -242,29 +283,40 @@ export default function TypeDocument() {
                         <div className="w-full">
                             <div className="grid grid-rows-2">
                                 <div className="w-full rounded-[20px] border-1 border-[#C8E5E5]">
-                                    <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                        <span className="flex ml-5 text-white text-lg font-semibold">Etapa</span>
+                                    <div className="grid grid-cols-4 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
+                                        <span className="flex ml-5 text-white text-lg font-semibold"></span>
+                                        <span className="flex justify-center items-center text-white text-lg font-semibold">Nome</span>
                                         <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
                                         <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                                     </div>
                                     <ul className="w-full">
                                         {listTypeDocumentNoRelated.currentList.map((object) => {
                                             return (
-                                                <li className="grid grid-cols-3 w-full" key={object.id}>
-                                                    <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</span>
+                                                <li className="grid grid-cols-4 w-full" key={object.id}>
+                                                    <span className="flex justify-center items-center pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700"> {object.status ? <CheckCircle size={20} className="text-green-500" /> : <XCircle size={20} className="text-red-500" />} </span>
+                                                    <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.nomeTipoDocumento}</span>
                                                     <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoDocumento}</span>
                                                     <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                                        {object.status && (
+                                                            <button
+                                                                className=""
+                                                                onClick={() => object.status && !inOperation ? Relate(object.id) : {}}
+                                                            >
+                                                                {object.status && !inOperation ? (
+                                                                    <PencilSimple size={20} className="hover:text-cyan-500" />
+                                                                ) : (
+                                                                    <PencilSimple size={20} className="cursor-not-allowed" />
+                                                                )}
+                                                            </button>
+                                                        )}
                                                         <button
                                                             className=""
-                                                            onClick={() => Relate(object.id)}
+                                                            onClick={() => object.status ? DisableTypeDocument(object.id) : EnableTypeDocument(object.id)}
                                                         >
-                                                            <PencilSimple size={20} className="hover:text-cyan-500" />
-                                                        </button>{" "}
-                                                        <button
-                                                            className=""
-                                                            onClick={() => SelectTypeDocument(object, "Excluir")}
-                                                        >
-                                                            <TrashSimple size={20} className="hover:text-red-600" />
+                                                            {object.status ?
+                                                                <X size={20} className="hover:text-red-500" /> :
+                                                                <Check size={20} className="hover:text-green-500" />
+                                                            }
                                                         </button>
                                                     </span>
                                                 </li>
@@ -299,29 +351,44 @@ export default function TypeDocument() {
                                     </div>
                                 </div>
                                 <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-4">
-                                    <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                        <span className="flex ml-5 text-white text-lg font-semibold">Etapa</span>
+                                    <div className="grid grid-cols-5 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
+                                        <span className="flex ml-5 text-white text-lg font-semibold"></span>
+                                        <span className="flex justify-center items-center text-white text-lg font-semibold">Posição</span>
+                                        <span className="flex justify-center items-center text-white text-lg font-semibold">Nome</span>
                                         <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
                                         <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
                                     </div>
                                     <ul className="w-full">
-                                        {listTypeDocumentRelated.currentList.map((object) => {
+                                        {listTypeDocumentStageRelated.currentList.map((object) => {
+                                            const tipodocumento = listTypeDocumentRelated.currentList.find((typedocument) => typedocument.id === object.idTipoDocumento);
+
                                             return (
-                                                <li className="grid grid-cols-3 w-full" key={object.id}>
-                                                    <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</span>
-                                                    <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoDocumento}</span>
+                                                <li className="grid grid-cols-5 w-full" key={object.id}>
+                                                    <span className="flex justify-center items-center pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.status ? <CheckCircle size={20} className="text-green-500" /> : <XCircle size={20} className="text-red-500" />}</span>
+                                                    <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.posicao}</span>
+                                                    <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipodocumento?.nomeTipoDocumento}</span>
+                                                    <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{tipodocumento?.descricaoTipoDocumento}</span>
                                                     <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
+                                                        {object.status && (
+                                                            <button
+                                                                className=""
+                                                                onClick={() => object.status && !inOperation ? RemoveRelate(object.id) : {}}
+                                                            >
+                                                                {object.status && !inOperation ? (
+                                                                    <TrashSimple size={20} className="hover:text-red-500" />
+                                                                ) : (
+                                                                    <TrashSimple size={20} className="cursor-not-allowed" />
+                                                                )}
+                                                            </button>
+                                                        )}
                                                         <button
                                                             className=""
-                                                            onClick={() => RemoveRelation(object.id)}
+                                                            onClick={() => object.status ? DisableTypeDocumentStage(object.id) : EnableTypeDocumentStage(object.id)}
                                                         >
-                                                            <PencilSimple size={20} className="hover:text-cyan-500" />
-                                                        </button>{" "}
-                                                        <button
-                                                            className=""
-                                                            onClick={() => SelectTypeDocument(object, "Excluir")}
-                                                        >
-                                                            <TrashSimple size={20} className="hover:text-red-600" />
+                                                            {object.status ?
+                                                                <X size={20} className="hover:text-red-500" /> :
+                                                                <Check size={20} className="hover:text-green-500" />
+                                                            }
                                                         </button>
                                                     </span>
                                                 </li>
@@ -359,68 +426,6 @@ export default function TypeDocument() {
                             </div>
                         </div>
                     </div>
-                    {/* <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
-                            <div className="grid grid-cols-4 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                                <span className="flex ml-5 text-white text-lg font-semibold">Nome</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Descrição</span>
-                                <span className="flex justify-center items-center text-white text-lg font-semibold">Etapa</span>
-                                <span className="flex justify-center text-white text-lg font-semibold">Ações</span>
-                            </div>
-                            <ul className="w-full">
-                                {listTypeProcess.currentlistTypeProcess.map((object) => {
-                                    const etapa = listStage.listTypeProcess.find((stage) => stage.id === object.idEtapa);
-                                    return (
-                                        <li className="grid grid-cols-4 w-full" key={object.id}>
-                                            <span className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoDocumento}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoDocumento}</span>
-                                            <span className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{etapa ? etapa.nomeEtapa : "Etapa não encontrada!"}</span>
-                                            <span className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                                <button
-                                                    className=""
-                                                    onClick={() => SelectTypeDocument(object, "Editar")}
-                                                >
-                                                    <PencilSimple size={20} className="hover:text-cyan-500" />
-                                                </button>{" "}
-                                                <button
-                                                    className=""
-                                                    onClick={() => SelectTypeDocument(object, "Excluir")}
-                                                >
-                                                    <TrashSimple size={20} className="hover:text-red-600" />
-                                                </button>
-                                            </span>
-                                        </li>
-                                    )
-                                })}
-                            </ul>
-                            {/* Estilização dos botões de navegação 
-                            <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
-                                <button
-                                    className=""
-                                    onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage - 1)}
-                                >
-                                    <CaretLeft size={22} className="text-[#58AFAE]" />
-                                </button>
-                                <select
-                                    className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
-                                    value={listTypeProcess.currentPage}
-                                    onChange={(e) => listTypeProcess.goToPage(Number(e.target.value))}
-                                >
-                                    {[...Array(listTypeProcess.totalPages)].map((_, index) => (
-                                        <option key={index + 1} value={index + 1}>
-                                            {index + 1}
-                                        </option>
-                                    ))}
-                                </select>
-                                <button
-                                    className=""
-                                    onClick={() => listTypeProcess.goToPage(listTypeProcess.currentPage + 1)}
-                                >
-                                    <CaretRight size={22} className="text-[#58AFAE]" />
-                                </button>
-                            </div>
-                            {/* Espaçamento abaixo dos botões 
-                            <div className="mt-4"></div>
-                        </div> */}
                 </motion.div>
             </div>
         </div>

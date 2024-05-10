@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import ControlModule from '../../../object/modules/control';
 import PersonClass from '../person';
 
 function EngineerClass() {
-
+  const control = ControlModule();
   const person = PersonClass();
 
   // Atributos
@@ -50,7 +51,7 @@ function EngineerClass() {
   person.effects();
 
   const [engineerId, setEngineerId] = useState('');
-  const [creaEngineer, setcreaEngineer] = useState('');
+  const [creaEngineer, setCreaEngineer] = useState('');
 
   function propertyName() {
     return "Engenheiro " + personName;
@@ -63,7 +64,7 @@ function EngineerClass() {
   function getData(object) {
     getDataPerson(object);
     setEngineerId(object.id);
-    setcreaEngineer(object.creaEngineer);
+    setCreaEngineer(object.creaEngineer);
   }
 
   function setData() {
@@ -90,6 +91,28 @@ function EngineerClass() {
     clearError();
     return verifyDataPerson();
   }
+
+  const handleCrea = (value) => {
+    const numericValue = control.removeNonNumericCharacter(value);
+    const formattedValue = formatCrea(numericValue);
+    setCreaEngineer(formattedValue);
+};
+
+const formatCrea = (value) => {
+    let formattedValue = '';
+
+    if (value.length > 0) {
+        // Adiciona o primeiro grupo de identificação
+        formattedValue += `${value.slice(0, 6)}`;
+
+        if (value.length > 6) {
+            // Adiciona o segundo grupo de identificação
+            formattedValue += `/${value.slice(6, 8)}`;
+        }
+    }
+
+    return formattedValue;
+};
 
   return {
     /* -----  Pessoa  ----- */
@@ -133,8 +156,10 @@ function EngineerClass() {
     /* -----  Engenheiro  ----- */
 
     // Atributos
-    EngineerId,
+    engineerId,
+    setEngineerId,
     creaEngineer,
+    setCreaEngineer,
 
     // Funções Essencias
     propertyName,
@@ -144,7 +169,10 @@ function EngineerClass() {
     getError,
     clearData,
     clearError,
-    verifyData
+    verifyData,
+
+    // Variáveis e Funções de Controle
+    handleCrea
   };
 }
 

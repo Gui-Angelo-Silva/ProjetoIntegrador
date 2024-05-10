@@ -37,23 +37,51 @@ namespace SGED.Controllers
         }
 
         [HttpGet("GetSession")]
+        [Anonymous]
         public async Task<ActionResult<SessaoDTO>> GetSession([FromQuery] TokenAcess token)
         {
             if (token is null) return BadRequest(new { status = false, response = "Dados inválidos!" });
 
             var sessaoDTO = await _sessaoService.GetByToken(token.Token);
+            if (sessaoDTO is null) return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
+            else if (sessaoDTO.StatusSessao && sessaoDTO.ValidateToken())
+            {
+                return Ok(new { status = true, response = sessaoDTO });
+            }
+            else
+            {
+                sessaoDTO.StatusSessao = false;
+                sessaoDTO.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                await _sessaoService.Update(sessaoDTO);
 
-            return Ok(sessaoDTO);
+                Response.Headers.Remove("Authorization");
+                return Unauthorized(new { status = false, response = "Sessão expirada!" });
+            }
         }
 
         [HttpGet("GetUser/{token}")]
+        [Anonymous]
         public async Task<ActionResult<UsuarioDTO>> GetUser(string token)
         {
             if (token is null) return BadRequest(new { status = false, response = "Dados inválidos!" });
 
-            var usuarioDTO = await _sessaoService.GetUser(token);
+            var sessaoDTO = await _sessaoService.GetByToken(token);
+            if (sessaoDTO is null) return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
+            else if (sessaoDTO.StatusSessao && sessaoDTO.ValidateToken())
+            {
+                var usuarioDTO = await _sessaoService.GetUser(token);
 
-            return Ok(usuarioDTO);
+                return Ok(new { status = true, response = usuarioDTO });
+            }
+            else
+            {
+                sessaoDTO.StatusSessao = false;
+                sessaoDTO.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                await _sessaoService.Update(sessaoDTO);
+
+                Response.Headers.Remove("Authorization");
+                return Unauthorized(new { status = false, response = "Sessão expirada!" });
+            }
         }
 
         [HttpPost("Autentication")]
@@ -99,6 +127,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut("Validation")]
+        [Anonymous]
         public async Task<IActionResult> ValidateSession([FromBody] TokenAcess token)
         {
             var sessaoDTO = await _sessaoService.GetByToken(token.Token);
@@ -123,6 +152,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut("Close")]
+        [Anonymous]
         public async Task<IActionResult> CloseSession([FromBody] TokenAcess token)
         {
             Response.Headers.Remove("Authorization");

@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
-import NavBar from "../../components/NavBar";
-import SideBarAdm from "../../components/Adm/SideBarAdm";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FaPlus } from "react-icons/fa6";
 import LinkTitle from "../../components/Title/LinkTitle";
 
 import { useMontage } from '../../../../object/modules/montage';
@@ -14,7 +11,7 @@ import Search from "../../../../assets/pages/SearchImg";
 import CustomTable from "../../components/Table/Table";
 import ButtonTable from "../../components/Table/ButtonTable";
 import RegistrationButton from "../../components/Button/RegistrationButton";
-import { motion } from "framer-motion";
+import LayoutPage from "../../components/Layout/LayoutPage";
 
 export default function TypePublicPlace() {
 
@@ -140,117 +137,104 @@ export default function TypePublicPlace() {
     });
 
     return (
-        <div className="flex min-h-screen">
-            <div className="flex h-full w-full">
-                <div className="fixed w-full">
-                    <NavBar />
-                </div>
-                <div className="fixed mt-[56px] sm:mt-[64px]">
-                    <SideBarAdm />
-                </div>
-                <motion.div initial={{ opacity: 0.5 }} animate={{ opacity: 1 }} transition={{ type: 'spring', velocity: 2 }}
-                    className="mt-[45px] sm:mt-[64px] ml-[60px] sm:ml-[220px] md:ml-[240px] lg:ml-[260px] xl:ml-[275px] pl-2 pr-[25px] w-full"
-                >
-                    <br />
-                    <LinkTitle pageName="Tipo Logradouro" />
-                    <div className="flex items-center">
-                        <div className="flex justify-center items-center mx-auto w-[450px]">
-                            <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
-                                <div className="pl-2">
-                                    <Search />
-                                </div>
-                                <input type="search" id="default-search" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar tipo logradouro" required onChange={(e) => list.handleSearch(e.target.value)} />
-                                <select className="form-control w-28 text-gray-800 h-full cursor-pointer" onChange={(e) => list.handleSearchBy(e.target.value)} >
-                                    <option key="codigoInformativo" value="codigoInformativo">
-                                        Código
-                                    </option>
-                                    <option key="descricao" value="descricao">
-                                        Descrição
-                                    </option>
-                                </select>
-                            </div>
+        <LayoutPage>
+            <LinkTitle pageName="Tipo Logradouro" />
+            <div className="flex items-center">
+                <div className="flex justify-center items-center mx-auto w-[450px]">
+                    <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
+                        <div className="pl-2">
+                            <Search />
                         </div>
-                        <div className="flex items-center">
-                            <RegistrationButton action={() => openCloseModalInsert(true)} />
-                        </div>
+                        <input type="search" id="default-search" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar tipo logradouro" required onChange={(e) => list.handleSearch(e.target.value)} />
+                        <select className="form-control w-28 text-gray-800 h-full cursor-pointer" onChange={(e) => list.handleSearchBy(e.target.value)} >
+                            <option key="codigoInformativo" value="codigoInformativo">
+                                Código
+                            </option>
+                            <option key="descricao" value="descricao">
+                                Descrição
+                            </option>
+                        </select>
                     </div>
-                    <CustomTable
-                        totalColumns={3}
-                        headers={["Codigo Informativo", "Descrição", "Ações"]}
-                        data={dataForTable}
-                        onPageChange={(page) => list.goToPage(page)}
-                        currentPage={list.currentPage}
-                        totalPages={list.totalPages}
-                    />
-                </motion.div>
-                <Modal isOpen={modalInsert} >
-                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Tipo de Logradouro</ModalHeader>
-                    <ModalBody>
-                        <div className="form-group">
-                            <label className="text-[#444444]">Código Informativo: </label>
-                            <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typepublicplace.verifyIc(e.target.value.toUpperCase())} value={typepublicplace.typePublicPlaceIc} maxLength={3} />
-                            <div className="text-sm text-red-600">
-                                {typepublicplace.errorTypePublicPlaceIc}
-                            </div>
-                            <br />
-                            <label className="text-[#444444]">Descrição:</label>
-                            <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typepublicplace.setTypePublicPlaceDescription(e.target.value)} value={typepublicplace.typePublicPlaceDescription} />
-                            <div className="text-sm text-red-600">
-                                {typepublicplace.errorTypePublicPlaceDescription}
-                            </div>
-                            <br />
-                        </div>
-                    </ModalBody>
-                    <ModalFooter>
-                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert(false)}>Cancelar</button>
-                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostTypePublicPlace()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Cadastrar'} </button>{"  "}
-                    </ModalFooter>
-                </Modal>
-                <Modal isOpen={modalEdit}>
-                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC]">Editar Tipo Logradouro</ModalHeader>
-                    <ModalBody>
-                        <div className="form-group">
-                            <label className="text-[#444444]">ID: </label><br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={typepublicplace.typePublicPlaceId} />
-                            <br />
-                            <label className="text-[#444444]">Código Informativo:</label>
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="codigoInformativo" onChange={(e) => typepublicplace.verifyIc(e.target.value.toUpperCase())} value={typepublicplace.typePublicPlaceIc} maxLength={3} />
-                            <div className="text-sm text-red-600">
-                                {typepublicplace.errorTypePublicPlaceIc}
-                            </div>
-                            <br />
-                            <label className="text-[#444444]">Sigla:</label>
-                            <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="descricao" onChange={(e) => typepublicplace.setTypePublicPlaceDescription(e.target.value)} value={typepublicplace.typePublicPlaceDescription} />
-                            <div className="text-sm text-red-600">
-                                {typepublicplace.errorTypePublicPlaceDescription}
-                            </div>
-                            <br />
-                        </div>
-                    </ModalBody>
-                    <ModalFooter>
-                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit(false)}>Cancelar</button>
-                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutTypePublicPlace()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Atualizar'} </button>{"  "}
-                    </ModalFooter>
-                </Modal>
-                <Modal isOpen={modalDelete}>
-                    <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
-                    <ModalBody className="justify-center">
-                        <div className="flex flex-row justify-center p-2">
-                            Confirmar a exclusão deste tipo de logradouro:
-                            <div className="text-[#059669] ml-1">
-                                {typepublicplace.typePublicPlaceDescription}
-                            </div> ?
-                        </div>
-                        <div className="flex justify-center gap-2 pt-3">
-                            <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete(false)}>Cancelar</button>
-                            <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteTypePublicPlace()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'} </button>{"  "}
-                        </div>
-                    </ModalBody>
-                </Modal>
+                </div>
+                <div className="flex items-center">
+                    <RegistrationButton action={() => openCloseModalInsert(true)} />
+                </div>
             </div>
-        </div>
+            <CustomTable
+                totalColumns={3}
+                headers={["Codigo Informativo", "Descrição", "Ações"]}
+                data={dataForTable}
+                onPageChange={(page) => list.goToPage(page)}
+                currentPage={list.currentPage}
+                totalPages={list.totalPages}
+            />
+            <Modal isOpen={modalInsert} >
+                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Tipo de Logradouro</ModalHeader>
+                <ModalBody>
+                    <div className="form-group">
+                        <label className="text-[#444444]">Código Informativo: </label>
+                        <br />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typepublicplace.verifyIc(e.target.value.toUpperCase())} value={typepublicplace.typePublicPlaceIc} maxLength={3} />
+                        <div className="text-sm text-red-600">
+                            {typepublicplace.errorTypePublicPlaceIc}
+                        </div>
+                        <br />
+                        <label className="text-[#444444]">Descrição:</label>
+                        <br />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typepublicplace.setTypePublicPlaceDescription(e.target.value)} value={typepublicplace.typePublicPlaceDescription} />
+                        <div className="text-sm text-red-600">
+                            {typepublicplace.errorTypePublicPlaceDescription}
+                        </div>
+                        <br />
+                    </div>
+                </ModalBody>
+                <ModalFooter>
+                    <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert(false)}>Cancelar</button>
+                    <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostTypePublicPlace()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Cadastrar'} </button>{"  "}
+                </ModalFooter>
+            </Modal>
+            <Modal isOpen={modalEdit}>
+                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC]">Editar Tipo Logradouro</ModalHeader>
+                <ModalBody>
+                    <div className="form-group">
+                        <label className="text-[#444444]">ID: </label><br />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={typepublicplace.typePublicPlaceId} />
+                        <br />
+                        <label className="text-[#444444]">Código Informativo:</label>
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="codigoInformativo" onChange={(e) => typepublicplace.verifyIc(e.target.value.toUpperCase())} value={typepublicplace.typePublicPlaceIc} maxLength={3} />
+                        <div className="text-sm text-red-600">
+                            {typepublicplace.errorTypePublicPlaceIc}
+                        </div>
+                        <br />
+                        <label className="text-[#444444]">Sigla:</label>
+                        <br />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="descricao" onChange={(e) => typepublicplace.setTypePublicPlaceDescription(e.target.value)} value={typepublicplace.typePublicPlaceDescription} />
+                        <div className="text-sm text-red-600">
+                            {typepublicplace.errorTypePublicPlaceDescription}
+                        </div>
+                        <br />
+                    </div>
+                </ModalBody>
+                <ModalFooter>
+                    <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit(false)}>Cancelar</button>
+                    <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutTypePublicPlace()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Atualizar'} </button>{"  "}
+                </ModalFooter>
+            </Modal>
+            <Modal isOpen={modalDelete}>
+                <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
+                <ModalBody className="justify-center">
+                    <div className="flex flex-row justify-center p-2">
+                        Confirmar a exclusão deste tipo de logradouro:
+                        <div className="text-[#059669] ml-1">
+                            {typepublicplace.typePublicPlaceDescription}
+                        </div> ?
+                    </div>
+                    <div className="flex justify-center gap-2 pt-3">
+                        <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete(false)}>Cancelar</button>
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteTypePublicPlace()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'} </button>{"  "}
+                    </div>
+                </ModalBody>
+            </Modal>
+        </LayoutPage>
     )
 }

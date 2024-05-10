@@ -91,7 +91,7 @@ function Cards() {
                 module: "Usuario"
             },
             {
-                onClick: () => inDevelopment("Controle de Engenheiro"),
+                onClick: () => addSegment("engineer"),
                 image: ImgEngenheiro,
                 tooltip: "Abrir a Página de Controle de Engenheiro",
                 title: "Engenheiro",

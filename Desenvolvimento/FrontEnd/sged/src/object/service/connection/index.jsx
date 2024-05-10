@@ -1,5 +1,6 @@
 import axios from 'axios';
 import ApiService from '../api';
+import CookieModule from '../../modules/cookie';
 
 export default class ConnectionService {
     constructor() {
@@ -15,6 +16,8 @@ export default class ConnectionService {
         this.typeMethod = '';
         this.response = { status: false, data: null };
         this.messageRequest = { type: '', content: '' };
+
+        this.cookie = new CookieModule();
     }
 
     updateResponse(result) {
@@ -42,7 +45,8 @@ export default class ConnectionService {
         try {
             this.typeMethod = type;
             const result = await method();
-            //this.api.updateToken(result.headers.get('Authorization'));
+
+            //if (result.headers.get('Authorization')) this.api.updateToken(result.headers.get('Authorization'));
 
             if (this.isSuccessResponse(result)) {
                 this.messageRequest = { type: 'sucess', content: result.data.message? result.data.message : 'Requisição realizada com sucesso!' };

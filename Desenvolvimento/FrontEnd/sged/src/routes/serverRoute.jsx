@@ -81,7 +81,6 @@ export const ServerProvider = ({ children }) => {
             const autenticate = await updateAuthentication();
 
             if (callFunctionRoute) {
-                montage.clearStateMontage();
 
                 if (!autenticate && !["", "login", "notfound", "notpermission", "development"].includes(firstRoute)) {
                     clearSegment("login");
@@ -90,7 +89,6 @@ export const ServerProvider = ({ children }) => {
 
             } else {
                 setLiberateNavigate(false);
-                montage.clearStateMontage();
 
                 if (["", "notfound", "notpermission", "development"].includes(firstRoute)) {
                     clearSegment(autenticate ? "home" : "login");

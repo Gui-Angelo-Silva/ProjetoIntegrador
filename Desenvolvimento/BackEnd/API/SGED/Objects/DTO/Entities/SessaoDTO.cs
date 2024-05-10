@@ -33,7 +33,7 @@ namespace SGED.Objects.DTO.Entities
         public int IdUsuario { get; set; }
 
 
-        public static string GenerateToken(string subject)
+        public string GenerateToken()
         {
             SecurityEntity securityEntity = new();
 
@@ -41,19 +41,21 @@ namespace SGED.Objects.DTO.Entities
             {
                 { "iss", securityEntity.Issuer },
                 { "aud", securityEntity.Audience },
-                { "sub", subject },
+                { "sub", this.EmailPessoa },
                 { "exp", DateTimeOffset.UtcNow.AddMinutes(60).ToUnixTimeSeconds() }
             };
 
-            return JWT.Encode(payload, Encoding.UTF8.GetBytes(securityEntity.Key), JwsAlgorithm.HS256);
+            this.TokenSessao = JWT.Encode(payload, Encoding.UTF8.GetBytes(securityEntity.Key), JwsAlgorithm.HS256);
+
+            return this.TokenSessao;
         }
 
-        public static bool ValidateToken(string token, string subject)
+        public bool ValidateToken()
         {
             SecurityEntity securityEntity = new();
 
             // Passo 1: Verificar se o token tem três partes
-            string[] tokenParts = token.Split('.');
+            string[] tokenParts = this.TokenSessao.Split('.');
             if (tokenParts.Length != 3)
             {
                 return false;
@@ -73,7 +75,7 @@ namespace SGED.Objects.DTO.Entities
                     return false;
                 }
 
-                if (issuerClaim.ToString() != securityEntity.Issuer || audienceClaim.ToString() != securityEntity.Audience || subjectClaim.ToString() != subject)
+                if (issuerClaim.ToString() != securityEntity.Issuer || audienceClaim.ToString() != securityEntity.Audience || subjectClaim.ToString() != this.EmailPessoa)
                 {
                     return false;
                 }
@@ -102,7 +104,7 @@ namespace SGED.Objects.DTO.Entities
             }
         }
 
-        public static bool ValidateTokenByEmail(string token, string subject)
+        public bool ValidateTokenByEmail(string token, string subject)
         {
             SecurityEntity securityEntity = new();
 

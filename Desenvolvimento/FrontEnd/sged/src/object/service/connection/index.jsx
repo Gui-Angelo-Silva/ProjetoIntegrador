@@ -1,48 +1,43 @@
-import { useEffect } from 'react';
 import axios from 'axios';
 import ApiService from '../api';
+import CookieModule from '../../modules/cookie';
 
-class ConnectionService {
-
+export default class ConnectionService {
     constructor() {
         this.api = new ApiService();
-        this.url = '';
-        this.typeMethod = '';
-        this.statusPopUp = false;
+        this.shootPopUp = false;
         this.getPopUp = false;
-        this.response = { status: false, data: [] };
-        this.messageRequest = { type: '', content: '' };
-        this.statusRequest = {
-            success: [200, 201],
-            bad: [400, 404],
-            noresponse: [500],
-            error: [401]
-        };
+
+        this.resetData();
     }
 
-    clearData() {
+    resetData() {
         this.url = '';
         this.typeMethod = '';
-        this.response = { status: false, data: [] };
+        this.response = { status: false, data: null };
         this.messageRequest = { type: '', content: '' };
+
+        this.cookie = new CookieModule();
     }
 
     updateResponse(result) {
         this.response = result;
     }
 
-    endpoint(endpointUrl) {
-        this.clearData(); this.url = this.api.appendRoute(endpointUrl) + "/";
+    endpoint(url) {
+        this.resetData();
+
+        this.url = this.api.appendRoute(url);
         return this;
     }
 
-    action(actionUrl) {
-        const parts = this.url.split("/");
-        const objectUrl = parts.slice(0, 5);
+    action(url) {
+        this.url += `/${url}`;
+        return this;
+    }
 
-        objectUrl.push(actionUrl);
-        this.url = objectUrl.join("/") + "/";
-
+    data(data) {
+        this.url += `/${data}`;
         return this;
     }
 
@@ -51,87 +46,91 @@ class ConnectionService {
             this.typeMethod = type;
             const result = await method();
 
-            //console.log(result.headers);
+            //if (result.headers.get('Authorization')) this.api.updateToken(result.headers.get('Authorization'));
 
-            if (this.statusRequest.success.includes(result.status)) {
-                return { status: true, data: result.data };
+            if (this.isSuccessResponse(result)) {
+                this.messageRequest = { type: 'sucess', content: result.data.message? result.data.message : 'Requisição realizada com sucesso!' };
+                return { status: true, data: result.data.data? result.data.data : result.data };
+
             } else {
-                if (result.data.error) this.messageRequest = { type: 'bad', content: result.data.error };
-                else this.messageRequest = { type: 'bad', content: 'Dados inválidos!' };
+                this.messageRequest = { type: 'bad', content: result.data.message? result.data.message : `Requisição negada!` };
+                return { status: false, data: result.data.data? result.data.data : result.data };
             }
-
-            return { status: false, data: result.data };
+            
         } catch (error) {
-            if (this.statusRequest.noresponse.includes(error.response.status)) {
+            if (this.isNoServerResponse(error)) {
                 this.messageRequest = { type: 'error', content: 'Sem resposta do servidor!' };
-                return { status: false, data: null };
+
+            } else {
+                this.messageRequest = { type: 'error', content: 'Erro ao executar a requisição!' };
             }
 
-            this.messageRequest = { type: 'error', content: 'Erro ao executar a requisição!' };
-            return { status: false, data: error.response.data };
+            return { status: false, data: null };
         }
     }
 
-    async get(data) {
-        const result = await this.execute(() => this.getMethod(data), 'GET');
-        if (!result.status) this.clearData();
-        else this.messageRequest = { type: 'success', content: `Dados obtidos com sucesso.` };
-        this.updateResponse(result); if (this.statusPopUp) this.messagePopUp();
+    isSuccessResponse(result) {
+        return result.status && [200, 201].includes(result.status);
+    }
+    
+    isNoServerResponse(error) {
+        return (
+            (error.status && [500].includes(error.result.status)) || // Verifica se o status é 500
+            error.code === "ERR_NETWORK" // Verifica se o código de erro é ERR_NETWORK, que pode ser conexão recusada ou servidor inoperante
+        );
     }
 
-    async getMethod(data) {
-        return await axios.get(data ? `${this.url}${data}` : this.url, this.api.headerConfig());
+    async get() {
+        this.updateResponse(await this.execute(() => this.getMethod(), 'GET')); this.messagePopUp();
     }
 
-    async post(object) {
-        const result = await this.execute(() => this.postMethod(object), 'POST');
-        if (result.status) this.messageRequest = { type: 'success', content: `${object.propertyName()} cadastrad${object.gender()} com sucesso.` };
-        this.updateResponse(result); if (this.statusPopUp) this.messagePopUp(); 
+    async getMethod() {
+        return await axios.get(this.url, this.api.headerConfig());
     }
 
-    async postMethod(object) {
-        const data = object.setData(); delete data.id;
-        return await axios.post(this.url, data, this.api.headerConfig());
+    async post(parameter) {
+        this.updateResponse(await this.execute(() => this.postMethod(parameter), 'POST')); this.messagePopUp();
     }
 
-    async put(object) {
-        const result = await this.execute(() => this.putMethod(object), 'PUT');
-        if (result.status) this.messageRequest = { type: 'success', content: `${object.propertyName()} alterad${object.gender()} com sucesso.` };
-        this.updateResponse(result); if (this.statusPopUp) this.messagePopUp();
+    async postMethod(parameter) {
+        return parameter ? 
+            await axios.post(this.url, parameter, this.api.headerConfig()) :
+            await axios.post(this.url, this.api.headerConfig());
     }
 
-    async putMethod(object) {
-        const data = object.setData();
-        console.log(data)
-        return await axios.put(this.url, data, this.api.headerConfig());
+    async put(parameter) {
+        this.updateResponse(await this.execute(() => this.putMethod(parameter), 'PUT')); this.messagePopUp();
     }
 
-    async delete(object) {
-        const result = await this.execute(() => this.deleteMethod(object), 'DELETE');
-        if (result.status) this.messageRequest = { type: 'success', content: `${object.propertyName()} excluíd${object.gender()} com sucesso.` };
-        this.updateResponse(result); if (this.statusPopUp) this.messagePopUp();
+    async putMethod(parameter) {
+        return parameter ? 
+            await axios.put(this.url, parameter, this.api.headerConfig()) :
+            await axios.put(this.url, this.api.headerConfig());
     }
 
-    async deleteMethod(object) {
-        const data = object.setData();
-        return await axios.delete(`${this.url}${data.id}`, this.api.headerConfig());
+    async delete(parameter) {
+        this.updateResponse(await this.execute(() => this.deleteMethod(parameter), 'DELETE')); this.messagePopUp();
+    }
+
+    async deleteMethod(parameter) {
+        return parameter ? 
+            await axios.delete(`${this.url}/${parameter}`, this.api.headerConfig()) :
+            await axios.delete(this.url, this.api.headerConfig());
     }
 
     messagePopUp() {
-        if (this.messageRequest.type) {
-            if (this.typeMethod !== 'GET' || this.getPopUp) {
-                console.log(this.messageRequest);
-            }
+        if (!this.response.status) {
+            console.log(this.messageRequest);
         }
     }
 
     enablePopUp() {
-        this.statusPopUp = true;
+        this.shootPopUp = true;
         return this;
     }
 
     disablePopUp() {
-        this.statusPopUp = false;
+        this.shootPopUp = false;
         return this;
     }
 
@@ -144,6 +143,16 @@ class ConnectionService {
         this.getPopUp = false;
         return this;
     }
-}
 
-export default ConnectionService;
+    getList() {
+        return this.response.status?
+            this.response.data
+            : [];
+    }
+
+    getObject() {
+        return this.response.status?
+            this.response.data
+            : null;
+    }
+}

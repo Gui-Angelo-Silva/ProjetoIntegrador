@@ -16,10 +16,11 @@ export const useServer = () => {
 
 export const ServerProvider = ({ children }) => {
 
-    var blockNavigation = false;
+    let inOperation = false;
+    const [verifyExistPage, setVerifyExistPage] = useState(false);
     const [callFunctionRoute, setCallFunctionRoute] = useState(false);
     const [liberateNavigate, setLiberateNavigate] = useState(true);
-    const { componentMontage, clearStateMontage } = useMontage();
+    const montage = useMontage();
     const session = Session();
     const navigate = useNavigate();
 
@@ -70,18 +71,16 @@ export const ServerProvider = ({ children }) => {
         }
     }, []);
 
-    /*useEffect(() => {
+    useEffect(() => {
         const currentPathSegments = window.location.pathname.split('/');
         const firstRoute = currentPathSegments[1]?.toLowerCase();
 
         // Função para validar a rota e navegar
         const validateAndNavigate = async () => {
+            inOperation = true;
             const autenticate = await updateAuthentication();
 
-            console.log(autenticate);
-
             if (callFunctionRoute) {
-                clearStateMontage();
 
                 if (!autenticate && !["", "login", "notfound", "notpermission", "development"].includes(firstRoute)) {
                     clearSegment("login");
@@ -90,7 +89,6 @@ export const ServerProvider = ({ children }) => {
 
             } else {
                 setLiberateNavigate(false);
-                clearStateMontage();
 
                 if (["", "notfound", "notpermission", "development"].includes(firstRoute)) {
                     clearSegment(autenticate ? "home" : "login");
@@ -104,46 +102,49 @@ export const ServerProvider = ({ children }) => {
 
                 setLiberateNavigate(true);
             }
+
+            inOperation = false;
+            setVerifyExistPage(true);
         };
 
-        // Executar apenas quando a URL mudar
-        const handleLocationChange = async () => {
-            if (blockNavigation) {
-                await validateAndNavigate();
-                blockNavigation = false;
-            }
-
-            return;
-        };
-
-        // Adicionar o ouvinte de evento para a mudança de URL
-        window.addEventListener('popstate', handleLocationChange);
-
-        // Executar a validação na primeira renderização e sempre que a rota mudar
-        validateAndNavigate();
-
-        // Remover o ouvinte de evento quando o componente for desmontado
-        return () => {
-            window.removeEventListener('popstate', handleLocationChange);
-            blockNavigation = true;
-        };
-    }, [window.location.pathname]);
+        if (!inOperation) validateAndNavigate();
+    }, []);
 
     useEffect(() => {
         const delay = (milliseconds) => {
             return new Promise(resolve => setTimeout(resolve, milliseconds));
         };
 
-        const validateExistPage = async () => {
-            while (true) {
+        let isExecuting = true;
+
+        const verifyMontage = async () => {
+            try {
                 await delay(2000);
-                console.log(await updateAuthentication());
+
+                if (!isExecuting) {
+                    return;
+                } else {
+                    isExecuting = false;
+                }
+
+                if (!montage.componentMontage) {
+                    sessionStorage.setItem("page: non-existent", window.location.pathname);
+                    clearSegment("notfound");
+                }
+            } catch (error) {
+                return;
             }
+        }; if (verifyExistPage) verifyMontage();
+
+        return () => {
+            isExecuting = false;
         };
 
-        validateExistPage();
-    }, [liberateNavigate, componentMontage]);*/
+    }, [verifyExistPage]);
 
+    useEffect(() => {
+        setVerifyExistPage(false);
+    }, [montage.componentMontage]);
 
     return (
         <ServerContext.Provider value={{ inDevelopment, addSegment, clearSegment, removeSegment }}>

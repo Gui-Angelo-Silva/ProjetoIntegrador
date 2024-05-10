@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 function ControlModule() {
     const [selectedOption, setSelectedOption] = useState({});
-    const [options, setOptions] = useState([{}]);
+    const [options, setOptions] = useState([]);
 
     const updateOptions = (list, atributeId, atributeName) => {
         const updatedOptions = list.map(item => ({

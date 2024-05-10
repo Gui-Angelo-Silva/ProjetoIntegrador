@@ -31,7 +31,7 @@ namespace SGED.Services.Server.Tasks
                         try
                         {
                             // Verificar se o token é válido
-                            var statusToken = SessaoDTO.ValidateToken(session.TokenSessao, session.EmailPessoa);
+                            var statusToken = session.ValidateToken();
 
                             // Se o token for inválido, atualizar o status da sessão no banco de dados
                             if (!statusToken)

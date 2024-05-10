@@ -1,23 +1,21 @@
-import TokenClass from '../../class/token';
 import ConnectionService from '../connection';
 import StorageModule from '../../modules/storage';
 import CookieModule from '../../modules/cookie';
 
 function SessionService() {
 
-    const tokenClass = TokenClass();
     const connection = new ConnectionService();
     const storage = StorageModule();
     const cookie = CookieModule();
 
     const getLogin = () => {
         //return storage.getLocal('login');
-        return storage.getLocal("login");
+        return cookie.getCookie("login");
     };
 
     const getToken = () => {
         //return storage.getLocal('token');
-        return storage.getLocal("token");
+        return cookie.getCookie("token");
     };
 
     const getUser = async () => {
@@ -25,8 +23,8 @@ function SessionService() {
 
         if (token) {
             try {
-                await connection.endpoint("Sessao").action("GetUser").get(token);
-                return connection.response.status? connection.response.data : null;
+                await connection.endpoint("Sessao").action("GetUser").data(token).get();
+                return connection.response.status && connection.response.data.status? connection.response.data.response : null;
 
             } catch (error) {
                 return null;
@@ -40,22 +38,22 @@ function SessionService() {
     const setLogin = (object) => {
         const login = { persist: object.persistLogin, emailPessoa: object.personEmail, senhaUsuario: object.userPassword };
         //storage.setLocal('login', login);
-        storage.setLocal("login", login, 1);
+        cookie.setCookie("login", login, 1);
     };
 
     const setToken = (token) => {
         //storage.setLocal('token', token);
-        storage.setLocal("token", token, 1);
+        cookie.setCookie("token", token, 1);
     };
 
     const defaultLogin = () => {
         //storage.setLocal('login', null);
-        storage.setLocal("login", null);
+        cookie.setCookie("login", null);
     };
 
     const defaultToken = () => {
         //storage.setLocal('token', null);
-        storage.setLocal("token", null);
+        cookie.setCookie("token", null);
     };
 
     const createSession = async (object) => {
@@ -63,7 +61,7 @@ function SessionService() {
         var autentication = false;
 
         try {
-            await connection.endpoint("Sessao").action("Autentication").post(object);
+            await connection.endpoint("Sessao").action("Autentication").post(object.setData());
 
             if (connection.response.status) {
                 setToken(connection.response.data.response);
@@ -95,11 +93,15 @@ function SessionService() {
     };
 
     const closeSession = async () => {
-        const token = getToken();
+        const tokenUser = getToken();
 
         if (token) {
+            const data = {
+                token: tokenUser
+            };
+
             try {
-                await connection.endpoint("Sessao").action("Close").put(tokenClass);
+                await connection.endpoint("Sessao").action("Close").put(data);
                 defaultToken();
 
                 return connection.response.status;
@@ -113,15 +115,15 @@ function SessionService() {
     };
 
     const validateToken = async () => {
-        const token = getToken();
+        const tokenUser = getToken();
 
-        console.log(token);
+        if (tokenUser) {
+            const data = {
+                token: tokenUser
+            };
 
-        if (token) {
             try {
-                await connection.endpoint("Sessao").action("Validation").put(tokenClass);
-
-                console.log(connection.response);
+                await connection.endpoint("Sessao").action("Validation").put(data);
 
                 if (connection.response.status) setToken(connection.response.data.response);
                 else defaultToken();
@@ -149,10 +151,12 @@ function SessionService() {
         getLogin,
         getToken,
         getUser,
+
         setLogin,
         setToken,
         defaultLogin,
         defaultToken,
+
         createSession,
         closeSession,
         validateToken,

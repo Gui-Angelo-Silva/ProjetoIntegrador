@@ -12,7 +12,7 @@ import LayoutPage from "../../components/Layout/LayoutPage";
 import LinkTitle from "../../components/Title/LinkTitle";
 import Table from "../../components/Table/Table";
 
-export default function Test() {
+export default function StageDocumentType() {
 
     const montage = useMontage();
 

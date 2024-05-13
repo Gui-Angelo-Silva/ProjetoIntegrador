@@ -20,6 +20,7 @@ import Stage from '../../pages/routeA/manipulation/stage';
 import Document from '../../pages/routeA/dashboard/document';
 import Test from '../../pages/routeA/dashboard/test';
 import RealState from '../../pages/routeA/manipulation/realstate';
+import StageDocumentType from '../../pages/routeA/manipulation/stagedocumenttype';
 
 export default function RouteA() {
     return (
@@ -45,6 +46,7 @@ export default function RouteA() {
             <Route path="/registration/typeprocess" element={<TypeProcess  />}></Route>
             <Route path="/registration/stage" element={<Stage  />}></Route>
             <Route path="/registration/realstate" element={<RealState  />}></Route>
+            <Route path="/registration/stagedocumenttype" element={<StageDocumentType  />}></Route>
 
             <Route path="/document" element={<Document />}></Route>
             <Route path="/test" element={<Test />}></Route>

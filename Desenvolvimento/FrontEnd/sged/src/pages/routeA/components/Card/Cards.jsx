@@ -15,6 +15,7 @@ import ImgTipoProcesso from "../../../../assets/card/ImgTipoProcessoAtualizada.p
 import ImgEtapa from "../../../../assets/card/ImgEtapaAtualizada.png";
 import ImgTipoDocumento from "../../../../assets/card/ImgTipoDocumentoAtualizada.png";
 //import ImgDocumentoProcesso from "../../../../assets/card/ImgDocumentoProcessoAtualizada.png";
+import ImgTipoDocumentoEtapa from "../../../../assets/card/ImgTipoDocumentoEtapa.png";
 
 import { useServer } from "../../../../routes/serverRoute";
 
@@ -140,6 +141,13 @@ function Cards() {
                 image: ImgTipoDocumento,
                 tooltip: "Abrir a Página de Controle de Tipo Documento",
                 title: "Tipo Documento",
+                module: "Processo"
+            },
+            {
+                onClick: () => addSegment("stagedocumenttype"),
+                image: ImgTipoDocumentoEtapa,
+                tooltip: "Abrir a Página de Controle de Tipo Documento Etapa",
+                title: "Tipo Docu. Etapa",
                 module: "Processo"
             }
             // {

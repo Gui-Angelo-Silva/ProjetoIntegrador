@@ -147,7 +147,7 @@ function Cards() {
                 onClick: () => addSegment("stagedocumenttype"),
                 image: ImgTipoDocumentoEtapa,
                 tooltip: "Abrir a Página de Controle de Tipo Documento Etapa",
-                title: "Tipo Docu. Etapa",
+                title: "Tipo Doc. Etapa",
                 module: "Processo"
             }
             // {

@@ -15,7 +15,7 @@ const TableRow = ({ item }) => {
       {filteredItem.map(([key, value], index) => (
         <div
           key={index}
-          className={`flex items-center border-t-[1px] truncate py-2 border-r-[1px] border-[#C8E5E5] text-gray-700 
+          className={`flex items-center border-t-[1px] truncate  border-r-[1px] p-2 border-[#C8E5E5] text-gray-700 
           justify-center`}
           // ${index === 0 ? "justify-start pl-5" : "justify-center" }
         >
@@ -31,7 +31,7 @@ const CustomTable = ({ totalColumns, headers, data, onPageChange, currentPage, t
     <div className={`w-full rounded-[20px] border-1 border-[#C8E5E5] ${enableSpacing ? 'mt-0' : 'mt-10'}`}>
       <div className={`grid grid-cols-${totalColumns} w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center`}>
         {headers.map((header, index) => (
-          <div key={index} className="flex justify-center text-white text-lg font-semibold">
+          <div key={index} className="flex justify-center text-white text-lg font-semibold truncate">
             {header}
           </div>
         ))}

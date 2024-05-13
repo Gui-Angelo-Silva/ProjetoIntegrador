@@ -1,10 +1,25 @@
 import { useState } from "react";
+import StatusInterface from "../../interface/status";
+import PositionInterface from "../../interface/position";
 
 function StageClass() {
-    const [stageId, setStageId] = useState('');
+
+    const IStatus = StatusInterface();
+    const IPosition = PositionInterface();
+
+    // Atributos
+    const status = IStatus.status;
+    const setStatus = IStatus.setStatus;
+    const position = IPosition.position;
+    const setPosition = IPosition.setPosition;
+
+    // Funções de Controle
+    const canAction = IStatus.canAction;
+
+    const [stageId, setStageId] = useState(0);
     const [stageName, setStageName] = useState('');
     const [stageDescription, setStageDescription] = useState('');
-    const [idTypeProcess, setIdTypeProcess] = useState('');
+    const [idTypeProcess, setIdTypeProcess] = useState(0);
 
     const [errorStageName, setErrorStageName] = useState('');
     const [errorIdTypeProcess, setErrorIdTypeProcess] = useState('');
@@ -12,32 +27,38 @@ function StageClass() {
     function propertyName() {
         return "Etapa " + stageName;
     }
-    
+
     function gender() {
         return "a";
     }
 
-    function getData(object) {
-        setStageId(object.id);
-        setStageName(object.nomeEtapa);
-        setStageDescription(object.descricaoEtapa);
-        setIdTypeProcess(object.idTipoProcesso);
-    }
-
-    function setData() {
+    function getData() {
         return {
             id: stageId,
             nomeEtapa: stageName,
             descricaoEtapa: stageDescription,
+            posicao: position,
+            status: status,
             idTipoProcesso: idTypeProcess
         };
     }
 
+    function setData(object) {
+        setStageId(object.id);
+        setStageName(object.nomeEtapa);
+        setStageDescription(object.descricaoEtapa);
+        setPosition(object.posicao);
+        setStatus(object.status);
+        setIdTypeProcess(object.idTipoProcesso);
+    }
+
     function clearData() {
-        setStageId('');
+        setStageId(0);
         setStageName('');
         setStageDescription('');
-        setIdTypeProcess('');
+        setPosition(0);
+        setStatus(false);
+        setIdTypeProcess(0);
     }
 
     function clearError() {
@@ -74,11 +95,15 @@ function StageClass() {
     }
 
     return {
-        stageId, 
+        stageId,
         stageName,
         setStageName,
-        stageDescription, 
+        stageDescription,
         setStageDescription,
+        position,
+        setPosition,
+        status,
+        setStatus,
         idTypeProcess,
         setIdTypeProcess,
 
@@ -91,7 +116,9 @@ function StageClass() {
         setData,
         clearData,
         clearError,
-        verifyData
+        verifyData,
+
+        canAction,
     };
 }
 

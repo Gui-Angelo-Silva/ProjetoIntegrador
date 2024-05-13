@@ -1,5 +1,6 @@
 import React from 'react';
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
+import PropTypes from 'prop-types';
 
 const TableRow = ({ item }) => {
 
@@ -62,6 +63,15 @@ const CustomTable = ({ totalColumns, headers, data, onPageChange, currentPage, t
       <div className="mt-4"></div>
     </div>
   );
+};
+
+CustomTable.propTypes = {
+  totalColumns: PropTypes.number.isRequired,
+  headers: PropTypes.arrayOf(PropTypes.string).isRequired,
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onPageChange: PropTypes.func.isRequired,
+  currentPage: PropTypes.number.isRequired,
+  totalPages: PropTypes.number.isRequired
 };
 
 export default CustomTable;

@@ -57,7 +57,7 @@ namespace SGED.Services.Server.Middleware
                         await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = "Erro: Sessão não encontrada!" }));
                         return;
                     }
-                    else if (!sessao.StatusSessao || !SessaoDTO.ValidateToken(sessao.TokenSessao, sessao.EmailPessoa))
+                    else if (!sessao.StatusSessao || !sessao.ValidateToken())
                     {
                         context.Response.Headers.Remove("Authorization");
 
@@ -91,58 +91,7 @@ namespace SGED.Services.Server.Middleware
                 return;
             }
 
-            await _next(context); // Chama o proximo serviço do pipeline da requisição
-
-            if (tokenPrevious is not null)
-            {
-                if (context.Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues valueAfter))
-                {
-                    var authorizationHeader = valueAfter.ToString();
-                    var tokenParts = authorizationHeader.Split(' ');
-
-                    var tokenType = tokenParts[0];
-                    var tokenAfter = tokenParts[1];
-
-                    if (tokenType == "Front")
-                    {
-                        var sessaoAfter = await _sessaoRepository.GetByToken(tokenAfter);
-
-                        if (sessaoAfter == null)
-                        {
-                            context.Request.Headers.Remove("Authorization"); return;
-                        }
-                        else if (tokenPrevious != tokenAfter)
-                        {
-                            var user = await _sessaoRepository.GetUser(tokenPrevious);
-
-                            if (user == null)
-                            {
-                                context.Request.Headers.Remove("Authorization"); return;
-                            }
-                            else if (user.Id != sessaoAfter.IdUsuario)
-                            {
-                                context.Request.Headers.Remove("Authorization"); return;
-                            }
-                        }
-                    }
-                } else
-                {
-                    var sessaoAfter = await _sessaoRepository.GetByToken(tokenPrevious);
-                    var user = await _sessaoRepository.GetUser(tokenPrevious);
-
-                    if (user == null)
-                    {
-                        context.Request.Headers.Remove("Authorization"); return;
-                    }
-
-                    sessaoAfter.EmailPessoa = user.EmailPessoa;
-                    if (user.TipoUsuario != null) { sessaoAfter.NivelAcesso = user.TipoUsuario.NivelAcesso; }
-                    sessaoAfter.TokenSessao = SessaoDTO.GenerateToken(sessaoAfter.EmailPessoa);
-                    await _sessaoRepository.Update(sessaoAfter);
-
-                    context.Request.Headers.Add("Token", $"Front {sessaoAfter.TokenSessao}");
-                }
-            }
+            await _next(context);
         }
 
     }

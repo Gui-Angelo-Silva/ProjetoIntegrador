@@ -20,7 +20,7 @@ export default function TypeProcess() {
         componentMounted();
     }, []);
 
-    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
+    const connection = new ConnectionService(); connection.endpoint("TipoProcesso").enablePopUp().enableGetPopUp();
     const list = ListModule();
     const typeprocess = TypeProcessClass();
 
@@ -31,7 +31,7 @@ export default function TypeProcess() {
     const [inOperation, setInOperation] = useState(false);
 
     const SelectTypeProcess = (object, option) => {
-        typeprocess.getData(object);
+        typeprocess.setData(object);
 
         if (option === "Editar") {
             openCloseModalEdit(true);
@@ -68,19 +68,17 @@ export default function TypeProcess() {
 
     const GetTypeProcess = async () => {
         await connection.endpoint("TipoProcesso").get();
-        list.setList(connection.response.data);
+        list.setList(connection.getList());
     };
 
     const PostTypeProcess = async () => {
         setInOperation(true);
 
         if (typeprocess.verifyData()) {
-            await connection.endpoint("TipoProcesso").post(typeprocess);
+            await connection.endpoint("TipoProcesso").post(typeprocess.getData());
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
-        } else {
-            console.log('Dados Inválidos!');
         }
 
         setInOperation(false);
@@ -90,12 +88,10 @@ export default function TypeProcess() {
         setInOperation(true);
 
         if (typeprocess.verifyData()) {
-            await connection.endpoint("TipoProcesso").put(typeprocess);
+            await connection.endpoint("TipoProcesso").put(typeprocess.getData());
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
-        } else {
-            console.log('Dados Inválidos!');
         }
 
         setInOperation(false);
@@ -104,7 +100,7 @@ export default function TypeProcess() {
     const DeleteTypeProcess = async () => {
         setInOperation(true);
 
-        await connection.endpoint("TipoProcesso").delete(typeprocess);
+        await connection.endpoint("TipoProcesso").delete(typeprocess.getData().id);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

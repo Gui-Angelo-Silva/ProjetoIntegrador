@@ -1,9 +1,24 @@
 import { useState } from 'react';
+import StatusInterface from "../../interface/status";
+import PositionInterface from "../../interface/position";
 
 function TypeDocumentStageClass() {
-  const [idStage, setIdStage] = useState('');
-  const [idTypeDocument, setIdTypeDocument] = useState('');
-  const [typeDocumentStageId, setTypeDocumentStageId] = useState('');
+
+  const IStatus = StatusInterface();
+  const IPosition = PositionInterface();
+
+  // Atributos
+  const status = IStatus.status;
+  const setStatus = IStatus.setStatus;
+  const position = IPosition.position;
+  const setPosition = IPosition.setPosition;
+
+  // Funções de Controle
+  const canAction = IStatus.canAction;
+
+  const [idStage, setIdStage] = useState(0);
+  const [idTypeDocument, setIdTypeDocument] = useState(0);
+  const [typeDocumentStageId, setTypeDocumentStageId] = useState(0);
 
   const [errorIdStage, setErrorIdStage] = useState('');
   const [errorIdTypeDocument, setErrorIdTypeDocument] = useState('');
@@ -16,24 +31,30 @@ function TypeDocumentStageClass() {
     return "o";
   }
 
-  function getData(object) {
-    setIdStage(object.idEtapa);
-    setIdTypeDocument(object.idTipoDocumento);
-    setTypeDocumentStageId(object.id);
-  }
-
-  function setData() {
+  function getData() {
     return {
       id: typeDocumentStageId,
+      posicao: position,
+      status: status,
       idEtapa: idStage,
       idTipoDocumento: idTypeDocument
     };
   }
 
+  function setData(object) {
+    setIdStage(object.idEtapa);
+    setPosition(object.posicao);
+    setStatus(object.status);
+    setIdTypeDocument(object.idTipoDocumento);
+    setTypeDocumentStageId(object.id);
+  }
+
   function clearData() {
-    setIdStage('');
-    setIdTypeDocument('');
-    setTypeDocumentStageId('');
+    setIdStage(0);
+    setPosition(0);
+    setStatus(false);
+    setIdTypeDocument(0);
+    setTypeDocumentStageId(0);
   }
 
   function clearError() {
@@ -50,12 +71,12 @@ function TypeDocumentStageClass() {
 
     if (!idStage) {
       stage = 'A etapa é requerida!';
-        status = false;
+      status = false;
     }
 
     if (!idTypeDocument) {
       typeDocument = 'O tipo documento é requerido!';
-        status = false;
+      status = false;
     }
 
     setErrorIdStage(stage);
@@ -66,12 +87,16 @@ function TypeDocumentStageClass() {
 
   return {
     // Atributos
+    typeDocumentStageId,
+    position,
+    setPosition,
+    status,
+    setStatus,
     idStage,
     setIdStage,
     idTypeDocument,
     setIdTypeDocument,
-    typeDocumentStageId,
-    setTypeDocumentStageId,
+
 
     // Erros
     errorIdStage,

@@ -10,6 +10,7 @@ import City from '../../pages/routeA/manipulation/city';
 import TypeUser from '../../pages/routeA/manipulation/typeuser';
 import User from '../../pages/routeA/manipulation/user';
 import Citizen from '../../pages/routeA/manipulation/citizen';
+import Engineer from '../../pages/routeA/manipulation/engineer';
 import TypePublicPlace from '../../pages/routeA/manipulation/typepublicplace';
 import Neighborhood from '../../pages/routeA/manipulation/neighborhood';
 import PublicPlace from '../../pages/routeA/manipulation/publicplace';
@@ -36,6 +37,7 @@ export default function RouteA() {
             <Route path="/registration/typeuser" element={<TypeUser />}></Route>
             <Route path="/registration/user" element={<User />}></Route>
             <Route path="/registration/citizen" element={<Citizen />}></Route>
+            <Route path="/registration/engineer" element={<Engineer />}></Route>
             <Route path="/registration/typepublicplace" element={<TypePublicPlace />}></Route>
             <Route path="/registration/neighborhood" element={<Neighborhood />}></Route>
             <Route path="/registration/publicplace" element={<PublicPlace />}></Route>

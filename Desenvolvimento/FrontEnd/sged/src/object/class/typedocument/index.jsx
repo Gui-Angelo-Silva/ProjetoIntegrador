@@ -1,14 +1,20 @@
 import { useState } from "react";
+import StatusInterface from "../../interface/status";
 
 function TypeDocumentClass() {
-    const [typeDocumentId, setTypeDocumentId] = useState('');
+
+    const IStatus = StatusInterface();
+
+    // Atributos
+    const status = IStatus.status;
+    const setStatus = IStatus.setStatus;
+
+    const [typeDocumentId, setTypeDocumentId] = useState(0);
     const [typeDocumentName, setTypeDocumentName] = useState('');
     const [typeDocumentDescription, setTypeDocumentDescription] = useState('');
-    const [idStage, setIdStage] = useState('');
 
     const [errorTypeDocumentName, setErrorTypeDocumentName] = useState('');
     const [errorTypeDocumentDescription, setErrorTypeDocumentDescription] = useState('');
-    const [errorIdStage, setErrorIdStage] = useState('');
 
     function propertyName() {
         return "Tipo Documento " + typeDocumentName;
@@ -18,33 +24,32 @@ function TypeDocumentClass() {
         return "o";
     }
 
-    function getData(object) {
-        setTypeDocumentId(object.id);
-        setTypeDocumentName(object.nomeTipoDocumento);
-        setTypeDocumentDescription(object.descricaoTipoDocumento);
-        setIdStage(object.idEtapa);
-    }
-
-    function setData() {
+    function getData() {
         return {
             id: typeDocumentId,
             nomeTipoDocumento: typeDocumentName,
             descricaoTipoDocumento: typeDocumentDescription,
-            idEtapa: idStage
+            status: status
         };
     }
 
+    function setData(object) {
+        setTypeDocumentId(object.id);
+        setTypeDocumentName(object.nomeTipoDocumento);
+        setTypeDocumentDescription(object.descricaoTipoDocumento);
+        setStatus(object.status);
+    }
+
     function clearData() {
-        setTypeDocumentId('');
+        setTypeDocumentId(0);
         setTypeDocumentName('');
         setTypeDocumentDescription('');
-        setIdStage('');
+        setStatus(false);
     }
 
     function clearError() {
         setErrorTypeDocumentName('');
         setErrorTypeDocumentDescription('');
-        setErrorIdStage('');
     }
 
     function verifyData() {
@@ -53,7 +58,6 @@ function TypeDocumentClass() {
 
         let name = "";
         let description = "";
-        let stage = "";
 
         if (typeDocumentName) {
             if (typeDocumentName.length < 3) {
@@ -75,14 +79,8 @@ function TypeDocumentClass() {
             status = false;
         }
 
-        if (!idStage) {
-            stage = "A Etapa é requerida!";
-            status = false;
-        }
-
         setErrorTypeDocumentName(name);
         setErrorTypeDocumentDescription(description);
-        setErrorIdStage(stage);
 
         return status;
     }
@@ -92,13 +90,12 @@ function TypeDocumentClass() {
         setTypeDocumentName,
         typeDocumentDescription,
         setTypeDocumentDescription,
+        status,
+        setStatus,
         typeDocumentId,
-        setIdStage,
-        idStage,
 
         errorTypeDocumentName,
         errorTypeDocumentDescription,
-        errorIdStage,
 
         propertyName,
         gender,

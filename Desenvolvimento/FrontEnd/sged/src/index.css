@@ -5,23 +5,49 @@
 html {
     height: 100%;
     width: 100%;
+    overflow: hidden;
 }
 
-html::-webkit-scrollbar {
+.scrollable-container::-webkit-scrollbar {
+    width: 10px;
+    /* Largura da barra de rolagem */
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+    background-color: #888;
+    /* Cor da barra */
+    border-radius: 10px;
+    /* Bordas arredondadas */
+}
+
+.scrollable-container::-webkit-scrollbar-track {
+    background: transparent;
+    /* Cor do fundo da barra de rolagem */
+}
+
+/* Para Firefox */
+.scrollable-container {
+    scrollbar-width: thin;
+    /* Define a largura da barra de rolagem como fina */
+    scrollbar-color: #888;
+    /* Cor da barra e do fundo */
+}
+
+/* html::-webkit-scrollbar {
     width: 6px;
-    /* Width of the scrollbar */
+    /* Width of the scrollbar 
 }
 
 html::-webkit-scrollbar-track {
     background: transparent;
-    /* Background color of the scrollbar track */
+    /* Background color of the scrollbar track 
 }
 
 html::-webkit-scrollbar-thumb {
     background-color: #9CA3AF;
-    /* Background color of the scrollbar thumb */
+    /* Background color of the scrollbar thumb 
     border-radius: 4px;
     /* Border radius of the scrollbar thumb */
-    /* border: 1px solid #E5E5E5; */
-    /* Border color of the scrollbar thumb */
-}
+/* border: 1px solid #E5E5E5; */
+/* Border color of the scrollbar thumb 
+} */

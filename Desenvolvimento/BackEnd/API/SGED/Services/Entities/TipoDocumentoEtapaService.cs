@@ -47,6 +47,12 @@ public class TipoDocumentoEtapaService : ITipoDocumentoEtapaService
         await _tipoDocumentoEtapaRepository.Delete(id);
     }
 
+    public async Task<IEnumerable<TipoDocumentoEtapaDTO>> GetTypeDocumentStagesRelatedToStage(int IdEtapa)
+    {
+        var tipoDocumentoEtapas = await _tipoDocumentoEtapaRepository.GetTypeDocumentStagesRelatedToStage(IdEtapa);
+        return _mapper.Map<IEnumerable<TipoDocumentoEtapaDTO>>(tipoDocumentoEtapas);
+    }
+
     public async Task<IEnumerable<TipoDocumentoDTO>> GetTypeDocumentsRelatedToStage(int IdEtapa)
     {
         var tipoDocumentos = await _tipoDocumentoEtapaRepository.GetTypeDocumentsRelatedToStage(IdEtapa);

@@ -188,7 +188,7 @@ export default function Supervisor() {
             </div>
 
             <CustomTable
-                totalColumns={7}
+                totalColumns={6}
                 headers={["Imagem Pessoa", "Nome", "Email", "CPF/CNPJ", "RG/IE", "Ações" ]}
                 data={dataForTable}
                 onPageChange={(page) => list.goToPage(page)}

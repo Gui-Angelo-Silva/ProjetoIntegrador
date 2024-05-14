@@ -13,11 +13,10 @@ const TableRow = ({ item }) => {
       {filteredItem.map(([key, value], index) => (
         <div
           key={index}
-          className={`flex items-center border-t-[1px] truncate  border-r-[1px] p-2 border-[#C8E5E5] text-gray-700 
-          justify-center`}
+          className={`flex items-center justify-center border-t-[1px] border-r-[1px]  border-[#C8E5E5] text-gray-700 p-2 text-left ${index === 0 ? 'truncate' : ''}`}
           // ${index === 0 ? "justify-start pl-5" : "justify-center" }
         >
-          {value}
+          {key.toLowerCase().includes('descricao') ? `${value.substring(0, 50)}${value.length > 50 ? '...' : ''}` : value}
         </div>
       ))}
     </li>

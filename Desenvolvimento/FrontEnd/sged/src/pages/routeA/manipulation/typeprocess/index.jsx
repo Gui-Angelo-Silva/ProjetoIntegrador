@@ -11,6 +11,8 @@ import TypeProcessClass from "../../../../object/class/typeprocess";
 import RegistrationButton from "../../components/Button/RegistrationButton";
 import Search from "../../../../assets/pages/SearchImg";
 import LayoutPage from "../../components/Layout/LayoutPage";
+import ButtonTable from "../../components/Table/ButtonTable";
+import CustomTable from "../../components/Table/Table";
 
 export default function TypeProcess() {
 
@@ -117,6 +119,19 @@ export default function TypeProcess() {
         list.searchBy ? null : list.setSearchBy('nomeTipoProcesso');
     }, [updateData]);
 
+    const dataForTable = list.currentList.map((tipoprocesso) => {
+        return {
+            nomeTipoProcesso: tipoprocesso.nomeTipoProcesso,
+            descricaoTipoProcesso: tipoprocesso.descricaoTipoProcesso,
+            acoes: (
+                <div className="flex items-center justify-center gap-2 text-gray-700 ">
+                    <ButtonTable func={() => SelectTypeProcess(tipoprocesso, "Editar")} text="Editar"/>
+                    <ButtonTable func={() => SelectTypeProcess(tipoprocesso, "Excluir")} text="Excluir"/>
+                </div>
+            )
+        }
+    })
+
     return (
         <LayoutPage>
             <LinkTitle pageName="Tipo Processo" />
@@ -141,63 +156,14 @@ export default function TypeProcess() {
                     <RegistrationButton action={() => openCloseModalInsert(true)} />
                 </div>
             </div>
-            <div className="w-full rounded-[20px] border-1 border-[#C8E5E5] mt-10">
-                <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
-                    <div className="flex ml-5 text-white text-lg font-semibold">Tipo Processo</div>
-                    <div className="flex justify-center items-center text-white text-lg font-semibold">Descrição</div>
-                    <div className="flex justify-center text-white text-lg font-semibold">Ações</div>
-                </div>
-                <ul className="w-full">
-                    {list.currentList.map((object) => (
-                        <li className="grid grid-cols-3 w-full" key={object.id}>
-                            <div className="flex pl-5 border-r-[1px] border-t-[1px] border-[#C8E5E5] pt-[7.5px] pb-[7.5px] text-gray-700">{object.nomeTipoProcesso}</div>
-                            <div className="flex justify-center items-center border-t-[1px] border-r-[1px] border-[#C8E5E5] text-gray-700">{object.descricaoTipoProcesso}</div>
-                            <div className="flex items-center justify-center border-t-[1px] gap-2 text-gray-700 border-[#C8E5E5]">
-                                <button
-                                    className=""
-                                    onClick={() => SelectTypeProcess(object, "Editar")}
-                                >
-                                    <PencilSimple size={20} className="hover:text-cyan-500" />
-                                </button>{" "}
-                                <button
-                                    className=""
-                                    onClick={() => SelectTypeProcess(object, "Excluir")}
-                                >
-                                    <TrashSimple size={20} className="hover:text-red-600" />
-                                </button>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-                {/* Estilização dos botões de navegação */}
-                <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
-                    <button
-                        className=""
-                        onClick={() => list.goToPage(list.currentPage - 1)}
-                    >
-                        <CaretLeft size={22} className="text-[#58AFAE]" />
-                    </button>
-                    <select
-                        className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] select-none"
-                        value={list.currentPage}
-                        onChange={(e) => list.goToPage(Number(e.target.value))}
-                    >
-                        {[...Array(list.totalPages)].map((_, index) => (
-                            <option key={index + 1} value={index + 1}>
-                                {index + 1}
-                            </option>
-                        ))}
-                    </select>
-                    <button
-                        className=""
-                        onClick={() => list.goToPage(list.currentPage + 1)}
-                    >
-                        <CaretRight size={22} className="text-[#58AFAE]" />
-                    </button>
-                </div>
-                {/* Espaçamento abaixo dos botões */}
-                <div className="mt-4"></div>
-            </div>
+            <CustomTable 
+                totalColumns={3}
+                headers={["Tipo Processo", "Descrição", "Ações"]}
+                data={dataForTable}
+                onPageChange={(page) => list.goToPage(page)}
+                currentPage={list.currentPage}
+                totalPages={list.totalPages}
+            />
             <Modal isOpen={modalInsert} >
                 <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Tipo de Processo</ModalHeader>
                 <ModalBody>

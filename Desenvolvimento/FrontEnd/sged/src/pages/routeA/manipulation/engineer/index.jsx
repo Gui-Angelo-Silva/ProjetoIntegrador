@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
-import NavBar from "../../components/NavBar";
 import LinkTitle from "../../components/Title/LinkTitle";
 import ButtonTable from "../../components/Table/ButtonTable";
-import SideBarAdm from "../../components/Adm/SideBarAdm";
 import Search from "../../../../assets/pages/SearchImg";
 
 import { useMontage } from '../../../../object/modules/montage';
@@ -14,7 +12,6 @@ import EngineerClass from '../../../../object/class/engineer';
 import SelectModule from '../../../../object/modules/select';
 import CustomTable from "../../components/Table/Table";
 import RegistrationButton from "../../components/Button/RegistrationButton";
-import { motion } from "framer-motion";
 import LayoutPage from "../../components/Layout/LayoutPage";
 
 export default function Engineer() {
@@ -406,8 +403,6 @@ export default function Engineer() {
                         <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete(false)}>Cancelar</button>
                         <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteEngineer()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'} </button>{"  "}
                     </div>
-                    {/* <ModalFooter>
-                    </ModalFooter> */}
                 </ModalBody>
             </Modal>
         </LayoutPage>

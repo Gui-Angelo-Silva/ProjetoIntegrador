@@ -1,30 +1,7 @@
 import React from 'react';
-import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 import PropTypes from 'prop-types';
-
-const TableRow = ({ item }) => {
-
-  const filteredItem = Object.entries(item).filter(([key]) => key !== 'id');
-
-  return (
-    <li
-      className="grid w-full"
-      style={{ gridTemplateColumns: `repeat(${filteredItem.length}, 1fr)` }}
-      key={item.id}
-    >
-      {filteredItem.map(([key, value], index) => (
-        <div
-          key={index}
-          className={`flex items-center border-t-[1px] truncate  border-r-[1px] p-2 border-[#C8E5E5] text-gray-700 
-          justify-center`}
-          // ${index === 0 ? "justify-start pl-5" : "justify-center" }
-        >
-          {value}
-        </div>
-      ))}
-    </li>
-  );
-};
+import TableRow from './TableRow';
+import TableNavigation from './TableNavigation';
 
 const CustomTable = ({ totalColumns, headers, data, onPageChange, currentPage, totalPages, enableSpacing }) => {
   return (
@@ -37,30 +14,12 @@ const CustomTable = ({ totalColumns, headers, data, onPageChange, currentPage, t
         ))}
       </div>
       <ul className="w-full">
-        {data.map((item) => (
-          <TableRow key={item.id} item={item} />
+        {data.map((item, index) => (
+          <TableRow key={index} item={item} />
         ))}
       </ul>
-      <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
-        <button onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1}>
-          <CaretLeft size={22} className="text-[#58AFAE]" />
-        </button>
-        <select
-          className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5]"
-          value={currentPage}
-          onChange={(e) => onPageChange(Number(e.target.value))}
-        >
-          {[...Array(totalPages)].map((_, index) => (
-            <option key={index + 1} value={index + 1}>
-              {index + 1}
-            </option>
-          ))}
-        </select>
-        <button onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-          <CaretRight size={22} className="text-[#58AFAE]" />
-        </button>
-      </div>
-      <div className="mt-4"></div>
+      <TableNavigation onPageChange={onPageChange} currentPage={currentPage} totalPages={totalPages} />
+      
     </div>
   );
 };

@@ -99,7 +99,7 @@ function Cards() {
                 module: "Usuario"
             },
             {
-                onClick: () => inDevelopment("Controle de Fiscal"),
+                onClick: () => addSegment("supervisor"),
                 image: ImgFiscal,
                 tooltip: "Abrir a Página de Controle de Fiscal",
                 title: "Fiscal",

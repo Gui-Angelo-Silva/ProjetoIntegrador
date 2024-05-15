@@ -1,36 +1,40 @@
 import React, { useState } from "react";
-import { tv } from "tailwind-variants";
+import PropTypes from "prop-types";
 
-export default function CardIcon({ srcImage, title, module, onClick }) {
+const CardIcon = ({ srcImage, title, module, onClick }) => {
     const [isHovered, setIsHovered] = useState(false);
 
-    const style = tv({
-        base: "flex flex-col items-center justify-center w-[140px] h-[140px] md:w-[148px] md:h-[148px] hover:transition-colors delay-75 hover:scale-105 shadow-xl mb-3 rounded-xl text-lg font-semibold hover:text-white",
-        variants: {
-            Imovel: "bg-[#c8d9db] hover:bg-[#005A66] text-[#005A66] truncate",
-            Usuario: "bg-[#cde3e7] hover:bg-[#4DA8B6] text-[#4DA8B6]",
-            Processo: "bg-[#d1eaee] hover:bg-[#59C3D3] text-[#59C3D3]" 
-        }
-    });
+    let baseStyle = "flex flex-col items-center justify-center w-[140px] h-[140px] md:w-[148px] md:h-[148px] transition ease-in-out delay-75 hover:scale-105 shadow-xl mb-3 rounded-xl text-lg font-semibold hover:text-white";
+    let variantStyle = "";
 
-    const hoverStyle = isHovered ? 'brightness-0 invert filter hover:filter-none' : '';
-
-    // console.log(style({ module }));
+    if (module === "Imovel") {
+        variantStyle = "bg-[#c8d9db] hover:bg-[#005A66] text-[#005A66] truncate";
+    } else if (module === "Usuario") {
+        variantStyle = "bg-[#cde3e7] hover:bg-[#4DA8B6] text-[#4DA8B6] truncate";
+    } else if (module === "Processo") {
+        variantStyle = "bg-[#d1eaee] hover:bg-[#59C3D3] text-[#59C3D3] truncate";
+    }
 
     return (
-        <div className="" style={{ filter: hoverStyle }}
+        <div
+            className={`${baseStyle} ${variantStyle}`} 
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
+            onClick={onClick}
         >
-            <button
-                key={title}
-                onClick={onClick}
-
-                className={`${style.base} ${style.variants[module]}`}
-            >
-                {title}
-                <img src={srcImage} alt="" className={`transition ease-in-out delay-75 ${isHovered ? 'filter invert brightness-0 ' : ''}`} />
+            <button className="w-full h-full flex flex-col items-center justify-center">
+                <div>{title}</div>
+                <img src={srcImage} alt={`${title} Icon`} className={`transition ease-in-out delay-75 ${isHovered ? 'filter invert brightness-0 ' : ''}`} />
             </button>
         </div>
     );
 }
+
+CardIcon.propTypes = {
+    srcImage: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    module: PropTypes.oneOf(["Imovel", "Usuario", "Processo"]).isRequired,
+    onClick: PropTypes.func.isRequired
+};
+
+export default CardIcon;

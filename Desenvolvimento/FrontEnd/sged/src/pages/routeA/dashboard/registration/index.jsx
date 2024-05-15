@@ -1,12 +1,9 @@
-import NavBar from "../../components/NavBar";
 import Title from "../../components/Title/Title";
 import { useMontage } from '../../../../object/modules/montage';
 import Cards from '../../components/Card/Cards';
 import CardIcon from "../../components/Card/CardIcon";
 import React, { useState, useEffect } from "react";
-import SideBarAdm from "../../components/Adm/SideBarAdm";
 import Search from "../../../../assets/pages/SearchImg";
-import { motion } from "framer-motion";
 import LayoutPage from "../../components/Layout/LayoutPage";
 
 export default function Registrations() {

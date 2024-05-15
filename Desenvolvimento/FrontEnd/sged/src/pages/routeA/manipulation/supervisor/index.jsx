@@ -1,20 +1,23 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
+//import NavBar from "../../components/NavBar";
 import LinkTitle from "../../components/Title/LinkTitle";
 import ButtonTable from "../../components/Table/ButtonTable";
+//import SideBarAdm from "../../components/Adm/SideBarAdm";
 import Search from "../../../../assets/pages/SearchImg";
 
 import { useMontage } from '../../../../object/modules/montage';
 import ConnectionService from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
-import EngineerClass from '../../../../object/class/engineer';
+import SupervisorClass from '../../../../object/class/supervisor';
 import SelectModule from '../../../../object/modules/select';
 import CustomTable from "../../components/Table/Table";
 import RegistrationButton from "../../components/Button/RegistrationButton";
+//import { motion } from "framer-motion";
 import LayoutPage from "../../components/Layout/LayoutPage";
 
-export default function Engineer() {
+export default function Supervisor() {
 
     const { componentMounted } = useMontage();
 
@@ -23,7 +26,7 @@ export default function Engineer() {
     }, []);
 
     const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
-    const engineer = EngineerClass();
+    const fiscal = SupervisorClass();
     const list = ListModule();
     const selectBox = SelectModule();
 
@@ -35,20 +38,20 @@ export default function Engineer() {
 
     const openCloseModalInsert = (boolean) => {
         setModalInsert(boolean);
-        engineer.clearError();
-        engineer.removePicture();
+        fiscal.clearError();
+        fiscal.removePicture();
 
         if (!boolean) {
-            engineer.clearData();
+            fiscal.clearData();
         }
     };
 
     const openCloseModalEdit = (boolean) => {
         setModalEdit(boolean);
-        engineer.clearError();
+        fiscal.clearError();
 
         if (!boolean) {
-            engineer.clearData();
+            fiscal.clearData();
         }
     };
 
@@ -56,12 +59,12 @@ export default function Engineer() {
         setModalDelete(boolean);
 
         if (!boolean) {
-            engineer.clearData();
+            fiscal.clearData();
         }
     };
 
-    const SelectEngineer = (object, option) => {
-        engineer.getData(object);
+    const SelectSupervisor = (object, option) => {
+        fiscal.getData(object);
         selectBox.selectOption(object.idTipoUsuario);
 
         if (option === "Editar") {
@@ -72,18 +75,18 @@ export default function Engineer() {
         }
     };
 
-    const GetEngineer = async () => {
-        await connection.endpoint("Engenheiro").get();
+    const GetSupervisor = async () => {
+        await connection.endpoint("Fiscal").get();
         list.setList(connection.response.data);
     };
 
-    const PostEngineer = async () => {
+    const PostSupervisor = async () => {
         setInOperation(true);
 
-        if (engineer.verifyData()) {
-            await connection.endpoint("Engenheiro").post(engineer);
+        if (fiscal.verifyData()) {
+            await connection.endpoint("Fiscal").post(fiscal);
 
-            if (!connection.response.status) { engineer.getError(connection.response.data); }
+            if (!connection.response.status) { fiscal.getError(connection.response.data); }
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -94,13 +97,13 @@ export default function Engineer() {
         setInOperation(false);
     };
 
-    const PutEngineer = async () => {
+    const PutSupervisor = async () => {
         setInOperation(true);
 
-        if (engineer.verifyData()) {
-            await connection.endpoint("Engenheiro").put(engineer);
+        if (fiscal.verifyData()) {
+            await connection.endpoint("Fiscal").put(fiscal);
 
-            if (!connection.response.status) { engineer.getError(connection.response.data); }
+            if (!connection.response.status) { fiscal.getError(connection.response.data); }
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -111,10 +114,10 @@ export default function Engineer() {
         setInOperation(false);
     };
 
-    const DeleteEngineer = async () => {
+    const DeleteSupervisor = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Engenheiro").delete(engineer);
+        await connection.endpoint("Fiscal").delete(fiscal);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);
@@ -124,31 +127,30 @@ export default function Engineer() {
 
     useEffect(() => {
         if (updateData) {
-            GetEngineer();
+            GetSupervisor();
             setUpdateData(false);
         }
 
         if (!list.searchBy) list.setSearchBy('nomePessoa');
     }, [updateData]);
 
-    const dataForTable = list.currentList.map((engenheiro) => {
+    const dataForTable = list.currentList.map((fiscal) => {
         return {
             imagemPessoa: (
                 <img
-                    src={engenheiro.imagemPessoa}
-                    alt={`Imagem de ${engenheiro.nomePessoa}`}
+                    src={fiscal.imagemPessoa}
+                    alt={`Imagem de ${fiscal.nomePessoa}`}
                     className="w-[40px] h-[40px]"
                 />
             ),
-            nomePessoa: engenheiro.nomePessoa,
-            emailPessoa: engenheiro.emailPessoa,
-            creaEngenheiro: engenheiro.creaEngenheiro,
-            cpfCnpjPessoa: engenheiro.cpfCnpjPessoa,
-            rgIePessoa: engenheiro.rgIePessoa,
+            nomePessoa: fiscal.nomePessoa,
+            emailPessoa: fiscal.emailPessoa,
+            cpfCnpjPessoa: fiscal.cpfCnpjPessoa,
+            rgIePessoa: fiscal.rgIePessoa,
             acoes: (
                 <div className="flex items-center justify-center gap-2 text-gray-700 ">
-                    <ButtonTable func={() => SelectEngineer(engenheiro, "Editar")} text="Editar" />
-                    <ButtonTable func={() => SelectEngineer(engenheiro, "Excluir")} text="Excluir" />
+                    <ButtonTable func={() => SelectSupervisor(fiscal, "Editar")} text="Editar" />
+                    <ButtonTable func={() => SelectSupervisor(fiscal, "Excluir")} text="Excluir" />
                 </div>
             )
         }
@@ -156,7 +158,7 @@ export default function Engineer() {
 
     return (
         <LayoutPage>
-            <LinkTitle pageName="Engenheiro" />
+            <LinkTitle pageName="Fiscal" />
             <div className="flex items-center">
                 <div className="flex justify-center items-center mx-auto w-[450px]">
                     <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
@@ -167,9 +169,6 @@ export default function Engineer() {
                         <select className="form-control w-28 text-gray-800 h-full cursor-pointer" onChange={(e) => list.handleSearchBy(e.target.value)}>
                             <option key="nomePessoa" value="nomePessoa">
                                 Nome
-                            </option>
-                            <option key="creaEngenheiro" value="creaEngenheiro">
-                                CREA
                             </option>
                             <option key="emailPessoa" value="emailPessoa">
                                 E-mail
@@ -189,15 +188,15 @@ export default function Engineer() {
             </div>
 
             <CustomTable
-                totalColumns={7}
-                headers={["Imagem Pessoa", "Nome", "Email", "CREA", "CPF/CNPJ", "RG/IE", "Ações"]}
+                totalColumns={6}
+                headers={["Imagem Pessoa", "Nome", "Email", "CPF/CNPJ", "RG/IE", "Ações" ]}
                 data={dataForTable}
                 onPageChange={(page) => list.goToPage(page)}
                 currentPage={list.currentPage}
                 totalPages={list.totalPages}
             />
             <Modal isOpen={modalInsert}>
-                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Engenheiro</ModalHeader>
+                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Fiscal</ModalHeader>
                 <ModalBody>
                     <div className="form-group">
                         <div className="flex relative justify-center items-center">
@@ -205,17 +204,17 @@ export default function Engineer() {
                                 id="fileInputInsert"
                                 type="file"
                                 className="hidden"
-                                onChange={(e) => engineer.insertPicture(e.target.files[0])}
+                                onChange={(e) => fiscal.insertPicture(e.target.files[0])}
                             />
                             <img
-                                src={engineer.personPicture}
+                                src={fiscal.personPicture}
                                 className="cursor-pointer rounded-full w-[200px] h-[200px] object-cover p-1 shadow-md"
                                 title="Selecionar Imagem"
-                                onClick={(e) => engineer.handleImageClick("Insert")}
+                                onClick={() => fiscal.handleImageClick("Insert")}
                             />
-                            {engineer.addImage && (
+                            {fiscal.addImage && (
                                 <img
-                                    src={engineer.closeIcon}
+                                    src={fiscal.closeIcon}
                                     style={{
                                         position: 'absolute',
                                         top: '5px', // Distância do topo
@@ -223,45 +222,38 @@ export default function Engineer() {
                                         transform: 'translate(-50%, -50%)', // Centralizando completamente
                                     }}
                                     className="cursor-pointer w-[20px] h-[20px] object-cover rounded-full"
-                                    onClick={(e) => engineer.removePicture("Insert")}
+                                    onClick={() => fiscal.removePicture("Insert")}
                                 />
                             )}
                         </div>
                         <div className="text-sm text-red-600">
-                            {engineer.errorPersonPicture}
+                            {fiscal.errorPersonPicture}
                         </div>
                         <br />
                         <label className="text-[#444444]">Nome: </label>
                         <br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => engineer.setPersonName(e.target.value)} />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => fiscal.setPersonName(e.target.value)} />
                         <div className="text-sm text-red-600">
-                            {engineer.errorPersonName}
+                            {fiscal.errorPersonName}
                         </div>
                         <br />
                         <label className="text-[#444444]">E-mail:</label>
                         <br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => engineer.setPersonEmail(e.target.value.toLowerCase())} value={engineer.personEmail} />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => fiscal.setPersonEmail(e.target.value.toLowerCase())} value={fiscal.personEmail} />
                         <div className="text-sm text-red-600">
-                            {engineer.errorPersonEmail}
+                            {fiscal.errorPersonEmail}
                         </div>
                         <br />
                         <label className="text-[#444444]">Telefone: </label>
                         <br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => engineer.handlePhone(e.target.value)} value={engineer.personTelephone} />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => fiscal.handlePhone(e.target.value)} value={fiscal.personTelephone} />
                         <div className="text-sm text-red-600">
-                            {engineer.errorPersonTelephone}
-                        </div>
-                        <br />
-                        <label className="text-[#444444]">CREA: </label>
-                        <br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => engineer.handleCrea(e.target.value)} value={engineer.creaEngineer}/>
-                        <div className="text-sm text-red-600">
-                            {engineer.errorCreaEngenheiro}
+                            {fiscal.errorPersonTelephone}
                         </div>
                         <br />
                         <label>CPF / CNPJ: </label>
                         <br />
-                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => engineer.setIdentifyCpfCnpj(e.target.value)} value={engineer.identifyCpfCnpj}>
+                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => fiscal.setIdentifyCpfCnpj(e.target.value)} value={fiscal.identifyCpfCnpj}>
                             <option key="cpf" value="cpf">
                                 CPF
                             </option>
@@ -270,14 +262,14 @@ export default function Engineer() {
                             </option>
                         </select>
                         <br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => engineer.handleCpfCnpj(e.target.value)} value={engineer.personCpfCnpj} />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => fiscal.handleCpfCnpj(e.target.value)} value={fiscal.personCpfCnpj} />
                         <div className="text-sm text-red-600">
-                            {engineer.errorPersonCpfCnpj}
+                            {fiscal.errorPersonCpfCnpj}
                         </div>
                         <br />
                         <label>RG / IE: </label>
                         <br />
-                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => engineer.setIdentifyRgIe(e.target.value)} value={engineer.identifyRgIe}>
+                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => fiscal.setIdentifyRgIe(e.target.value)} value={fiscal.identifyRgIe}>
                             <option key="rg" value="rg">
                                 RG
                             </option>
@@ -286,20 +278,20 @@ export default function Engineer() {
                             </option>
                         </select>
                         <br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => engineer.handleRgIe(e.target.value)} value={engineer.personRgIe} />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => fiscal.handleRgIe(e.target.value)} value={fiscal.personRgIe} />
                         <div className="text-sm text-red-600">
-                            {engineer.errorPersonRgIe}
+                            {fiscal.errorPersonRgIe}
                         </div>
                         <br />
                     </div>
                 </ModalBody>
                 <ModalFooter>
                     <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert(false)}>Cancelar</button>
-                    <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostEngineer()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Cadastrar'} </button>{"  "}
+                    <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostSupervisor()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Cadastrar'} </button>{"  "}
                 </ModalFooter>
             </Modal>
             <Modal isOpen={modalEdit}>
-                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Engenheiro</ModalHeader>
+                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Fiscal</ModalHeader>
                 <ModalBody>
                     <div className="form-group">
                         <div className="flex relative justify-center items-center">
@@ -307,17 +299,17 @@ export default function Engineer() {
                                 id="fileInputInsert"
                                 type="file"
                                 className="hidden"
-                                onChange={(e) => engineer.insertPicture(e.target.files[0])}
+                                onChange={(e) => fiscal.insertPicture(e.target.files[0])}
                             />
                             <img
-                                src={engineer.personPicture ? engineer.personPicture : engineer.defaultPicture}
+                                src={fiscal.personPicture ? fiscal.personPicture : fiscal.defaultPicture}
                                 className="cursor-pointer rounded-full w-[200px] h-[200px] object-cover p-1 shadow-md"
                                 title="Selecionar Imagem"
-                                onClick={(e) => engineer.handleImageClick("Insert")}
+                                onClick={() => fiscal.handleImageClick("Insert")}
                             />
-                            {engineer.addImage && (
+                            {fiscal.addImage && (
                                 <img
-                                    src={engineer.closeIcon}
+                                    src={fiscal.closeIcon}
                                     style={{
                                         position: 'absolute',
                                         top: '5px', // Distância do topo
@@ -325,35 +317,31 @@ export default function Engineer() {
                                         transform: 'translate(-50%, -50%)', // Centralizando completamente
                                     }}
                                     className="cursor-pointer w-[20px] h-[20px] object-cover rounded-full"
-                                    onClick={(e) => engineer.removePicture("Insert")}
+                                    onClick={() => fiscal.removePicture("Insert")}
                                 />
                             )}
                         </div>
                         <div className="text-sm text-red-600">
-                            {engineer.errorPersonPicture}
+                            {fiscal.errorPersonPicture}
                         </div>
                         <br />
                         <label>ID: </label><br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={engineer.engineerId} /> <br />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={fiscal.supervisorId} /> <br />
                         <label>Nome:</label>
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomePessoa" onChange={(e) => engineer.setPersonName(e.target.value)} value={engineer.personName} />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomePessoa" onChange={(e) => fiscal.setPersonName(e.target.value)} value={fiscal.personName} />
                         <br />
                         <div className="text-sm text-red-600">
-                            {engineer.errorPersonName}
+                            {fiscal.errorPersonName}
                         </div>
                         <label>E-mail:</label>
                         <br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="emailPessoa" onChange={(e) => engineer.setPersonEmail(e.target.value.toLowerCase())} value={engineer.personEmail} />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="emailPessoa" onChange={(e) => fiscal.setPersonEmail(e.target.value.toLowerCase())} value={fiscal.personEmail} />
                         <div className="text-sm text-red-600">
-                            {engineer.errorPersonEmail}
+                            {fiscal.errorPersonEmail}
                         </div>
-                        <br />
-                        <label>CREA:</label>
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="creaEngenheiro" onChange={(e) => engineer.handleCrea(e.target.value)} value={engineer.creaEngineer} />
-                        <br />
                         <label>CPF / CNPJ: </label>
                         <br />
-                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => engineer.setIdentifyCpfCnpj(e.target.value)} value={engineer.identifyCpfCnpj}>
+                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => fiscal.setIdentifyCpfCnpj(e.target.value)} value={fiscal.identifyCpfCnpj}>
                             <option key="cpf" value="cpf">
                                 CPF
                             </option>
@@ -362,14 +350,14 @@ export default function Engineer() {
                             </option>
                         </select>
                         <br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => engineer.handleCpfCnpj(e.target.value)} value={engineer.personCpfCnpj} />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => fiscal.handleCpfCnpj(e.target.value)} value={fiscal.personCpfCnpj} />
                         <div className="text-sm text-red-600">
-                            {engineer.errorPersonCpfCnpj}
+                            {fiscal.errorPersonCpfCnpj}
                         </div>
                         <br />
                         <label>RG / IE: </label>
                         <br />
-                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => engineer.setIdentifyRgIe(e.target.value)} value={engineer.identifyRgIe}>
+                        <select className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => fiscal.setIdentifyRgIe(e.target.value)} value={fiscal.identifyRgIe}>
                             <option key="rg" value="rg">
                                 RG
                             </option>
@@ -378,16 +366,16 @@ export default function Engineer() {
                             </option>
                         </select>
                         <br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => engineer.handleRgIe(e.target.value)} value={engineer.personRgIe} />
+                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => fiscal.handleRgIe(e.target.value)} value={fiscal.personRgIe} />
                         <div className="text-sm text-red-600">
-                            {engineer.errorPersonRgIe}
+                            {fiscal.errorPersonRgIe}
                         </div>
                         <br />
                     </div>
                 </ModalBody>
                 <ModalFooter>
                     <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit(false)}>Cancelar</button>
-                    <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutEngineer()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Atualizar'} </button>{"  "}
+                    <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutSupervisor()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Atualizar'} </button>{"  "}
                 </ModalFooter>
             </Modal>
             <Modal isOpen={modalDelete}>
@@ -396,13 +384,15 @@ export default function Engineer() {
                     <div className="flex flex-row justify-center p-2">
                         Confirmar a exclusão deste munícipe:
                         <div className="text-[#059669] ml-1">
-                            {engineer.personName}
+                            {fiscal.personName}
                         </div> ?
                     </div>
                     <div className="flex justify-center gap-2 pt-3">
                         <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete(false)}>Cancelar</button>
-                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteEngineer()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'} </button>{"  "}
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteSupervisor()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'} </button>{"  "}
                     </div>
+                    {/* <ModalFooter>
+                    </ModalFooter> */}
                 </ModalBody>
             </Modal>
         </LayoutPage>

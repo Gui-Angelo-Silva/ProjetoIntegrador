@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
-import SideBarAdm from "../../components/Adm/SideBarAdm";
-import NavBar from "../../components/NavBar";
-import { FaPlus } from "react-icons/fa6";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Select from 'react-select';
 import LinkTitle from "../../components/Title/LinkTitle";
@@ -14,11 +11,10 @@ import ConnectionService from '../../../../object/service/connection';
 import ListModule from '../../../../object/modules/list';
 import CityClass from '../../../../object/class/city';
 import SelectModule from '../../../../object/modules/select';
-import Search from "../../../../assets/pages/SearchImg";
 import CustomTable from "../../components/Table/Table";
 import RegistrationButton from "../../components/Button/RegistrationButton";
-import { motion } from "framer-motion";
 import LayoutPage from "../../components/Layout/LayoutPage";
+import SearchBarTest from "../../components/Search/SearchBarTest";
 
 export default function City() {
 
@@ -218,22 +214,7 @@ export default function City() {
         <LayoutPage>
             <LinkTitle pageName="Cidade" />
             <div className="flex items-center">
-                <div className="flex justify-center items-center mx-auto w-[450px]">
-                    <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
-                        <div className="pl-2">
-                            <Search />
-                        </div>
-                        <input type="search" id="default-search" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar cidade" required onChange={(e) => handleSearch(e.target.value)} />
-                        <select className="form-control w-28 text-gray-800 h-full cursor-pointer" onChange={(e) => handleSearchBy(e.target.value)}>
-                            <option key="nomeCidade" value="nomeCidade">
-                                Cidade
-                            </option>
-                            <option key="ufEstado" value="ufEstado">
-                                UF
-                            </option>
-                        </select>
-                    </div>
-                </div>
+                <SearchBarTest handleSearch={handleSearch} handleSearchBy={handleSearchBy}/>
                 <div className="flex items-center">
                     <RegistrationButton action={() => openCloseModalInsert(true)} />
                 </div>

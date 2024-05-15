@@ -1,12 +1,14 @@
 import React from 'react'
 import { tv } from 'tailwind-variants'
-import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
+import { CaretLeft, CaretRight, PencilSimple, TrashSimple, ArrowDown, ArrowUp } from "@phosphor-icons/react";
 
 const Actions = {
     "Editar": { icon: PencilSimple },
     "Excluir": { icon: TrashSimple },
     "Esquerda": { icon: CaretLeft },
-    "Direita": { icon: CaretRight }
+    "Direita": { icon: CaretRight },
+    "Relacionar": { icon: ArrowDown },
+    "NaoRelacionar": { icon: ArrowUp }
 }
 
 const ButtonTable = ({ func, text }) => {
@@ -16,7 +18,9 @@ const ButtonTable = ({ func, text }) => {
             Editar: "hover:text-cyan-500",
             Excluir: "hover:text-red-600",
             Esquerda: "text-[#58AFAE]",
-            Direita: "text-[#58AFAE]"
+            Direita: "text-[#58AFAE]",
+            Relacionar: "",
+            NaoRelacionar: "",
         }
     });
 

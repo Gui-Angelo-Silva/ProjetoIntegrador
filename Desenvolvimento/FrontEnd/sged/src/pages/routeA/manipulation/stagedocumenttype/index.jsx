@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Select from 'react-select';
-import { ArrowDown, ArrowUp } from "@phosphor-icons/react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from "@phosphor-icons/react";
 
 import { useMontage } from "../../../../object/modules/montage";
 import ConnectionService from "../../../../object/service/connection";
@@ -12,7 +12,7 @@ import LayoutPage from "../../components/Layout/LayoutPage";
 import LinkTitle from "../../components/Title/LinkTitle";
 import Table from "../../components/Table/Table";
 
-export default function Test() {
+export default function StageDocumentType() {
 
     const montage = useMontage();
 
@@ -181,7 +181,6 @@ export default function Test() {
 
             return {
                 nomeTipoDocumento: typeDocument?.nomeTipoDocumento,
-                descricaoTipoDocumento: typeDocument?.descricaoTipoDocumento,
                 acoes: (
                     <div className="flex items-center justify-center gap-2 text-gray-700">
                         {object.status && (
@@ -190,9 +189,9 @@ export default function Test() {
                                 onClick={() => object.status && !inOperation ? RemoveRelate(object.id) : {}}
                             >
                                 {object.status && !inOperation ? (
-                                    <ArrowUp size={20} className="hover:text-red-500" />
+                                    <ArrowLeft size={20} className="hover:text-red-500 rotate-90 lg:rotate-0" />
                                 ) : (
-                                    <ArrowUp size={20} className="cursor-not-allowed" />
+                                    <ArrowLeft size={20} className="cursor-not-allowed rotate-90 lg:rotate-0" />
                                 )}
                             </button>
                         )}
@@ -206,7 +205,6 @@ export default function Test() {
         return listTypeDocumentNoRelated.map((object) => {
             return {
                 nomeTipoDocumento: object.nomeTipoDocumento,
-                descricaoTipoDocumento: object.descricaoTipoDocumento,
                 acoes: (
                     <div className="flex items-center justify-center gap-2 text-gray-700">
                         {object.status && (
@@ -215,9 +213,9 @@ export default function Test() {
                                 onClick={() => object.status && !inOperation ? Relate(object.id) : {}}
                             >
                                 {object.status && !inOperation ? (
-                                    <ArrowDown size={20} className="hover:text-cyan-500" />
+                                    <ArrowRight size={20} className="hover:text-cyan-500 rotate-90 lg:rotate-0" />
                                 ) : (
-                                    <ArrowDown size={20} className="cursor-not-allowed" />
+                                    <ArrowRight size={20} className="cursor-not-allowed rotate-90 lg:rotate-0" />
                                 )}
                             </button>
                         )}
@@ -274,33 +272,39 @@ export default function Test() {
                     />
                 </div>
             </div>
-            <div className="text-gray-600 text-xl my-3 font-medium">
-                <h1 className="mb-2">Tipo de Documento Não Relacionado</h1>
-                <hr className=""/>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8">
+                <div>
+                    <div className="text-gray-600 text-xl my-3 font-medium">
+                        <h1 className="mb-2">Tipo de Documento Não Relacionado</h1>
+                        <hr className="" />
+                    </div>
+                    <Table
+                        totalColumns={2}
+                        headers={["Tipo Documento", "Ações"]}
+                        data={dataForTypeDocumentNotRelated(listTypeDocumentNoRelated.currentList, inOperation, Relate)}
+                        onPageChange={(page) => listTypeDocumentNoRelated.goToPage(page)}
+                        currentPage={listTypeDocumentNoRelated.currentPage}
+                        totalPages={listTypeDocumentNoRelated.totalPages}
+                        enableSpacing={true}
+                    />
+                </div>
+                <div>
+                    <div className="text-gray-600 text-xl my-3 font-medium">
+                        <h1 className="mb-2">Tipo de Documento  Relacionado</h1>
+                        <hr className="" />
+                    </div>
+                    <Table
+                        totalColumns={2}
+                        headers={["Tipo Documento", "Ações"]}
+                        data={dataForTypeDocumentRelated(listTypeDocumentRelated.currentList, listTypeDocumentStageRelated.currentList, inOperation, RemoveRelate)}
+                        onPageChange={(page) => listTypeDocumentStageRelated.goToPage(page)}
+                        currentPage={listTypeDocumentStageRelated.currentPage}
+                        totalPages={listTypeDocumentStageRelated.totalPages}
+                        enableSpacing={true}
+                    />
+                </div>
             </div>
-            <Table
-                totalColumns={3}
-                headers={["Tipo Documento", "Descrição", "Ações"]}
-                data={dataForTypeDocumentNotRelated(listTypeDocumentNoRelated.currentList, inOperation, Relate)}
-                onPageChange={(page) => listTypeDocumentNoRelated.goToPage(page)}
-                currentPage={listTypeDocumentNoRelated.currentPage}
-                totalPages={listTypeDocumentNoRelated.totalPages}
-                enableSpacing={true}
-            />
-            <div className="text-gray-600 text-xl my-3 font-medium">
-                <h1 className="mb-2">Tipo de Documento  Relacionado</h1>
-                <hr className=""/>
-            </div>
-            <Table
-                totalColumns={3}
-                headers={["Tipo Documento", "Descrição", "Ações"]}
-                data={dataForTypeDocumentRelated(listTypeDocumentRelated.currentList, listTypeDocumentStageRelated.currentList, inOperation, RemoveRelate)}
-                onPageChange={(page) => listTypeDocumentStageRelated.goToPage(page)}
-                currentPage={listTypeDocumentStageRelated.currentPage}
-                totalPages={listTypeDocumentStageRelated.totalPages}
-                enableSpacing={true}
-            />
-
+            
         </LayoutPage>
     );
 }

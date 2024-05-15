@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
-import NavBar from "../../components/NavBar";
 import LinkTitle from "../../components/Title/LinkTitle";
 import ButtonTable from "../../components/Table/ButtonTable";
-import SideBarAdm from "../../components/Adm/SideBarAdm";
 import Search from "../../../../assets/pages/SearchImg";
 
 import { useMontage } from '../../../../object/modules/montage';
@@ -14,7 +12,6 @@ import CitizenClass from '../../../../object/class/citizen';
 import SelectModule from '../../../../object/modules/select';
 import CustomTable from "../../components/Table/Table";
 import RegistrationButton from "../../components/Button/RegistrationButton";
-import { motion } from "framer-motion";
 import LayoutPage from "../../components/Layout/LayoutPage";
 
 export default function Citizen() {

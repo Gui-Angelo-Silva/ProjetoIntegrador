@@ -29,7 +29,7 @@ function UserClass() {
   // Funções Essenciais
   const getDataPerson = person.getData;
   const setDataPerson = person.setData;
-  const getErrorPerson = person.getError;
+  const getErrorPerson = person.setError;
   const clearDataPerson = person.clearData;
   const clearErrorPerson = person.clearError;
   const verifyDataPerson = person.verifyData;
@@ -52,8 +52,8 @@ function UserClass() {
   const [userPassword, setUserPassword] = useState('');
   const [userOffice, setUserOffice] = useState('');
   const [userStatus, setUserStatus] = useState(true);
-  const [idTypeUser, setIdTypeUser] = useState('');
-  const [userId, setUserId] = useState('');
+  const [idTypeUser, setIdTypeUser] = useState(0);
+  const [userId, setUserId] = useState(0);
 
   const [errorUserPassword, setErrorUserPassword] = useState('');
   const [errorUserOffice, setErrorUserOffice] = useState('');
@@ -67,19 +67,9 @@ function UserClass() {
     return "o";
   }
 
-  function getData(object) {
-    getDataPerson(object);
-    setUserPassword(object.senhaUsuario);
-    setUserPassword(object.senhaUsuario);
-    setUserOffice(object.cargoUsuario);
-    setUserStatus(object.statusUsuario);
-    setIdTypeUser(object.idTipoUsuario);
-    setUserId(object.id);
-  }
-
-  function setData() {
+  function getData() {
     return {
-      ...setDataPerson(),
+      ...getDataPerson(),
       id: userId,
       senhaUsuario: userPassword,
       cargoUsuario: userOffice,
@@ -88,7 +78,17 @@ function UserClass() {
     }
   }
 
-  function getError(json) {
+  function setData(object) {
+    setDataPerson(object);
+    setUserPassword(object.senhaUsuario);
+    setUserPassword(object.senhaUsuario);
+    setUserOffice(object.cargoUsuario);
+    setUserStatus(object.statusUsuario);
+    setIdTypeUser(object.idTipoUsuario);
+    setUserId(object.id);
+  }
+
+  function setError(json) {
     getErrorPerson(json);
   }
 
@@ -97,8 +97,8 @@ function UserClass() {
     setUserPassword('');
     setUserOffice('');
     setUserStatus(true);
-    setIdTypeUser('');
-    setUserId('');
+    setIdTypeUser(0);
+    setUserId(0);
   }
 
   function clearError() {
@@ -242,7 +242,7 @@ function UserClass() {
     gender,
     getData,
     setData,
-    getError,
+    setError,
     clearData,
     clearError,
     verifyData,

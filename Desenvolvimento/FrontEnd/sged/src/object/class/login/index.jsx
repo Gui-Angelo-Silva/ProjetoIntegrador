@@ -7,6 +7,7 @@ function LoginClass() {
   const [personEmail, setPersonEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [persistLogin, setPersistLogin] = useState(false);
+  
   const [errorPersonEmail, setErrorPersonEmail] = useState('');
   const [errorUserPassword, setErrorUserPassword] = useState('');
 
@@ -18,17 +19,17 @@ function LoginClass() {
     return "o";
   }
 
-  function getData(object) {
-    setPersonEmail(object.emailPessoa);
-    setUserPassword(object.senhaUsuario);
-    setPersistLogin(true);
-  }
-
-  function setData() {
+  function getData() {
     return {
       email: personEmail,
       senha: userPassword
     }
+  }
+
+  function setData(object) {
+    setPersonEmail(object.emailPessoa);
+    setUserPassword(object.senhaUsuario);
+    setPersistLogin(true);
   }
 
   function clearData() {

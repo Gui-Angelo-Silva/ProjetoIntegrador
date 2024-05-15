@@ -17,7 +17,7 @@ export default function Development() {
 
   const redirect = () => {
     sessionStorage.removeItem("page: in development");
-    server.clearSegment(session.getToken() ? "home" : "login");
+    server.clearSegment(session.getToken() ? "principal" : "login");
   }
 
   return (
@@ -26,9 +26,7 @@ export default function Development() {
         <br />
         <h3 className="text-3xl font-semibold text-gray-600">Em Desenvolvimento</h3>
         <p className="pl-4 mt-[30px] text-center">
-          A página de <span className="font-bold">
-            {sessionStorage.getItem("page: in development")}
-          </span> está em desenvolvimento.
+          A página de <span className="font-bold">{sessionStorage.getItem("page: in development")}</span> está em desenvolvimento.
           <br />
           Clique no botão abaixo para retornar para a página {session.getToken() ? "principal" : "de autenticação"}.
         </p>

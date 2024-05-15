@@ -63,7 +63,7 @@ export default function City() {
     };
 
     const SelectCity = (object, option) => {
-        city.getData(object);
+        city.setData(object);
         selectBox.selectOption(object.idEstado);
 
         if (option === "Editar") {
@@ -76,24 +76,22 @@ export default function City() {
 
     const GetState = async () => {
         await connection.endpoint("Estado").get();
-        listState.setList(connection.response.data);
+        listState.setList(connection.getList());
     };
 
     const GetCity = async () => {
         await connection.endpoint("Cidade").get();
-        list.setList(connection.response.data);
+        list.setList(connection.getList());
     };
 
     const PostCity = async () => {
         setInOperation(true);
 
-        if (city.verifyData(list.list)) {
-            await connection.endpoint("Cidade").post(city);
+        if (city.verifyData()) {
+            await connection.endpoint("Cidade").post(city.getData());
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
-        } else {
-            console.log('Dados inválidos!');
         }
 
         setInOperation(false);
@@ -102,13 +100,11 @@ export default function City() {
     const PutCity = async () => {
         setInOperation(true);
 
-        if (city.verifyData(list.list)) {
-            await connection.endpoint("Cidade").put(city);
+        if (city.verifyData()) {
+            await connection.endpoint("Cidade").put(city.getData());
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
-        } else {
-            console.log('Dados inválidos!');
         }
 
         setInOperation(false);
@@ -117,7 +113,7 @@ export default function City() {
     const DeleteCity = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Cidade").delete(city);
+        await connection.endpoint("Cidade").delete(city.getData().id);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

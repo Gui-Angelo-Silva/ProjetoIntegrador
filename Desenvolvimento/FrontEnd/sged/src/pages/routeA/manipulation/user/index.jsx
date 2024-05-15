@@ -64,7 +64,7 @@ export default function User() {
     };
 
     const SelectUser = (object, option) => {
-        user.getData(object);
+        user.setData(object);
         selectBox.selectOption(object.idTipoUsuario);
 
         if (option === "Editar") {
@@ -77,21 +77,19 @@ export default function User() {
 
     const GetTypeUser = async () => {
         await connection.endpoint("TipoUsuario").get();
-        listTypeUser.setList(connection.response.data);
+        listTypeUser.setList(connection.getList());
     };
 
     const GetUser = async () => {
         await connection.endpoint("Usuario").get();
-        list.setList(connection.response.data);
+        list.setList(connection.getList());
     };
 
     const PostUser = async () => {
         setInOperation(true);
 
         if (user.verifyData()) {
-            await connection.endpoint("Usuario").post(user);
-
-            if (!connection.response.status) { user.getError(connection.response.data); }
+            await connection.endpoint("Usuario").post(user.getData());
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -106,9 +104,7 @@ export default function User() {
         setInOperation(true);
 
         if (user.verifyData()) {
-            await connection.endpoint("Usuario").put(user);
-
-            if (!connection.response.status) { user.getError(connection.response.data); }
+            await connection.endpoint("Usuario").put(user.getData());
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -122,7 +118,7 @@ export default function User() {
     const DeleteUser = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Usuario").delete(user);
+        await connection.endpoint("Usuario").delete(user.getData().id);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

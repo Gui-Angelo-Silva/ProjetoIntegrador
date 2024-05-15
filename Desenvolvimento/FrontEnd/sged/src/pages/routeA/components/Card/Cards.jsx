@@ -24,80 +24,80 @@ function Cards() {
     const dataCategory = {
         "Imóvel": [
             {
-                onClick: () => addSegment("realstate"),
-                image: ImgImovel,
-                tooltip: "Abrir a Página de Controle de Imóvel",
-                title: "Imóvel",
-                module: "Imovel"
-            },
-            {
-                onClick: () => addSegment("state"),
+                onClick: () => addSegment("estado"),
                 image: ImgEstado,
                 tooltip: "Abrir a Página de Controle de Estado",
                 title: "Estado",
                 module: "Imovel"
             },
             {
-                onClick: () => addSegment("city"),
+                onClick: () => addSegment("cidade"),
                 image: ImgCidade,
                 tooltip: "Abrir a Página de Controle de Cidade",
                 title: "Cidade",
                 module: "Imovel"
             },
             {
-                onClick: () => addSegment("neighborhood"),
+                onClick: () => addSegment("bairro"),
                 image: ImgBairro,
                 tooltip: "Abrir a Página de Controle de Bairro",
                 title: "Bairro",
                 module: "Imovel"
             },
             {
-                onClick: () => addSegment("publicplace"),
+                onClick: () => addSegment("tipo-logradouro"),
+                image: ImgTipoLogradouro,
+                tooltip: "Abrir a Página de Controle de Tipo Logradouro",
+                title: "Tipo Logradouro",
+                module: "Imovel"
+            },
+            {
+                onClick: () => addSegment("logradouro"),
                 image: ImgLogradouro,
                 tooltip: "Abrir a Página de Controle de Logradouro",
                 title: "Logradouro",
                 module: "Imovel"
             },
             {
-                onClick: () => addSegment("typepublicplace"),
-                image: ImgTipoLogradouro,
-                tooltip: "Abrir a Página de Controle de Tipo Logradouro",
-                title: "Tipo Logradouro",
+                onClick: () => addSegment("imovel"),
+                image: ImgImovel,
+                tooltip: "Abrir a Página de Controle de Imóvel",
+                title: "Imóvel",
                 module: "Imovel"
             }
         ],
 
         "Usuário": [
             {
-                onClick: () => addSegment("user"),
-                image: ImgUsuario,
-                tooltip: "Abrir a Página de Controle de Usuário",
-                title: "Usuário",
-                module: "Usuario"
-            },
-            {
-                onClick: () => addSegment("typeuser"),
+                onClick: () => addSegment("tipo-usuario"),
                 image: ImgTipoUsuario,
                 tooltip: "Abrir a Página de Controle de Tipo Usuário",
                 title: "Tipo Usuário",
                 module: "Usuario"
             },
             {
-                onClick: () => addSegment("citizen"),
+                onClick: () => addSegment("usuario"),
+                image: ImgUsuario,
+                tooltip: "Abrir a Página de Controle de Usuário",
+                title: "Usuário",
+                module: "Usuario"
+            },
+            {
+                onClick: () => addSegment("municipe"),
                 image: ImgMunicipe,
                 tooltip: "Abrir a Página de Controle de Munícipe",
                 title: "Munícipe",
                 module: "Usuario"
             },
             {
-                onClick: () => addSegment("engineer"),
+                onClick: () => addSegment("engenheiro"),
                 image: ImgEngenheiro,
                 tooltip: "Abrir a Página de Controle de Engenheiro",
                 title: "Engenheiro",
                 module: "Usuario"
             },
             {
-                onClick: () => addSegment("supervisor"),
+                onClick: () => addSegment("fiscal"),
                 image: ImgFiscal,
                 tooltip: "Abrir a Página de Controle de Fiscal",
                 title: "Fiscal",
@@ -112,37 +112,30 @@ function Cards() {
             },
         ],
         
-        "Processo": [
-            // {
-            //     onClick: () => inDevelopment("Controle de Processo"),
-            //     image: ImgProcesso,
-            //     tooltip: "Abrir a Página de Controle de Processo",
-            //     title: "Processo",
-            //     module: "Processo"
-            // },
+        "Configuração de Processo": [
             {
-                onClick: () => addSegment("typeprocess"),
+                onClick: () => addSegment("tipo-processo"),
                 image: ImgTipoProcesso,
                 tooltip: "Abrir a Página de Controle de Tipo Processo",
                 title: "Tipo Processo",
                 module: "Processo"
             },
             {
-                onClick: () => addSegment("stage"),
+                onClick: () => addSegment("etapa"),
                 image: ImgEtapa,
                 tooltip: "Abrir a Página de Controle de Etapa",
                 title: "Etapa",
                 module: "Processo"
             },
             {
-                onClick: () => addSegment("typedocument"),
+                onClick: () => addSegment("tipo-documento"),
                 image: ImgTipoDocumento,
                 tooltip: "Abrir a Página de Controle de Tipo Documento",
                 title: "Tipo Documento",
                 module: "Processo"
             },
             {
-                onClick: () => addSegment("stagedocumenttype"),
+                onClick: () => addSegment("etapa-tipo-documento"),
                 image: ImgTipoDocumentoEtapa,
                 tooltip: "Abrir a Página de Controle de Tipo Documento Etapa",
                 title: "Tipo Doc. Etapa",

@@ -70,7 +70,7 @@ export default function RealState() {
     };
 
     const SelectRealState = (object, option) => {
-        realstate.getData(object);
+        realstate.setData(object);
         selectboxPublicPlace.selectOption(object.idLogradouro);
         selectboxCitizen.selectOption(object.idMunicipe);
 
@@ -83,17 +83,17 @@ export default function RealState() {
 
     const GetPublicPlace = async () => {
         await connection.endpoint("Logradouro").get();
-        listPublicPlace.setList(connection.response.data);
+        listPublicPlace.setList(connection.getList());
     };
 
     const GetCitizen = async () => {
         await connection.endpoint("Municipe").get();
-        listCitizen.setList(connection.response.data);
+        listCitizen.setList(connection.getList());
     };
 
     const GetRealState = async () => {
         await connection.endpoint("Imovel").get();
-        list.setList(connection.response.data);
+        list.setList(connection.getList());
     };
 
     const PostRealState = async () => {
@@ -102,7 +102,7 @@ export default function RealState() {
         GetIntervalPublicPlace();
 
         if (realstate.verifyData(list.list)) {
-            await connection.endpoint("Imovel").post(realstate);
+            await connection.endpoint("Imovel").post(realstate.getData());
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -119,7 +119,7 @@ export default function RealState() {
         GetIntervalPublicPlace();
 
         if (realstate.verifyData(list.list)) {
-            await connection.endpoint("Imovel").put(realstate);
+            await connection.endpoint("Imovel").put(realstate.getData());
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -133,7 +133,7 @@ export default function RealState() {
     const DeleteRealState = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Imovel").delete(realstate);
+        await connection.endpoint("Imovel").delete(realstate.getData().id);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

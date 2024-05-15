@@ -44,9 +44,8 @@ export default function User() {
     !boolean ? (selectUser(), user.clearError()) : undefined;
   };
 
-  const selectUser = () => {
-    const object = session.validateSession();
-    user.getData(object);
+  const selectUser = async () => {
+    user.setData(await session.getUser());
   };
 
   const GetUser = async () => {
@@ -101,10 +100,6 @@ export default function User() {
       }; setInOperation('');
     }; UpdateSession();
   }, [sucessUpdate]);
-
-  useEffect(() => {
-    console.log(user.personPicture);
-  }, [user.personPicture]);
 
   const clearField = (attribute) => {
     user[attribute] instanceof Function ? user[attribute]('') : console.log(`O atributo ${attribute} não existe!`);

@@ -50,7 +50,7 @@ export default function NavBar() {
 
       if (session.getToken()) {
         const data = await session.getUser();
-        if (data) user.getData(data);
+        if (data) user.setData(data);
       }
     };
 
@@ -97,7 +97,7 @@ export default function NavBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={() => server.clearSegment("profile")}>Perfil</MenuItem>
+      <MenuItem onClick={() => server.clearSegment("perfil")}>Perfil</MenuItem>
       <MenuItem onClick={() => encerateSession()}>Sair</MenuItem>
     </Menu>
   );

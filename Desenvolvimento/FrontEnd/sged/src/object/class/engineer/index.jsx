@@ -30,7 +30,7 @@ function EngineerClass() {
   // Funções Essenciais
   const getDataPerson = person.getData;
   const setDataPerson = person.setData;
-  const getErrorPerson = person.getError;
+  const getErrorPerson = person.setError;
   const clearDataPerson = person.clearData;
   const clearErrorPerson = person.clearError;
   const verifyDataPerson = person.verifyData;
@@ -50,7 +50,7 @@ function EngineerClass() {
   const handleImageClick = person.handleImageClick;
   person.effects();
 
-  const [engineerId, setEngineerId] = useState('');
+  const [engineerId, setEngineerId] = useState(0);
   const [creaEngineer, setCreaEngineer] = useState('');
 
   function propertyName() {
@@ -61,26 +61,26 @@ function EngineerClass() {
     return "o";
   }
 
-  function getData(object) {
-    getDataPerson(object);
-    setEngineerId(object.id);
-    setCreaEngineer(object.creaEngineer);
-  }
-
-  function setData() {
+  function getData() {
     return {
-      ...setDataPerson(),
+      ...getDataPerson(),
       id: engineerId,
     }
   }
 
-  function getError(json) {
+  function setData(object) {
+    setDataPerson(object);
+    setEngineerId(object.id);
+    setCreaEngineer(object.creaEngineer);
+  }
+
+  function setError(json) {
     getErrorPerson(json);
   }
 
   function clearData() {
     clearDataPerson();
-    setEngineerId('');
+    setEngineerId(0);
   }
 
   function clearError() {
@@ -166,7 +166,7 @@ const formatCrea = (value) => {
     gender,
     getData,
     setData,
-    getError,
+    setError,
     clearData,
     clearError,
     verifyData,

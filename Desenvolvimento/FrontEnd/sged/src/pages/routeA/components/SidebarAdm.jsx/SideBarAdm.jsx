@@ -42,7 +42,7 @@ export default function SideBarAdm() {
             <MenuItem
                 icon={PersonalVideoIcon}
                 text="Página Inicial"
-                onClick={() => clearSegment("home")}
+                onClick={() => clearSegment("principal")}
                 isSidebarExpanded={isSidebarExpanded}
             />
             <MenuItem
@@ -58,13 +58,13 @@ export default function SideBarAdm() {
                     <SubMenuItem
                         icon={SaveIcon}
                         text="Cadastros"
-                        onClick={() => clearSegment("registration")}
+                        onClick={() => clearSegment("controle")}
                         isSidebarExpanded={isSidebarExpanded}
                     />
                     <SubMenuItem
                         icon={DescriptionIcon}
                         text="Documentos"
-                        onClick={() => clearSegment("document")}
+                        onClick={() => clearSegment("documento")}
                         isSidebarExpanded={isSidebarExpanded}
                     />
                 </div>

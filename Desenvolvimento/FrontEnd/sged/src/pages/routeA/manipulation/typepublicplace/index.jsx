@@ -32,7 +32,7 @@ export default function TypePublicPlace() {
     const [inOperation, setInOperation] = useState(false);
 
     const SelectTypePublicPlace = (object, option) => {
-        typepublicplace.getData(object);
+        typepublicplace.setData(object);
 
         if (option === "Editar") {
             openCloseModalEdit(true);
@@ -70,14 +70,14 @@ export default function TypePublicPlace() {
 
     const GetTypePublicPlace = async () => {
         await connection.endpoint("TipoLogradouro").get();
-        list.setList(connection.response.data);
+        list.setList(connection.getList());
     };
 
     const PostTypePublicPlace = async () => {
         setInOperation(true);
 
         if (typepublicplace.verifyData()) {
-            await connection.endpoint("TipoLogradouro").post(typepublicplace);
+            await connection.endpoint("TipoLogradouro").post(typepublicplace.getData());
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -92,7 +92,7 @@ export default function TypePublicPlace() {
         setInOperation(true);
 
         if (typepublicplace.verifyData()) {
-            await connection.endpoint("TipoLogradouro").put(typepublicplace);
+            await connection.endpoint("TipoLogradouro").put(typepublicplace.getData());
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -106,7 +106,7 @@ export default function TypePublicPlace() {
     const DeleteTypePublicPlace = async () => {
         setInOperation(true);
 
-        await connection.endpoint("TipoLogradouro").delete(typepublicplace);
+        await connection.endpoint("TipoLogradouro").delete(typepublicplace.getData().id);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

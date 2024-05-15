@@ -64,7 +64,7 @@ export default function Supervisor() {
     };
 
     const SelectSupervisor = (object, option) => {
-        fiscal.getData(object);
+        fiscal.setData(object);
         selectBox.selectOption(object.idTipoUsuario);
 
         if (option === "Editar") {
@@ -77,16 +77,14 @@ export default function Supervisor() {
 
     const GetSupervisor = async () => {
         await connection.endpoint("Fiscal").get();
-        list.setList(connection.response.data);
+        list.setList(connection.getList());
     };
 
     const PostSupervisor = async () => {
         setInOperation(true);
 
         if (fiscal.verifyData()) {
-            await connection.endpoint("Fiscal").post(fiscal);
-
-            if (!connection.response.status) { fiscal.getError(connection.response.data); }
+            await connection.endpoint("Fiscal").post(fiscal.getData());
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -101,9 +99,7 @@ export default function Supervisor() {
         setInOperation(true);
 
         if (fiscal.verifyData()) {
-            await connection.endpoint("Fiscal").put(fiscal);
-
-            if (!connection.response.status) { fiscal.getError(connection.response.data); }
+            await connection.endpoint("Fiscal").put(fiscal.getData());
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -117,7 +113,7 @@ export default function Supervisor() {
     const DeleteSupervisor = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Fiscal").delete(fiscal);
+        await connection.endpoint("Fiscal").delete(fiscal.getData().id);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

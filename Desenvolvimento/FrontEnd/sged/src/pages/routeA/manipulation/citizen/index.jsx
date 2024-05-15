@@ -61,7 +61,7 @@ export default function Citizen() {
     };
 
     const SelectCitizen = (object, option) => {
-        citizen.getData(object);
+        citizen.setData(object);
         selectBox.selectOption(object.idTipoUsuario);
 
         if (option === "Editar") {
@@ -73,22 +73,18 @@ export default function Citizen() {
     };
 
     const GetCitizen = async () => {
-        await connection.endpoint("Municipe").get();
-        list.setList(connection.response.data);
+        await connection.endpoint("Cidade").get();
+        list.setList(connection.getList());
     };
 
     const PostCitizen = async () => {
         setInOperation(true);
 
         if (citizen.verifyData()) {
-            await connection.endpoint("Municipe").post(citizen);
-
-            if (!connection.response.status) { citizen.getError(connection.response.data); }
+            await connection.endpoint("Cidade").post(citizen.getData());
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
-        } else {
-            console.log('Dados inválidos!');
         }
 
         setInOperation(false);
@@ -98,14 +94,10 @@ export default function Citizen() {
         setInOperation(true);
 
         if (citizen.verifyData()) {
-            await connection.endpoint("Municipe").put(citizen);
-
-            if (!connection.response.status) { citizen.getError(connection.response.data); }
+            await connection.endpoint("Cidade").put(citizen.getData());
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
-        } else {
-            console.log('Dados inválidos!');
         }
 
         setInOperation(false);
@@ -114,7 +106,7 @@ export default function Citizen() {
     const DeleteCitizen = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Municipe").delete(citizen);
+        await connection.endpoint("Cidade").delete(citizen.getData().id);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

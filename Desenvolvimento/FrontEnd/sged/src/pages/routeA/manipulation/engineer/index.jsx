@@ -61,7 +61,7 @@ export default function Engineer() {
     };
 
     const SelectEngineer = (object, option) => {
-        engineer.getData(object);
+        engineer.setData(object);
         selectBox.selectOption(object.idTipoUsuario);
 
         if (option === "Editar") {
@@ -74,16 +74,14 @@ export default function Engineer() {
 
     const GetEngineer = async () => {
         await connection.endpoint("Engenheiro").get();
-        list.setList(connection.response.data);
+        list.setList(connection.getList());
     };
 
     const PostEngineer = async () => {
         setInOperation(true);
 
         if (engineer.verifyData()) {
-            await connection.endpoint("Engenheiro").post(engineer);
-
-            if (!connection.response.status) { engineer.getError(connection.response.data); }
+            await connection.endpoint("Engenheiro").post(engineer.getData());
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -98,9 +96,7 @@ export default function Engineer() {
         setInOperation(true);
 
         if (engineer.verifyData()) {
-            await connection.endpoint("Engenheiro").put(engineer);
-
-            if (!connection.response.status) { engineer.getError(connection.response.data); }
+            await connection.endpoint("Engenheiro").put(engineer.getData());
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -114,7 +110,7 @@ export default function Engineer() {
     const DeleteEngineer = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Engenheiro").delete(engineer);
+        await connection.endpoint("Engenheiro").delete(engineer.getData().id);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

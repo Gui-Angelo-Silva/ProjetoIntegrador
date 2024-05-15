@@ -1,7 +1,4 @@
 import { Routes, Route } from 'react-router-dom';
-import Development from '../../pages/allRoutes/utility/development';
-import NotFound from '../../pages/allRoutes/utility/notfound';
-import NotPermission from '../../pages/allRoutes/utility/notpermission';
 import Home from '../../pages/routeA/dashboard/home';
 import Profile from '../../pages/allRoutes/account/profile';
 import Registration from '../../pages/routeA/dashboard/registration';
@@ -26,32 +23,28 @@ import Supervisor from '../../pages/routeA/manipulation/supervisor';
 export default function RouteA() {
     return (
         <Routes>
-            <Route path="/development" element={<Development />}></Route>
-            <Route path="/notfound" element={<NotFound />} />
-            <Route path="/notpermission" element={<NotPermission />} />
+            <Route path="/principal" element={<Home />}></Route>
+            <Route path="/perfil" element={<Profile />} />
 
-            <Route path="/home" element={<Home />}></Route>
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/controle" element={<Registration />}></Route>
+            <Route path="/controle/estado" element={<State />}></Route>
+            <Route path="/controle/cidade" element={<City />}></Route>
+            <Route path="/controle/tipo-usuario" element={<TypeUser />}></Route>
+            <Route path="/controle/usuario" element={<User />}></Route>
+            <Route path="/controle/municipe" element={<Citizen />}></Route>
+            <Route path="/controle/engenheiro" element={<Engineer />}></Route>
+            <Route path="/controle/tipo-logradouro" element={<TypePublicPlace />}></Route>
+            <Route path="/controle/bairro" element={<Neighborhood />}></Route>
+            <Route path="/controle/logradouro" element={<PublicPlace />}></Route>
+            <Route path="/controle/tipo-documento" element={<TypeDocument />}></Route>
+            <Route path="/controle/tipo-processo" element={<TypeProcess  />}></Route>
+            <Route path="/controle/etapa" element={<Stage  />}></Route>
+            <Route path="/controle/imovel" element={<RealState  />}></Route>
+            <Route path="/controle/etapa-tipo-documento" element={<StageDocumentType  />}></Route>
+            <Route path="/controle/fiscal" element={<Supervisor  />}></Route>
 
-            <Route path="/registration" element={<Registration />}></Route>
-            <Route path="/registration/state" element={<State />}></Route>
-            <Route path="/registration/city" element={<City />}></Route>
-            <Route path="/registration/typeuser" element={<TypeUser />}></Route>
-            <Route path="/registration/user" element={<User />}></Route>
-            <Route path="/registration/citizen" element={<Citizen />}></Route>
-            <Route path="/registration/engineer" element={<Engineer />}></Route>
-            <Route path="/registration/typepublicplace" element={<TypePublicPlace />}></Route>
-            <Route path="/registration/neighborhood" element={<Neighborhood />}></Route>
-            <Route path="/registration/publicplace" element={<PublicPlace />}></Route>
-            <Route path="/registration/typedocument" element={<TypeDocument />}></Route>
-            <Route path="/registration/typeprocess" element={<TypeProcess  />}></Route>
-            <Route path="/registration/stage" element={<Stage  />}></Route>
-            <Route path="/registration/realstate" element={<RealState  />}></Route>
-            <Route path="/registration/stagedocumenttype" element={<StageDocumentType  />}></Route>
-            <Route path="/registration/supervisor" element={<Supervisor  />}></Route>
-
-            <Route path="/document" element={<Document />}></Route>
-            <Route path="/test" element={<Test />}></Route>
+            <Route path="/documento" element={<Document />}></Route>
+            <Route path="/teste" element={<Test />}></Route>
         </Routes>
     );
 }

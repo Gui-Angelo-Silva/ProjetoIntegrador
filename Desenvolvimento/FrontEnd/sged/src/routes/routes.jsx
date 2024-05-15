@@ -16,9 +16,9 @@ export default function AppRoutes() {
             <ServerProvider>
                 <Routes>
                     <Route path="/login" element={<Login />} />
-                    <Route path="/development" element={<Development />} />
-                    <Route path="/notfound" element={<NotFound />} />
-                    <Route path="/notpermission" element={<NotPermission />} />
+                    <Route path="/em-desenvolvimento" element={<Development />} />
+                    <Route path="/pagina-inexistente" element={<NotFound />} />
+                    <Route path="/acesso-negado" element={<NotPermission />} />
                 </Routes>
                 <RouteA />
             </ServerProvider>

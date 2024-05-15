@@ -62,7 +62,7 @@ export default function SignIn() {
 
       if (response.validation) {
         await delay(1000); setIsLoading('Liberando Entrada...');
-        await delay(1000); server.clearSegment("home");
+        await delay(1000); server.clearSegment("principal");
       } else {
         setLoginError(response.message);
       }
@@ -75,7 +75,7 @@ export default function SignIn() {
     const getDataLogin = () => {
       const data = session.getLogin();
       if (data) {
-        login.getData(data);
+        login.setData(data);
       } else {
         login.clearData();
       }

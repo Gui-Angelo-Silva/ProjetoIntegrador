@@ -59,7 +59,7 @@ export default function TypeUser() {
     };
 
     const SelectTypeUser = (object, option) => {
-        user.getData(object);
+        user.setData(object);
 
         if (option === "Editar") {
             openCloseModalEdit(true);
@@ -71,14 +71,14 @@ export default function TypeUser() {
 
     const GetTypeUser = async () => {
         await connection.endpoint("TipoUsuario").get();
-        list.setList(connection.response.data);
+        list.setList(connection.getList());
     };
 
     const PostTypeUser = async () => {
         setInOperation(true);
 
         if (await typeuser.verifyData()) {
-            await connection.endpoint("TipoUsuario").post(typeuser);
+            await connection.endpoint("TipoUsuario").post(typeuser.getData());
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -93,7 +93,7 @@ export default function TypeUser() {
         setInOperation(true);
 
         if (await typeuser.verifyData()) {
-            await connection.endpoint("TipoUsuario").put(typeuser);
+            await connection.endpoint("TipoUsuario").put(typeuser.getData());
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -107,7 +107,7 @@ export default function TypeUser() {
     const DeleteTypeUser = async () => {
         setInOperation(true);
 
-        await connection.endpoint("TipoUsuario").delete(typeuser);
+        await connection.endpoint("TipoUsuario").delete(typeuser.getData().id);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

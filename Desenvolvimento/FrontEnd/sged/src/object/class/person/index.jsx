@@ -20,7 +20,18 @@ function PersonClass() {
     const [errorPersonCpfCnpj, setErrorPersonCpfCnpj] = useState("");
     const [errorPersonRgIe, setErrorPersonRgIe] = useState("");
 
-    function getData(object) {
+    function getData() {
+        return {
+            imagemPessoa: personPicture,
+            nomePessoa: personName,
+            emailPessoa: personEmail,
+            telefonePessoa: personTelephone,
+            cpfCnpjPessoa: personCpfCnpj,
+            rgIePessoa: personRgIe
+        };
+    }
+
+    function setData(object) {
         if (object.imagemPessoa) {
             if (object.imagemPessoa !== personPicture) setAddImage(true);
             setPersonPicture(object.imagemPessoa);
@@ -36,18 +47,7 @@ function PersonClass() {
         setIdentifyRgIe(object.rgIePessoa?.length === 12 ? "rg" : "ie");
     }
 
-    function setData() {
-        return {
-            imagemPessoa: personPicture,
-            nomePessoa: personName,
-            emailPessoa: personEmail,
-            telefonePessoa: personTelephone,
-            cpfCnpjPessoa: personCpfCnpj,
-            rgIePessoa: personRgIe
-        };
-    }
-
-    function getError(json) {
+    function setError(json) {
         setErrorPersonEmail(json.email);
         setErrorPersonCpfCnpj(json.cpfcnpj);
         setErrorPersonRgIe(json.rgie);
@@ -600,7 +600,7 @@ function PersonClass() {
         // Funções Essencias
         getData,
         setData,
-        getError,
+        setError,
         clearData,
         clearError,
         verifyData,

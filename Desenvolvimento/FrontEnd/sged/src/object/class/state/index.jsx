@@ -3,7 +3,7 @@ import { useState } from 'react';
 function StateClass() {
   const [stateName, setStateName] = useState('');
   const [stateUf, setStateUf] = useState('');
-  const [stateId, setStateId] = useState('');
+  const [stateId, setStateId] = useState(0);
 
   const [errorStateName, setErrorStateName] = useState('');
   const [errorStateUf, setErrorStateUf] = useState('');
@@ -16,13 +16,7 @@ function StateClass() {
     return "o";
   }
 
-  function getData(object) {
-    setStateName(object.nomeEstado);
-    setStateUf(object.ufEstado);
-    setStateId(object.id);
-  }
-
-  function setData() {
+  function getData() {
     return {
       id: stateId,
       nomeEstado: stateName,
@@ -30,10 +24,16 @@ function StateClass() {
     };
   }
 
+  function setData(object) {
+    setStateName(object.nomeEstado);
+    setStateUf(object.ufEstado);
+    setStateId(object.id);
+  }
+
   function clearData() {
     setStateName('');
     setStateUf('');
-    setStateId('');
+    setStateId(0);
   }
 
   function clearError() {

@@ -1,6 +1,6 @@
 import React from 'react';
 import NavBar from '../NavBar';
-import SideBarAdm from '../Adm/SideBarAdm';
+import SideBarAdm from '../SidebarAdm.jsx/SideBarAdm';
 import { motion } from 'framer-motion';
 
 const LayoutPage = ({ children }) => {

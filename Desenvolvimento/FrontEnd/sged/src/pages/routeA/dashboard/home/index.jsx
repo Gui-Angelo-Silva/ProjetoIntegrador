@@ -3,7 +3,7 @@ import { FaTableCellsLarge, FaFile } from "react-icons/fa6";
 import CardDashboard from "../../components/Card/CardDashboard";
 import Title from "../../components/Title/Title";
 import Subtitle from "../../components/Title/Subtitle";
-import TableDashboard from "../../components/Table/TableDashboard";
+import TableDashboard from "../../components/TableDasboard/TableDashboard";
 import LayoutPage from "../../components/Layout/LayoutPage";
 import { useMontage } from '../../../../object/modules/montage';
 

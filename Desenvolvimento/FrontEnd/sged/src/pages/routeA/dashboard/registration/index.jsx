@@ -1,7 +1,7 @@
 import Title from "../../components/Title/Title";
 import { useMontage } from '../../../../object/modules/montage';
 import Cards from '../../components/Card/Cards';
-import CardIcon from "../../components/Card/CardIcon";
+import CardRegistration from "../../components/Card/CardRegistration";
 import React, { useState, useEffect } from "react";
 import Search from "../../../../assets/pages/SearchImg";
 import LayoutPage from "../../components/Layout/LayoutPage";
@@ -107,7 +107,7 @@ export default function Registrations() {
                         <div className="grid grid-cols-2 -mr-6 sm:mr-0 md:mr-[0px] md:pr-5 lg:mr-0">
                             {
                                 categoryCards.map((card, index) => (
-                                    <CardIcon onClick={card.onClick} key={index} srcImage={card.image} title={card.title} module={card.module} />
+                                    <CardRegistration onClick={card.onClick} key={index} srcImage={card.image} title={card.title} module={card.module} />
                                 ))
                             }
                         </div>

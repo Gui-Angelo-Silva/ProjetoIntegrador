@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-const CardIcon = ({ srcImage, title, module, onClick }) => {
+const CardRegistration = ({ srcImage, title, module, onClick }) => {
     const [isHovered, setIsHovered] = useState(false);
 
     let baseStyle = "flex flex-col items-center justify-center w-[140px] h-[140px] md:w-[148px] md:h-[148px] transition ease-in-out delay-75 hover:scale-105 shadow-xl mb-3 rounded-xl text-lg font-semibold hover:text-white";
@@ -30,11 +30,11 @@ const CardIcon = ({ srcImage, title, module, onClick }) => {
     );
 }
 
-CardIcon.propTypes = {
+CardRegistration.propTypes = {
     srcImage: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     module: PropTypes.oneOf(["Imovel", "Usuario", "Processo"]).isRequired,
     onClick: PropTypes.func.isRequired
 };
 
-export default CardIcon;
+export default CardRegistration;

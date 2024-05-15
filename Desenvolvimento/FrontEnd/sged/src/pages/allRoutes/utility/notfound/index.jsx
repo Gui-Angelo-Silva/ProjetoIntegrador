@@ -1,6 +1,3 @@
-import NavBar from "../../../routeA/components/NavBar";
-import SideBar from "../../../routeA/components/SideBar";
-
 import Button from '@mui/material/Button';
 
 import { useMontage } from '../../../../object/modules/montage';

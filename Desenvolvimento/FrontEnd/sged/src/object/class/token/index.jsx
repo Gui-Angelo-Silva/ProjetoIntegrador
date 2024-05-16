@@ -14,17 +14,19 @@ function TokenClass() {
     return "o";
   }
 
-  function setData() {
-    return {
-      //token: storage.getLocal('token')
-      token: storage.getLocal("token")
-    }
+  function getData() {
+    return cookie.getCookie("token")? cookie.getCookie("token") : "";
+  }
+
+  function setData(token) {
+    cookie.setCookie("token", token, 1);
   }
 
   return {
     // Funções Essencias
     propertyName,
     gender,
+    getData,
     setData
   };
 }

@@ -66,7 +66,7 @@ export default function PublicPlace() {
     };
 
     const SelectPublicPlace = (object, option) => {
-        publicplace.getData(object);
+        publicplace.setData(object);
         selectBoxNeighborhood.selectOption(object.idBairro);
         selectBoxTypePublicPlace.selectOption(object.idTipoLogradouro);
 
@@ -79,23 +79,23 @@ export default function PublicPlace() {
 
     const GetNeighborhood = async () => {
         await connection.endpoint("Bairro").get();
-        listNeighborhood.setList(connection.response.data);
+        listNeighborhood.setList(connection.getList());
     };
 
     const GetTypePublicPlace = async () => {
         await connection.endpoint("TipoLogradouro").get();
-        listTypePublicPlace.setList(connection.response.data);
+        listTypePublicPlace.setList(connection.getList());
     };
 
     const GetPublicPlace = async () => {
         await connection.endpoint("Logradouro").get();
-        list.setList(connection.response.data);
+        list.setList(connection.getList());
     };
 
     const PostPublicPlace = async () => {
         setInOperation(false);
         if (publicplace.verifyData(list.list)) {
-            await connection.endpoint("Logradouro").post(publicplace);
+            await connection.endpoint("Logradouro").post(publicplace.getData());
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -110,7 +110,7 @@ export default function PublicPlace() {
         setInOperation(true);
 
         if (publicplace.verifyData(list.list)) {
-            await connection.endpoint("Logradouro").put(publicplace);
+            await connection.endpoint("Logradouro").put(publicplace.getData());
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -124,7 +124,7 @@ export default function PublicPlace() {
     const DeletePublicPlace = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Logradouro").delete(publicplace);
+        await connection.endpoint("Logradouro").delete(publicplace.getData().id);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

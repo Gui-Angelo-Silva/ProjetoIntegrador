@@ -62,7 +62,7 @@ export default function Neighborhood() {
     };
 
     const SelectNeighborhood = (object, option) => {
-        neighborhood.getData(object);
+        neighborhood.setData(object);
         selectBox.selectOption(object.idCidade);
 
         if (option === "Editar") {
@@ -75,19 +75,19 @@ export default function Neighborhood() {
 
     const GetCity = async () => {
         await connection.endpoint("Cidade").get();
-        listCity.setList(connection.response.data);
+        listCity.setList(connection.getList());
     };
 
     const GetNeighborhood = async () => {
         await connection.endpoint("Bairro").get();
-        list.setList(connection.response.data);
+        list.setList(connection.getList());
     };
 
     const PostNeighborhood = async () => {
         setInOperation(true);
 
         if (neighborhood.verifyData(list.list)) {
-            await connection.endpoint("Bairro").post(neighborhood);
+            await connection.endpoint("Bairro").post(neighborhood.getData());
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -102,7 +102,7 @@ export default function Neighborhood() {
         setInOperation(true);
 
         if (neighborhood.verifyData(list.list)) {
-            await connection.endpoint("Bairro").put(neighborhood);
+            await connection.endpoint("Bairro").put(neighborhood.getData());
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -116,7 +116,7 @@ export default function Neighborhood() {
     const DeleteNeighborhood = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Bairro").delete(neighborhood);
+        await connection.endpoint("Bairro").delete(neighborhood.getData().id);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

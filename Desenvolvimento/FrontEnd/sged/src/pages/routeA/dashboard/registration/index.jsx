@@ -75,7 +75,7 @@ export default function Registrations() {
 
     return (
         <LayoutPage>
-            <Title title="Cadastros" />
+            <Title title="Controle" />
             <div className="rounded-md mt-[15px]">
                 <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
                     <div className="pl-2">

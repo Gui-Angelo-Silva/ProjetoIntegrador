@@ -38,7 +38,7 @@ export default function State() {
     const [open, setOpen] = useState(false);
 
     const SelectState = (object, option) => {
-        state.getData(object);
+        state.setData(object);
 
         if (option === "Editar") {
             openCloseModalEdit(true);
@@ -76,14 +76,14 @@ export default function State() {
 
     const GetState = async () => {
         await connection.endpoint("Estado").get();
-        list.setList(connection.response.data);
+        list.setList(connection.getList());
     };
 
     const PostState = async () => {
         setInOperation(true);
 
         if (state.verifyData()) {
-            await connection.endpoint("Estado").post(state); //quando faço uma requisição, o statusPopUp já está false
+            await connection.endpoint("Estado").post(state.getData());
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -98,7 +98,7 @@ export default function State() {
         setInOperation(true);
 
         if (state.verifyData()) {
-            await connection.endpoint("Estado").put(state); //quando faço uma requisição, o statusPopUp já está false
+            await connection.endpoint("Estado").put(state.getData());
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -112,7 +112,7 @@ export default function State() {
     const DeleteState = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Estado").delete(state); //quando faço uma requisição, o statusPopUp já está false
+        await connection.endpoint("Estado").delete(state.getData().id);
 
         setOpen(!connection.response.status);
         setUpdateData(connection.response.status);

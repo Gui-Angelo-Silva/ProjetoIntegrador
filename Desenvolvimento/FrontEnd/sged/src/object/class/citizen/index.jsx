@@ -29,7 +29,7 @@ function CitizenClass() {
   // Funções Essenciais
   const getDataPerson = person.getData;
   const setDataPerson = person.setData;
-  const getErrorPerson = person.getError;
+  const getErrorPerson = person.setError;
   const clearDataPerson = person.clearData;
   const clearErrorPerson = person.clearError;
   const verifyDataPerson = person.verifyData;
@@ -49,7 +49,7 @@ function CitizenClass() {
   const handleImageClick = person.handleImageClick;
   person.effects();
 
-  const [citizenId, setCitizenId] = useState('');
+  const [citizenId, setCitizenId] = useState(0);
 
   function propertyName() {
     return "Munícipe " + personName;
@@ -59,25 +59,25 @@ function CitizenClass() {
     return "o";
   }
 
-  function getData(object) {
-    getDataPerson(object);
-    setCitizenId(object.id);
-  }
-
-  function setData() {
+  function getData() {
     return {
-      ...setDataPerson(),
+      ...getDataPerson(),
       id: citizenId,
     }
   }
 
-  function getError(json) {
+  function setData(object) {
+    setDataPerson(object);
+    setCitizenId(object.id);
+  }
+
+  function setError(json) {
     getErrorPerson(json);
   }
 
   function clearData() {
     clearDataPerson();
-    setCitizenId('');
+    setCitizenId(0);
   }
 
   function clearError() {
@@ -138,7 +138,7 @@ function CitizenClass() {
     gender,
     getData,
     setData,
-    getError,
+    setError,
     clearData,
     clearError,
     verifyData

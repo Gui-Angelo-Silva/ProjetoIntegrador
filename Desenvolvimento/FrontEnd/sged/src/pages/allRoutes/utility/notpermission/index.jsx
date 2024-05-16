@@ -22,7 +22,7 @@ export default function NotPermission() {
 
   const redirect = () => {
     sessionStorage.removeItem("page: not permission");
-    server.clearSegment(session.getToken() ? "home" : "login");
+    server.clearSegment(session.getToken() ? "principal" : "login");
   }
 
   return (
@@ -35,7 +35,7 @@ export default function NotPermission() {
           <h3 className="text-3xl font-semibold text-gray-600">Acesso Negado</h3>
           <p className="pl-4" style={{ marginTop: '40px', textAlign: 'center' }}>
             {session.getToken() ?
-              <>Sua conta não tem permissão para navegar em uma rota <span style={{ color: 'red', fontWeight: 'bold' }}>{sessionStorage.getItem("page: not permission")}</span>.</> :
+              <>Sua conta não tem privilégios para acessar a página <span style={{ color: 'blue', fontWeight: 'bold' }}>{sessionStorage.getItem("page: not permission")}</span>.</> :
               <>Não é possível acessar a rota <span style={{ color: 'red', fontWeight: 'bold' }}>{sessionStorage.getItem("page: not permission")}</span> sem estar autenticado.</>
             }
             <br />

@@ -4,12 +4,12 @@ import ControlModule from '../../../object/modules/control';
 function PublicPlaceClass() {
     const control = ControlModule();
 
-    const [publicPlaceId, setPublicPlaceId] = useState("");
+    const [publicPlaceId, setPublicPlaceId] = useState(0);
     const [publicPlaceCep, setPublicPlaceCep] = useState("");
     const [publicPlaceInitialNumber, setPublicPlaceInitialNumber] = useState("");
     const [publicPlaceFinalNumber, setPublicPlaceFinalNumber] = useState("");
-    const [idNeighborhood, setIdNeighborhood] = useState("");
-    const [idTypePublicPlace, setIdTypePublicPlace] = useState("");
+    const [idNeighborhood, setIdNeighborhood] = useState(0);
+    const [idTypePublicPlace, setIdTypePublicPlace] = useState(0);
 
     const [errorPublicPlaceCep, setErrorPublicPlaceCep] = useState("");
     const [errorPublicPlaceInitialNumber, setErrorPublicPlaceInitialNumber] = useState("");
@@ -25,16 +25,7 @@ function PublicPlaceClass() {
         return "o";
     }
 
-    function getData(object) {
-        setPublicPlaceId(object.id);
-        setPublicPlaceCep(object.cep);
-        setPublicPlaceInitialNumber(object.numeroInicial);
-        setPublicPlaceFinalNumber(object.numeroFinal);
-        setIdNeighborhood(object.idBairro);
-        setIdTypePublicPlace(object.idTipoLogradouro);
-    }
-
-    function setData() {
+    function getData() {
         return {
             id: publicPlaceId,
             cep: publicPlaceCep,
@@ -45,13 +36,22 @@ function PublicPlaceClass() {
         };
     }
 
+    function setData(object) {
+        setPublicPlaceId(object.id);
+        setPublicPlaceCep(object.cep);
+        setPublicPlaceInitialNumber(object.numeroInicial);
+        setPublicPlaceFinalNumber(object.numeroFinal);
+        setIdNeighborhood(object.idBairro);
+        setIdTypePublicPlace(object.idTipoLogradouro);
+    }
+
     function clearData() {
-        setPublicPlaceId('');
+        setPublicPlaceId(0);
         setPublicPlaceCep('');
         setPublicPlaceInitialNumber('');
         setPublicPlaceFinalNumber('');
-        setIdNeighborhood('');
-        setIdTypePublicPlace('');
+        setIdNeighborhood(0);
+        setIdTypePublicPlace(0);
     }
 
     function clearError() {

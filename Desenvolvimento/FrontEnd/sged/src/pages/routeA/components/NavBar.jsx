@@ -40,7 +40,7 @@ export default function NavBar() {
   let getUser = true;
 
   const encerateSession = () => {
-    session.defaultToken();
+    session.closeSession();
     server.clearSegment("login");
   };
 
@@ -50,7 +50,7 @@ export default function NavBar() {
 
       if (session.getToken()) {
         const data = await session.getUser();
-        if (data) user.getData(data);
+        if (data) user.setData(data);
       }
     };
 
@@ -97,7 +97,7 @@ export default function NavBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={() => server.clearSegment("profile")}>Perfil</MenuItem>
+      <MenuItem onClick={() => server.clearSegment("perfil")}>Perfil</MenuItem>
       <MenuItem onClick={() => encerateSession()}>Sair</MenuItem>
     </Menu>
   );
@@ -174,7 +174,7 @@ export default function NavBar() {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' }, marginLeft: 5 }}
           >
-            {user.personName}
+            {user.personName.split(' ')[0]}
           </Typography>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton

@@ -61,7 +61,7 @@ function SessionService() {
         var autentication = false;
 
         try {
-            await connection.endpoint("Sessao").action("Autentication").post(object.setData());
+            await connection.endpoint("Sessao").action("Autentication").post(object.getData());
 
             if (connection.response.status) {
                 setToken(connection.response.data.response);
@@ -95,7 +95,7 @@ function SessionService() {
     const closeSession = async () => {
         const tokenUser = getToken();
 
-        if (token) {
+        if (tokenUser) {
             const data = {
                 token: tokenUser
             };

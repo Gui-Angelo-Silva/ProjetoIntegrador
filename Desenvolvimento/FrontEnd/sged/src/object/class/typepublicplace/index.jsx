@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 function TypePublicPlaceClass() {
-    const [typePublicPlaceId, setTypePublicPlaceId] = useState('');
+    const [typePublicPlaceId, setTypePublicPlaceId] = useState(0);
     const [typePublicPlaceIc, setTypePublicPlaceIc] = useState('');
     const [typePublicPlaceDescription, setTypePublicPlaceDescription] = useState('');
     const [errorTypePublicPlaceIc, setErrorTypePublicPlaceIc] = useState('');
@@ -14,14 +14,8 @@ function TypePublicPlaceClass() {
     function gender() {
         return "o";
     }
-
-    function getData(object) {
-        setTypePublicPlaceId(object.id);
-        setTypePublicPlaceIc(object.codigoInformativo);
-        setTypePublicPlaceDescription(object.descricao);
-    }
-
-    function setData() {
+    
+    function getData() {
         return {
             id: typePublicPlaceId,
             codigoInformativo: typePublicPlaceIc,
@@ -29,8 +23,14 @@ function TypePublicPlaceClass() {
         };
     }
 
+    function setData(object) {
+        setTypePublicPlaceId(object.id);
+        setTypePublicPlaceIc(object.codigoInformativo);
+        setTypePublicPlaceDescription(object.descricao);
+    }
+
     function clearData() {
-        setTypePublicPlaceId('');
+        setTypePublicPlaceId(0);
         setTypePublicPlaceIc('');
         setTypePublicPlaceDescription('');
     }

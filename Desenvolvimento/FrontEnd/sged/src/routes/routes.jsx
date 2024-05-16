@@ -4,10 +4,7 @@ import Login from '../pages/allRoutes/autentication/login';
 import Development from '../pages/allRoutes/utility/development';
 import NotFound from '../pages/allRoutes/utility/notfound';
 import NotPermission from '../pages/allRoutes/utility/notpermission';
-import RouteA from './acessRoute/routesA';
-import RouteB from './acessRoute/routesB';
-import RouteC from './acessRoute/routesC';
-import RouteD from './acessRoute/routesD';
+import RoutesAdmin from './acessRoute/routesAdmin';
 
 export default function AppRoutes() {
 
@@ -16,11 +13,11 @@ export default function AppRoutes() {
             <ServerProvider>
                 <Routes>
                     <Route path="/login" element={<Login />} />
-                    <Route path="/development" element={<Development />} />
-                    <Route path="/notfound" element={<NotFound />} />
-                    <Route path="/notpermission" element={<NotPermission />} />
+                    <Route path="/em-desenvolvimento" element={<Development />} />
+                    <Route path="/pagina-inexistente" element={<NotFound />} />
+                    <Route path="/acesso-negado" element={<NotPermission />} />
                 </Routes>
-                <RouteA />
+                <RoutesAdmin />
             </ServerProvider>
         </Router>
     );

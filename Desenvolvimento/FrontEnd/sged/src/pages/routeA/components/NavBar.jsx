@@ -40,7 +40,7 @@ export default function NavBar() {
   let getUser = true;
 
   const encerateSession = () => {
-    session.defaultToken();
+    session.closeSession();
     server.clearSegment("login");
   };
 
@@ -174,7 +174,7 @@ export default function NavBar() {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' }, marginLeft: 5 }}
           >
-            {user.personName}
+            {user.personName.split(' ')[0]}
           </Typography>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton

@@ -43,7 +43,7 @@ export default function RouteA() {
             <Route path="/controle/etapa-tipo-documento" element={<StageDocumentType  />}></Route>
             <Route path="/controle/fiscal" element={<Supervisor  />}></Route>
 
-            <Route path="/documento" element={<Document />}></Route>
+            <Route path="/documentos" element={<Document />}></Route>
             <Route path="/teste" element={<Test />}></Route>
         </Routes>
     );

@@ -64,7 +64,7 @@ export default function SideBarAdm() {
                     <SubMenuItem
                         icon={DescriptionIcon}
                         text="Documentos"
-                        onClick={() => clearSegment("documento")}
+                        onClick={() => clearSegment("documentos")}
                         isSidebarExpanded={isSidebarExpanded}
                     />
                 </div>

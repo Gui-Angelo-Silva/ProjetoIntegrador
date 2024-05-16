@@ -15,7 +15,6 @@ import SessionService from '../../../../object/service/session';
 import ConnectionService from '../../../../object/service/connection';
 import UserClass from '../../../../object/class/user';
 import LoginClass from '../../../../object/class/login';
-import ListModule from '../../../../object/modules/list';
 import ControlModule from '../../../../object/modules/control';
 
 export default function User() {
@@ -30,7 +29,6 @@ export default function User() {
   const connection = new ConnectionService();
   const user = UserClass();
   const login = LoginClass();
-  const list = ListModule();
   const control = ControlModule();
 
   const [inEdit, setInEdit] = useState(false);
@@ -41,16 +39,11 @@ export default function User() {
   const openCloseEdit = (boolean) => {
     setInEdit(boolean);
 
-    !boolean ? (selectUser(), user.clearError()) : undefined;
-  };
-
-  const selectUser = async () => {
-    user.setData(await session.getUser());
+    !boolean ? (GetUser(), user.clearError()) : undefined;
   };
 
   const GetUser = async () => {
-    await connection.endpoint("Usuario").get();
-    list.setList(connection.response.data);
+    user.setData(await session.getUser());
   };
 
   const PutUser = async () => {
@@ -58,9 +51,9 @@ export default function User() {
 
     if (user.verifyData()) {
       setInOperation('Enviando Dados...');
-      let response = await connection.endpoint("Usuario").put(user);
+      await connection.endpoint("Usuario").put(user.getData());
 
-      if (!response.status) { user.getError(response.data); setInOperation(''); }
+      if (!connection.response.status) { user.setError(connection.response.data); setInOperation(''); }
       else {
         setInOperation('Atualizando Sessão...');
 
@@ -77,27 +70,34 @@ export default function User() {
 
   useEffect(() => {
     GetUser();
-    selectUser();
 
     const getDataLogin = () => {
       const data = session.getLogin();
+
       if (data) {
         login.setPersistLogin(true);
       }
+    
     }; getDataLogin();
   }, []);
 
   useEffect(() => {
     const UpdateSession = async () => {
       if (sucessUpdate === 'Sucesso') {
+        await session.closeSession();
+
         const response = await session.createSession(login);
+
         if (response.validation) {
           setSucessUpdate(true);
           openCloseEdit(false);
+
         } else {
           console.log(response.message);
         }
+
       }; setInOperation('');
+
     }; UpdateSession();
   }, [sucessUpdate]);
 
@@ -114,7 +114,7 @@ export default function User() {
           <div className="min-h-screen" style={{ flex: 2, marginLeft: '80px', marginRight: '40px', marginTop: -5 }}>
             <div className="overflow-y-auto" style={{ maxHeight: 'calc(100vh - 80px)', marginBottom: '5000px' }}>
               <br />
-              <h3 className="text-2xl font-semibold text-gray-600">Editar Usuário</h3>
+              <h3 className="text-2xl font-semibold text-gray-600">{inEdit? "Editar Dados" : "Perfil"}</h3>
               <br /><br />
               <div className="form-group">
                 <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

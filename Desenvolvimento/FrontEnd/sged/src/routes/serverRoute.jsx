@@ -19,7 +19,7 @@ export const ServerProvider = ({ children }) => {
     let inOperation = false;
     const [verifyExistPage, setVerifyExistPage] = useState(false);
     const [callFunctionRoute, setCallFunctionRoute] = useState(false);
-    const [liberateNavigate, setLiberateNavigate] = useState(true);
+    const [liberateNavigate, setLiberateNavigate] = useState(false);
     const montage = useMontage();
     const session = Session();
     const navigate = useNavigate();

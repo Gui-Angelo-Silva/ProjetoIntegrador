@@ -95,7 +95,7 @@ function SessionService() {
     const closeSession = async () => {
         const tokenUser = getToken();
 
-        if (token) {
+        if (tokenUser) {
             const data = {
                 token: tokenUser
             };

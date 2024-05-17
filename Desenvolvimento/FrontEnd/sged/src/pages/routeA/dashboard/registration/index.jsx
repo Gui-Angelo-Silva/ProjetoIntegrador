@@ -47,8 +47,6 @@ export default function Registrations() {
 
     function filterByCategory() {
         const filteredCategories = {};
-        console.log(selectedCategory)
-
 
         for (const [categoryName, categoryCards] of Object.entries(dataCategory)) {
             const filteredCards = categoryCards.filter((card) =>
@@ -65,10 +63,10 @@ export default function Registrations() {
 
     useEffect(() => {
         if (selectedCategory === "Todos") {
-            filterByTitle()
-            return
+            filterByTitle();
+            return;
         }
-        filterByCategory()
+        filterByCategory();
     }, [selectedCategory, dataCategory, searchFilter])
 
     //const filteredCategory = selectedCategory === "Todos" ? dataCards : dataCards.filter(x => x.module == selectedCategory);
@@ -92,7 +90,7 @@ export default function Registrations() {
                         <option key="Usuário" value="Usuario">
                             Usuário
                         </option>
-                        <option key="Processo" value="Processo">
+                        <option key="Configuração de Processo" value="Configuração de Processo">
                             Processo
                         </option>
                     </select>

@@ -118,35 +118,35 @@ function Cards() {
                 image: ImgTipoProcesso,
                 tooltip: "Abrir a Página de Controle de Tipo Processo",
                 title: "Tipo Processo",
-                module: "Processo"
+                module: "Configuração de Processo"
             },
             {
                 onClick: () => addSegment("etapa"),
                 image: ImgEtapa,
                 tooltip: "Abrir a Página de Controle de Etapa",
                 title: "Etapa",
-                module: "Processo"
+                module: "Configuração de Processo"
             },
             {
                 onClick: () => addSegment("tipo-documento"),
                 image: ImgTipoDocumento,
                 tooltip: "Abrir a Página de Controle de Tipo Documento",
                 title: "Tipo Documento",
-                module: "Processo"
+                module: "Configuração de Processo"
             },
             {
                 onClick: () => addSegment("etapa-tipo-documento"),
                 image: ImgTipoDocumentoEtapa,
                 tooltip: "Abrir a Página de Controle de Tipo Documento Etapa",
                 title: "Tipo Doc. Etapa",
-                module: "Processo"
+                module: "Configuração de Processo"
             }
             // {
             //     onClick: () => inDevelopment("Controle de Documento Processo"),
             //     image: ImgDocumentoProcesso,
             //     tooltip: "Abrir a Página de Controle de Documento Processo",
             //     title: "Doc. Processo",
-            //     module: "Processo"
+            //     module: "Configuração de Processo"
             // }
         ]
     }

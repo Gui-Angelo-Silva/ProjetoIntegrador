@@ -16,8 +16,6 @@ function ApiService() {
 
   const headerConfig = () => {
     const auth = token.getData();
-    console.log(auth);
-
     if (auth) {
       return {
         headers: {

@@ -11,7 +11,7 @@ const CardRegistration = ({ srcImage, title, module, onClick }) => {
         variantStyle = "bg-[#c8d9db] hover:bg-[#005A66] text-[#005A66] truncate";
     } else if (module === "Usuario") {
         variantStyle = "bg-[#cde3e7] hover:bg-[#4DA8B6] text-[#4DA8B6] truncate";
-    } else if (module === "Processo") {
+    } else if (module === "Configuração de Processo") {
         variantStyle = "bg-[#d1eaee] hover:bg-[#59C3D3] text-[#59C3D3] truncate";
     }
 
@@ -33,7 +33,7 @@ const CardRegistration = ({ srcImage, title, module, onClick }) => {
 CardRegistration.propTypes = {
     srcImage: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
-    module: PropTypes.oneOf(["Imovel", "Usuario", "Processo"]).isRequired,
+    module: PropTypes.oneOf(["Imovel", "Usuario", "Configuração de Processo"]).isRequired,
     onClick: PropTypes.func.isRequired
 };
 

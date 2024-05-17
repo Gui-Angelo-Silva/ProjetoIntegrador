@@ -41,6 +41,7 @@ export default function City() {
         city.clearError();
 
         if (!boolean) {
+            selectBox.setLastSelected(city.idState);
             city.clearData();
         }
     };
@@ -50,6 +51,7 @@ export default function City() {
         city.clearError();
 
         if (!boolean) {
+            selectBox.setLastSelected(city.idState);
             city.clearData();
         }
     };
@@ -178,14 +180,21 @@ export default function City() {
     }, [updateData]);
 
     useEffect(() => { // Para atualizar as opções do Select bem como o valor padrão selecionado
-        if (!modalInsert && !modalEdit && !modalDelete) {
+        if (listState.list.length !== 0) {
             selectBox.updateOptions(listState.list, "id", "nomeEstado");
-            selectBox.selectOption(listState.list[0]?.id);
+
+            if (!city.idState) {
+                selectBox.selectOption(selectBox.lastSelected? selectBox.lastSelected : listState.list[0]?.id);
+                selectBox.setLastSelected(0);
+            }
+        } else {
+            selectBox.updateOptions([]);
+            selectBox.selectOption(0);
         }
-    }, [listState.list, modalInsert, modalEdit, modalDelete]);
+    }, [listState.list]);
 
     useEffect(() => { // Para atualizar o idEstao conforme o valor selecionado muda
-        city.setIdState(selectBox.selectedOption.value ? selectBox.selectedOption.value : '');
+        city.setIdState(selectBox.selectedOption.value ? selectBox.selectedOption.value : 0);
     }, [selectBox.selectedOption]);
 
     const getUfEstado = (idEstado) => {

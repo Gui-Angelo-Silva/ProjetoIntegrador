@@ -3,6 +3,12 @@ import PropTypes from 'prop-types';
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 
 const TableNavigation = ({ onPageChange, currentPage, totalPages }) => {
+    React.useEffect(() => {
+        if (currentPage > totalPages) {
+            onPageChange(totalPages);
+        }
+    }, [currentPage, totalPages, onPageChange]);
+
     return (
         <>
             <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">

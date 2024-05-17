@@ -12,7 +12,7 @@ const TableDashboard = ({ title, data, icon }) => {
                     </h3>
                 </div>
                 {data.map((item, index) => (
-                    <p key={index} className="px-4 py-2 text-gray-700 border-t-[1px] border-slate-200">
+                    <p key={index} className="px-4 py-2 text-gray-700 border-t-[1px] border-slate-200 text-sm">
                         {item}
                     </p>
                 ))}

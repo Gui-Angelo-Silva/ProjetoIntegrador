@@ -8,8 +8,8 @@ const LinkTitle = ({ pageName }) => {
             <Link to="/controle">
                 <Title title="Controle" />
             </Link>
-            <h2 className="text-2xl font-semibold text-gray-600 pr-2">/</h2>
-            <h2 className="text-2xl font-semibold text-gray-800">{pageName}</h2>
+            <h2 className="text-2xl font-regular text-gray-600 pr-2">/</h2>
+            <h2 className="text-2xl font-regular text-gray-800">{pageName}</h2>
         </div>
     )
 }

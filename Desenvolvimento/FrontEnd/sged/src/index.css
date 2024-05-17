@@ -1,11 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "@fontsource/lexend";
+@import "@fontsource/lexend/400.css";
+@import "@fontsource/lexend/400-italic.css";
 
 html {
     height: 100%;
     width: 100%;
     overflow: hidden;
+}
+
+body {
+    font-family: "Lexend";
 }
 
 .scrollable-container::-webkit-scrollbar {

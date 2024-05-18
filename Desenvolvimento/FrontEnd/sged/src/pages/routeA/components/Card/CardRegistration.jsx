@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 const CardRegistration = ({ srcImage, title, module, onClick }) => {
     const [isHovered, setIsHovered] = useState(false);
 
-    let baseStyle = "flex flex-col items-center justify-center w-[140px] h-[140px] md:w-[148px] md:h-[148px] transition ease-in-out delay-75 hover:scale-105 shadow-xl mb-3 rounded-xl text-lg font-semibold hover:text-white";
+    let baseStyle = "flex flex-col items-center justify-center w-[140px] h-[140px] md:w-[148px] md:h-[148px] transition ease-in-out delay-75 hover:scale-105 shadow-xl mb-3 rounded-xl text-lg font-regular hover:text-white";
     let variantStyle = "";
 
     if (module === "Imovel") {

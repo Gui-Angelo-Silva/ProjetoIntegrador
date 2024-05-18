@@ -5,7 +5,7 @@ const TableHeader = ({ headers, totalColumns }) => {
     return (
       <div className="grid grid-cols-2 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
         {headers.map((header, index) => (
-          <div key={index} className="flex justify-center text-white text-lg font-semibold">
+          <div key={index} className="flex justify-center text-white text-lg font-regular">
             <p className='truncate'>
               {header}
             </p>
@@ -18,7 +18,7 @@ const TableHeader = ({ headers, totalColumns }) => {
     return (
       <div className="grid grid-cols-3 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
         {headers.map((header, index) => (
-          <div key={index} className="flex justify-center text-white text-lg font-semibold">
+          <div key={index} className="flex justify-center text-white text-lg font-regular">
             <p className='truncate'>
               {header}
             </p>
@@ -31,7 +31,7 @@ const TableHeader = ({ headers, totalColumns }) => {
     return (
       <div className="grid grid-cols-4 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
         {headers.map((header, index) => (
-          <div key={index} className="flex justify-center text-white text-lg font-semibold">
+          <div key={index} className="flex justify-center text-white text-lg font-regular">
             <p className='truncate'>
               {header}
             </p>
@@ -44,7 +44,7 @@ const TableHeader = ({ headers, totalColumns }) => {
     return (
       <div className="grid grid-cols-5 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
         {headers.map((header, index) => (
-          <div key={index} className="flex justify-center text-white text-lg font-semibold">
+          <div key={index} className="flex justify-center text-white text-lg font-regular">
             <p className='truncate'>
               {header}
             </p>
@@ -57,7 +57,7 @@ const TableHeader = ({ headers, totalColumns }) => {
     return (
       <div className="grid grid-cols-6 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
         {headers.map((header, index) => (
-          <div key={index} className="flex justify-center text-white text-lg font-semibold">
+          <div key={index} className="flex justify-center text-white text-lg font-regular">
             <p className='truncate'>
               {header}
             </p>
@@ -70,7 +70,7 @@ const TableHeader = ({ headers, totalColumns }) => {
     return (
       <div className="grid grid-cols-7 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
         {headers.map((header, index) => (
-          <div key={index} className="flex justify-center text-white text-lg font-semibold">
+          <div key={index} className="flex justify-center text-white text-lg font-regular">
             <p className='truncate'>
               {header}
             </p>
@@ -83,7 +83,7 @@ const TableHeader = ({ headers, totalColumns }) => {
     return (
       <div className="grid grid-cols-8 w-full bg-[#58AFAE] rounded-t-[20px] h-10 items-center">
         {headers.map((header, index) => (
-          <div key={index} className="flex justify-center text-white text-lg font-semibold">
+          <div key={index} className="flex justify-center text-white text-lg font-regular">
             <p className='truncate'>
               {header}
             </p>

@@ -3,7 +3,7 @@ import { useState } from 'react';
 function CityClass() {
   const [cityName, setCityName] = useState('');
   const [idState, setIdState] = useState('');
-  const [cityId, setCityId] = useState('');
+  const [cityId, setCityId] = useState(0);
 
   const [errorCityName, setErrorCityName] = useState('');
   const [errorIdState, setErrorIdState] = useState('');
@@ -16,13 +16,7 @@ function CityClass() {
     return "a";
   }
 
-  function getData(object) {
-    setCityName(object.nomeCidade);
-    setIdState(object.idEstado);
-    setCityId(object.id);
-  }
-
-  function setData() {
+  function getData() {
     return {
       id: cityId,
       nomeCidade: cityName,
@@ -30,10 +24,16 @@ function CityClass() {
     };
   }
 
+  function setData(object) {
+    setCityName(object.nomeCidade);
+    setIdState(object.idEstado);
+    setCityId(object.id);
+  }
+
   function clearData() {
     setCityName('');
     setIdState('');
-    setCityId('');
+    setCityId(0);
   }
 
   function clearError() {

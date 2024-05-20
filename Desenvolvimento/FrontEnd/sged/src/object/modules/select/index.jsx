@@ -2,8 +2,9 @@ import debounce from 'lodash.debounce';
 import { useState } from 'react';
 
 function ControlModule() {
-    const [selectedOption, setSelectedOption] = useState({});
     const [options, setOptions] = useState([]);
+    const [selectedOption, setSelectedOption] = useState({});
+    const [lastSelected, setLastSelected] = useState({});
 
     const updateOptions = (list, atributeId, atributeName) => {
         const updatedOptions = list.map(item => ({
@@ -44,8 +45,10 @@ function ControlModule() {
 
     return {
         // Atributos
-        selectedOption,
         options,
+        selectedOption,
+        lastSelected,
+        setLastSelected,
 
         // Funções
         updateOptions,

@@ -4,10 +4,10 @@ import PublicPlaceClass from "../publicplace";
 function RealStateClass() {
     const publicplaceClass = PublicPlaceClass();
 
-    const [realStateId, setRealStateId] = useState("");
+    const [realStateId, setRealStateId] = useState(0);
     const [realStateNumber, setRealStateNumber] = useState("");
-    const [idPublicPlace, setIdPublicPlace] = useState("");
-    const [idCitizen, setIdCitizen] = useState("");
+    const [idPublicPlace, setIdPublicPlace] = useState(0);
+    const [idCitizen, setIdCitizen] = useState(0);
 
     const [errorRealStateNumber, setErrorRealStateNumber] = useState("");
     const [errorIdPublicPlace, setErrorIdPublicPlace] = useState("");
@@ -21,14 +21,7 @@ function RealStateClass() {
         return "o";
     }
 
-    function getData(object) {
-        setRealStateId(object.id);
-        setRealStateNumber(object.numeroImovel);
-        setIdPublicPlace(object.idLogradouro);
-        setIdCitizen(object.idMunicipe);
-    }
-
-    function setData() {
+    function getData() {
         return {
             id: realStateId,
             numeroImovel: realStateNumber,
@@ -37,11 +30,18 @@ function RealStateClass() {
         };
     }
 
+    function setData(object) {
+        setRealStateId(object.id);
+        setRealStateNumber(object.numeroImovel);
+        setIdPublicPlace(object.idLogradouro);
+        setIdCitizen(object.idMunicipe);
+    }
+
     function clearData() {
-        setRealStateId('');
+        setRealStateId(0);
         setRealStateNumber('');
-        setIdPublicPlace('');
-        setIdCitizen('');
+        setIdPublicPlace(0);
+        setIdCitizen(0);
     }
 
     function clearError() {

@@ -1,10 +1,8 @@
-import StorageModule from '../../modules/storage';
-import CookieModule from '../../modules/cookie';
+import TokenClass from '../../class/token';
 
 function ApiService() {
 
-  const storage = StorageModule();
-  const cookie = CookieModule();
+  const token = TokenClass();
   const baseURL = "https://localhost:7096/api/";
 
   const appendRoute = (route) => {
@@ -12,19 +10,17 @@ function ApiService() {
   };
 
   const updateToken = (newToken) => {
-    //storage.setLocal('token', newToken? newToken.startsWith('Front ') ? newToken.replace('Front ', '') : newToken : null);
-    cookie.setCookie("token", newToken? newToken.startsWith('Front ') ? newToken.replace('Front ', '') : newToken : null, 1);
+    console.log(newToken);
+    token.setData(newToken? newToken.startsWith('Front ') ? newToken.replace('Front ', '') : newToken : null);
   };
 
   const headerConfig = () => {
-    //const token = storage.getLocal("token");
-    const token = cookie.getCookie("token");
-
-    if (token) {
+    const auth = token.getData();
+    if (auth) {
       return {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Front ${token}`
+          Authorization: `Front ${auth}`
         }
       };
     } else {

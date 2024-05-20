@@ -49,14 +49,16 @@ export default class ConnectionService {
             //if (result.headers.get('Authorization')) this.api.updateToken(result.headers.get('Authorization'));
 
             if (this.isSuccessResponse(result)) {
-                this.messageRequest = { type: 'sucess', content: result.data.message? result.data.message : 'Requisição realizada com sucesso!' };
-                return { status: true, data: result.data.data? result.data.data : result.data };
+                const actionMap = { GET: "adquiridos", POST: "inseridos", PUT: "alterados", DELETE: "removidos" };
+
+                this.messageRequest = { type: 'sucess', content: result.data.message ? result.data.message : `Dados ${actionMap[this.typeMethod]} com sucesso!` };
+                return { status: true, data: result.data.data ? result.data.data : result.data };
 
             } else {
-                this.messageRequest = { type: 'bad', content: result.data.message? result.data.message : `Requisição negada!` };
-                return { status: false, data: result.data.data? result.data.data : result.data };
+                this.messageRequest = { type: 'bad', content: result.data.message ? result.data.message : `Requisição negada!` };
+                return { status: false, data: result.data.data ? result.data.data : result.data };
             }
-            
+
         } catch (error) {
             if (this.isNoServerResponse(error)) {
                 this.messageRequest = { type: 'error', content: 'Sem resposta do servidor!' };
@@ -65,14 +67,14 @@ export default class ConnectionService {
                 this.messageRequest = { type: 'error', content: 'Erro ao executar a requisição!' };
             }
 
-            return { status: false, data: null };
+            return { status: false, data: error.response.data ? error.response.data : null };
         }
     }
 
     isSuccessResponse(result) {
         return result.status && [200, 201].includes(result.status);
     }
-    
+
     isNoServerResponse(error) {
         return (
             (error.status && [500].includes(error.result.status)) || // Verifica se o status é 500
@@ -93,7 +95,7 @@ export default class ConnectionService {
     }
 
     async postMethod(parameter) {
-        return parameter ? 
+        return parameter ?
             await axios.post(this.url, parameter, this.api.headerConfig()) :
             await axios.post(this.url, this.api.headerConfig());
     }
@@ -103,7 +105,7 @@ export default class ConnectionService {
     }
 
     async putMethod(parameter) {
-        return parameter ? 
+        return parameter ?
             await axios.put(this.url, parameter, this.api.headerConfig()) :
             await axios.put(this.url, this.api.headerConfig());
     }
@@ -113,13 +115,13 @@ export default class ConnectionService {
     }
 
     async deleteMethod(parameter) {
-        return parameter ? 
+        return parameter ?
             await axios.delete(`${this.url}/${parameter}`, this.api.headerConfig()) :
             await axios.delete(this.url, this.api.headerConfig());
     }
 
     messagePopUp() {
-        if (!this.response.status) {
+        if (!this.response.status || (this.typeMethod !== "GET" || this.getPopUp)) {
             console.log(this.messageRequest);
         }
     }
@@ -145,13 +147,13 @@ export default class ConnectionService {
     }
 
     getList() {
-        return this.response.status?
+        return this.response.status ?
             this.response.data
             : [];
     }
 
     getObject() {
-        return this.response.status?
+        return this.response.status ?
             this.response.data
             : null;
     }

@@ -19,7 +19,7 @@ export const ServerProvider = ({ children }) => {
     let inOperation = false;
     const [verifyExistPage, setVerifyExistPage] = useState(false);
     const [callFunctionRoute, setCallFunctionRoute] = useState(false);
-    const [liberateNavigate, setLiberateNavigate] = useState(true);
+    const [liberateNavigate, setLiberateNavigate] = useState(false);
     const montage = useMontage();
     const session = Session();
     const navigate = useNavigate();
@@ -43,7 +43,7 @@ export const ServerProvider = ({ children }) => {
 
     const inDevelopment = useCallback((message) => {
         sessionStorage.setItem("page: in development", message);
-        clearSegment("development");
+        clearSegment("em-desenvolvimento");
     }, []);
 
     const addSegment = useCallback((route) => {
@@ -67,7 +67,7 @@ export const ServerProvider = ({ children }) => {
             const newPath = buildPath(segments.slice(1, index).join('/'), null);
             navigate(newPath);
         } else {
-            clearSegment("notfound");
+            clearSegment("pagina-inexistente");
         }
     }, []);
 
@@ -82,7 +82,7 @@ export const ServerProvider = ({ children }) => {
 
             if (callFunctionRoute) {
 
-                if (!autenticate && !["", "login", "notfound", "notpermission", "development"].includes(firstRoute)) {
+                if (!autenticate && !["", "login", "pagina-inexistente", "acesso-negado", "em-desenvolvimento"].includes(firstRoute)) {
                     clearSegment("login");
                 }
                 setCallFunctionRoute(false);
@@ -90,11 +90,11 @@ export const ServerProvider = ({ children }) => {
             } else {
                 setLiberateNavigate(false);
 
-                if (["", "notfound", "notpermission", "development"].includes(firstRoute)) {
-                    clearSegment(autenticate ? "home" : "login");
+                if (["", "pagina-inexistente", "acesso-negado", "em-desenvolvimento"].includes(firstRoute)) {
+                    clearSegment(autenticate ? "principal" : "login");
 
                 } else if (autenticate && ["login"].includes(firstRoute)) {
-                    clearSegment("home");
+                    clearSegment("principal");
 
                 } else if (!autenticate && !["login"].includes(firstRoute)) {
                     clearSegment("login");
@@ -129,7 +129,7 @@ export const ServerProvider = ({ children }) => {
 
                 if (!montage.componentMontage) {
                     sessionStorage.setItem("page: non-existent", window.location.pathname);
-                    clearSegment("notfound");
+                    clearSegment("pagina-inexistente");
                 }
             } catch (error) {
                 return;

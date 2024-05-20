@@ -48,7 +48,7 @@ function SupervisorClass() {
   const handleImageClick = person.handleImageClick;
   person.effects();
 
-  const [supervisorId, setSupervisorId] = useState('');
+  const [supervisorId, setSupervisorId] = useState(0);
 
   function propertyName() {
     return "Fiscal " + personName;
@@ -58,16 +58,16 @@ function SupervisorClass() {
     return "o";
   }
 
-  function getData(object) {
-    getDataPerson(object);
-    setSupervisorId(object.id);
-  }
-
-  function setData() {
+  function getData() {
     return {
-      ...setDataPerson(),
+      ...getDataPerson(),
       id: supervisorId,
     }
+  }
+
+  function setData(object) {
+    setDataPerson(object);
+    setSupervisorId(object.id);
   }
 
   function getError(json) {
@@ -76,7 +76,7 @@ function SupervisorClass() {
 
   function clearData() {
     clearDataPerson();
-    setSupervisorId('');
+    setSupervisorId(0);
   }
 
   function clearError() {

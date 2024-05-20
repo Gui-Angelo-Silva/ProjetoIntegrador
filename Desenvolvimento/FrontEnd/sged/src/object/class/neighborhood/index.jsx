@@ -2,8 +2,8 @@ import { useState } from 'react';
 
 function NeighborhoodClass() {
   const [neighborhoodName, setNeighborhoodName] = useState('');
-  const [idCity, setIdCity] = useState('');
-  const [neighborhoodId, setNeighborhoodId] = useState('');
+  const [idCity, setIdCity] = useState(0);
+  const [neighborhoodId, setNeighborhoodId] = useState(0);
 
   const [errorNeighborhoodName, setErrorNeighborhoodName] = useState('');
   const [errorIdCity, setErrorIdCity] = useState('');
@@ -16,13 +16,7 @@ function NeighborhoodClass() {
     return "o";
   }
 
-  function getData(object) {
-    setNeighborhoodName(object.nomeBairro);
-    setIdCity(object.idCidade);
-    setNeighborhoodId(object.id);
-  }
-
-  function setData() {
+  function getData() {
     return {
       id: neighborhoodId,
       nomeBairro: neighborhoodName,
@@ -30,10 +24,16 @@ function NeighborhoodClass() {
     };
   }
 
+  function setData(object) {
+    setNeighborhoodName(object.nomeBairro);
+    setIdCity(object.idCidade);
+    setNeighborhoodId(object.id);
+  }
+
   function clearData() {
     setNeighborhoodName('');
-    setIdCity('');
-    setNeighborhoodId('');
+    setIdCity(0);
+    setNeighborhoodId(0);
   }
 
   function clearError() {

@@ -5,7 +5,7 @@ function TypeUserClass() {
   const [typeUserName, setTypeUserName] = useState("");
   const [typeUserAcessLevel, setTypeUserAcessLevel] = useState("A");
   const [typeUserDescription, setTypeUserDescription] = useState("");
-  const [typeUserId, setTypeUserId] = useState('');
+  const [typeUserId, setTypeUserId] = useState(0);
 
   const [errorTypeUserName, setErrorTypeUserName] = useState("");
   const [errorTypeUserDescrition, setErrorTypeUserDescrition] = useState("");
@@ -18,14 +18,7 @@ function TypeUserClass() {
     return "o";
   }
 
-  function getData(object) {
-    setTypeUserName(object.nomeTipoUsuario);
-    setTypeUserAcessLevel(object.nivelAcesso);
-    setTypeUserDescription(object.descricaoTipoUsuario);
-    setTypeUserId(object.id);
-  }
-
-  function setData() {
+  function getData() {
     return {
       id: typeUserId,
       nomeTipoUsuario: typeUserName,
@@ -34,11 +27,18 @@ function TypeUserClass() {
     };
   }
 
+  function setData(object) {
+    setTypeUserName(object.nomeTipoUsuario);
+    setTypeUserAcessLevel(object.nivelAcesso);
+    setTypeUserDescription(object.descricaoTipoUsuario);
+    setTypeUserId(object.id);
+  }
+
   function clearData() {
     setTypeUserName('');
     setTypeUserAcessLevel('A');
     setTypeUserDescription('');
-    setTypeUserId('');
+    setTypeUserId(0);
   }
 
   function clearError() {

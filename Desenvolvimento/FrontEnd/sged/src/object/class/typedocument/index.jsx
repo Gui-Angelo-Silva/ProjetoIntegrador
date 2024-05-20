@@ -70,7 +70,7 @@ function TypeDocumentClass() {
         }
 
         if (typeDocumentDescription) {
-            if (typeDocumentDescription.length < 5) {
+            if (typeDocumentDescription.length < 3) {
                 description = "A descrição precisa conter no mínimo 3 letras!";
                 status = false;
             }

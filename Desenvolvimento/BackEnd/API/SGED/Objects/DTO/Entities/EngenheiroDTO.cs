@@ -1,7 +1,7 @@
 ﻿using SGED.DTO.Entities;
 using SGED.Objects.Interfaces.Pessoa;
 using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
+using System.Text.Json.Serialization;
 
 namespace SGED.Objects.DTO.Entities
 {
@@ -40,6 +40,9 @@ namespace SGED.Objects.DTO.Entities
         [MinLength(8)]
         [MaxLength(8)]
         public string CreaEngenheiro { get; set; }
+
+        [JsonIgnore]
+        public ICollection<InstalacaoDTO>? InstalacoesDTOs { get; set; }
 
 
         public int CpfCnpj() => IPessoaExtensions.CpfCnpj(this);

@@ -27,6 +27,6 @@ namespace SGED.Objects.Models.Entities
         [ForeignKey("idtipologradouro")]
         public int IdTipoLogradouro { get; set; }
 
-        public ICollection<Imovel>? Imovels { get; set; }
+        public ICollection<Imovel>? Imoveis { get; set; }
     }
 }

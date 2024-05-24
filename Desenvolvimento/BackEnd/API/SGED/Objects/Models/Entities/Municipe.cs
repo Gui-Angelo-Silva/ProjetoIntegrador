@@ -30,6 +30,6 @@ namespace SGED.Objects.Models.Entities
         [Column("rgiepessoa")]
         public string RgIePessoa { get; set; }
 
-        public ICollection<Imovel>? Imovels { get; set; }
+        public ICollection<Imovel>? Imoveis { get; set; }
     }
 }

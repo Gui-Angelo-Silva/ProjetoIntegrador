@@ -12,7 +12,7 @@ namespace SGED.Objects.Models.Entities
         [Column("idbairro")]
         public int Id { get; set; }
 
-        [Column("bairro")]
+        [Column("nomebairro")]
         public string NomeBairro { get; set; }
 
         public Cidade? Cidade { get; set; }

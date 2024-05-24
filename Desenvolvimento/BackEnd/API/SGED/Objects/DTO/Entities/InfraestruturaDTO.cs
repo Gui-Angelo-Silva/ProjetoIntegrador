@@ -9,7 +9,16 @@ namespace SGED.Objects.DTO.Entities
 
         [Required(ErrorMessage = "O nome da infraestrutura é requerido!")]
         [MinLength(3)]
-        [MaxLength(30)]
-        public string NomeInfraestruturaa { get; set; }
+        [MaxLength(50)]
+        public string NomeInfraestrutura { get; set; }
+
+        [JsonIgnore]
+        public TipoInfraestruturaDTO? TipoInfraestruturaDTO { get; set; }
+
+        [Required(ErrorMessage = "O tipo de infraestrutura é requerido!")]
+        public int IdTipoInfraestrutura { get; set; }
+
+        [JsonIgnore]
+        public ICollection<InstalacaoDTO>? InstalacoesDTOs { get; set; }
     }
 }

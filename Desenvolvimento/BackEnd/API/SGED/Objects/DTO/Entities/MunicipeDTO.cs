@@ -36,6 +36,6 @@ namespace SGED.Objects.DTO.Entities
         public string RgIePessoa { get; set; }
 
         [JsonIgnore]
-        public ICollection<ImovelDTO>? ImovelDTOs { get; set; }
+        public ICollection<ImovelDTO>? ImoveisDTOs { get; set; }
     }
 }

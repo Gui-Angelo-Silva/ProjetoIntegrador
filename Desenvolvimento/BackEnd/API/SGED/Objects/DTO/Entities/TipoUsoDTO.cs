@@ -9,9 +9,12 @@ namespace SGED.Objects.DTO.Entities
 
         [Required(ErrorMessage = "O nome do tipo uso é requerido!")]
         [MinLength(3)]
-        [MaxLength(100)]
+        [MaxLength(50)]
         public string NomeTipoUso { get; set; }
 
         public string? DescricaoTipoUso { get; set; }
+
+        [JsonIgnore]
+        public ICollection<ImovelDTO>? ImoveisDTOs { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SGED.Objects.Models.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace SGED.Objects.DTO.Entities
@@ -16,19 +17,19 @@ namespace SGED.Objects.DTO.Entities
         public string NumeroImovel { get; set; }
 
         [Required(ErrorMessage = "Área do terreno é requerida!")]
-        public float AreaTerreno { get; set; }
+        public string AreaTerreno { get; set; }
 
         [Required(ErrorMessage = "Área construida é requerida!")]
-        public float AreaConstruida { get; set; }
+        public string AreaConstruida { get; set; }
 
         [Required(ErrorMessage = "Condições do solo é requerido!")]
         public string CondicoesSolo { get; set; }
 
         [Required(ErrorMessage = "Valor venal é requerido!")]
-        public float ValorVenal { get; set; }
+        public string ValorVenal { get; set; }
 
         [Required(ErrorMessage = "Valor de mercado é requerido!")]
-        public float ValorMercado { get; set; }
+        public string ValorMercado { get; set; }
 
         [JsonIgnore]
         public LogradouroDTO? LogradouroDTO { get; set; }
@@ -65,5 +66,8 @@ namespace SGED.Objects.DTO.Entities
 
         [Required(ErrorMessage = "Contribuinte é requerido!")]
         public int IdOcupacaoAtual { get; set; }
+
+        [JsonIgnore]
+        public ICollection<InstalacaoDTO>? InstalacoesDTOs { get; set; }
     }
 }

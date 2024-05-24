@@ -9,9 +9,12 @@ namespace SGED.Objects.DTO.Entities
 
         [Required(ErrorMessage = "O nome da ocupação é requerido!")]
         [MinLength(3)]
-        [MaxLength(100)]
+        [MaxLength(50)]
         public string NomeOcupacaoAtual { get; set; }
 
         public string? DescricaoOcupacaoAtual { get; set; }
+
+        [JsonIgnore]
+        public ICollection<ImovelDTO>? ImoveisDTOs { get; set; }
     }
 }

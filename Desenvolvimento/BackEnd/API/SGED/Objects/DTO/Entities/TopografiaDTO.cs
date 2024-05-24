@@ -9,7 +9,10 @@ namespace SGED.Objects.DTO.Entities
 
         [Required(ErrorMessage = "O nome da topografia é requerido!")]
         [MinLength(3)]
-        [MaxLength(30)]
+        [MaxLength(50)]
         public string NomeTopografia { get; set; }
+
+        [JsonIgnore]
+        public ICollection<ImovelDTO>? ImoveisDTOs { get; set; }
     }
 }

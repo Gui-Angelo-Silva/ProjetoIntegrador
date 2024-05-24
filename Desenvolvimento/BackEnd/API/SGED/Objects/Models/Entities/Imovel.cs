@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using SGED.Objects.DTO.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SGED.Objects.Models.Entities
 {
@@ -12,7 +13,7 @@ namespace SGED.Objects.Models.Entities
         public string InscricaoCadastral { get; set; }
 
         [Column("numeroimovel")]
-        public string NumeroCasa { get; set; }
+        public string NumeroImovel { get; set; }
 
         [Column("areaterreno")]
         public float AreaTerreno { get; set; }
@@ -42,6 +43,23 @@ namespace SGED.Objects.Models.Entities
         public Municipe? Contribuinte { get; set; }
 
         [ForeignKey("idcontribuinte")]
-        public int IdContribuinteo { get; set; }
+        public int IdContribuinte { get; set; }
+
+        public Topografia? Topografia { get; set; }
+
+        [ForeignKey("idtopografia")]
+        public int IdTopografia { get; set; }
+
+        public TipoUso? TipoUso { get; set; }
+
+        [ForeignKey("idtipouso")]
+        public int IdTipoUso { get; set; }
+
+        public OcupacaoAtual? OcupacaoAtual { get; set; }
+
+        [ForeignKey("idocupacaoatual")]
+        public int IdOcupacaoAtual { get; set; }
+
+        public ICollection<Instalacao>? Instalacoes { get; set; }
     }
 }

@@ -8,13 +8,13 @@ namespace SGED.Context.Builders
         public static void Build(ModelBuilder modelBuilder)
         {
             // Builder
-            modelBuilder.Entity<Fiscal>().HasKey(b => b.Id);
-            modelBuilder.Entity<Fiscal>().Property(b => b.ImagemPessoa).IsRequired();
-            modelBuilder.Entity<Fiscal>().Property(b => b.NomePessoa).HasMaxLength(70).IsRequired();
-            modelBuilder.Entity<Fiscal>().Property(b => b.EmailPessoa).IsRequired();
-            modelBuilder.Entity<Fiscal>().Property(b => b.TelefonePessoa).HasMaxLength(15).IsRequired();
-            modelBuilder.Entity<Fiscal>().Property(b => b.CpfCnpjPessoa).HasMaxLength(18).IsRequired();
-            modelBuilder.Entity<Fiscal>().Property(b => b.RgIePessoa).HasMaxLength(15).IsRequired();
+            modelBuilder.Entity<Fiscal>().HasKey(f => f.Id);
+            modelBuilder.Entity<Fiscal>().Property(f => f.ImagemPessoa).IsRequired();
+            modelBuilder.Entity<Fiscal>().Property(f => f.NomePessoa).HasMaxLength(70).IsRequired();
+            modelBuilder.Entity<Fiscal>().Property(f => f.EmailPessoa).IsRequired();
+            modelBuilder.Entity<Fiscal>().Property(f => f.TelefonePessoa).HasMaxLength(15).IsRequired();
+            modelBuilder.Entity<Fiscal>().Property(f => f.CpfCnpjPessoa).HasMaxLength(18).IsRequired();
+            modelBuilder.Entity<Fiscal>().Property(f => f.RgIePessoa).HasMaxLength(15).IsRequired();
 
 
             // Inserções

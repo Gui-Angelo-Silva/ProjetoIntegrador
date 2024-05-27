@@ -8,8 +8,8 @@ namespace SGED.Context.Builders
         public static void Build(ModelBuilder modelBuilder)
         {
             // Builder
-            modelBuilder.Entity<Topografia>().HasKey(b => b.Id);
-            modelBuilder.Entity<Topografia>().Property(b => b.NomeTopografia).HasMaxLength(50).IsRequired();
+            modelBuilder.Entity<Topografia>().HasKey(t => t.Id);
+            modelBuilder.Entity<Topografia>().Property(t => t.NomeTopografia).HasMaxLength(50).IsRequired();
 
 
             // Inserções

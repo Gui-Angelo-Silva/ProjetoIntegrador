@@ -8,13 +8,13 @@ namespace SGED.Context.Builders
         public static void Build(ModelBuilder modelBuilder)
         {
             // Builder
-            modelBuilder.Entity<Municipe>().HasKey(b => b.Id);
-            modelBuilder.Entity<Municipe>().Property(b => b.ImagemPessoa).IsRequired();
-            modelBuilder.Entity<Municipe>().Property(b => b.NomePessoa).HasMaxLength(70).IsRequired();
-            modelBuilder.Entity<Municipe>().Property(b => b.EmailPessoa).IsRequired();
-            modelBuilder.Entity<Municipe>().Property(b => b.TelefonePessoa).HasMaxLength(15).IsRequired();
-            modelBuilder.Entity<Municipe>().Property(b => b.CpfCnpjPessoa).HasMaxLength(18).IsRequired();
-            modelBuilder.Entity<Municipe>().Property(b => b.RgIePessoa).HasMaxLength(15).IsRequired();
+            modelBuilder.Entity<Municipe>().HasKey(m => m.Id);
+            modelBuilder.Entity<Municipe>().Property(m => m.ImagemPessoa).IsRequired();
+            modelBuilder.Entity<Municipe>().Property(m => m.NomePessoa).HasMaxLength(70).IsRequired();
+            modelBuilder.Entity<Municipe>().Property(m => m.EmailPessoa).IsRequired();
+            modelBuilder.Entity<Municipe>().Property(m => m.TelefonePessoa).HasMaxLength(15).IsRequired();
+            modelBuilder.Entity<Municipe>().Property(m => m.CpfCnpjPessoa).HasMaxLength(18).IsRequired();
+            modelBuilder.Entity<Municipe>().Property(m => m.RgIePessoa).HasMaxLength(15).IsRequired();
 
 
             // Inserções

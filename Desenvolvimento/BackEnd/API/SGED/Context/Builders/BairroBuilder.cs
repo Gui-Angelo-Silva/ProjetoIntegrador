@@ -10,10 +10,14 @@ namespace SGED.Context.Builders
             // Builder
             modelBuilder.Entity<Bairro>().HasKey(b => b.Id);
             modelBuilder.Entity<Bairro>().Property(b => b.NomeBairro).HasMaxLength(50).IsRequired();
-            modelBuilder.Entity<Bairro>().HasOne(b => b.Cidade).WithMany().HasForeignKey(b => b.IdCidade);
+            modelBuilder.Entity<Bairro>().Property(b => b.IdCidade).IsRequired();
 
             // Relacionamento: Cidade -> Bairro
-            modelBuilder.Entity<Cidade>().HasMany(p => p.Bairros).WithOne(b => b.Cidade).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Bairro>()
+                .HasOne(b => b.Cidade)
+                .WithMany(c => c.Bairros)
+                .HasForeignKey(b => b.IdCidade)
+                .OnDelete(DeleteBehavior.Cascade);
 
 
             // Inserções

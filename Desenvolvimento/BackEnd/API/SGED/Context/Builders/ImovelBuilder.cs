@@ -8,38 +8,62 @@ namespace SGED.Context.Builders
         public static void Build(ModelBuilder modelBuilder)
         {
             // Builder
-            modelBuilder.Entity<Imovel>().HasKey(b => b.Id);
-            modelBuilder.Entity<Imovel>().Property(b => b.InscricaoCadastral).IsRequired();
-            modelBuilder.Entity<Imovel>().Property(b => b.NumeroImovel).HasMaxLength(6).IsRequired();
-            modelBuilder.Entity<Imovel>().Property(b => b.AreaTerreno).IsRequired();
-            modelBuilder.Entity<Imovel>().Property(b => b.AreaConstruida).IsRequired();
-            modelBuilder.Entity<Imovel>().Property(b => b.CondicoesSolo).IsRequired();
-            modelBuilder.Entity<Imovel>().Property(b => b.ValorVenal).IsRequired();
-            modelBuilder.Entity<Imovel>().Property(b => b.ValorMercado).IsRequired();
-            modelBuilder.Entity<Imovel>().HasOne(b => b.Logradouro).WithMany().HasForeignKey(b => b.IdLogradouro);
-            modelBuilder.Entity<Imovel>().HasOne(b => b.Proprietario).WithMany().HasForeignKey(b => b.IdProprietario);
-            modelBuilder.Entity<Imovel>().HasOne(b => b.Contribuinte).WithMany().HasForeignKey(b => b.IdContribuinte);
-            modelBuilder.Entity<Imovel>().HasOne(b => b.Topografia).WithMany().HasForeignKey(b => b.IdTopografia);
-            modelBuilder.Entity<Imovel>().HasOne(b => b.TipoUso).WithMany().HasForeignKey(b => b.IdTipoUso);
-            modelBuilder.Entity<Imovel>().HasOne(b => b.OcupacaoAtual).WithMany().HasForeignKey(b => b.IdOcupacaoAtual);
+            modelBuilder.Entity<Imovel>().HasKey(i => i.Id);
+            modelBuilder.Entity<Imovel>().Property(i => i.InscricaoCadastral).IsRequired();
+            modelBuilder.Entity<Imovel>().Property(i => i.NumeroImovel).HasMaxLength(6).IsRequired();
+            modelBuilder.Entity<Imovel>().Property(i => i.AreaTerreno).IsRequired();
+            modelBuilder.Entity<Imovel>().Property(i => i.AreaConstruida).IsRequired();
+            modelBuilder.Entity<Imovel>().Property(i => i.CondicoesSolo).IsRequired();
+            modelBuilder.Entity<Imovel>().Property(i => i.ValorVenal).IsRequired();
+            modelBuilder.Entity<Imovel>().Property(i => i.ValorMercado).IsRequired();
+            modelBuilder.Entity<Imovel>().Property(i => i.IdLogradouro).IsRequired();
+            modelBuilder.Entity<Imovel>().Property(i => i.IdProprietario).IsRequired();
+            modelBuilder.Entity<Imovel>().Property(i => i.IdContribuinte).IsRequired(); 
+            modelBuilder.Entity<Imovel>().Property(i => i.IdTopografia).IsRequired();
+            modelBuilder.Entity<Imovel>().Property(i => i.IdTipoUso).IsRequired();
+            modelBuilder.Entity<Imovel>().Property(i => i.IdOcupacaoAtual).IsRequired();
 
-            // Relacionamento: Logradouro -> Imóvel
-            modelBuilder.Entity<Logradouro>().HasMany(p => p.Imoveis).WithOne(b => b.Logradouro).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            // Relacionamento: Logradouro -> Imovel
+            modelBuilder.Entity<Imovel>()
+                .HasOne(i => i.Logradouro)
+                .WithMany(l => l.Imoveis)
+                .HasForeignKey(i => i.IdLogradouro)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // Relacionamento: Munícipe -> Imóvel
-            modelBuilder.Entity<Municipe>().HasMany(p => p.Imoveis).WithOne(b => b.Proprietario).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            // Relacionamento: Municipe(proprietario) -> Imovel
+            modelBuilder.Entity<Imovel>()
+                .HasOne(i => i.Proprietario)
+                .WithMany(m => m.ImoveisProprietario)
+                .HasForeignKey(i => i.IdProprietario)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Relacionamento: Logradouro -> Imóvel
-            modelBuilder.Entity<Municipe>().HasMany(p => p.Imoveis).WithOne(b => b.Contribuinte).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            // Relacionamento: Municipe(contribuinte) -> Imovel
+            modelBuilder.Entity<Imovel>()
+                .HasOne(i => i.Contribuinte)
+                .WithMany(m => m.ImoveisContribuinte)
+                .HasForeignKey(i => i.IdContribuinte)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Relacionamento: Munícipe -> Imóvel
-            modelBuilder.Entity<Topografia>().HasMany(p => p.Imoveis).WithOne(b => b.Topografia).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            // Relacionamento: Topografia -> Imovel
+            modelBuilder.Entity<Imovel>()
+                .HasOne(i => i.Topografia)
+                .WithMany(t => t.Imoveis)
+                .HasForeignKey(i => i.IdTopografia)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // Relacionamento: Logradouro -> Imóvel
-            modelBuilder.Entity<TipoUso>().HasMany(p => p.Imoveis).WithOne(b => b.TipoUso).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            // Relacionamento: TipoUso -> Imovel
+            modelBuilder.Entity<Imovel>()
+                .HasOne(i => i.TipoUso)
+                .WithMany(tu => tu.Imoveis)
+                .HasForeignKey(i => i.IdTipoUso)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // Relacionamento: Munícipe -> Imóvel
-            modelBuilder.Entity<OcupacaoAtual>().HasMany(p => p.Imoveis).WithOne(b => b.OcupacaoAtual).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            // Relacionamento: OcupacaoAtual -> Imovel
+            modelBuilder.Entity<Imovel>()
+                .HasOne(i => i.OcupacaoAtual)
+                .WithMany(oa => oa.Imoveis)
+                .HasForeignKey(i => i.IdOcupacaoAtual)
+                .OnDelete(DeleteBehavior.Cascade);
 
 
             // Inserções

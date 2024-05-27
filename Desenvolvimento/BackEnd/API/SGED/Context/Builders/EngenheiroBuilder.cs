@@ -8,14 +8,14 @@ namespace SGED.Context.Builders
         public static void Build(ModelBuilder modelBuilder)
         {
             // Builder
-            modelBuilder.Entity<Engenheiro>().HasKey(b => b.Id);
-            modelBuilder.Entity<Engenheiro>().Property(b => b.ImagemPessoa).IsRequired();
-            modelBuilder.Entity<Engenheiro>().Property(b => b.NomePessoa).HasMaxLength(70).IsRequired();
-            modelBuilder.Entity<Engenheiro>().Property(b => b.EmailPessoa).IsRequired();
-            modelBuilder.Entity<Engenheiro>().Property(b => b.TelefonePessoa).HasMaxLength(15).IsRequired();
-            modelBuilder.Entity<Engenheiro>().Property(b => b.CpfCnpjPessoa).HasMaxLength(18).IsRequired();
-            modelBuilder.Entity<Engenheiro>().Property(b => b.RgIePessoa).HasMaxLength(15).IsRequired();
-            modelBuilder.Entity<Engenheiro>().Property(b => b.CreaEngenheiro).HasMaxLength(8).IsRequired();
+            modelBuilder.Entity<Engenheiro>().HasKey(e => e.Id);
+            modelBuilder.Entity<Engenheiro>().Property(e => e.ImagemPessoa).IsRequired();
+            modelBuilder.Entity<Engenheiro>().Property(e => e.NomePessoa).HasMaxLength(70).IsRequired();
+            modelBuilder.Entity<Engenheiro>().Property(e => e.EmailPessoa).IsRequired();
+            modelBuilder.Entity<Engenheiro>().Property(e => e.TelefonePessoa).HasMaxLength(15).IsRequired();
+            modelBuilder.Entity<Engenheiro>().Property(e => e.CpfCnpjPessoa).HasMaxLength(18).IsRequired();
+            modelBuilder.Entity<Engenheiro>().Property(e => e.RgIePessoa).HasMaxLength(15).IsRequired();
+            modelBuilder.Entity<Engenheiro>().Property(e => e.CreaEngenheiro).HasMaxLength(8).IsRequired();
 
 
             // Inserções

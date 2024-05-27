@@ -8,9 +8,9 @@ namespace SGED.Context.Builders
         public static void Build(ModelBuilder modelBuilder)
         {
             // Builder
-            modelBuilder.Entity<TipoInfraestrutura>().HasKey(b => b.Id);
-            modelBuilder.Entity<TipoInfraestrutura>().Property(b => b.NomeTipoInfraestrutura).HasMaxLength(50).IsRequired();
-            modelBuilder.Entity<TipoInfraestrutura>().Property(b => b.DescricaoTipoInfraestrutura);
+            modelBuilder.Entity<TipoInfraestrutura>().HasKey(ti => ti.Id);
+            modelBuilder.Entity<TipoInfraestrutura>().Property(ti => ti.NomeTipoInfraestrutura).HasMaxLength(50).IsRequired();
+            modelBuilder.Entity<TipoInfraestrutura>().Property(ti => ti.DescricaoTipoInfraestrutura);
 
 
             // Inserções

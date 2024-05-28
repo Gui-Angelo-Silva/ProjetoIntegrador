@@ -12,7 +12,7 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240525161929_Database")]
+    [Migration("20240528032253_Database")]
     partial class Database
     {
         /// <inheritdoc />
@@ -558,17 +558,65 @@ namespace SGED.Migrations
 
                     b.Property<string>("NomeInfraestrutura")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("nomeinfraestrutura");
-
-                    b.Property<int?>("TipoInfraestruturaId")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TipoInfraestruturaId");
+                    b.HasIndex("IdTipoInfraestrutura");
 
                     b.ToTable("infraestrutura");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IdTipoInfraestrutura = 1,
+                            NomeInfraestrutura = "Água"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IdTipoInfraestrutura = 3,
+                            NomeInfraestrutura = "Energia Elétrica"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IdTipoInfraestrutura = 1,
+                            NomeInfraestrutura = "Esgoto"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            IdTipoInfraestrutura = 4,
+                            NomeInfraestrutura = "Pavimentação"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            IdTipoInfraestrutura = 5,
+                            NomeInfraestrutura = "Internet"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            IdTipoInfraestrutura = 5,
+                            NomeInfraestrutura = "Telefonia"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            IdTipoInfraestrutura = 3,
+                            NomeInfraestrutura = "Iluminação Pública"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            IdTipoInfraestrutura = 1,
+                            NomeInfraestrutura = "Coleta de Lixo"
+                        });
                 });
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.Instalacao", b =>
@@ -582,11 +630,9 @@ namespace SGED.Migrations
 
                     b.Property<string>("DataInstalacao")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
                         .HasColumnName("datainstalacao");
-
-                    b.Property<int?>("EngenheiroId")
-                        .HasColumnType("integer");
 
                     b.Property<int?>("IdEngenheiro")
                         .HasColumnType("integer");
@@ -597,12 +643,6 @@ namespace SGED.Migrations
                     b.Property<int>("IdInfraestrutura")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("ImovelId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("InfraestruturaId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("SituacaoInstalacao")
                         .IsRequired()
                         .HasColumnType("text")
@@ -610,11 +650,11 @@ namespace SGED.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EngenheiroId");
+                    b.HasIndex("IdEngenheiro");
 
-                    b.HasIndex("ImovelId");
+                    b.HasIndex("IdImovel");
 
-                    b.HasIndex("InfraestruturaId");
+                    b.HasIndex("IdInfraestrutura");
 
                     b.ToTable("instalacao");
                 });
@@ -724,12 +764,45 @@ namespace SGED.Migrations
 
                     b.Property<string>("NomeOcupacaoAtual")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("nomeocupacaoatual");
 
                     b.HasKey("Id");
 
                     b.ToTable("ocupacaoatual");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DescricaoOcupacaoAtual = "Terreno sem construções.",
+                            NomeOcupacaoAtual = "Não Edificada"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DescricaoOcupacaoAtual = "Terreno com construções.",
+                            NomeOcupacaoAtual = "Edificada"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DescricaoOcupacaoAtual = "Terreno com obras em andamento.",
+                            NomeOcupacaoAtual = "Em Construção"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DescricaoOcupacaoAtual = "Terreno com construções, mas sem uso.",
+                            NomeOcupacaoAtual = "Desocupada"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            DescricaoOcupacaoAtual = "Terreno com construções e em uso.",
+                            NomeOcupacaoAtual = "Ocupada"
+                        });
                 });
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.Sessao", b =>
@@ -856,12 +929,45 @@ namespace SGED.Migrations
 
                     b.Property<string>("NomeTipoInfraestrutura")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("nometipoinfraestrutura");
 
                     b.HasKey("Id");
 
                     b.ToTable("tipoinfraestrutura");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DescricaoTipoInfraestrutura = "Infraestrutura para tratamento e fornecimento de água potável, coleta e tratamento de esgoto.",
+                            NomeTipoInfraestrutura = "Saneamento Básico"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DescricaoTipoInfraestrutura = "Infraestrutura que garante acesso facilitado para pessoas com mobilidade reduzida.",
+                            NomeTipoInfraestrutura = "Acessibilidade"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DescricaoTipoInfraestrutura = "Infraestrutura para fornecimento de energia elétrica ao imóvel.",
+                            NomeTipoInfraestrutura = "Energia Elétrica"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DescricaoTipoInfraestrutura = "Infraestrutura de pavimentação de ruas e calçadas.",
+                            NomeTipoInfraestrutura = "Pavimentação"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            DescricaoTipoInfraestrutura = "Infraestrutura para fornecimento de serviços de internet e telecomunicações.",
+                            NomeTipoInfraestrutura = "Internet"
+                        });
                 });
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.TipoLogradouro", b =>
@@ -2005,12 +2111,45 @@ namespace SGED.Migrations
 
                     b.Property<string>("NomeTipoUso")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("nometipouso");
 
                     b.HasKey("Id");
 
                     b.ToTable("tipouso");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DescricaoTipoUso = "Uso do imóvel para habitação.",
+                            NomeTipoUso = "Residencial"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DescricaoTipoUso = "Uso do imóvel para atividades comerciais.",
+                            NomeTipoUso = "Comercial"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DescricaoTipoUso = "Uso do imóvel para atividades industriais.",
+                            NomeTipoUso = "Industrial"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DescricaoTipoUso = "Uso do imóvel para serviços públicos ou comunitários.",
+                            NomeTipoUso = "Institucional"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            DescricaoTipoUso = "Uso do imóvel que combina mais de uma finalidade.",
+                            NomeTipoUso = "Misto"
+                        });
                 });
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.TipoUsuario", b =>
@@ -2086,12 +2225,35 @@ namespace SGED.Migrations
 
                     b.Property<string>("NomeTopografia")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("nometopografia");
 
                     b.HasKey("Id");
 
                     b.ToTable("topografia");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            NomeTopografia = "Plano"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            NomeTopografia = "Aclive"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            NomeTopografia = "Declive"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            NomeTopografia = "Irregular"
+                        });
                 });
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.Usuario", b =>
@@ -2281,7 +2443,9 @@ namespace SGED.Migrations
                 {
                     b.HasOne("SGED.Objects.Models.Entities.TipoInfraestrutura", "TipoInfraestrutura")
                         .WithMany("Infraestruturas")
-                        .HasForeignKey("TipoInfraestruturaId");
+                        .HasForeignKey("IdTipoInfraestrutura")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("TipoInfraestrutura");
                 });
@@ -2290,15 +2454,20 @@ namespace SGED.Migrations
                 {
                     b.HasOne("SGED.Objects.Models.Entities.Engenheiro", "Engenheiro")
                         .WithMany("Instalacoes")
-                        .HasForeignKey("EngenheiroId");
+                        .HasForeignKey("IdEngenheiro")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("SGED.Objects.Models.Entities.Imovel", "Imovel")
                         .WithMany("Instalacoes")
-                        .HasForeignKey("ImovelId");
+                        .HasForeignKey("IdImovel")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SGED.Objects.Models.Entities.Infraestrutura", "Infraestrutura")
                         .WithMany("Instalacoes")
-                        .HasForeignKey("InfraestruturaId");
+                        .HasForeignKey("IdInfraestrutura")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Engenheiro");
 

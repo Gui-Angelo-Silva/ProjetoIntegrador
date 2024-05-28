@@ -88,7 +88,7 @@ namespace SGED.Migrations
                 {
                     idocupacaoatual = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    nomeocupacaoatual = table.Column<string>(type: "text", nullable: false),
+                    nomeocupacaoatual = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     descricaoocupacaoatual = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
@@ -117,7 +117,7 @@ namespace SGED.Migrations
                 {
                     idtipoinfraestrutura = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    nometipoinfraestrutura = table.Column<string>(type: "text", nullable: false),
+                    nometipoinfraestrutura = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     descricaotipoinfraestrutura = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
@@ -160,7 +160,7 @@ namespace SGED.Migrations
                 {
                     idtipouso = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    nometipouso = table.Column<string>(type: "text", nullable: false),
+                    nometipouso = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     descricaotipouso = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
@@ -189,7 +189,7 @@ namespace SGED.Migrations
                 {
                     idtopografia = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    nometopografia = table.Column<string>(type: "text", nullable: false)
+                    nometopografia = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -222,18 +222,18 @@ namespace SGED.Migrations
                 {
                     idinfraestrutura = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    nomeinfraestrutura = table.Column<string>(type: "text", nullable: false),
-                    TipoInfraestruturaId = table.Column<int>(type: "integer", nullable: true),
+                    nomeinfraestrutura = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     IdTipoInfraestrutura = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_infraestrutura", x => x.idinfraestrutura);
                     table.ForeignKey(
-                        name: "FK_infraestrutura_tipoinfraestrutura_TipoInfraestruturaId",
-                        column: x => x.TipoInfraestruturaId,
+                        name: "FK_infraestrutura_tipoinfraestrutura_IdTipoInfraestrutura",
+                        column: x => x.IdTipoInfraestrutura,
                         principalTable: "tipoinfraestrutura",
-                        principalColumn: "idtipoinfraestrutura");
+                        principalColumn: "idtipoinfraestrutura",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -456,33 +456,33 @@ namespace SGED.Migrations
                 {
                     idinstalacao = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    datainstalacao = table.Column<string>(type: "text", nullable: false),
+                    datainstalacao = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
                     situacaoinstalacao = table.Column<string>(type: "text", nullable: false),
-                    InfraestruturaId = table.Column<int>(type: "integer", nullable: true),
                     IdInfraestrutura = table.Column<int>(type: "integer", nullable: false),
-                    ImovelId = table.Column<int>(type: "integer", nullable: true),
                     IdImovel = table.Column<int>(type: "integer", nullable: false),
-                    EngenheiroId = table.Column<int>(type: "integer", nullable: true),
                     IdEngenheiro = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_instalacao", x => x.idinstalacao);
                     table.ForeignKey(
-                        name: "FK_instalacao_engenheiro_EngenheiroId",
-                        column: x => x.EngenheiroId,
+                        name: "FK_instalacao_engenheiro_IdEngenheiro",
+                        column: x => x.IdEngenheiro,
                         principalTable: "engenheiro",
-                        principalColumn: "idengenheiro");
+                        principalColumn: "idengenheiro",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_instalacao_imovel_ImovelId",
-                        column: x => x.ImovelId,
+                        name: "FK_instalacao_imovel_IdImovel",
+                        column: x => x.IdImovel,
                         principalTable: "imovel",
-                        principalColumn: "idimovel");
+                        principalColumn: "idimovel",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_instalacao_infraestrutura_InfraestruturaId",
-                        column: x => x.InfraestruturaId,
+                        name: "FK_instalacao_infraestrutura_IdInfraestrutura",
+                        column: x => x.IdInfraestrutura,
                         principalTable: "infraestrutura",
-                        principalColumn: "idinfraestrutura");
+                        principalColumn: "idinfraestrutura",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -517,6 +517,30 @@ namespace SGED.Migrations
                     { 25, "Acre", "AC" },
                     { 26, "Sergipe", "SE" },
                     { 27, "Tocantins", "TO" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ocupacaoatual",
+                columns: new[] { "idocupacaoatual", "descricaoocupacaoatual", "nomeocupacaoatual" },
+                values: new object[,]
+                {
+                    { 1, "Terreno sem construções.", "Não Edificada" },
+                    { 2, "Terreno com construções.", "Edificada" },
+                    { 3, "Terreno com obras em andamento.", "Em Construção" },
+                    { 4, "Terreno com construções, mas sem uso.", "Desocupada" },
+                    { 5, "Terreno com construções e em uso.", "Ocupada" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "tipoinfraestrutura",
+                columns: new[] { "idtipoinfraestrutura", "descricaotipoinfraestrutura", "nometipoinfraestrutura" },
+                values: new object[,]
+                {
+                    { 1, "Infraestrutura para tratamento e fornecimento de água potável, coleta e tratamento de esgoto.", "Saneamento Básico" },
+                    { 2, "Infraestrutura que garante acesso facilitado para pessoas com mobilidade reduzida.", "Acessibilidade" },
+                    { 3, "Infraestrutura para fornecimento de energia elétrica ao imóvel.", "Energia Elétrica" },
+                    { 4, "Infraestrutura de pavimentação de ruas e calçadas.", "Pavimentação" },
+                    { 5, "Infraestrutura para fornecimento de serviços de internet e telecomunicações.", "Internet" }
                 });
 
             migrationBuilder.InsertData(
@@ -705,6 +729,18 @@ namespace SGED.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "tipouso",
+                columns: new[] { "idtipouso", "descricaotipouso", "nometipouso" },
+                values: new object[,]
+                {
+                    { 1, "Uso do imóvel para habitação.", "Residencial" },
+                    { 2, "Uso do imóvel para atividades comerciais.", "Comercial" },
+                    { 3, "Uso do imóvel para atividades industriais.", "Industrial" },
+                    { 4, "Uso do imóvel para serviços públicos ou comunitários.", "Institucional" },
+                    { 5, "Uso do imóvel que combina mais de uma finalidade.", "Misto" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "tipousuario",
                 columns: new[] { "idtipousuario", "descricaotipousuario", "nivelacesso", "nometipousuario" },
                 values: new object[,]
@@ -713,6 +749,17 @@ namespace SGED.Migrations
                     { 2, "Entidade administrativa do Sistema.", "A", "Administrador" },
                     { 3, "Entidade responsável pela alimentação de informações do Sistema.", "B", "Funcionário" },
                     { 4, "Entidade auxiliar na alimentação de informações do Sistema.", "C", "Estagiário" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "topografia",
+                columns: new[] { "idtopografia", "nometopografia" },
+                values: new object[,]
+                {
+                    { 1, "Plano" },
+                    { 2, "Aclive" },
+                    { 3, "Declive" },
+                    { 4, "Irregular" }
                 });
 
             migrationBuilder.InsertData(
@@ -730,6 +777,21 @@ namespace SGED.Migrations
                     { 8, 1, "São Francisco" },
                     { 9, 1, "São João das Duas Pontes" },
                     { 10, 1, "Urânia" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "infraestrutura",
+                columns: new[] { "idinfraestrutura", "IdTipoInfraestrutura", "nomeinfraestrutura" },
+                values: new object[,]
+                {
+                    { 1, 1, "Água" },
+                    { 2, 3, "Energia Elétrica" },
+                    { 3, 1, "Esgoto" },
+                    { 4, 4, "Pavimentação" },
+                    { 5, 5, "Internet" },
+                    { 6, 5, "Telefonia" },
+                    { 7, 3, "Iluminação Pública" },
+                    { 8, 1, "Coleta de Lixo" }
                 });
 
             migrationBuilder.InsertData(
@@ -787,24 +849,24 @@ namespace SGED.Migrations
                 column: "IdTopografia");
 
             migrationBuilder.CreateIndex(
-                name: "IX_infraestrutura_TipoInfraestruturaId",
+                name: "IX_infraestrutura_IdTipoInfraestrutura",
                 table: "infraestrutura",
-                column: "TipoInfraestruturaId");
+                column: "IdTipoInfraestrutura");
 
             migrationBuilder.CreateIndex(
-                name: "IX_instalacao_EngenheiroId",
+                name: "IX_instalacao_IdEngenheiro",
                 table: "instalacao",
-                column: "EngenheiroId");
+                column: "IdEngenheiro");
 
             migrationBuilder.CreateIndex(
-                name: "IX_instalacao_ImovelId",
+                name: "IX_instalacao_IdImovel",
                 table: "instalacao",
-                column: "ImovelId");
+                column: "IdImovel");
 
             migrationBuilder.CreateIndex(
-                name: "IX_instalacao_InfraestruturaId",
+                name: "IX_instalacao_IdInfraestrutura",
                 table: "instalacao",
-                column: "InfraestruturaId");
+                column: "IdInfraestrutura");
 
             migrationBuilder.CreateIndex(
                 name: "IX_logradouro_IdBairro",

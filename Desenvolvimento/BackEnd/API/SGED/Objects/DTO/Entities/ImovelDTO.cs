@@ -8,8 +8,15 @@ namespace SGED.Objects.DTO.Entities
     {
         public int Id { get; set; }
 
+        public List<string>? ImagemImovel { get; set; }
+
         [Required(ErrorMessage = "Inscrição cadastral é requerida!")]
         public string InscricaoCadastral { get; set; }
+
+        [Required(ErrorMessage = "CEP do imóvel é requerido!")]
+        [MinLength(9)]
+        [MaxLength(9)]
+        public string CepImovel { get; set; }
 
         [Required(ErrorMessage = "Número do imóvel é requerido!")]
         [MinLength(1)]
@@ -30,6 +37,8 @@ namespace SGED.Objects.DTO.Entities
 
         [Required(ErrorMessage = "Valor de mercado é requerido!")]
         public string ValorMercado { get; set; }
+
+        public long[]? LocalizacaoGeografica { get; set; } = new long[2];
 
         [JsonIgnore]
         public LogradouroDTO? LogradouroDTO { get; set; }

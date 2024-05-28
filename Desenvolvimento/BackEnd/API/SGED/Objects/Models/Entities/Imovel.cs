@@ -9,8 +9,14 @@ namespace SGED.Objects.Models.Entities
         [Column("idimovel")]
         public int Id { get; set; }
 
+        [Column("imagemimovel")]
+        public List<string>? ImagemImovel { get; set; }
+
         [Column("inscricaocadastral")]
         public string InscricaoCadastral { get; set; }
+
+        [Column("cepimovel")]
+        public string CepImovel { get; set; }
 
         [Column("numeroimovel")]
         public string NumeroImovel { get; set; }
@@ -29,6 +35,9 @@ namespace SGED.Objects.Models.Entities
 
         [Column("valormercado")]
         public float ValorMercado { get; set; }
+
+        [Column("localizacaogeografica")]
+        public long[]? LocalizacaoGeografica { get; set; } = new long[2];
 
         public Logradouro? Logradouro { get; set; }
 

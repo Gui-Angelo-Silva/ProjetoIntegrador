@@ -1,4 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Newtonsoft.Json;
 using SGED.Objects.Models.Entities;
 
 namespace SGED.Context.Builders
@@ -10,6 +13,7 @@ namespace SGED.Context.Builders
             // Builder
             modelBuilder.Entity<Imovel>().HasKey(i => i.Id);
             modelBuilder.Entity<Imovel>().Property(i => i.InscricaoCadastral).IsRequired();
+            modelBuilder.Entity<Imovel>().Property(i => i.CepImovel).HasMaxLength(9).IsRequired();
             modelBuilder.Entity<Imovel>().Property(i => i.NumeroImovel).HasMaxLength(6).IsRequired();
             modelBuilder.Entity<Imovel>().Property(i => i.AreaTerreno).IsRequired();
             modelBuilder.Entity<Imovel>().Property(i => i.AreaConstruida).IsRequired();
@@ -22,6 +26,30 @@ namespace SGED.Context.Builders
             modelBuilder.Entity<Imovel>().Property(i => i.IdTopografia).IsRequired();
             modelBuilder.Entity<Imovel>().Property(i => i.IdTipoUso).IsRequired();
             modelBuilder.Entity<Imovel>().Property(i => i.IdOcupacaoAtual).IsRequired();
+
+            // Configuração do conversor para LocalizacaoGeografica (array de long)
+            var arrayLongConverter = new ValueConverter<long[], string>(
+                v => JsonConvert.SerializeObject(v),
+                v => JsonConvert.DeserializeObject<long[]>(v) ?? new long[2]);
+
+            var arrayLongComparer = new ValueComparer<long[]>(
+                (c1, c2) => c1.SequenceEqual(c2),
+                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                c => c.ToArray());
+
+            modelBuilder.Entity<Imovel>().Property(i => i.LocalizacaoGeografica).HasConversion(arrayLongConverter).Metadata.SetValueComparer(arrayLongComparer);
+
+            // Configuração do conversor para ImagemImovel (lista de string)
+            var listStringConverter = new ValueConverter<List<string>, string>(
+                v => JsonConvert.SerializeObject(v),
+                v => JsonConvert.DeserializeObject<List<string>>(v) ?? new List<string>());
+
+            var listStringComparer = new ValueComparer<List<string>>(
+                (c1, c2) => c1.SequenceEqual(c2),
+                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                c => c.ToList());
+
+            modelBuilder.Entity<Imovel>().Property(i => i.ImagemImovel).HasConversion(listStringConverter).Metadata.SetValueComparer(listStringComparer);
 
             // Relacionamento: Logradouro -> Imovel
             modelBuilder.Entity<Imovel>()

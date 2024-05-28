@@ -482,6 +482,12 @@ namespace SGED.Migrations
                         .HasColumnType("real")
                         .HasColumnName("areaterreno");
 
+                    b.Property<string>("CepImovel")
+                        .IsRequired()
+                        .HasMaxLength(9)
+                        .HasColumnType("character varying(9)")
+                        .HasColumnName("cepimovel");
+
                     b.Property<string>("CondicoesSolo")
                         .IsRequired()
                         .HasColumnType("text")
@@ -505,10 +511,18 @@ namespace SGED.Migrations
                     b.Property<int>("IdTopografia")
                         .HasColumnType("integer");
 
+                    b.Property<string>("ImagemImovel")
+                        .HasColumnType("text")
+                        .HasColumnName("imagemimovel");
+
                     b.Property<string>("InscricaoCadastral")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("inscricaocadastral");
+
+                    b.Property<string>("LocalizacaoGeografica")
+                        .HasColumnType("text")
+                        .HasColumnName("localizacaogeografica");
 
                     b.Property<string>("NumeroImovel")
                         .IsRequired()

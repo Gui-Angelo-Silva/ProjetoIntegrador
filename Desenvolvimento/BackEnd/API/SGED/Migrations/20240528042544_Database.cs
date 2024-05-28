@@ -395,13 +395,16 @@ namespace SGED.Migrations
                 {
                     idimovel = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    imagemimovel = table.Column<string>(type: "text", nullable: true),
                     inscricaocadastral = table.Column<string>(type: "text", nullable: false),
+                    cepimovel = table.Column<string>(type: "character varying(9)", maxLength: 9, nullable: false),
                     numeroimovel = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
                     areaterreno = table.Column<float>(type: "real", nullable: false),
                     areacomstruida = table.Column<float>(type: "real", nullable: false),
                     condicoessolo = table.Column<string>(type: "text", nullable: false),
                     valorvenal = table.Column<float>(type: "real", nullable: false),
                     valormercado = table.Column<float>(type: "real", nullable: false),
+                    localizacaogeografica = table.Column<string>(type: "text", nullable: true),
                     IdLogradouro = table.Column<int>(type: "integer", nullable: false),
                     IdProprietario = table.Column<int>(type: "integer", nullable: false),
                     IdContribuinte = table.Column<int>(type: "integer", nullable: false),

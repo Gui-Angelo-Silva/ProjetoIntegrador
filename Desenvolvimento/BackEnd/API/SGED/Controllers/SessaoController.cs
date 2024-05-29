@@ -9,6 +9,7 @@ namespace SGED.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize("ApiScope")]
     public class SessaoController : Controller
     {
         private readonly ISessaoService _sessaoService;

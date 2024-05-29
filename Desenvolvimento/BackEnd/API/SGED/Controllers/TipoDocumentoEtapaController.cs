@@ -11,7 +11,6 @@ namespace SGED.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize("ApiScope")]
     public class TipoDocumentoEtapaController : Controller
     {
 

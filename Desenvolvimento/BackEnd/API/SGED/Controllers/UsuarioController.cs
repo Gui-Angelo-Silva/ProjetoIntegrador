@@ -8,7 +8,6 @@ namespace SGED.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize("ApiScope")]
     public class UsuarioController : Controller
     {
 

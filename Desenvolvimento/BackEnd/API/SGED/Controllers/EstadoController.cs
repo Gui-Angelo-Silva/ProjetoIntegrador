@@ -7,7 +7,6 @@ namespace SGED.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize("ApiScope")]
     public class EstadoController : Controller
     {
 
@@ -18,14 +17,14 @@ namespace SGED.Controllers
             _estadoService = estadoService;
         }
 
-        [HttpGet(Name = "GetEstados")]
+        [HttpGet()]
         public async Task<ActionResult<IEnumerable<EstadoDTO>>> GetAll()
         {
             var estadosDTO = await _estadoService.GetAll();
             return Ok(estadosDTO);
         }
 
-        [HttpGet("Id/{id}", Name = "GetById")]
+        [HttpGet("Id/{id}", Name = "GetEstado")]
         public async Task<ActionResult<EstadoDTO>> GetId(int id)
         {
             var estadoDTO = await _estadoService.GetById(id);
@@ -42,27 +41,9 @@ namespace SGED.Controllers
         }
 
         [HttpPost]
-        //[Authorization("A")]
         public async Task<ActionResult> Post([FromBody] EstadoDTO estadoDTO)
         {
             if (estadoDTO is null) return BadRequest("Dado inválido!");
-
-            /*AuditoriaDTO auditoriaDTO = new();
-            auditoriaDTO.IdUsuario = (int)HttpContext.Items["IdUsuario"];
-
-            List<EstadoDTO> estados = new() { estadoDTO };
-            auditoriaDTO.ConverttoStringList(estados);
-
-            var estadosDTO = await _estadoService.GetByName(estadoDTO.NomeEstado);
-
-            foreach (var estado in estadosDTO)
-            {
-                if (estado.NomeEstado.ToUpper() == estadoDTO.NomeEstado.ToUpper())
-                {
-                    return NotFound("Já existe o Estado " + estadoDTO.NomeEstado + " cadastrado.");
-                }
-            }*/
-
             await _estadoService.Create(estadoDTO);
             return new CreatedAtRouteResult("GetById", new { id = estadoDTO.Id }, estadoDTO);
         }

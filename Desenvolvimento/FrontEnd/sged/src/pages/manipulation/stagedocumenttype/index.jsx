@@ -11,6 +11,7 @@ import SelectModule from '../../../object/modules/select';
 import LayoutPage from "../../../components/Layout/LayoutPage";
 import LinkTitle from "../../../components/Title/LinkTitle";
 import Table from "../../../components/Table/Table";
+import Tooltip from "../../../components/Tooltip/Tooltip";
 
 export default function StageDocumentType() {
 
@@ -275,8 +276,11 @@ export default function StageDocumentType() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8">
                 <div>
                     <div className="text-gray-600 text-xl my-3 font-medium">
-                        <h1 className="mb-2">Tipo de Documento Não Relacionado</h1>
-                        <hr className="" />
+                        <div className="flex items-center mb-2 place-content-between">
+                            <h1 className="">Tipo de Documento Não Relacionado</h1>
+                            <Tooltip description="Nesta tabela irá conter todos os tipos de documentos que não estão atrelados a uma etapa" />
+                        </div>
+                        <hr />
                     </div>
                     <Table
                         totalColumns={2}
@@ -290,8 +294,11 @@ export default function StageDocumentType() {
                 </div>
                 <div>
                     <div className="text-gray-600 text-xl my-3 font-medium">
-                        <h1 className="mb-2">Tipo de Documento  Relacionado</h1>
-                        <hr className="" />
+                        <div className="flex items-center mb-2 place-content-between">
+                            <h1 >Tipo de Documento Relacionado</h1>
+                            <Tooltip description="Nesta tabela irá conter todos os tipos de documentos que estão atrelados a uma etapa" />
+                        </div>
+                        <hr />
                     </div>
                     <Table
                         totalColumns={2}
@@ -304,7 +311,7 @@ export default function StageDocumentType() {
                     />
                 </div>
             </div>
-            
+
         </LayoutPage>
     );
 }

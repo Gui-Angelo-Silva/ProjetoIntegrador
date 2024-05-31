@@ -36,7 +36,7 @@ namespace SGEDTest.Controllers.Test
 		}
 
 		[Test]
-		public async Task Obter_EstadoRetornadosComOkPorId()
+		public async Task Obter_EstadoRetornadoComOkPorId()
 		{
 			var estados = new EstadoDTO { Id = 1, NomeEstado = "São Paulo", UfEstado = "SP" };
 			_estadoServiceMock.Setup(service => service.GetById(1)).ReturnsAsync(estados);
@@ -50,7 +50,7 @@ namespace SGEDTest.Controllers.Test
 		}
 
 		[Test]
-		public async Task Obter_EstadoRetornadosPorIdQuandoNaoExiste()
+		public async Task Obter_EstadoRetornadoPorIdQuandoNaoExiste()
 		{
 			_estadoServiceMock.Setup(service => service.GetById(1)).ReturnsAsync((EstadoDTO)null);
 
@@ -63,7 +63,7 @@ namespace SGEDTest.Controllers.Test
 		}
 
 		[Test]
-		public async Task Obter_EstadosRetornadosComOkPorNome()
+		public async Task Obter_EstadosRetornadoComOkPorNome()
 		{
 			var estados = new List<EstadoDTO> { new EstadoDTO { Id = 1, NomeEstado = "São Paulo", UfEstado = "SP" } };
 			_estadoServiceMock.Setup(service => service.GetByName("São Paulo")).ReturnsAsync(estados);
@@ -119,7 +119,7 @@ namespace SGEDTest.Controllers.Test
 		[Test]
 		public async Task Atualiza_ComRetornaOkDoEstado()
 		{
-			var estadoDTO = new EstadoDTO { Id = 1, NomeEstado = "São Paulo" };
+			var estadoDTO = new EstadoDTO { Id = 1, NomeEstado = "São Paulo", UfEstado = "SP" };
 			_estadoServiceMock.Setup(service => service.Update(estadoDTO)).Returns(Task.CompletedTask);
 
 			var result = await _estadoController.Put(estadoDTO);

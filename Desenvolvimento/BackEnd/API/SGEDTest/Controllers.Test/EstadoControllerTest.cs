@@ -9,6 +9,8 @@ namespace SGEDTest.Controllers.Test
 	[TestFixture]
 	public class EstadoControllerTest
 	{
+		// "as" é uma conversão segura (safe casting), converte o resultado em um objeto
+
 		private Mock<IEstadoService> _estadoServiceMock;
 		private EstadoController _estadoController;
 
@@ -22,7 +24,7 @@ namespace SGEDTest.Controllers.Test
 		[Test]
 		public async Task Obter_TodosEstadoRetornadosComOk()
 		{
-			var estados = new List<EstadoDTO> { new EstadoDTO { Id = 1, NomeEstado = "São Paulo" } };
+			var estados = new List<EstadoDTO> { new EstadoDTO { Id = 1, NomeEstado = "São Paulo", UfEstado = "SP" } };
 			_estadoServiceMock.Setup(service => service.GetAll()).ReturnsAsync(estados);
 
 			var result = await _estadoController.GetAll();
@@ -36,7 +38,7 @@ namespace SGEDTest.Controllers.Test
 		[Test]
 		public async Task Obter_EstadoRetornadosComOkPorId()
 		{
-			var estados = new EstadoDTO { Id = 1, NomeEstado = "São Paulo" };
+			var estados = new EstadoDTO { Id = 1, NomeEstado = "São Paulo", UfEstado = "SP" };
 			_estadoServiceMock.Setup(service => service.GetById(1)).ReturnsAsync(estados);
 
 			var result = await _estadoController.GetId(1);
@@ -63,7 +65,7 @@ namespace SGEDTest.Controllers.Test
 		[Test]
 		public async Task Obter_EstadosRetornadosComOkPorNome()
 		{
-			var estados = new List<EstadoDTO> { new EstadoDTO { Id = 1, NomeEstado = "São Paulo" } };
+			var estados = new List<EstadoDTO> { new EstadoDTO { Id = 1, NomeEstado = "São Paulo", UfEstado = "SP" } };
 			_estadoServiceMock.Setup(service => service.GetByName("São Paulo")).ReturnsAsync(estados);
 
 			var result = await _estadoController.GetName("São Paulo");
@@ -90,7 +92,7 @@ namespace SGEDTest.Controllers.Test
 		[Test]
 		public async Task Cadastro_RetornaResultadoCreateAtRoute()
 		{
-			var estadoDTO = new EstadoDTO { Id = 1, NomeEstado = "São Paulo" };
+			var estadoDTO = new EstadoDTO { Id = 1, NomeEstado = "São Paulo", UfEstado = "SP" };
 			_estadoServiceMock.Setup(service => service.Create(estadoDTO)).Returns(Task.CompletedTask);
 
 			var result = await _estadoController.Post(estadoDTO);

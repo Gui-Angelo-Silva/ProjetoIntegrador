@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Select from 'react-select';
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 
 import { useMontage } from "../../../object/modules/montage";
 import ConnectionService from "../../../object/service/connection";

@@ -16,12 +16,12 @@ namespace SGED.Repositories.Entities
 
 		public async Task<IEnumerable<Logradouro>> GetAll()
 		{
-			return await _dbContext.Logradouro.Include(objeto => objeto.Bairro).Include(objeto => objeto.TipoLogradouro).ToListAsync();
+			return await _dbContext.Logradouro.AsNoTracking().ToListAsync();
 		}
 
 		public async Task<Logradouro> GetById(int id)
 		{
-			return await _dbContext.Logradouro.Include(objeto => objeto.Bairro).Include(objeto => objeto.TipoLogradouro).Where(objeto => objeto.Id == id).FirstOrDefaultAsync();
+			return await _dbContext.Logradouro.AsNoTracking().FirstOrDefaultAsync(l => l.Id == id);
 		}
 
 		public async Task<Logradouro> Create(Logradouro logradouro)

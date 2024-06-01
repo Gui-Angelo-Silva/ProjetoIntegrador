@@ -17,12 +17,12 @@ public class TipoInfraestruturaRepository : ITipoInfraestruturaRepository
 
     public async Task<IEnumerable<TipoInfraestrutura>> GetAll()
     {
-        return await _dbContext.TipoInfraestrutura.ToListAsync();
+        return await _dbContext.TipoInfraestrutura.AsNoTracking().ToListAsync();
     }
 
     public async Task<TipoInfraestrutura> GetById(int id)
     {
-        return await _dbContext.TipoInfraestrutura.Where(objeto => objeto.Id == id).FirstOrDefaultAsync();
+        return await _dbContext.TipoInfraestrutura.AsNoTracking().FirstOrDefaultAsync(ti => ti.Id == id);
     }
 
     public async Task<TipoInfraestrutura> Create(TipoInfraestrutura tipoinfraestrutura)

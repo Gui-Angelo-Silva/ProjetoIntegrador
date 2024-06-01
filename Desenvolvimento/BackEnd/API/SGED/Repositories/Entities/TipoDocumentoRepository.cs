@@ -21,7 +21,7 @@ namespace SGED.Repositories.Entities
 
 		public async Task<TipoDocumento> GetById(int id)
 		{
-			return await _dbcontext.TipoDocumento.AsNoTracking().FirstOrDefaultAsync(objeto => objeto.Id == id);
+			return await _dbcontext.TipoDocumento.AsNoTracking().FirstOrDefaultAsync(td => td.Id == id);
 		}
 
 		public async Task<TipoDocumento> Create(TipoDocumento TipoDocumento)

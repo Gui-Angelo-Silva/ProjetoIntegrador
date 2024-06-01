@@ -17,17 +17,17 @@ public class EstadoRepository : IEstadoRepository
 
     public async Task<IEnumerable<Estado>> GetAll()
     {
-        return await _dbContext.Estado.Include(objeto => objeto.Cidades).ToListAsync();
+        return await _dbContext.Estado.AsNoTracking().ToListAsync();
     }
 
     public async Task<Estado> GetById(int id)
     {
-        return await _dbContext.Estado.Where(objeto => objeto.Id == id).FirstOrDefaultAsync();
+        return await _dbContext.Estado.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
     }
 
     public async Task<IEnumerable<Estado>> GetByName(string nome)
     {
-        return await _dbContext.Estado.Where(objeto => objeto.NomeEstado.ToUpper().Contains(nome.ToUpper())).ToListAsync();
+        return await _dbContext.Estado.Where(e => e.NomeEstado.ToUpper().Contains(nome.ToUpper())).AsNoTracking().ToListAsync();
     }
 
     public async Task<Estado> Create(Estado estado)

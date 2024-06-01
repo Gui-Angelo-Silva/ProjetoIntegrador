@@ -1,6 +1,9 @@
 ﻿using SGED.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata.Ecma335;
+using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
+using SGED.Objects.Utilities;
 
 namespace SGED.Controllers
 {
@@ -10,51 +13,92 @@ namespace SGED.Controllers
     public class TipoInfraestruturaController : Controller
     {
 
-        private readonly ITipoInfraestruturaService _tipoinfraestruturaService;
+        private readonly ITipoInfraestruturaService _tipoInfraestruturaService;
+        private readonly Response _response;
 
-        public TipoInfraestruturaController(ITipoInfraestruturaService tipoinfraestruturaService)
+        public TipoInfraestruturaController(ITipoInfraestruturaService tipoInfraestruturaService)
         {
-            _tipoinfraestruturaService = tipoinfraestruturaService;
+            _tipoInfraestruturaService = tipoInfraestruturaService;
+
+            _response = new Response();
         }
 
-        [HttpGet()]
-        public async Task<ActionResult<IEnumerable<TipoInfraestruturaDTO>>> GetAll()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TipoInfraestruturaDTO>>> Get()
         {
-            var tipoinfraestruturasDTO = await _tipoinfraestruturaService.GetAll();
-            return Ok(tipoinfraestruturasDTO);
+            var tipoInfraestruturasDTO = await _tipoInfraestruturaService.GetAll();
+            _response.Status = true; _response.Data = tipoInfraestruturasDTO;
+            _response.Message = tipoInfraestruturasDTO.Any() ?
+                "Lista do(s) Tipo(s) de Infraestrutura obtida com sucesso." :
+                "Nenhum Tipo de Infraestrutura encontrado.";
+            return Ok(_response);
         }
 
-        [HttpGet("Id/{id}", Name = "GetTipoInfraestrutura")]
-        public async Task<ActionResult<TipoInfraestruturaDTO>> GetId(int id)
+        [HttpGet("{id}", Name = "GetTipoInfraestrutura")]
+        public async Task<ActionResult<TipoInfraestruturaDTO>> Get(int id)
         {
-            var tipoinfraestruturaDTO = await _tipoinfraestruturaService.GetById(id);
-            if (tipoinfraestruturaDTO == null) return NotFound("TipoInfraestrutura não encontrado!");
-            return Ok(tipoinfraestruturaDTO);
+            var tipoInfraestruturaDTO = await _tipoInfraestruturaService.GetById(id);
+            if (tipoInfraestruturaDTO == null)
+            {
+                _response.Status = false; _response.Message = "Tipo de Infraestrutura não encontrado!"; _response.Data = tipoInfraestruturaDTO;
+                return NotFound(_response);
+            };
+
+            _response.Status = true; _response.Message = "Tipo de Infraestrutura " + tipoInfraestruturaDTO.NomeTipoInfraestrutura + " obtido com sucesso."; _response.Data = tipoInfraestruturaDTO;
+            return Ok(_response);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] TipoInfraestruturaDTO tipoinfraestruturaDTO)
+        public async Task<ActionResult> Post([FromBody] TipoInfraestruturaDTO tipoInfraestruturaDTO)
         {
-            if (tipoinfraestruturaDTO is null) return BadRequest("Dado inválido!");
-            await _tipoinfraestruturaService.Create(tipoinfraestruturaDTO);
-            return new CreatedAtRouteResult("GetById", new { id = tipoinfraestruturaDTO.Id }, tipoinfraestruturaDTO);
+            if (tipoInfraestruturaDTO == null)
+            {
+                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = tipoInfraestruturaDTO;
+                return BadRequest(_response);
+            }
+
+            await _tipoInfraestruturaService.Create(tipoInfraestruturaDTO);
+
+            _response.Status = true; _response.Message = "Tipo de Infraestrutura " + tipoInfraestruturaDTO.NomeTipoInfraestrutura + " cadastrado com sucesso."; _response.Data = tipoInfraestruturaDTO;
+            return Ok(_response);
         }
 
         [HttpPut()]
-        public async Task<ActionResult> Put([FromBody] TipoInfraestruturaDTO tipoinfraestruturaDTO)
+        public async Task<ActionResult> Put([FromBody] TipoInfraestruturaDTO tipoInfraestruturaDTO)
         {
-            if (tipoinfraestruturaDTO is null) return BadRequest("Dado inválido!");
-            await _tipoinfraestruturaService.Update(tipoinfraestruturaDTO);
-            return Ok(tipoinfraestruturaDTO);
+            if (tipoInfraestruturaDTO == null)
+            {
+                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = tipoInfraestruturaDTO;
+                return BadRequest(_response);
+            }
+
+            var existingTipoInfraestrutura = await _tipoInfraestruturaService.GetById(tipoInfraestruturaDTO.Id);
+            if (existingTipoInfraestrutura == null)
+            {
+                _response.Status = false; _response.Message = "O Tipo de Infraestrutura informado não existe!"; _response.Data = tipoInfraestruturaDTO;
+                return NotFound(_response);
+            }
+
+            await _tipoInfraestruturaService.Update(tipoInfraestruturaDTO);
+
+            _response.Status = true; _response.Message = "Tipo de Infraestrutura " + tipoInfraestruturaDTO.NomeTipoInfraestrutura + " alterado com sucesso."; _response.Data = tipoInfraestruturaDTO;
+            return Ok(_response);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<TipoInfraestruturaDTO>> Delete(int id)
         {
-            var tipoinfraestruturaDTO = await _tipoinfraestruturaService.GetById(id);
-            if (tipoinfraestruturaDTO == null) return NotFound("TipoInfraestrutura não encontrado!");
-            await _tipoinfraestruturaService.Remove(id);
-            return Ok(tipoinfraestruturaDTO);
+            var tipoInfraestruturaDTO = await _tipoInfraestruturaService.GetById(id);
+            if (tipoInfraestruturaDTO == null)
+            {
+                _response.Status = false; _response.Message = "Tipo de Infraestrutura não encontrado!"; _response.Data = tipoInfraestruturaDTO;
+                return NotFound(_response);
+            }
+
+            await _tipoInfraestruturaService.Remove(id);
+
+            _response.Status = true; _response.Message = "Tipo de Infraestrutura " + tipoInfraestruturaDTO.NomeTipoInfraestrutura + " excluído com sucesso."; _response.Data = tipoInfraestruturaDTO;
+            return Ok(_response);
         }
     }
 }

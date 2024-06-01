@@ -1,6 +1,9 @@
 ﻿using SGED.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata.Ecma335;
+using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
+using SGED.Objects.Utilities;
 
 namespace SGED.Controllers
 {
@@ -11,58 +14,91 @@ namespace SGED.Controllers
     {
 
         private readonly IEstadoService _estadoService;
+        private readonly Response _response; 
 
         public EstadoController(IEstadoService estadoService)
         {
             _estadoService = estadoService;
+
+            _response = new Response();
         }
 
-        [HttpGet()]
-        public async Task<ActionResult<IEnumerable<EstadoDTO>>> GetAll()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<EstadoDTO>>> Get()
         {
             var estadosDTO = await _estadoService.GetAll();
-            return Ok(estadosDTO);
+            _response.Status = true; _response.Data = estadosDTO;
+            _response.Message = estadosDTO.Any() ?
+                "Lista do(s) Estado(s) obtida com sucesso." :
+                "Nenhum Estado encontrado.";
+            return Ok(_response);
         }
 
-        [HttpGet("Id/{id}", Name = "GetEstado")]
-        public async Task<ActionResult<EstadoDTO>> GetId(int id)
+        [HttpGet("{id}", Name = "GetEstado")]
+        public async Task<ActionResult<EstadoDTO>> Get(int id)
         {
             var estadoDTO = await _estadoService.GetById(id);
-            if (estadoDTO == null) return NotFound("Estado não encontrado!");
-            return Ok(estadoDTO);
-        }
+            if (estadoDTO == null)
+            {
+                _response.Status = false; _response.Message = "Estado não encontrado!"; _response.Data = estadoDTO;
+                return NotFound(_response);
+            };
 
-        [HttpGet("Name/{nome}", Name = "GetByName")]
-        public async Task<ActionResult<IEnumerable<EstadoDTO>>> GetName(string nome)
-        {
-            var estadosDTO = await _estadoService.GetByName(nome);
-            if (estadosDTO == null) return NotFound("Estados não econtrados!");
-            return Ok(estadosDTO);
+            _response.Status = true; _response.Message = "Estado " + estadoDTO.NomeEstado + " obtido com sucesso."; _response.Data = estadoDTO;
+            return Ok(_response);
         }
 
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] EstadoDTO estadoDTO)
         {
-            if (estadoDTO is null) return BadRequest("Dado inválido!");
+            if (estadoDTO == null)
+            {
+                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = estadoDTO;
+                return BadRequest(_response);
+            }
+
             await _estadoService.Create(estadoDTO);
-            return new CreatedAtRouteResult("GetById", new { id = estadoDTO.Id }, estadoDTO);
+
+            _response.Status = true; _response.Message = "Estado " + estadoDTO.NomeEstado + " cadastrado com sucesso."; _response.Data = estadoDTO;
+            return Ok(_response);
         }
 
         [HttpPut()]
         public async Task<ActionResult> Put([FromBody] EstadoDTO estadoDTO)
         {
-            if (estadoDTO is null) return BadRequest("Dado inválido!");
+            if (estadoDTO == null)
+            {
+                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = estadoDTO;
+                return BadRequest(_response);
+            }
+
+            var existingEstado = await _estadoService.GetById(estadoDTO.Id);
+            if (existingEstado == null)
+            {
+                _response.Status = false; _response.Message = "O Estado informado não existe!"; _response.Data = estadoDTO;
+                return NotFound(_response);
+            }
+
             await _estadoService.Update(estadoDTO);
-            return Ok(estadoDTO);
+
+            _response.Status = true; _response.Message = "Estado " + estadoDTO.NomeEstado + " alterado com sucesso."; _response.Data = estadoDTO;
+            return Ok(_response);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<EstadoDTO>> Delete(int id)
         {
             var estadoDTO = await _estadoService.GetById(id);
-            if (estadoDTO == null) return NotFound("Estado não encontrado!");
+            if (estadoDTO == null)
+            {
+                _response.Status = false; _response.Message = "Estado não encontrado!"; _response.Data = estadoDTO;
+                return NotFound(_response);
+            }
+
             await _estadoService.Remove(id);
-            return Ok(estadoDTO);
+
+            _response.Status = true; _response.Message = "Estado " + estadoDTO.NomeEstado + " excluído com sucesso."; _response.Data = estadoDTO;
+            return Ok(_response);
         }
     }
 }

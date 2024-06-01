@@ -19,12 +19,12 @@ public class BairroRepository : IBairroRepository
 
     public async Task<IEnumerable<Bairro>> GetAll()
     {
-        return await _dbContext.Bairro.Include(objeto => objeto.Cidade).ToListAsync();
+        return await _dbContext.Bairro.AsNoTracking().ToListAsync();
     }
 
     public async Task<Bairro> GetById(int id)
     {
-        return await _dbContext.Bairro.Include(objeto => objeto.Cidade).Where(b => b.Id == id).FirstOrDefaultAsync();
+        return await _dbContext.Bairro.AsNoTracking().FirstOrDefaultAsync(b => b.Id == id);
     }
 
 

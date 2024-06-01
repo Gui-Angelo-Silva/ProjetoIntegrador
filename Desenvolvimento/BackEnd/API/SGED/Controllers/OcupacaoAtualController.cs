@@ -1,6 +1,9 @@
 ﻿using SGED.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata.Ecma335;
+using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
+using SGED.Objects.Utilities;
 
 namespace SGED.Controllers
 {
@@ -10,51 +13,92 @@ namespace SGED.Controllers
     public class OcupacaoAtualController : Controller
     {
 
-        private readonly IOcupacaoAtualService _ocupacaoatualService;
+        private readonly IOcupacaoAtualService _ocupacaoAtualService;
+        private readonly Response _response;
 
-        public OcupacaoAtualController(IOcupacaoAtualService ocupacaoatualService)
+        public OcupacaoAtualController(IOcupacaoAtualService ocupacaoAtualService)
         {
-            _ocupacaoatualService = ocupacaoatualService;
+            _ocupacaoAtualService = ocupacaoAtualService;
+
+            _response = new Response();
         }
 
-        [HttpGet()]
-        public async Task<ActionResult<IEnumerable<OcupacaoAtualDTO>>> GetAll()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<OcupacaoAtualDTO>>> Get()
         {
-            var ocupacaoatuaisDTO = await _ocupacaoatualService.GetAll();
-            return Ok(ocupacaoatuaisDTO);
+            var ocupacaoAtualsDTO = await _ocupacaoAtualService.GetAll();
+            _response.Status = true; _response.Data = ocupacaoAtualsDTO;
+            _response.Message = ocupacaoAtualsDTO.Any() ?
+                "Lista da(s) Ocupação(ões) Atual(is) obtida com sucesso." :
+                "Nenhuma Ocupação Atual encontrada.";
+            return Ok(_response);
         }
 
-        [HttpGet("Id/{id}", Name = "GetOcupacaoAtual")]
-        public async Task<ActionResult<OcupacaoAtualDTO>> GetId(int id)
+        [HttpGet("{id}", Name = "GetOcupacaoAtual")]
+        public async Task<ActionResult<OcupacaoAtualDTO>> Get(int id)
         {
-            var ocupacaoatualDTO = await _ocupacaoatualService.GetById(id);
-            if (ocupacaoatualDTO == null) return NotFound("OcupacaoAtual não encontrado!");
-            return Ok(ocupacaoatualDTO);
+            var ocupacaoAtualDTO = await _ocupacaoAtualService.GetById(id);
+            if (ocupacaoAtualDTO == null)
+            {
+                _response.Status = false; _response.Message = "Ocupação Atual não encontrada!"; _response.Data = ocupacaoAtualDTO;
+                return NotFound(_response);
+            };
+
+            _response.Status = true; _response.Message = "Ocupação Atual " + ocupacaoAtualDTO.NomeOcupacaoAtual + " obtida com sucesso."; _response.Data = ocupacaoAtualDTO;
+            return Ok(_response);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] OcupacaoAtualDTO ocupacaoatualDTO)
+        public async Task<ActionResult> Post([FromBody] OcupacaoAtualDTO ocupacaoAtualDTO)
         {
-            if (ocupacaoatualDTO is null) return BadRequest("Dado inválido!");
-            await _ocupacaoatualService.Create(ocupacaoatualDTO);
-            return new CreatedAtRouteResult("GetById", new { id = ocupacaoatualDTO.Id }, ocupacaoatualDTO);
+            if (ocupacaoAtualDTO == null)
+            {
+                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = ocupacaoAtualDTO;
+                return BadRequest(_response);
+            }
+
+            await _ocupacaoAtualService.Create(ocupacaoAtualDTO);
+
+            _response.Status = true; _response.Message = "Ocupação Atual " + ocupacaoAtualDTO.NomeOcupacaoAtual + " cadastrada com sucesso."; _response.Data = ocupacaoAtualDTO;
+            return Ok(_response);
         }
 
         [HttpPut()]
-        public async Task<ActionResult> Put([FromBody] OcupacaoAtualDTO ocupacaoatualDTO)
+        public async Task<ActionResult> Put([FromBody] OcupacaoAtualDTO ocupacaoAtualDTO)
         {
-            if (ocupacaoatualDTO is null) return BadRequest("Dado inválido!");
-            await _ocupacaoatualService.Update(ocupacaoatualDTO);
-            return Ok(ocupacaoatualDTO);
+            if (ocupacaoAtualDTO == null)
+            {
+                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = ocupacaoAtualDTO;
+                return BadRequest(_response);
+            }
+
+            var existingOcupacaoAtual = await _ocupacaoAtualService.GetById(ocupacaoAtualDTO.Id);
+            if (existingOcupacaoAtual == null)
+            {
+                _response.Status = false; _response.Message = "O Ocupação Atual informada não existe!"; _response.Data = ocupacaoAtualDTO;
+                return NotFound(_response);
+            }
+
+            await _ocupacaoAtualService.Update(ocupacaoAtualDTO);
+
+            _response.Status = true; _response.Message = "Ocupação Atual " + ocupacaoAtualDTO.NomeOcupacaoAtual + " alterada com sucesso."; _response.Data = ocupacaoAtualDTO;
+            return Ok(_response);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<OcupacaoAtualDTO>> Delete(int id)
         {
-            var ocupacaoatualDTO = await _ocupacaoatualService.GetById(id);
-            if (ocupacaoatualDTO == null) return NotFound("OcupacaoAtual não encontrado!");
-            await _ocupacaoatualService.Remove(id);
-            return Ok(ocupacaoatualDTO);
+            var ocupacaoAtualDTO = await _ocupacaoAtualService.GetById(id);
+            if (ocupacaoAtualDTO == null)
+            {
+                _response.Status = false; _response.Message = "Ocupação Atual não encontrada!"; _response.Data = ocupacaoAtualDTO;
+                return NotFound(_response);
+            }
+
+            await _ocupacaoAtualService.Remove(id);
+
+            _response.Status = true; _response.Message = "Ocupação Atual " + ocupacaoAtualDTO.NomeOcupacaoAtual + " excluída com sucesso."; _response.Data = ocupacaoAtualDTO;
+            return Ok(_response);
         }
     }
 }

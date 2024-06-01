@@ -3,16 +3,16 @@ using System.Text.Json.Serialization;
 
 namespace SGED.Objects.DTO.Entities
 {
-    public class TipoUsoDTO
+    public class UsoDTO
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "O nome do tipo uso é requerido!")]
+        [Required(ErrorMessage = "O nome do uso é requerido!")]
         [MinLength(3)]
         [MaxLength(50)]
-        public string NomeTipoUso { get; set; }
+        public string NomeUso { get; set; }
 
-        public string? DescricaoTipoUso { get; set; }
+        public string? DescricaoUso { get; set; }
 
         [JsonIgnore]
         public ICollection<ImovelDTO>? ImoveisDTOs { get; set; }

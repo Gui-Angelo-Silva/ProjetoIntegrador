@@ -1,4 +1,6 @@
-﻿namespace SGED.Objects.Utilities
+﻿using SGED.Objects.Interfaces;
+
+namespace SGED.Objects.Utilities
 {
     public class Response
     {

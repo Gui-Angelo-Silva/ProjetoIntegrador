@@ -17,12 +17,12 @@ public class InstalacaoRepository : IInstalacaoRepository
 
     public async Task<IEnumerable<Instalacao>> GetAll()
     {
-        return await _dbContext.Instalacao.ToListAsync();
+        return await _dbContext.Instalacao.AsNoTracking().ToListAsync();
     }
 
     public async Task<Instalacao> GetById(int id)
     {
-        return await _dbContext.Instalacao.Where(objeto => objeto.Id == id).FirstOrDefaultAsync();
+        return await _dbContext.Instalacao.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
     }
 
     public async Task<Instalacao> Create(Instalacao instalacao)

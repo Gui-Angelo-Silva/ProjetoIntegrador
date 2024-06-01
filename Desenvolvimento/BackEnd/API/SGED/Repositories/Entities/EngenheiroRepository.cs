@@ -16,12 +16,12 @@ public class EngenheiroRepository : IEngenheiroRepository
 
     public async Task<IEnumerable<Engenheiro>> GetAll()
     {
-		return await _dbContext.Engenheiro.ToListAsync();
+		return await _dbContext.Engenheiro.AsNoTracking().ToListAsync();
     }
 
     public async Task<Engenheiro> GetById(int id)
     {
-        return await _dbContext.Engenheiro.Where(objeto => objeto.Id == id).FirstOrDefaultAsync();
+        return await _dbContext.Engenheiro.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
     }
 
 

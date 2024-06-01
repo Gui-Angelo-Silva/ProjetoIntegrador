@@ -16,11 +16,11 @@ namespace SGED.Repositories.Entities
 
 		public async Task<IEnumerable<TipoLogradouro>> GetAll()
 		{
-			return await _dbContext.TipoLogradouro.ToListAsync();
+			return await _dbContext.TipoLogradouro.AsNoTracking().ToListAsync();
 		}
 		public async Task<TipoLogradouro> GetById(int id)
 		{
-			return await _dbContext.TipoLogradouro.Where(objeto => objeto.Id == id).FirstOrDefaultAsync();
+			return await _dbContext.TipoLogradouro.AsNoTracking().FirstOrDefaultAsync(tl => tl.Id == id);
 		}
 
 		public async Task<TipoLogradouro> Create(TipoLogradouro tipoLogradouro)

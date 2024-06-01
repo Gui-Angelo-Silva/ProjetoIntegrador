@@ -1,61 +1,104 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using SGED.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata.Ecma335;
+using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
-using SGED.Services.Entities;
-using SGED.Services.Interfaces;
+using SGED.Objects.Utilities;
 
 namespace SGED.Controllers
 {
+
     [Route("api/[controller]")]
-	[ApiController]
-	public class TipoLogradouroController : Controller
-	{
-		private readonly ITipoLogradouroService _tipologradouroservice;
+    [ApiController]
+    public class TipoLogradouroController : Controller
+    {
 
-		public TipoLogradouroController(ITipoLogradouroService tipologradouroservice)
-		{
-			_tipologradouroservice = tipologradouroservice;
-		}
+        private readonly ITipoLogradouroService _tipoLogradouroService;
+        private readonly Response _response;
 
-		[HttpGet]
-		public async Task<ActionResult<IEnumerable<TipoLogradouroDTO>>> Get()
-		{
-			var tipologradouroDTO = await _tipologradouroservice.GetAll();
-			return Ok(tipologradouroDTO);
-		}
+        public TipoLogradouroController(ITipoLogradouroService tipoLogradouroService)
+        {
+            _tipoLogradouroService = tipoLogradouroService;
 
-		[HttpGet("{id}", Name = "GetTipoLogradouro")]
-		public async Task<ActionResult<TipoLogradouroDTO>> Get(int id)
-		{
-			var tipologradouroDTO = await _tipologradouroservice.GetById(id);
-			if (tipologradouroDTO == null) return NotFound("Tipo Logradouro não encontrado!");
-			return Ok(tipologradouroDTO);
-		}
+            _response = new Response();
+        }
 
-		[HttpPost]
-		public async Task<ActionResult> Post([FromBody] TipoLogradouroDTO tipoLogradouroDTO)
-		{
-			if (tipoLogradouroDTO is null) return BadRequest("Dado inválido!");
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TipoLogradouroDTO>>> Get()
+        {
+            var tipoLogradourosDTO = await _tipoLogradouroService.GetAll();
+            _response.Status = true; _response.Data = tipoLogradourosDTO;
+            _response.Message = tipoLogradourosDTO.Any() ?
+                "Lista do(s) Tipo(s) de Logradouro obtida com sucesso." :
+                "Nenhum Tipo de Logradouro encontrado.";
+            return Ok(_response);
+        }
 
-			await _tipologradouroservice.Create(tipoLogradouroDTO);
+        [HttpGet("{id}", Name = "GetTipoLogradouro")]
+        public async Task<ActionResult<TipoLogradouroDTO>> Get(int id)
+        {
+            var tipoLogradouroDTO = await _tipoLogradouroService.GetById(id);
+            if (tipoLogradouroDTO == null)
+            {
+                _response.Status = false; _response.Message = "Tipo de Logradouro não encontrado!"; _response.Data = tipoLogradouroDTO;
+                return NotFound(_response);
+            };
 
-			return new CreatedAtRouteResult("GetById", new { id = tipoLogradouroDTO.Id }, tipoLogradouroDTO);
-		}
+            _response.Status = true; _response.Message = "Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + " obtido com sucesso."; _response.Data = tipoLogradouroDTO;
+            return Ok(_response);
+        }
 
-		[HttpPut()]
-		public async Task<ActionResult> Put([FromBody] TipoLogradouroDTO tipoLogradouroDTO)
-		{
-			if (tipoLogradouroDTO is null) return BadRequest("Dado inválido!");
-			await _tipologradouroservice.Update(tipoLogradouroDTO);
-			return Ok(tipoLogradouroDTO);
-		}
+        [HttpPost]
+        public async Task<ActionResult> Post([FromBody] TipoLogradouroDTO tipoLogradouroDTO)
+        {
+            if (tipoLogradouroDTO == null)
+            {
+                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = tipoLogradouroDTO;
+                return BadRequest(_response);
+            }
 
-		[HttpDelete("{id}")]
-		public async Task<ActionResult<TipoLogradouroDTO>> Delete(int id)
-		{
-			var tipologradouroDTO = await _tipologradouroservice.GetById(id);
-			if (tipologradouroDTO == null) return NotFound("Tipo Logradouro não encontrado!");
-			await _tipologradouroservice.Remove(id);
-			return Ok(tipologradouroDTO);
-		}
-	}
+            await _tipoLogradouroService.Create(tipoLogradouroDTO);
+
+            _response.Status = true; _response.Message = "Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + " cadastrado com sucesso."; _response.Data = tipoLogradouroDTO;
+            return Ok(_response);
+        }
+
+        [HttpPut()]
+        public async Task<ActionResult> Put([FromBody] TipoLogradouroDTO tipoLogradouroDTO)
+        {
+            if (tipoLogradouroDTO == null)
+            {
+                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = tipoLogradouroDTO;
+                return BadRequest(_response);
+            }
+
+            var existingTipoLogradouro = await _tipoLogradouroService.GetById(tipoLogradouroDTO.Id);
+            if (existingTipoLogradouro == null)
+            {
+                _response.Status = false; _response.Message = "O Tipo de Logradouro informado não existe!"; _response.Data = tipoLogradouroDTO;
+                return NotFound(_response);
+            }
+
+            await _tipoLogradouroService.Update(tipoLogradouroDTO);
+
+            _response.Status = true; _response.Message = "Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + " alterado com sucesso."; _response.Data = tipoLogradouroDTO;
+            return Ok(_response);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<TipoLogradouroDTO>> Delete(int id)
+        {
+            var tipoLogradouroDTO = await _tipoLogradouroService.GetById(id);
+            if (tipoLogradouroDTO == null)
+            {
+                _response.Status = false; _response.Message = "Tipo de Logradouro não encontrado!"; _response.Data = tipoLogradouroDTO;
+                return NotFound(_response);
+            }
+
+            await _tipoLogradouroService.Remove(id);
+
+            _response.Status = true; _response.Message = "Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + " excluído com sucesso."; _response.Data = tipoLogradouroDTO;
+            return Ok(_response);
+        }
+    }
 }

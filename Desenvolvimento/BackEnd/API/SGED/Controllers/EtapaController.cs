@@ -14,7 +14,7 @@ namespace SGED.Controllers
     {
         private readonly ITipoProcessoService _tipoProcessoService;
         private readonly IEtapaService _etapaService;
-        private Response _response;
+        private readonly Response _response;
 
         public EtapaController(ITipoProcessoService tipoprocessoservice, IEtapaService etapaservice)
         {
@@ -56,7 +56,7 @@ namespace SGED.Controllers
             if (tipoProcessoDTO == null)
             {
                 _response.Status = false; _response.Message = "O Tipo Processo informado não existe!"; _response.Data = null;
-                return BadRequest(_response);
+                return NotFound(_response);
             }
 
             var etapas = await _etapaService.GetStagesRelatedToTypeProcess(idTipoProcesso);
@@ -73,7 +73,7 @@ namespace SGED.Controllers
         {
             if (etapaDTO == null)
             {
-                _response.Status = false; _response.Message = "Dado inválido!"; _response.Data = etapaDTO;
+                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = etapaDTO;
                 return BadRequest(_response);
             }
 
@@ -120,7 +120,7 @@ namespace SGED.Controllers
             if (existingEtapa == null)
             {
                 _response.Status = false; _response.Message = "Não existe a Etapa informada!"; _response.Data = etapaDTO;
-                return BadRequest(_response);
+                return NotFound(_response);
             }
             else if (!existingEtapa.Status)
             {
@@ -133,7 +133,7 @@ namespace SGED.Controllers
             if (tipoProcessoDTO == null)
             {
                 _response.Status = false; _response.Message = "O Tipo Processo não existe!"; _response.Data = etapaDTO;
-                return BadRequest(_response);
+                return NotFound(_response);
             }
             else if (!tipoProcessoDTO.Status)
             {

@@ -17,12 +17,12 @@ public class InfraestruturaRepository : IInfraestruturaRepository
 
     public async Task<IEnumerable<Infraestrutura>> GetAll()
     {
-        return await _dbContext.Infraestrutura.ToListAsync();
+        return await _dbContext.Infraestrutura.AsNoTracking().ToListAsync();
     }
 
     public async Task<Infraestrutura> GetById(int id)
     {
-        return await _dbContext.Infraestrutura.Where(objeto => objeto.Id == id).FirstOrDefaultAsync();
+        return await _dbContext.Infraestrutura.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
     }
 
     public async Task<Infraestrutura> Create(Infraestrutura infraestrutura)

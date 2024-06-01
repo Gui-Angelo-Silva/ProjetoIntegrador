@@ -6,16 +6,16 @@ using System.Text.Json.Serialization;
 namespace SGED.Objects.Models.Entities
 {
     [Table("tipouso")]
-    public class TipoUso
+    public class Uso
     {
-        [Column("idtipouso")]
+        [Column("iduso")]
         public int Id { get; set; }
 
-        [Column("nometipouso")]
-        public string NomeTipoUso { get; set; }
+        [Column("nomeuso")]
+        public string NomeUso { get; set; }
 
-        [Column("descricaotipouso")]
-        public string? DescricaoTipoUso { get; set; }
+        [Column("descricaouso")]
+        public string? DescricaoUso { get; set; }
 
         public ICollection<Imovel>? Imoveis { get; set; }
     }

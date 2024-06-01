@@ -17,12 +17,12 @@ public class OcupacaoAtualRepository : IOcupacaoAtualRepository
 
     public async Task<IEnumerable<OcupacaoAtual>> GetAll()
     {
-        return await _dbContext.OcupacaoAtual.ToListAsync();
+        return await _dbContext.OcupacaoAtual.AsNoTracking().ToListAsync();
     }
 
     public async Task<OcupacaoAtual> GetById(int id)
     {
-        return await _dbContext.OcupacaoAtual.Where(objeto => objeto.Id == id).FirstOrDefaultAsync();
+        return await _dbContext.OcupacaoAtual.AsNoTracking().FirstOrDefaultAsync(oa => oa.Id == id);
     }
 
     public async Task<OcupacaoAtual> Create(OcupacaoAtual ocupacaoatual)

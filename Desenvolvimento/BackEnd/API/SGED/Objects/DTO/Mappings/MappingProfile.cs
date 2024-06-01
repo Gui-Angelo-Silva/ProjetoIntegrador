@@ -54,8 +54,8 @@ namespace SGED.Objects.DTO.Mappings
             CreateMap<TopografiaDTO, Topografia>();
             CreateMap<Topografia, TopografiaDTO>().ReverseMap();
 
-            CreateMap<TipoUsoDTO, TipoUso>();
-            CreateMap<TipoUso, TipoUsoDTO>().ReverseMap();
+            CreateMap<UsoDTO, Uso>();
+            CreateMap<Uso, UsoDTO>().ReverseMap();
 
             CreateMap<OcupacaoAtualDTO, OcupacaoAtual>();
             CreateMap<OcupacaoAtual, OcupacaoAtualDTO>().ReverseMap();

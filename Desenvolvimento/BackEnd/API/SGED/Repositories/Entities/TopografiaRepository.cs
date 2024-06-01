@@ -17,12 +17,12 @@ public class TopografiaRepository : ITopografiaRepository
 
     public async Task<IEnumerable<Topografia>> GetAll()
     {
-        return await _dbContext.Topografia.ToListAsync();
+        return await _dbContext.Topografia.AsNoTracking().ToListAsync();
     }
 
     public async Task<Topografia> GetById(int id)
     {
-        return await _dbContext.Topografia.Where(objeto => objeto.Id == id).FirstOrDefaultAsync();
+        return await _dbContext.Topografia.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id);
     }
 
     public async Task<Topografia> Create(Topografia topografia)

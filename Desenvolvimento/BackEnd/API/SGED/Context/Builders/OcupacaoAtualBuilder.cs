@@ -3,23 +3,23 @@ using SGED.Objects.Models.Entities;
 
 namespace SGED.Context.Builders
 {
-    public class TipoUsoBuilder
+    public class OcupacaoAtualBuilder
     {
         public static void Build(ModelBuilder modelBuilder)
         {
             // Builder
-            modelBuilder.Entity<TipoUso>().HasKey(oa => oa.Id);
-            modelBuilder.Entity<TipoUso>().Property(oa => oa.NomeTipoUso).HasMaxLength(50).IsRequired();
-            modelBuilder.Entity<TipoUso>().Property(oa => oa.DescricaoTipoUso);
+            modelBuilder.Entity<OcupacaoAtual>().HasKey(tu => tu.Id);
+            modelBuilder.Entity<OcupacaoAtual>().Property(tu => tu.NomeOcupacaoAtual).HasMaxLength(50).IsRequired();
+            modelBuilder.Entity<OcupacaoAtual>().Property(tu => tu.DescricaoOcupacaoAtual);
 
 
             // Inserções
-            modelBuilder.Entity<TipoUso>().HasData(
-                new TipoUso { Id = 1, NomeTipoUso = "Residencial", DescricaoTipoUso = "Uso do imóvel para habitação." },
-                new TipoUso { Id = 2, NomeTipoUso = "Comercial", DescricaoTipoUso = "Uso do imóvel para atividades comerciais." },
-                new TipoUso { Id = 3, NomeTipoUso = "Industrial", DescricaoTipoUso = "Uso do imóvel para atividades industriais." },
-                new TipoUso { Id = 4, NomeTipoUso = "Institucional", DescricaoTipoUso = "Uso do imóvel para serviços públicos ou comunitários." },
-                new TipoUso { Id = 5, NomeTipoUso = "Misto", DescricaoTipoUso = "Uso do imóvel que combina mais de uma finalidade." }
+            modelBuilder.Entity<OcupacaoAtual>().HasData(
+                new OcupacaoAtual { Id = 1, NomeOcupacaoAtual = "Não Edificada", DescricaoOcupacaoAtual = "Terreno sem construções." },
+                new OcupacaoAtual { Id = 2, NomeOcupacaoAtual = "Edificada", DescricaoOcupacaoAtual = "Terreno com construções." },
+                new OcupacaoAtual { Id = 3, NomeOcupacaoAtual = "Em Construção", DescricaoOcupacaoAtual = "Terreno com obras em andamento." },
+                new OcupacaoAtual { Id = 4, NomeOcupacaoAtual = "Desocupada", DescricaoOcupacaoAtual = "Terreno com construções, mas sem uso." },
+                new OcupacaoAtual { Id = 5, NomeOcupacaoAtual = "Ocupada", DescricaoOcupacaoAtual = "Terreno com construções e em uso." }
             );
         }
     }

@@ -17,7 +17,7 @@ namespace SGED.Controllers
         private readonly ITipoDocumentoEtapaService _tipoDocumentoEtapaService;
         private readonly ITipoDocumentoService _tipoDocumentoService;
         private readonly IEtapaService _etapaService;
-        private Response _response;
+        private readonly Response _response;
 
         public TipoDocumentoEtapaController(ITipoDocumentoEtapaService TipoDocumentoEtapaService, ITipoDocumentoService TipoDocumentoService, IEtapaService EtapaService)
         {
@@ -63,7 +63,7 @@ namespace SGED.Controllers
             if (etapaDTO == null)
             {
                 _response.Status = false; _response.Message = "A Etapa informada não existe!"; _response.Data = null;
-                return BadRequest(_response);
+                return NotFound(_response);
             }
 
             var tipoDocumentoEtapas = await _tipoDocumentoEtapaService.GetTypeDocumentStagesRelatedToStage(idEtapa);
@@ -82,7 +82,7 @@ namespace SGED.Controllers
             if (etapaDTO == null)
             {
                 _response.Status = false; _response.Message = "A Etapa informada não existe!"; _response.Data = null;
-                return BadRequest(_response);
+                return NotFound(_response);
             }
 
             var tipoDocumentos = await _tipoDocumentoEtapaService.GetTypeDocumentsRelatedToStage(idEtapa);
@@ -101,7 +101,7 @@ namespace SGED.Controllers
             if (etapaDTO == null)
             {
                 _response.Status = false; _response.Message = "A Etapa informada não existe!"; _response.Data = null;
-                return BadRequest(_response);
+                return NotFound(_response);
             }
 
             var tipoDocumentos = await _tipoDocumentoEtapaService.GetTypeDocumentsNoRelatedToStage(idEtapa);
@@ -118,7 +118,7 @@ namespace SGED.Controllers
         {
             if (tipoDocumentoEtapaDTO == null)
             {
-                _response.Status = false; _response.Message = "Dado inválido!"; _response.Data = tipoDocumentoEtapaDTO;
+                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = tipoDocumentoEtapaDTO;
                 return BadRequest(_response);
             }
 
@@ -170,7 +170,7 @@ namespace SGED.Controllers
         {
             if (tipoDocumentoEtapaDTO == null)
             {
-                _response.Status = false; _response.Message = "Dado inválido!"; _response.Data = tipoDocumentoEtapaDTO;
+                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = tipoDocumentoEtapaDTO;
                 return BadRequest(_response);
             }
 
@@ -179,7 +179,7 @@ namespace SGED.Controllers
             if (existingTipoDocumentoEtapa == null)
             {
                 _response.Status = false; _response.Message = "Não existe o relacionamento entre Etapa e Tipo Documento informado!"; _response.Data = tipoDocumentoEtapaDTO;
-                return BadRequest(_response);
+                return NotFound(_response);
             }
             else if (!existingTipoDocumentoEtapa.Status)
             {

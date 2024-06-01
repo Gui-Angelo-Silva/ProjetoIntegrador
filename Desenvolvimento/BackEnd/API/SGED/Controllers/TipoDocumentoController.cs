@@ -12,7 +12,7 @@ namespace SGED.Controllers
 	public class TipoDocumentoController : Controller
 	{
 		private readonly ITipoDocumentoService _tipoDocumentoService;
-		private Response _response;
+		private readonly Response _response;
 
 		public TipoDocumentoController(ITipoDocumentoService tipoDocumentoService)
 		{
@@ -51,7 +51,7 @@ namespace SGED.Controllers
 		{
 			if (tipoDocumentoDTO == null)
 			{
-				_response.Status = false; _response.Message = "Dado inválido!"; _response.Data = tipoDocumentoDTO;
+				_response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = tipoDocumentoDTO;
                 return BadRequest(_response);
 			}
 
@@ -79,7 +79,7 @@ namespace SGED.Controllers
 		{
 			if (tipoDocumentoDTO == null)
 			{
-				_response.Status = false; _response.Message = "Dado inválido!"; _response.Data = tipoDocumentoDTO;
+				_response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = tipoDocumentoDTO;
                 return BadRequest(_response);
 			}
 
@@ -87,7 +87,7 @@ namespace SGED.Controllers
 			if (existingTipoDocumento == null)
 			{
 				_response.Status = false; _response.Message = "Não existe o Tipo Documento informado!"; _response.Data = tipoDocumentoDTO;
-                return BadRequest(_response);
+                return NotFound(_response);
 			}
 			else if (!existingTipoDocumento.Status)
 			{

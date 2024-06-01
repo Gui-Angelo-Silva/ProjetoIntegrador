@@ -13,7 +13,7 @@ namespace SGED.Controllers
     public class TipoProcessoController : Controller
     {
         private readonly ITipoProcessoService _tipoProcessoService;
-        private Response _response;
+        private readonly Response _response;
 
         public TipoProcessoController(ITipoProcessoService tipoProcessoService)
         {
@@ -52,7 +52,7 @@ namespace SGED.Controllers
         {
             if (tipoProcessoDTO == null)
             {
-                _response.Status = false; _response.Message = "Dado inválido!"; _response.Data = tipoProcessoDTO;
+                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = tipoProcessoDTO;
                 return BadRequest(_response);
             }
 
@@ -80,7 +80,7 @@ namespace SGED.Controllers
         {
             if (tipoProcessoDTO == null)
             {
-                _response.Status = false; _response.Message = "Dado inválido!"; _response.Data = tipoProcessoDTO;
+                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = tipoProcessoDTO;
                 return BadRequest(_response);
             }
 
@@ -169,7 +169,7 @@ namespace SGED.Controllers
                 return BadRequest(_response);
             }
 
-            await _tipoProcessoService.Delete(id);
+            await _tipoProcessoService.Remove(id);
 
             _response.Status = true; _response.Message = "Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " excluído com sucesso."; _response.Data = tipoProcessoDTO;
             return Ok(_response);

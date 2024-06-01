@@ -24,7 +24,7 @@ public class AppDBContext : DbContext
     public DbSet<TipoLogradouro> TipoLogradouro { get; set; }
     public DbSet<Logradouro> Logradouro { get; set; }
     public DbSet<Topografia> Topografia { get; set; }
-    public DbSet<TipoUso> TipoUso { get; set; }
+    public DbSet<Uso> Uso { get; set; }
     public DbSet<OcupacaoAtual> OcupacaoAtual { get; set; }
     public DbSet<TipoInfraestrutura> TipoInfraestrutura { get; set; }
     public DbSet<Infraestrutura> Infraestrutura { get; set; }
@@ -57,7 +57,7 @@ public class AppDBContext : DbContext
         TipoLogradouroBuilder.Build(modelBuilder);
         LogradouroBuilder.Build(modelBuilder);
         TopografiaBuilder.Build(modelBuilder);
-        TipoUsoBuilder.Build(modelBuilder);
+        UsoBuilder.Build(modelBuilder);
         OcupacaoAtualBuilder.Build(modelBuilder);
         TipoInfraestruturaBuilder.Build(modelBuilder);
         InfraestruturaBuilder.Build(modelBuilder);

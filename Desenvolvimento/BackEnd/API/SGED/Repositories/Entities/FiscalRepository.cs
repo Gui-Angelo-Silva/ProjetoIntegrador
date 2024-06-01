@@ -16,12 +16,12 @@ public class FiscalRepository : IFiscalRepository
 
     public async Task<IEnumerable<Fiscal>> GetAll()
     {
-        return await _dbContext.Fiscal.ToListAsync();
+        return await _dbContext.Fiscal.AsNoTracking().ToListAsync();
     }
 
     public async Task<Fiscal> GetById(int id)
     {
-        return await _dbContext.Fiscal.Where(objeto => objeto.Id == id).FirstOrDefaultAsync();
+        return await _dbContext.Fiscal.AsNoTracking().FirstOrDefaultAsync(f => f.Id == id);
     }
 
 

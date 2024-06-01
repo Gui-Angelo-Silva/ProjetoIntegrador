@@ -78,7 +78,6 @@ namespace SGED.Controllers
                 _response.Status = false; _response.Message = "A Cidade informada não existe!"; _response.Data = cidadeDTO;
                 return NotFound(_response);
             }
-
             await _cidadeService.Update(cidadeDTO);
 
             _response.Status = true; _response.Message = "Cidade " + cidadeDTO.NomeCidade + " alterada com sucesso."; _response.Data = cidadeDTO;

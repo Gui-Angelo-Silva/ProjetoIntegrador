@@ -22,11 +22,15 @@ public class BairroRepository : IBairroRepository
         return await _dbContext.Bairro.AsNoTracking().ToListAsync();
     }
 
+    public async Task<IEnumerable<Bairro>> GetByCity(int idCidade)
+    {
+        return await _dbContext.Bairro.Where(b => b.IdCidade == idCidade).AsNoTracking().ToListAsync();
+    }
+
     public async Task<Bairro> GetById(int id)
     {
         return await _dbContext.Bairro.AsNoTracking().FirstOrDefaultAsync(b => b.Id == id);
     }
-
 
     public async Task<Bairro> Create(Bairro Bairro)
     {

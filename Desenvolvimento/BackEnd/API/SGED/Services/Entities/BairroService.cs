@@ -23,6 +23,12 @@ public class BairroService : IBairroService
         return _mapper.Map<IEnumerable<BairroDTO>>(bairros);
     }
 
+    public async Task<IEnumerable<BairroDTO>> GetByCity(int idCidade)
+    {
+        var bairros = await _bairroRepository.GetByCity(idCidade);
+        return _mapper.Map<IEnumerable<BairroDTO>>(bairros);
+    }
+
     public async Task<BairroDTO> GetById(int id)
     {
         var bairro = await _bairroRepository.GetById(id);

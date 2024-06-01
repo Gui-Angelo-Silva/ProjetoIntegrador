@@ -59,10 +59,10 @@ namespace SGED.Objects.Models.Entities
         [ForeignKey("idtopografia")]
         public int IdTopografia { get; set; }
 
-        public TipoUso? TipoUso { get; set; }
+        public Uso? Uso { get; set; }
 
-        [ForeignKey("idtipouso")]
-        public int IdTipoUso { get; set; }
+        [ForeignKey("iduso")]
+        public int IdUso { get; set; }
 
         public OcupacaoAtual? OcupacaoAtual { get; set; }
 

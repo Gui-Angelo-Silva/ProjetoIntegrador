@@ -83,7 +83,7 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                if (!await CidadeExists(cidadeDTO))
+                if (await CidadeExists(cidadeDTO))
                 {
                     _response.SetConflict(); _response.Message = "Já existe a Cidade " + cidadeDTO.NomeCidade + "!"; _response.Data = cidadeDTO;
                     return BadRequest(_response);
@@ -126,7 +126,7 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                if (!await CidadeExists(cidadeDTO))
+                if (await CidadeExists(cidadeDTO))
                 {
                     _response.SetConflict(); _response.Message = "Já existe a Cidade " + cidadeDTO.NomeCidade + "!"; _response.Data = cidadeDTO;
                     return BadRequest(_response);

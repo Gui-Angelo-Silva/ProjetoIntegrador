@@ -74,7 +74,7 @@ namespace SGED.Controllers
 
             try
             {
-                if (!await TipoLogradouroExists(tipoLogradouroDTO))
+                if (await TipoLogradouroExists(tipoLogradouroDTO))
                 {
                     _response.SetConflict(); _response.Message = "Já existe o Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + "!"; _response.Data = tipoLogradouroDTO;
                     return BadRequest(_response);
@@ -110,7 +110,7 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                if (!await TipoLogradouroExists(tipoLogradouroDTO))
+                if (await TipoLogradouroExists(tipoLogradouroDTO))
                 {
                     _response.SetConflict(); _response.Message = "Já existe o Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + "!"; _response.Data = tipoLogradouroDTO;
                     return BadRequest(_response);
@@ -155,7 +155,7 @@ namespace SGED.Controllers
         private async Task<bool> TipoLogradouroExists(TipoLogradouroDTO tipoLogradouroDTO)
         {
             var tipoLogradourosDTO = await _tipoLogradouroService.GetAll();
-            return tipoLogradourosDTO.FirstOrDefault(b => Operator.CompareString(b.CodigoInformativo, tipoLogradouroDTO.CodigoInformativo)) is not null;
+            return tipoLogradourosDTO.FirstOrDefault(tl => Operator.CompareString(tl.CodigoInformativo, tipoLogradouroDTO.CodigoInformativo)) is not null;
         }
     }
 }

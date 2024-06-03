@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using SGED.Objects.Enums;
 using SGED.Objects.Interfaces;
 using SGED.Objects.Interfaces.Pessoa;
 using SGED.Objects.Utilities;

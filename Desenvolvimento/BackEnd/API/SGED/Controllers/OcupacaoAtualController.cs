@@ -38,7 +38,7 @@ namespace SGED.Controllers
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError(); _response.Message = "Não foi possível cadastrar a Ocupação Atual!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
@@ -60,7 +60,7 @@ namespace SGED.Controllers
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError(); _response.Message = "Não foi possível cadastrar a Ocupação Atual!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
@@ -76,7 +76,7 @@ namespace SGED.Controllers
 
             try
             {
-                if (!await OcupacaoAtualExists(ocupacaoAtualDTO))
+                if (await OcupacaoAtualExists(ocupacaoAtualDTO))
                 {
                     _response.SetConflict(); _response.Message = "Já existe a Ocupação Atual " + ocupacaoAtualDTO.NomeOcupacaoAtual + "!"; _response.Data = new { errorNomeOcupacaoAtual = "Já existe o OcupacaoAtual " + ocupacaoAtualDTO.NomeOcupacaoAtual + "!" };
                     return BadRequest(_response);
@@ -89,7 +89,7 @@ namespace SGED.Controllers
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError(); _response.Message = "Não foi possível cadastrar a Ocupação Atual!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
@@ -112,7 +112,7 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                if (!await OcupacaoAtualExists(ocupacaoAtualDTO))
+                if (await OcupacaoAtualExists(ocupacaoAtualDTO))
                 {
                     _response.SetConflict(); _response.Message = "Já existe a Ocupação Atual" + ocupacaoAtualDTO.NomeOcupacaoAtual + "!"; _response.Data = new { errorNomeOcupacaoAtual = "Já existe o OcupacaoAtual " + ocupacaoAtualDTO.NomeOcupacaoAtual + "!" };
                     return BadRequest(_response);
@@ -125,7 +125,7 @@ namespace SGED.Controllers
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError(); _response.Message = "Não foi possível cadastrar a Ocupação Atual!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
@@ -149,7 +149,7 @@ namespace SGED.Controllers
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError(); _response.Message = "Não foi possível cadastrar a Ocupação Atual!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
@@ -157,7 +157,7 @@ namespace SGED.Controllers
         private async Task<bool> OcupacaoAtualExists(OcupacaoAtualDTO ocupacaoAtualDTO)
         {
             var ocupacaoAtualsDTO = await _ocupacaoAtualService.GetAll();
-            return ocupacaoAtualsDTO.FirstOrDefault(b => Operator.CompareString(b.NomeOcupacaoAtual, ocupacaoAtualDTO.NomeOcupacaoAtual)) is not null;
+            return ocupacaoAtualsDTO.FirstOrDefault(oa => Operator.CompareString(oa.NomeOcupacaoAtual, ocupacaoAtualDTO.NomeOcupacaoAtual)) is not null;
         }
     }
 }

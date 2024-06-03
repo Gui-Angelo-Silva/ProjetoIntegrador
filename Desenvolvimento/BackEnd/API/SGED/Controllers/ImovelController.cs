@@ -83,7 +83,7 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                if (!await ImovelExists(imovelDTO))
+                if (await ImovelExists(imovelDTO))
                 {
                     _response.SetConflict(); _response.Message = "Já existe o Imóvel " + imovelDTO.InscricaoCadastral + "!"; _response.Data = imovelDTO;
                     return BadRequest(_response);
@@ -126,7 +126,7 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                if (!await ImovelExists(imovelDTO))
+                if (await ImovelExists(imovelDTO))
                 {
                     _response.SetConflict(); _response.Message = "Já existe o Imóvel " + imovelDTO.InscricaoCadastral + "!"; _response.Data = imovelDTO;
                     return BadRequest(_response);

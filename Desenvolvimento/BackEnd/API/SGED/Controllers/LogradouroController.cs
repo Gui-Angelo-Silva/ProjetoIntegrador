@@ -64,7 +64,7 @@ namespace SGED.Controllers
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível adquirir a Logradouro informado!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError(); _response.Message = "Não foi possível adquirir o Logradouro informado!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
@@ -107,7 +107,7 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                if (!await LogradouroExists(logradouroDTO))
+                if (await LogradouroExists(logradouroDTO))
                 {
                     _response.SetConflict(); _response.Message = "Já existe o Logradouro" + logradouroDTO.Cep + "!"; _response.Data = logradouroDTO;
                     return BadRequest(_response);
@@ -120,7 +120,7 @@ namespace SGED.Controllers
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError(); _response.Message = "Não foi possível cadastrar o Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
@@ -170,7 +170,7 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                if (!await LogradouroExists(logradouroDTO))
+                if (await LogradouroExists(logradouroDTO))
                 {
                     _response.SetConflict(); _response.Message = "Já existe o Logradouro" + logradouroDTO.Cep + "!"; _response.Data = logradouroDTO;
                     return BadRequest(_response);
@@ -215,7 +215,7 @@ namespace SGED.Controllers
         private async Task<bool> LogradouroExists(LogradouroDTO logradouroDTO)
         {
             var logradourosDTO = await _logradouroService.GetByNeighbourhood(logradouroDTO.IdBairro);
-            return logradourosDTO.FirstOrDefault(b => Operator.CompareString(b.Cep, logradouroDTO.Cep)) is not null;
+            return logradourosDTO.FirstOrDefault(l => Operator.CompareString(l.Cep, logradouroDTO.Cep)) is not null;
         }
     }
 }

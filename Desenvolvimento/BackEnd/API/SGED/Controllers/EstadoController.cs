@@ -74,7 +74,7 @@ namespace SGED.Controllers
 
             try
             {
-                if (!await EstadoExists(estadoDTO))
+                if (await EstadoExists(estadoDTO))
                 {
                     _response.SetConflict(); _response.Message = "Já existe o Estado " + estadoDTO.NomeEstado + "!"; _response.Data = estadoDTO;
                     return BadRequest(_response);
@@ -110,7 +110,7 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                if (!await EstadoExists(estadoDTO))
+                if (await EstadoExists(estadoDTO))
                 {
                     _response.SetConflict(); _response.Message = "Já existe o Estado " + estadoDTO.NomeEstado + "!"; _response.Data = estadoDTO;
                     return BadRequest(_response);

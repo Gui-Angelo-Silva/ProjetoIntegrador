@@ -83,7 +83,7 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                if (!await BairroExists(bairroDTO))
+                if (await BairroExists(bairroDTO))
                 {
                     _response.SetConflict(); _response.Message = "Já existe o Bairro " + bairroDTO.NomeBairro + "!"; _response.Data = new { errorNomeBairro = "Já existe o Bairro " + bairroDTO.NomeBairro + "!" };
                     return BadRequest(_response);
@@ -126,7 +126,7 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                if (!await BairroExists(bairroDTO))
+                if (await BairroExists(bairroDTO))
                 {
                     _response.SetConflict(); _response.Message = "Já existe o Bairro " + bairroDTO.NomeBairro + "!"; _response.Data = new { errorNomeBairro = "Já existe o Bairro " + bairroDTO.NomeBairro + "!" };
                     return BadRequest(_response);

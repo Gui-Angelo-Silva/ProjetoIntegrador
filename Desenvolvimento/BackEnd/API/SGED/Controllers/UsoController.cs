@@ -8,97 +8,154 @@ using SGED.Objects.Utilities;
 namespace SGED.Controllers
 {
 
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UsoController : Controller
-    {
+	[Route("api/[controller]")]
+	[ApiController]
+	public class UsoController : Controller
+	{
+		private readonly IUsoService _usoService;
+		private readonly Response _response;
 
-        private readonly IUsoService _usoService;
-        private readonly Response _response;
+		public UsoController(IUsoService usoService)
+		{
+			_usoService = usoService;
 
-        public UsoController(IUsoService usoService)
-        {
-            _usoService = usoService;
+			_response = new Response();
+		}
 
-            _response = new Response();
-        }
+		[HttpGet()]
+		public async Task<ActionResult<IEnumerable<UsoDTO>>> Get()
+		{
+			try
+			{
+				var usosDTO = await _usoService.GetAll();
+				_response.SetSuccess(); _response.Data = usosDTO;
+				_response.Message = usosDTO.Any() ?
+					"Lista do(s) Uso(s) obtida com sucesso." :
+					"Nenhum Uso encontrado.";
+				return Ok(_response);
+			}
+			catch (Exception ex)
+			{
+				_response.SetError(); _response.Message = "Não foi possível adquirir a lista do(s) Uso(s)!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+				return StatusCode(StatusCodes.Status500InternalServerError, _response);
+			}
+		}
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<UsoDTO>>> Get()
-        {
-            var usosDTO = await _usoService.GetAll();
-            _response.Status = true; _response.Data = usosDTO;
-            _response.Message = usosDTO.Any() ?
-                "Lista do(s) Uso(s) obtida com sucesso." :
-                "Nenhum Uso encontrado.";
-            return Ok(_response);
-        }
+		[HttpGet("{id}", Name = "GetUso")]
+		public async Task<ActionResult<UsoDTO>> Get(int id)
+		{
+			try
+			{
+				var usoDTO = await _usoService.GetById(id);
+				if (usoDTO is null)
+				{
+					_response.SetNotFound(); _response.Message = "Uso não encontrado!"; _response.Data = usoDTO;
+					return NotFound(_response);
+				};
 
-        [HttpGet("{id}", Name = "GetUso")]
-        public async Task<ActionResult<UsoDTO>> Get(int id)
-        {
-            var usoDTO = await _usoService.GetById(id);
-            if (usoDTO == null)
-            {
-                _response.Status = false; _response.Message = "Uso não encontrado!"; _response.Data = usoDTO;
-                return NotFound(_response);
-            };
+				_response.SetSuccess(); _response.Message = "Uso " + usoDTO.NomeUso + " obtido com sucesso."; _response.Data = usoDTO;
+				return Ok(_response);
+			}
+			catch (Exception ex)
+			{
+				_response.SetError(); _response.Message = "Não foi possível adquirir o Uso informado!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+				return StatusCode(StatusCodes.Status500InternalServerError, _response);
+			}
+		}
 
-            _response.Status = true; _response.Message = "Uso " + usoDTO.NomeUso + " obtido com sucesso."; _response.Data = usoDTO;
-            return Ok(_response);
-        }
+		[HttpPost()]
+		public async Task<ActionResult> Post([FromBody] UsoDTO usoDTO)
+		{
+			if (usoDTO is null)
+			{
+				_response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = usoDTO;
+				return BadRequest(_response);
+			}
 
-        [HttpPost]
-        public async Task<ActionResult> Post([FromBody] UsoDTO usoDTO)
-        {
-            if (usoDTO == null)
-            {
-                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = usoDTO;
-                return BadRequest(_response);
-            }
+			try
+			{
+				if (await UsoExists(usoDTO))
+				{
+					_response.SetConflict(); _response.Message = "Já existe o Uso " + usoDTO.NomeUso + "!"; _response.Data = usoDTO;
+					return BadRequest(_response);
+				}
 
-            await _usoService.Create(usoDTO);
+				await _usoService.Create(usoDTO);
 
-            _response.Status = true; _response.Message = "Uso " + usoDTO.NomeUso + " cadastrado com sucesso."; _response.Data = usoDTO;
-            return Ok(_response);
-        }
+				_response.SetSuccess(); _response.Message = "Uso " + usoDTO.NomeUso + " cadastrado com sucesso."; _response.Data = usoDTO;
+				return Ok(_response);
+			}
+			catch (Exception ex)
+			{
+				_response.SetError(); _response.Message = "Não foi possível cadastrar o Uso!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+				return StatusCode(StatusCodes.Status500InternalServerError, _response);
+			}
+		}
 
-        [HttpPut()]
-        public async Task<ActionResult> Put([FromBody] UsoDTO usoDTO)
-        {
-            if (usoDTO == null)
-            {
-                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = usoDTO;
-                return BadRequest(_response);
-            }
+		[HttpPut()]
+		public async Task<ActionResult> Put([FromBody] UsoDTO usoDTO)
+		{
+			if (usoDTO is null)
+			{
+				_response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = usoDTO;
+				return BadRequest(_response);
+			}
 
-            var existingUso = await _usoService.GetById(usoDTO.Id);
-            if (existingUso == null)
-            {
-                _response.Status = false; _response.Message = "O Uso informado não existe!"; _response.Data = usoDTO;
-                return NotFound(_response);
-            }
+			try
+			{
+				var existingUsoDTO = await _usoService.GetById(usoDTO.Id);
+				if (existingUsoDTO is null)
+				{
+					_response.SetNotFound(); _response.Message = "O Uso informado não existe!"; _response.Data = usoDTO;
+					return NotFound(_response);
+				}
 
-            await _usoService.Update(usoDTO);
+				if (await UsoExists(usoDTO))
+				{
+					_response.SetConflict(); _response.Message = "Já existe o Uso " + usoDTO.NomeUso + "!"; _response.Data = usoDTO;
+					return BadRequest(_response);
+				}
 
-            _response.Status = true; _response.Message = "Uso " + usoDTO.NomeUso + " alterado com sucesso."; _response.Data = usoDTO;
-            return Ok(_response);
-        }
+				await _usoService.Update(usoDTO);
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<UsoDTO>> Delete(int id)
-        {
-            var usoDTO = await _usoService.GetById(id);
-            if (usoDTO == null)
-            {
-                _response.Status = false; _response.Message = "Uso não encontrado!"; _response.Data = usoDTO;
-                return NotFound(_response);
-            }
+				_response.SetSuccess(); _response.Message = "Uso " + usoDTO.NomeUso + " alterado com sucesso."; _response.Data = usoDTO;
+				return Ok(_response);
+			}
+			catch (Exception ex)
+			{
+				_response.SetError(); _response.Message = "Não foi possível alterar o Uso!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+				return StatusCode(StatusCodes.Status500InternalServerError, _response);
+			}
+		}
 
-            await _usoService.Remove(id);
+		[HttpDelete("{id}")]
+		public async Task<ActionResult<UsoDTO>> Delete(int id)
+		{
+			try
+			{
+				var usoDTO = await _usoService.GetById(id);
+				if (usoDTO is null)
+				{
+					_response.SetNotFound(); _response.Message = "Uso não encontrado!"; _response.Data = usoDTO;
+					return NotFound(_response);
+				}
 
-            _response.Status = true; _response.Message = "Uso " + usoDTO.NomeUso + " excluído com sucesso."; _response.Data = usoDTO;
-            return Ok(_response);
-        }
-    }
+				await _usoService.Remove(id);
+
+				_response.SetSuccess(); _response.Message = "Uso " + usoDTO.NomeUso + " excluído com sucesso."; _response.Data = usoDTO;
+				return Ok(_response);
+			}
+			catch (Exception ex)
+			{
+				_response.SetError(); _response.Message = "Não foi possível excluir o Uso!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+				return StatusCode(StatusCodes.Status500InternalServerError, _response);
+			}
+		}
+
+		private async Task<bool> UsoExists(UsoDTO usoDTO)
+		{
+			var usosDTO = await _usoService.GetAll();
+			return usosDTO.FirstOrDefault(u => Operator.CompareString(u.NomeUso, usoDTO.NomeUso)) is not null;
+		}
+	}
 }

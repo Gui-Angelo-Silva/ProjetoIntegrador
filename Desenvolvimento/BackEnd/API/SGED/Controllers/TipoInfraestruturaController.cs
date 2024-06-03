@@ -74,7 +74,7 @@ namespace SGED.Controllers
 
             try
             {
-                if (!await TipoInfraestruturaExists(tipoInfraestruturaDTO))
+                if (await TipoInfraestruturaExists(tipoInfraestruturaDTO))
                 {
                     _response.SetConflict(); _response.Message = "Já existe o Tipo de Infraestrutura " + tipoInfraestruturaDTO.NomeTipoInfraestrutura + "!"; _response.Data = tipoInfraestruturaDTO;
                     return BadRequest(_response);
@@ -110,7 +110,7 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                if (!await TipoInfraestruturaExists(tipoInfraestruturaDTO))
+                if (await TipoInfraestruturaExists(tipoInfraestruturaDTO))
                 {
                     _response.SetConflict(); _response.Message = "Já existe o Tipo de Infraestrutura " + tipoInfraestruturaDTO.NomeTipoInfraestrutura + "!"; _response.Data = tipoInfraestruturaDTO;
                     return BadRequest(_response);
@@ -155,7 +155,7 @@ namespace SGED.Controllers
         private async Task<bool> TipoInfraestruturaExists(TipoInfraestruturaDTO tipoInfraestruturaDTO)
         {
             var tipoInfraestruturasDTO = await _tipoInfraestruturaService.GetAll();
-            return tipoInfraestruturasDTO.FirstOrDefault(b => Operator.CompareString(b.NomeTipoInfraestrutura, tipoInfraestruturaDTO.NomeTipoInfraestrutura)) is not null;
+            return tipoInfraestruturasDTO.FirstOrDefault(ti => Operator.CompareString(ti.NomeTipoInfraestrutura, tipoInfraestruturaDTO.NomeTipoInfraestrutura)) is not null;
         }
     }
 }

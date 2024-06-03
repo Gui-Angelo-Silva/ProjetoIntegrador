@@ -27,7 +27,7 @@ namespace SGED.Controllers
         public async Task<ActionResult<IEnumerable<UsuarioDTO>>> Get()
         {
             var usuariosDTO = await _usuarioService.GetAll();
-            _response.Status = true; _response.Data = usuariosDTO;
+            _response.SetSuccess(); _response.Data = usuariosDTO;
             _response.Message = usuariosDTO.Any() ?
                 "Lista do(s) Usuário(s) obtida com sucesso." :
                 "Nenhum Usuário encontrado.";
@@ -40,11 +40,11 @@ namespace SGED.Controllers
             var usuarioDTO = await _usuarioService.GetById(id);
             if (usuarioDTO == null)
             {
-                _response.Status = false; _response.Message = "Usuário não encontrado!"; _response.Data = usuarioDTO;
+                _response.SetNotFound(); _response.Message = "Usuário não encontrado!"; _response.Data = usuarioDTO;
                 return NotFound(_response);
             };
 
-            _response.Status = true; _response.Message = "Usuário " + usuarioDTO.NomePessoa + " obtido com sucesso."; _response.Data = usuarioDTO;
+            _response.SetSuccess(); _response.Message = "Usuário " + usuarioDTO.NomePessoa + " obtido com sucesso."; _response.Data = usuarioDTO;
             return Ok(_response);
         }
 
@@ -53,7 +53,7 @@ namespace SGED.Controllers
         {
             if (usuarioDTO == null)
             {
-                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = usuarioDTO;
+                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = usuarioDTO;
                 return BadRequest(_response);
             } 
             usuarioDTO.EmailPessoa = usuarioDTO.EmailPessoa.ToLower();
@@ -106,7 +106,7 @@ namespace SGED.Controllers
             {
                 await _usuarioService.Create(usuarioDTO);
 
-                _response.Status = true; _response.Message = "Usuário " + usuarioDTO.NomePessoa + " cadastrado com sucesso."; _response.Data = usuarioDTO;
+                _response.SetSuccess(); _response.Message = "Usuário " + usuarioDTO.NomePessoa + " cadastrado com sucesso."; _response.Data = usuarioDTO;
                 return Ok(_response);
             } else
             {
@@ -130,7 +130,7 @@ namespace SGED.Controllers
                     else error += "IE";
                 }
 
-                _response.Status = true; _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie };
+                _response.SetConflict(); _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie };
                 return BadRequest(_response);
             }
         }
@@ -140,14 +140,14 @@ namespace SGED.Controllers
         {
             if (usuarioDTO is null || usuarioDTO.Id == 1)
             {
-                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = usuarioDTO;
+                _response.SetNotFound(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = usuarioDTO;
                 return BadRequest(_response);
             }
 
             var existingUsuario = await _usuarioService.GetById(usuarioDTO.Id);
             if (existingUsuario == null)
             {
-                _response.Status = false; _response.Message = "O Usuario informado não existe!"; _response.Data = usuarioDTO;
+                _response.SetNotFound(); _response.Message = "O Usuário informado não existe!"; _response.Data = usuarioDTO;
                 return NotFound(_response);
             }
 
@@ -202,7 +202,7 @@ namespace SGED.Controllers
             {
                 await _usuarioService.Create(usuarioDTO);
 
-                _response.Status = true; _response.Message = "Usuário " + usuarioDTO.NomePessoa + " alterado com sucesso."; _response.Data = usuarioDTO;
+                _response.SetSuccess(); _response.Message = "Usuário " + usuarioDTO.NomePessoa + " alterado com sucesso."; _response.Data = usuarioDTO;
                 return Ok(_response);
             }
             else
@@ -227,7 +227,7 @@ namespace SGED.Controllers
                     else error += "IE";
                 }
 
-                _response.Status = true; _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie };
+                _response.SetConflict(); _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie };
                 return BadRequest(_response);
             }
         }
@@ -238,13 +238,13 @@ namespace SGED.Controllers
             var usuarioDTO = await _usuarioService.GetById(id);
             if (usuarioDTO == null)
             {
-                _response.Status = false; _response.Message = "Usuário não encontrado!"; _response.Data = usuarioDTO;
+                _response.SetNotFound(); _response.Message = "Usuário não encontrado!"; _response.Data = usuarioDTO;
                 return NotFound(_response);
             }
 
             await _usuarioService.Remove(id);
 
-            _response.Status = true; _response.Message = "Usuário " + usuarioDTO.NomePessoa + " excluído com sucesso."; _response.Data = usuarioDTO;
+            _response.SetSuccess(); _response.Message = "Usuário " + usuarioDTO.NomePessoa + " excluído com sucesso."; _response.Data = usuarioDTO;
             return Ok(_response);
         }
 

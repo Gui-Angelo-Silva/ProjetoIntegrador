@@ -25,5 +25,18 @@ namespace SGED.Objects.DTO.Entities
 
         public void DisableAllOperations() => IStatusExtensions.DisableAllOperations(this);
         public void EnableAllOperations() => IStatusExtensions.EnableAllOperations(this);
+
+
+        /*
+        public StatusEnum Status { get; set; }
+
+        public void Enable() => Status = StatusEnumExtensions.Enable();
+        public void Wait() => Status = StatusEnumExtensions.Wait();
+        public void Block() => Status = StatusEnumExtensions.Block();
+        public void Disable() => Status = StatusEnumExtensions.Disable();
+
+        public bool CanEdit() => IStatusStateExtensions.CanEdit(this.Status);
+        public bool CanRemove() => IStatusStateExtensions.CanRemove(this.Status);
+        */
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace SGED.Objects.Utilities
+﻿namespace SGED.Objects.Server
 {
     public class TokenAcess
     {

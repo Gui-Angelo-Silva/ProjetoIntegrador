@@ -3,6 +3,7 @@ using SGED.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SGED.Objects.Utilities;
 using SGED.Objects.Models.Entities;
+using SGED.Objects.Utilities.StatusState;
 
 namespace SGED.Repositories.Entities;
 public class TipoDocumentoEtapaRepository : ITipoDocumentoEtapaRepository

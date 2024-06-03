@@ -1,4 +1,4 @@
-﻿using SGED.Objects.Interfaces;
+﻿using SGED.Objects.Enums;
 
 namespace SGED.Objects.Utilities
 {

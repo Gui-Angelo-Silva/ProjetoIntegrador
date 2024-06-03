@@ -3,6 +3,7 @@ using SGED.Context;
 using SGED.Objects.Utilities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
+using SGED.Objects.Utilities.StatusState;
 
 namespace SGED.Repositories.Entities
 {

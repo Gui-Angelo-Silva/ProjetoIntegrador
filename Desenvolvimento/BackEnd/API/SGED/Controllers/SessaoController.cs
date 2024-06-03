@@ -2,7 +2,7 @@
 using SGED.Services.Interfaces;
 using SGED.Services.Server.Attributes;
 using SGED.Objects.DTO.Entities;
-using SGED.Objects.Utilities;
+using SGED.Objects.Server;
 
 namespace SGED.Controllers
 {

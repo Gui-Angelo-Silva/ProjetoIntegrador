@@ -30,6 +30,6 @@ namespace SGED.Objects.DTO.Entities
         [JsonIgnore]
         public EngenheiroDTO? EngenheiroDTO { get; set; }
 
-        public int? IdEngenheiro { get; set; }
+        public int IdEngenheiro { get; set; }
     }
 }

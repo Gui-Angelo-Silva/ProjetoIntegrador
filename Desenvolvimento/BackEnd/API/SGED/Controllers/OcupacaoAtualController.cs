@@ -4,6 +4,7 @@ using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
+using SGED.Services.Entities;
 
 namespace SGED.Controllers
 {
@@ -26,26 +27,42 @@ namespace SGED.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OcupacaoAtualDTO>>> Get()
         {
-            var ocupacaoAtualsDTO = await _ocupacaoAtualService.GetAll();
-            _response.Status = true; _response.Data = ocupacaoAtualsDTO;
-            _response.Message = ocupacaoAtualsDTO.Any() ?
-                "Lista da(s) Ocupação(ões) Atual(is) obtida com sucesso." :
-                "Nenhuma Ocupação Atual encontrada.";
-            return Ok(_response);
+            try
+            {
+                var ocupacaoAtualsDTO = await _ocupacaoAtualService.GetAll();
+                _response.SetSuccess(); _response.Data = ocupacaoAtualsDTO;
+                _response.Message = ocupacaoAtualsDTO.Any() ?
+                    "Lista da(s) Ocupação(ões) Atual(is) obtida com sucesso." :
+                    "Nenhuma Ocupação Atual encontrada.";
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpGet("{id}", Name = "GetOcupacaoAtual")]
         public async Task<ActionResult<OcupacaoAtualDTO>> Get(int id)
         {
-            var ocupacaoAtualDTO = await _ocupacaoAtualService.GetById(id);
-            if (ocupacaoAtualDTO == null)
+            try
             {
-                _response.Status = false; _response.Message = "Ocupação Atual não encontrada!"; _response.Data = ocupacaoAtualDTO;
-                return NotFound(_response);
-            };
+                var ocupacaoAtualDTO = await _ocupacaoAtualService.GetById(id);
+                if (ocupacaoAtualDTO == null)
+                {
+                    _response.SetNotFound(); _response.Message = "Ocupação Atual não encontrada!"; _response.Data = ocupacaoAtualDTO;
+                    return NotFound(_response);
+                };
 
-            _response.Status = true; _response.Message = "Ocupação Atual " + ocupacaoAtualDTO.NomeOcupacaoAtual + " obtida com sucesso."; _response.Data = ocupacaoAtualDTO;
-            return Ok(_response);
+                _response.SetSuccess(); _response.Message = "Ocupação Atual " + ocupacaoAtualDTO.NomeOcupacaoAtual + " obtida com sucesso."; _response.Data = ocupacaoAtualDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpPost]
@@ -53,14 +70,28 @@ namespace SGED.Controllers
         {
             if (ocupacaoAtualDTO == null)
             {
-                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = ocupacaoAtualDTO;
+                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = ocupacaoAtualDTO;
                 return BadRequest(_response);
             }
 
-            await _ocupacaoAtualService.Create(ocupacaoAtualDTO);
+            try
+            {
+                if (!await OcupacaoAtualExists(ocupacaoAtualDTO))
+                {
+                    _response.SetConflict(); _response.Message = "Já existe a Ocupação Atual " + ocupacaoAtualDTO.NomeOcupacaoAtual + "!"; _response.Data = new { errorNomeOcupacaoAtual = "Já existe o OcupacaoAtual " + ocupacaoAtualDTO.NomeOcupacaoAtual + "!" };
+                    return BadRequest(_response);
+                }
 
-            _response.Status = true; _response.Message = "Ocupação Atual " + ocupacaoAtualDTO.NomeOcupacaoAtual + " cadastrada com sucesso."; _response.Data = ocupacaoAtualDTO;
-            return Ok(_response);
+                await _ocupacaoAtualService.Create(ocupacaoAtualDTO);
+
+                _response.SetSuccess(); _response.Message = "Ocupação Atual " + ocupacaoAtualDTO.NomeOcupacaoAtual + " cadastrada com sucesso."; _response.Data = ocupacaoAtualDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpPut()]
@@ -68,37 +99,65 @@ namespace SGED.Controllers
         {
             if (ocupacaoAtualDTO == null)
             {
-                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = ocupacaoAtualDTO;
+                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = ocupacaoAtualDTO;
                 return BadRequest(_response);
             }
 
-            var existingOcupacaoAtual = await _ocupacaoAtualService.GetById(ocupacaoAtualDTO.Id);
-            if (existingOcupacaoAtual == null)
+            try
             {
-                _response.Status = false; _response.Message = "O Ocupação Atual informada não existe!"; _response.Data = ocupacaoAtualDTO;
-                return NotFound(_response);
+                var existingOcupacaoAtual = await _ocupacaoAtualService.GetById(ocupacaoAtualDTO.Id);
+                if (existingOcupacaoAtual == null)
+                {
+                    _response.SetNotFound(); _response.Message = "A Ocupação Atual informada não existe!"; _response.Data = ocupacaoAtualDTO;
+                    return NotFound(_response);
+                }
+
+                if (!await OcupacaoAtualExists(ocupacaoAtualDTO))
+                {
+                    _response.SetConflict(); _response.Message = "Já existe a Ocupação Atual" + ocupacaoAtualDTO.NomeOcupacaoAtual + "!"; _response.Data = new { errorNomeOcupacaoAtual = "Já existe o OcupacaoAtual " + ocupacaoAtualDTO.NomeOcupacaoAtual + "!" };
+                    return BadRequest(_response);
+                }
+
+                await _ocupacaoAtualService.Update(ocupacaoAtualDTO);
+
+                _response.SetSuccess(); _response.Message = "Ocupação Atual " + ocupacaoAtualDTO.NomeOcupacaoAtual + " alterada com sucesso."; _response.Data = ocupacaoAtualDTO;
+                return Ok(_response);
             }
-
-            await _ocupacaoAtualService.Update(ocupacaoAtualDTO);
-
-            _response.Status = true; _response.Message = "Ocupação Atual " + ocupacaoAtualDTO.NomeOcupacaoAtual + " alterada com sucesso."; _response.Data = ocupacaoAtualDTO;
-            return Ok(_response);
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<OcupacaoAtualDTO>> Delete(int id)
         {
-            var ocupacaoAtualDTO = await _ocupacaoAtualService.GetById(id);
-            if (ocupacaoAtualDTO == null)
+            try
             {
-                _response.Status = false; _response.Message = "Ocupação Atual não encontrada!"; _response.Data = ocupacaoAtualDTO;
-                return NotFound(_response);
+                var ocupacaoAtualDTO = await _ocupacaoAtualService.GetById(id);
+                if (ocupacaoAtualDTO == null)
+                {
+                    _response.SetNotFound(); _response.Message = "Ocupação Atual não encontrada!"; _response.Data = ocupacaoAtualDTO;
+                    return NotFound(_response);
+                }
+
+                await _ocupacaoAtualService.Remove(id);
+
+                _response.SetSuccess(); _response.Message = "Ocupação Atual " + ocupacaoAtualDTO.NomeOcupacaoAtual + " excluída com sucesso."; _response.Data = ocupacaoAtualDTO;
+                return Ok(_response);
             }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
 
-            await _ocupacaoAtualService.Remove(id);
-
-            _response.Status = true; _response.Message = "Ocupação Atual " + ocupacaoAtualDTO.NomeOcupacaoAtual + " excluída com sucesso."; _response.Data = ocupacaoAtualDTO;
-            return Ok(_response);
+        private async Task<bool> OcupacaoAtualExists(OcupacaoAtualDTO ocupacaoAtualDTO)
+        {
+            var ocupacaoAtualsDTO = await _ocupacaoAtualService.GetAll();
+            return ocupacaoAtualsDTO.FirstOrDefault(b => Operator.CompareString(b.NomeOcupacaoAtual, ocupacaoAtualDTO.NomeOcupacaoAtual)) is not null;
         }
     }
 }

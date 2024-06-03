@@ -13,7 +13,7 @@ namespace SGED.Context.Builders
             modelBuilder.Entity<Instalacao>().Property(i => i.SituacaoInstalacao).IsRequired();
             modelBuilder.Entity<Instalacao>().Property(i => i.IdInfraestrutura).IsRequired();
             modelBuilder.Entity<Instalacao>().Property(i => i.IdImovel).IsRequired();
-            modelBuilder.Entity<Instalacao>().Property(i => i.IdEngenheiro);
+            modelBuilder.Entity<Instalacao>().Property(i => i.IdEngenheiro).IsRequired();
 
             // Relacionamento: TipoInstalacao -> Instalacao
             modelBuilder.Entity<Instalacao>()
@@ -34,6 +34,7 @@ namespace SGED.Context.Builders
                 .HasOne(i => i.Engenheiro)
                 .WithMany(e => e.Instalacoes)
                 .HasForeignKey(i => i.IdEngenheiro)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Cascade);
 
 

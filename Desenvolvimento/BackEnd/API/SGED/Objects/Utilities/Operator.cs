@@ -42,7 +42,7 @@ namespace SGED.Objects.Utilities
 
         public static bool IsNumbers(this string text)
         {
-            return Regex.IsMatch(text, @"^\d+$");
+            return !string.IsNullOrEmpty(text) && Regex.IsMatch(text, @"^\d+$");
         }
     }
 }

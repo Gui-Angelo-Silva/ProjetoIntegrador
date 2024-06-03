@@ -10,7 +10,7 @@ namespace SGED.Context.Builders
             // Builder
             modelBuilder.Entity<TipoInfraestrutura>().HasKey(ti => ti.Id);
             modelBuilder.Entity<TipoInfraestrutura>().Property(ti => ti.NomeTipoInfraestrutura).HasMaxLength(50).IsRequired();
-            modelBuilder.Entity<TipoInfraestrutura>().Property(ti => ti.DescricaoTipoInfraestrutura);
+            modelBuilder.Entity<TipoInfraestrutura>().Property(ti => ti.DescricaoTipoInfraestrutura).IsRequired();
 
 
             // Inserções

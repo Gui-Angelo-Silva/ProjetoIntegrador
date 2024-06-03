@@ -26,26 +26,42 @@ namespace SGED.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MunicipeDTO>>> Get()
         {
-            var municipesDTO = await _municipeService.GetAll();
-            _response.Status = true; _response.Data = municipesDTO;
-            _response.Message = municipesDTO.Any() ?
-                "Lista do(s) Munícipe(s) obtida com sucesso." :
-                "Nenhum Munícipe encontrado.";
-            return Ok(_response);
+            try
+            {
+                var municipesDTO = await _municipeService.GetAll();
+                _response.SetSuccess(); _response.Data = municipesDTO;
+                _response.Message = municipesDTO.Any() ?
+                    "Lista do(s) Munícipe(s) obtida com sucesso." :
+                    "Nenhum Munícipe encontrado.";
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpGet("{id}", Name = "GetMunicipe")]
         public async Task<ActionResult<MunicipeDTO>> Get(int id)
         {
-            var municipeDTO = await _municipeService.GetById(id);
-            if (municipeDTO == null)
+            try
             {
-                _response.Status = false; _response.Message = "Munícipe não encontrado!"; _response.Data = municipeDTO;
-                return NotFound(_response);
-            };
+                var municipeDTO = await _municipeService.GetById(id);
+                if (municipeDTO == null)
+                {
+                    _response.SetNotFound(); _response.Message = "Munícipe não encontrado!"; _response.Data = municipeDTO;
+                    return NotFound(_response);
+                };
 
-            _response.Status = true; _response.Message = "Munícipe " + municipeDTO.NomePessoa + " obtido com sucesso."; _response.Data = municipeDTO;
-            return Ok(_response);
+                _response.SetSuccess(); _response.Message = "Munícipe " + municipeDTO.NomePessoa + " obtido com sucesso."; _response.Data = municipeDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpPost]
@@ -53,84 +69,92 @@ namespace SGED.Controllers
         {
             if (municipeDTO == null)
             {
-                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = municipeDTO;
+                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = municipeDTO;
                 return BadRequest(_response);
             }
             municipeDTO.EmailPessoa = municipeDTO.EmailPessoa.ToLower();
 
-            var municipesDTO = await _municipeService.GetAll();
-
-            string email = "";
-            string cpfcnpj = "";
-            string rgie = "";
-
-            int response = municipeDTO.CpfCnpj();
-            if (response == 0) cpfcnpj = "Documento incompleto!";
-            else if (response == -1) cpfcnpj = "CPF inválido!";
-            else if (response == -2) cpfcnpj = "CNPJ inválido!";
-
-            response = municipeDTO.RgIe();
-            if (response == 0) rgie = "Documento incompleto!";
-            else if (response == -1) rgie = "RG inválido!";
-            else if (response == -2) rgie = "IE inválido!";
-
-            if (municipesDTO is not null)
+            try
             {
-                string existCpfCnpj = "";
-                string existRgIe = "";
+                var municipesDTO = await _municipeService.GetAll();
 
-                foreach (var municipe in municipesDTO)
+                string email = "";
+                string cpfcnpj = "";
+                string rgie = "";
+
+                int response = municipeDTO.CpfCnpj();
+                if (response == 0) cpfcnpj = "Documento incompleto!";
+                else if (response == -1) cpfcnpj = "CPF inválido!";
+                else if (response == -2) cpfcnpj = "CNPJ inválido!";
+
+                response = municipeDTO.RgIe();
+                if (response == 0) rgie = "Documento incompleto!";
+                else if (response == -1) rgie = "RG inválido!";
+                else if (response == -2) rgie = "IE inválido!";
+
+                if (municipesDTO is not null)
                 {
-                    if (municipeDTO.EmailPessoa == municipe.EmailPessoa) email = "O e-mail informado já existe!";
+                    string existCpfCnpj = "";
+                    string existRgIe = "";
 
-                    if (municipeDTO.CpfCnpjPessoa == municipe.CpfCnpjPessoa)
+                    foreach (var municipe in municipesDTO)
                     {
-                        if (municipeDTO.CpfCnpjPessoa.Length == 14) existCpfCnpj = "O CPF informado já existe!";
-                        else existCpfCnpj = "O CNPJ informado já existe!";
-                    };
+                        if (municipeDTO.EmailPessoa == municipe.EmailPessoa) email = "O e-mail informado já existe!";
 
-                    if (municipeDTO.RgIePessoa == municipe.RgIePessoa)
+                        if (municipeDTO.CpfCnpjPessoa == municipe.CpfCnpjPessoa)
+                        {
+                            if (municipeDTO.CpfCnpjPessoa.Length == 14) existCpfCnpj = "O CPF informado já existe!";
+                            else existCpfCnpj = "O CNPJ informado já existe!";
+                        };
+
+                        if (municipeDTO.RgIePessoa == municipe.RgIePessoa)
+                        {
+                            if (municipeDTO.RgIePessoa.Length == 12) existRgIe = "O RG informado já existe!";
+                            else existRgIe = "O IE informado já existe!";
+                        };
+                    }
+
+                    if (cpfcnpj == "") cpfcnpj = existCpfCnpj;
+                    if (rgie == "") rgie = existRgIe;
+                }
+
+                if (email == "" && cpfcnpj == "" && rgie == "")
+                {
+                    await _municipeService.Create(municipeDTO);
+
+                    _response.SetSuccess(); _response.Message = "Munícipe " + municipeDTO.NomePessoa + " cadastrado com sucesso."; _response.Data = municipeDTO;
+                    return Ok(_response);
+                }
+                else
+                {
+                    string error = "";
+                    if (!string.IsNullOrEmpty(email))
                     {
-                        if (municipeDTO.RgIePessoa.Length == 12) existRgIe = "O RG informado já existe!";
-                        else existRgIe = "O IE informado já existe!";
-                    };
-                }
+                        error = "e-mail";
+                    }
+                    if (!string.IsNullOrEmpty(cpfcnpj))
+                    {
+                        if (!string.IsNullOrEmpty(error)) error += ", ";
 
-                if (cpfcnpj == "") cpfcnpj = existCpfCnpj;
-                if (rgie == "") rgie = existRgIe;
+                        if (municipeDTO.CpfCnpjPessoa.Length == 14) error += "CPF";
+                        else error += "CNPJ";
+                    }
+                    if (!string.IsNullOrEmpty(rgie))
+                    {
+                        if (!string.IsNullOrEmpty(error)) error += ", ";
+
+                        if (municipeDTO.CpfCnpjPessoa.Length == 12) error += "RG";
+                        else error += "IE";
+                    }
+
+                    _response.SetConflict(); _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie };
+                    return BadRequest(_response);
+                }
             }
-
-            if (email == "" && cpfcnpj == "" && rgie == "")
+            catch (Exception ex)
             {
-                await _municipeService.Create(municipeDTO);
-
-                _response.Status = true; _response.Message = "Munícipe " + municipeDTO.NomePessoa + " cadastrado com sucesso."; _response.Data = municipeDTO;
-                return Ok(_response);
-            }
-            else
-            {
-                string error = "";
-                if (!string.IsNullOrEmpty(email))
-                {
-                    error = "e-mail";
-                }
-                if (!string.IsNullOrEmpty(cpfcnpj))
-                {
-                    if (!string.IsNullOrEmpty(error)) error += ", ";
-
-                    if (municipeDTO.CpfCnpjPessoa.Length == 14) error += "CPF";
-                    else error += "CNPJ";
-                }
-                if (!string.IsNullOrEmpty(rgie))
-                {
-                    if (!string.IsNullOrEmpty(error)) error += ", ";
-
-                    if (municipeDTO.CpfCnpjPessoa.Length == 12) error += "RG";
-                    else error += "IE";
-                }
-
-                _response.Status = true; _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie };
-                return BadRequest(_response);
+                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
@@ -139,110 +163,127 @@ namespace SGED.Controllers
         {
             if (municipeDTO is null)
             {
-                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = municipeDTO;
+                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = municipeDTO;
                 return BadRequest(_response);
             }
-
-            var existingMunicipe = await _municipeService.GetById(municipeDTO.Id);
-            if (existingMunicipe == null)
-            {
-                _response.Status = false; _response.Message = "O Munícipe informado não existe!"; _response.Data = municipeDTO;
-                return NotFound(_response);
-            }
-
             municipeDTO.EmailPessoa = municipeDTO.EmailPessoa.ToLower();
 
-            var municipesDTO = await _municipeService.GetAll();
-            municipesDTO = municipesDTO.Where(u => u.Id != municipeDTO.Id);
-
-            string email = "";
-            string cpfcnpj = "";
-            string rgie = "";
-
-            int response = municipeDTO.CpfCnpj();
-            if (response == 0) cpfcnpj = "Documento incompleto!";
-            else if (response == -1) cpfcnpj = "CPF inválido!";
-            else if (response == -2) cpfcnpj = "CNPJ inválido!";
-
-            response = municipeDTO.RgIe();
-            if (response == 0) rgie = "Documento incompleto!";
-            else if (response == -1) rgie = "RG inválido!";
-            else if (response == -2) rgie = "IE inválido!";
-
-            if (municipesDTO is not null)
+            try
             {
-                string existCpfCnpj = "";
-                string existRgIe = "";
-
-                foreach (var municipe in municipesDTO)
+                var existingMunicipe = await _municipeService.GetById(municipeDTO.Id);
+                if (existingMunicipe == null)
                 {
-                    if (municipeDTO.EmailPessoa == municipe.EmailPessoa) email = "O e-mail informado já existe!";
+                    _response.SetNotFound(); _response.Message = "O Munícipe informado não existe!"; _response.Data = municipeDTO;
+                    return NotFound(_response);
+                }
 
-                    if (municipeDTO.CpfCnpjPessoa == municipe.CpfCnpjPessoa)
+                municipeDTO.EmailPessoa = municipeDTO.EmailPessoa.ToLower();
+
+                var municipesDTO = await _municipeService.GetAll();
+                municipesDTO = municipesDTO.Where(u => u.Id != municipeDTO.Id);
+
+                string email = "";
+                string cpfcnpj = "";
+                string rgie = "";
+
+                int response = municipeDTO.CpfCnpj();
+                if (response == 0) cpfcnpj = "Documento incompleto!";
+                else if (response == -1) cpfcnpj = "CPF inválido!";
+                else if (response == -2) cpfcnpj = "CNPJ inválido!";
+
+                response = municipeDTO.RgIe();
+                if (response == 0) rgie = "Documento incompleto!";
+                else if (response == -1) rgie = "RG inválido!";
+                else if (response == -2) rgie = "IE inválido!";
+
+                if (municipesDTO is not null)
+                {
+                    string existCpfCnpj = "";
+                    string existRgIe = "";
+
+                    foreach (var municipe in municipesDTO)
                     {
-                        if (municipeDTO.CpfCnpjPessoa.Length == 14) existCpfCnpj = "O CPF informado já existe!";
-                        else existCpfCnpj = "O CNPJ informado já existe!";
-                    };
+                        if (municipeDTO.EmailPessoa == municipe.EmailPessoa) email = "O e-mail informado já existe!";
 
-                    if (municipeDTO.RgIePessoa == municipe.RgIePessoa)
+                        if (municipeDTO.CpfCnpjPessoa == municipe.CpfCnpjPessoa)
+                        {
+                            if (municipeDTO.CpfCnpjPessoa.Length == 14) existCpfCnpj = "O CPF informado já existe!";
+                            else existCpfCnpj = "O CNPJ informado já existe!";
+                        };
+
+                        if (municipeDTO.RgIePessoa == municipe.RgIePessoa)
+                        {
+                            if (municipeDTO.RgIePessoa.Length == 12) existRgIe = "O RG informado já existe!";
+                            else existRgIe = "O IE informado já existe!";
+                        };
+                    }
+
+                    if (cpfcnpj == "") cpfcnpj = existCpfCnpj;
+                    if (rgie == "") rgie = existRgIe;
+                }
+
+                if (email == "" && cpfcnpj == "" && rgie == "")
+                {
+                    await _municipeService.Create(municipeDTO);
+
+                    _response.SetSuccess(); _response.Message = "Munícipe " + municipeDTO.NomePessoa + " alterado com sucesso."; _response.Data = municipeDTO;
+                    return Ok(_response);
+                }
+                else
+                {
+                    string error = "";
+                    if (!string.IsNullOrEmpty(email))
                     {
-                        if (municipeDTO.RgIePessoa.Length == 12) existRgIe = "O RG informado já existe!";
-                        else existRgIe = "O IE informado já existe!";
-                    };
-                }
+                        error = "e-mail";
+                    }
+                    if (!string.IsNullOrEmpty(cpfcnpj))
+                    {
+                        if (!string.IsNullOrEmpty(error)) error += ", ";
 
-                if (cpfcnpj == "") cpfcnpj = existCpfCnpj;
-                if (rgie == "") rgie = existRgIe;
+                        if (municipeDTO.CpfCnpjPessoa.Length == 14) error += "CPF";
+                        else error += "CNPJ";
+                    }
+                    if (!string.IsNullOrEmpty(rgie))
+                    {
+                        if (!string.IsNullOrEmpty(error)) error += ", ";
+
+                        if (municipeDTO.CpfCnpjPessoa.Length == 12) error += "RG";
+                        else error += "IE";
+                    }
+
+                    _response.SetConflict(); _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie };
+                    return BadRequest(_response);
+                }
             }
-
-            if (email == "" && cpfcnpj == "" && rgie == "")
+            catch (Exception ex)
             {
-                await _municipeService.Create(municipeDTO);
-
-                _response.Status = true; _response.Message = "Munícipe " + municipeDTO.NomePessoa + " alterado com sucesso."; _response.Data = municipeDTO;
-                return Ok(_response);
-            }
-            else
-            {
-                string error = "";
-                if (!string.IsNullOrEmpty(email))
-                {
-                    error = "e-mail";
-                }
-                if (!string.IsNullOrEmpty(cpfcnpj))
-                {
-                    if (!string.IsNullOrEmpty(error)) error += ", ";
-
-                    if (municipeDTO.CpfCnpjPessoa.Length == 14) error += "CPF";
-                    else error += "CNPJ";
-                }
-                if (!string.IsNullOrEmpty(rgie))
-                {
-                    if (!string.IsNullOrEmpty(error)) error += ", ";
-
-                    if (municipeDTO.CpfCnpjPessoa.Length == 12) error += "RG";
-                    else error += "IE";
-                }
-
-                _response.Status = true; _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie };
-                return BadRequest(_response);
+                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<MunicipeDTO>> Delete(int id)
         {
-            var municipeDTO = await _municipeService.GetById(id);
-            if (municipeDTO == null)
+            try
             {
-                _response.Status = false; _response.Message = "Munícipe não encontrado!"; _response.Data = municipeDTO;
-                return NotFound(_response);
+                var municipeDTO = await _municipeService.GetById(id);
+                if (municipeDTO == null)
+                {
+                    _response.SetNotFound(); _response.Message = "Munícipe não encontrado!"; _response.Data = municipeDTO;
+                    return NotFound(_response);
+                }
+
+                await _municipeService.Remove(id);
+
+                _response.SetSuccess(); _response.Message = "Munícipe " + municipeDTO.NomePessoa + " excluído com sucesso."; _response.Data = municipeDTO;
+                return Ok(_response);
             }
-
-            await _municipeService.Remove(id);
-
-            _response.Status = true; _response.Message = "Munícipe " + municipeDTO.NomePessoa + " excluído com sucesso."; _response.Data = municipeDTO;
-            return Ok(_response);
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
     }

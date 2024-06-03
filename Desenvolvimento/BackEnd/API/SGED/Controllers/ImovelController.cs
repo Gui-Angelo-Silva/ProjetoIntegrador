@@ -12,93 +12,166 @@ namespace SGED.Controllers
     [ApiController]
     public class ImovelController : Controller
     {
-
+        private readonly ILogradouroService _logradouroService;
         private readonly IImovelService _imovelService;
         private readonly Response _response;
 
-        public ImovelController(IImovelService imovelService)
+        public ImovelController(ILogradouroService logradouroService, IImovelService imovelService)
         {
+            _logradouroService = logradouroService;
             _imovelService = imovelService;
 
             _response = new Response();
         }
 
-        [HttpGet]
+        [HttpGet()]
         public async Task<ActionResult<IEnumerable<ImovelDTO>>> Get()
         {
-            var imovelsDTO = await _imovelService.GetAll();
-            _response.Status = true; _response.Data = imovelsDTO;
-            _response.Message = imovelsDTO.Any() ?
-                "Lista do(s) Imóvel(is) obtida com sucesso." :
-                "Nenhum Imóvel encontrado.";
-            return Ok(_response);
+            try
+            {
+                var imovelsDTO = await _imovelService.GetAll();
+                _response.SetSuccess(); _response.Data = imovelsDTO;
+                _response.Message = imovelsDTO.Any() ?
+                    "Lista do(s) Imóvel(is) obtida com sucesso." :
+                    "Nenhum Imovel encontrado.";
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível adquirir a lista do(s) Imóvel(is)!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpGet("{id}", Name = "GetImovel")]
         public async Task<ActionResult<ImovelDTO>> Get(int id)
         {
-            var imovelDTO = await _imovelService.GetById(id);
-            if (imovelDTO == null)
+            try
             {
-                _response.Status = false; _response.Message = "Imóvel não encontrado!"; _response.Data = imovelDTO;
-                return NotFound(_response);
-            };
+                var imovelDTO = await _imovelService.GetById(id);
+                if (imovelDTO is null)
+                {
+                    _response.SetNotFound(); _response.Message = "Imóvel não encontrado!"; _response.Data = imovelDTO;
+                    return NotFound(_response);
+                };
 
-            _response.Status = true; _response.Message = "Imóvel " + imovelDTO.InscricaoCadastral + " obtido com sucesso."; _response.Data = imovelDTO;
-            return Ok(_response);
+                _response.SetSuccess(); _response.Message = "Imóvel " + imovelDTO.InscricaoCadastral + " obtido com sucesso."; _response.Data = imovelDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível adquirir o Imóvel informado!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
-        [HttpPost]
+        [HttpPost()]
         public async Task<ActionResult> Post([FromBody] ImovelDTO imovelDTO)
         {
-            if (imovelDTO == null)
+            if (imovelDTO is null)
             {
-                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = imovelDTO;
+                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = imovelDTO;
                 return BadRequest(_response);
             }
 
-            await _imovelService.Create(imovelDTO);
+            try
+            {
+                var logradouroDTO = await _logradouroService.GetById(imovelDTO.IdLogradouro);
+                if (logradouroDTO is null)
+                {
+                    _response.SetNotFound(); _response.Message = "O Logradouro informado não existe!"; _response.Data = imovelDTO;
+                    return NotFound(_response);
+                }
 
-            _response.Status = true; _response.Message = "Imóvel " + imovelDTO.InscricaoCadastral + " cadastrado com sucesso."; _response.Data = imovelDTO;
-            return Ok(_response);
+                if (!await ImovelExists(imovelDTO))
+                {
+                    _response.SetConflict(); _response.Message = "Já existe o Imóvel " + imovelDTO.InscricaoCadastral + "!"; _response.Data = imovelDTO;
+                    return BadRequest(_response);
+                }
+
+                await _imovelService.Create(imovelDTO);
+
+                _response.SetSuccess(); _response.Message = "Imovel " + imovelDTO.InscricaoCadastral + " cadastrado com sucesso."; _response.Data = imovelDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível cadastrar o Imóvel!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpPut()]
         public async Task<ActionResult> Put([FromBody] ImovelDTO imovelDTO)
         {
-            if (imovelDTO == null)
+            if (imovelDTO is null)
             {
-                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = imovelDTO;
+                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = imovelDTO;
                 return BadRequest(_response);
             }
 
-            var existingImovel = await _imovelService.GetById(imovelDTO.Id);
-            if (existingImovel == null)
+            try
             {
-                _response.Status = false; _response.Message = "O Imóvel informado não existe!"; _response.Data = imovelDTO;
-                return NotFound(_response);
+                var existingImovelDTO = await _imovelService.GetById(imovelDTO.Id);
+                if (existingImovelDTO is null)
+                {
+                    _response.SetNotFound(); _response.Message = "O Imóvel informado não existe!"; _response.Data = imovelDTO;
+                    return NotFound(_response);
+                }
+
+                var logradouroDTO = await _logradouroService.GetById(imovelDTO.IdLogradouro);
+                if (logradouroDTO is null)
+                {
+                    _response.SetNotFound(); _response.Message = "o Logradouro informado não existe!"; _response.Data = imovelDTO;
+                    return NotFound(_response);
+                }
+
+                if (!await ImovelExists(imovelDTO))
+                {
+                    _response.SetConflict(); _response.Message = "Já existe o Imóvel " + imovelDTO.InscricaoCadastral + "!"; _response.Data = imovelDTO;
+                    return BadRequest(_response);
+                }
+
+                await _imovelService.Update(imovelDTO);
+
+                _response.SetSuccess(); _response.Message = "Imóvel " + imovelDTO.InscricaoCadastral + " alterado com sucesso."; _response.Data = imovelDTO;
+                return Ok(_response);
             }
-
-            await _imovelService.Update(imovelDTO);
-
-            _response.Status = true; _response.Message = "Imóvel " + imovelDTO.InscricaoCadastral + " alterado com sucesso."; _response.Data = imovelDTO;
-            return Ok(_response);
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível alterar o Imóvel!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<ImovelDTO>> Delete(int id)
         {
-            var imovelDTO = await _imovelService.GetById(id);
-            if (imovelDTO == null)
+            try
             {
-                _response.Status = false; _response.Message = "Imóvel não encontrado!"; _response.Data = imovelDTO;
-                return NotFound(_response);
+                var imovelDTO = await _imovelService.GetById(id);
+                if (imovelDTO is null)
+                {
+                    _response.SetNotFound(); _response.Message = "Imóvel não encontrado!"; _response.Data = imovelDTO;
+                    return NotFound(_response);
+                }
+
+                await _imovelService.Remove(id);
+
+                _response.SetSuccess(); _response.Message = "Imóvel " + imovelDTO.InscricaoCadastral + " excluído com sucesso."; _response.Data = imovelDTO;
+                return Ok(_response);
             }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível excluir o Imóvel!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
 
-            await _imovelService.Remove(id);
-
-            _response.Status = true; _response.Message = "Imóvel " + imovelDTO.InscricaoCadastral + " excluído com sucesso."; _response.Data = imovelDTO;
-            return Ok(_response);
+        private async Task<bool> ImovelExists(ImovelDTO imovelDTO)
+        {
+            var imovelsDTO = await _imovelService.GetAll();
+            return imovelsDTO.FirstOrDefault(i => Operator.CompareString(i.InscricaoCadastral, imovelDTO.InscricaoCadastral)) is not null;
         }
     }
 }

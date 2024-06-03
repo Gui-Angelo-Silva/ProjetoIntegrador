@@ -10,7 +10,7 @@ namespace SGED.Context.Builders
             // Builder
             modelBuilder.Entity<Uso>().HasKey(u => u.Id);
             modelBuilder.Entity<Uso>().Property(u => u.NomeUso).HasMaxLength(50).IsRequired();
-            modelBuilder.Entity<Uso>().Property(u => u.DescricaoUso);
+            modelBuilder.Entity<Uso>().Property(u => u.DescricaoUso).IsRequired();
 
 
             // Inserções

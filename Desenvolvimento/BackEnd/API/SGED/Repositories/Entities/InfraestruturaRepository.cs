@@ -20,6 +20,11 @@ public class InfraestruturaRepository : IInfraestruturaRepository
         return await _dbContext.Infraestrutura.AsNoTracking().ToListAsync();
     }
 
+    public async Task<IEnumerable<Infraestrutura>> GetByTypeInfrastructure(int idTipoInfraestrutura)
+    {
+        return await _dbContext.Infraestrutura.Where(i => i.IdTipoInfraestrutura == idTipoInfraestrutura).AsNoTracking().ToListAsync();
+    }
+
     public async Task<Infraestrutura> GetById(int id)
     {
         return await _dbContext.Infraestrutura.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);

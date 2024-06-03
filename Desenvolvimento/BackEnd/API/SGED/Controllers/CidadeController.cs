@@ -12,92 +12,166 @@ namespace SGED.Controllers
     [ApiController]
     public class CidadeController : Controller
     {
-
+        private readonly IEstadoService _estadoService;
         private readonly ICidadeService _cidadeService;
         private readonly Response _response;
 
-        public CidadeController(ICidadeService cidadeService)
+        public CidadeController(IEstadoService estadoService, ICidadeService cidadeService)
         {
+            _estadoService = estadoService;
             _cidadeService = cidadeService;
 
             _response = new Response();
         }
 
-        [HttpGet]
+        [HttpGet()]
         public async Task<ActionResult<IEnumerable<CidadeDTO>>> Get()
         {
-            var cidadesDTO = await _cidadeService.GetAll();
-            _response.Status = true; _response.Data = cidadesDTO;
-            _response.Message = cidadesDTO.Any() ?
-                "Lista da(s) Cidade(s) obtida com sucesso." :
-                "Nenhuma Cidade encontrada.";
-            return Ok(_response);
+            try
+            {
+                var cidadesDTO = await _cidadeService.GetAll();
+                _response.SetSuccess(); _response.Data = cidadesDTO;
+                _response.Message = cidadesDTO.Any() ?
+                    "Lista da(s) Cidade(s) obtida com sucesso." :
+                    "Nenhuma Cidade encontrada.";
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível adquirir a lista da(s) Cidade(s)!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpGet("{id}", Name = "GetCidade")]
         public async Task<ActionResult<CidadeDTO>> Get(int id)
         {
-            var cidadeDTO = await _cidadeService.GetById(id);
-            if (cidadeDTO == null)
+            try
             {
-                _response.Status = false; _response.Message = "Cidade não encontrada!"; _response.Data = cidadeDTO;
-                return NotFound(_response);
-            };
+                var cidadeDTO = await _cidadeService.GetById(id);
+                if (cidadeDTO is null)
+                {
+                    _response.SetNotFound(); _response.Message = "Cidade não encontrada!"; _response.Data = cidadeDTO;
+                    return NotFound(_response);
+                };
 
-            _response.Status = true; _response.Message = "Cidade " + cidadeDTO.NomeCidade + " obtida com sucesso."; _response.Data = cidadeDTO;
-            return Ok(_response);
+                _response.SetSuccess(); _response.Message = "Cidade " + cidadeDTO.NomeCidade + " obtida com sucesso."; _response.Data = cidadeDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível adquirir a Cidade informada!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
-        [HttpPost]
+        [HttpPost()]
         public async Task<ActionResult> Post([FromBody] CidadeDTO cidadeDTO)
         {
-            if (cidadeDTO == null)
+            if (cidadeDTO is null)
             {
-                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = cidadeDTO;
+                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = cidadeDTO;
                 return BadRequest(_response);
             }
 
-            await _cidadeService.Create(cidadeDTO);
+            try
+            {
+                var estadoDTO = await _estadoService.GetById(cidadeDTO.IdEstado);
+                if (estadoDTO is null)
+                {
+                    _response.SetNotFound(); _response.Message = "O Estado informado não existe!"; _response.Data = cidadeDTO;
+                    return NotFound(_response);
+                }
 
-            _response.Status = true; _response.Message = "Cidade " + cidadeDTO.NomeCidade + " cadastrada com sucesso."; _response.Data = cidadeDTO;
-            return Ok(_response);
+                if (!await CidadeExists(cidadeDTO))
+                {
+                    _response.SetConflict(); _response.Message = "Já existe a Cidade " + cidadeDTO.NomeCidade + "!"; _response.Data = cidadeDTO;
+                    return BadRequest(_response);
+                }
+
+                await _cidadeService.Create(cidadeDTO);
+
+                _response.SetSuccess(); _response.Message = "Cidade " + cidadeDTO.NomeCidade + " cadastrada com sucesso."; _response.Data = cidadeDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível cadastrar a Cidade!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpPut()]
         public async Task<ActionResult> Put([FromBody] CidadeDTO cidadeDTO)
         {
-            if (cidadeDTO == null)
+            if (cidadeDTO is null)
             {
-                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = cidadeDTO;
+                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = cidadeDTO;
                 return BadRequest(_response);
             }
 
-            var existingCidade = await _cidadeService.GetById(cidadeDTO.Id);
-            if (existingCidade == null)
+            try
             {
-                _response.Status = false; _response.Message = "A Cidade informada não existe!"; _response.Data = cidadeDTO;
-                return NotFound(_response);
-            }
-            await _cidadeService.Update(cidadeDTO);
+                var existingCidadeDTO = await _cidadeService.GetById(cidadeDTO.Id);
+                if (existingCidadeDTO is null)
+                {
+                    _response.SetNotFound(); _response.Message = "A Cidade informada não existe!"; _response.Data = cidadeDTO;
+                    return NotFound(_response);
+                }
 
-            _response.Status = true; _response.Message = "Cidade " + cidadeDTO.NomeCidade + " alterada com sucesso."; _response.Data = cidadeDTO;
-            return Ok(_response);
+                var estadoDTO = await _estadoService.GetById(cidadeDTO.IdEstado);
+                if (estadoDTO is null)
+                {
+                    _response.SetNotFound(); _response.Message = "O Estado informado não existe!"; _response.Data = cidadeDTO;
+                    return NotFound(_response);
+                }
+
+                if (!await CidadeExists(cidadeDTO))
+                {
+                    _response.SetConflict(); _response.Message = "Já existe a Cidade " + cidadeDTO.NomeCidade + "!"; _response.Data = cidadeDTO;
+                    return BadRequest(_response);
+                }
+
+                await _cidadeService.Update(cidadeDTO);
+
+                _response.SetSuccess(); _response.Message = "Cidade " + cidadeDTO.NomeCidade + " alterada com sucesso."; _response.Data = cidadeDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível alterar a Cidade!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<CidadeDTO>> Delete(int id)
         {
-            var cidadeDTO = await _cidadeService.GetById(id);
-            if (cidadeDTO == null)
+            try
             {
-                _response.Status = false; _response.Message = "Cidade não encontrada!"; _response.Data = cidadeDTO;
-                return NotFound(_response);
+                var cidadeDTO = await _cidadeService.GetById(id);
+                if (cidadeDTO is null)
+                {
+                    _response.SetNotFound(); _response.Message = "Cidade não encontrada!"; _response.Data = cidadeDTO;
+                    return NotFound(_response);
+                }
+
+                await _cidadeService.Remove(id);
+
+                _response.SetSuccess(); _response.Message = "Cidade " + cidadeDTO.NomeCidade + " excluída com sucesso."; _response.Data = cidadeDTO;
+                return Ok(_response);
             }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível excluir a Cidade!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
 
-            await _cidadeService.Remove(id);
-
-            _response.Status = true; _response.Message = "Cidade " + cidadeDTO.NomeCidade + " excluída com sucesso."; _response.Data = cidadeDTO;
-            return Ok(_response);
+        private async Task<bool> CidadeExists(CidadeDTO cidadeDTO)
+        {
+            var cidadesDTO = await _cidadeService.GetByState(cidadeDTO.IdEstado);
+            return cidadesDTO.FirstOrDefault(c => Operator.CompareString(c.NomeCidade, cidadeDTO.NomeCidade)) is not null;
         }
     }
 }

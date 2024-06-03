@@ -4,6 +4,7 @@ using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
+using Google.Protobuf;
 
 namespace SGED.Controllers
 {
@@ -12,93 +13,222 @@ namespace SGED.Controllers
     [ApiController]
     public class InstalacaoController : Controller
     {
-
+        private readonly IInfraestruturaService _infraestruturaService;
+        private readonly IImovelService _imovelService;
+        private readonly IEngenheiroService _engenheiroService;
         private readonly IInstalacaoService _instalacaoService;
         private readonly Response _response;
 
-        public InstalacaoController(IInstalacaoService instalacaoService)
+        public InstalacaoController(IInfraestruturaService infraestruturaService, IInstalacaoService instalacaoService)
         {
+            _infraestruturaService = infraestruturaService;
             _instalacaoService = instalacaoService;
 
             _response = new Response();
         }
 
-        [HttpGet]
+        [HttpGet()]
         public async Task<ActionResult<IEnumerable<InstalacaoDTO>>> Get()
         {
-            var instalacaosDTO = await _instalacaoService.GetAll();
-            _response.Status = true; _response.Data = instalacaosDTO;
-            _response.Message = instalacaosDTO.Any() ?
-                "Lista da(s) Instalação(ões) obtida com sucesso." :
-                "Nenhuma Instalação encontrada.";
-            return Ok(_response);
+            try
+            {
+                var instalacaosDTO = await _instalacaoService.GetAll();
+                _response.SetSuccess(); _response.Data = instalacaosDTO;
+                _response.Message = instalacaosDTO.Any() ?
+                    "Lista da(s) Instalação(ões) obtida com sucesso." :
+                    "Nenhuma Instalacao encontrada.";
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível adquirir a lista da(s) Instalação(ões)!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpGet("{id}", Name = "GetInstalacao")]
         public async Task<ActionResult<InstalacaoDTO>> Get(int id)
         {
-            var instalacaoDTO = await _instalacaoService.GetById(id);
-            if (instalacaoDTO == null)
+            try
             {
-                _response.Status = false; _response.Message = "Instalação não encontrado!"; _response.Data = instalacaoDTO;
-                return NotFound(_response);
-            };
+                var instalacaoDTO = await _instalacaoService.GetById(id);
+                if (instalacaoDTO is null)
+                {
+                    _response.SetNotFound(); _response.Message = "Instalação não encontrada!"; _response.Data = instalacaoDTO;
+                    return NotFound(_response);
+                };
 
-            _response.Status = true; _response.Message = "Instalação obtida com sucesso."; _response.Data = instalacaoDTO;
-            return Ok(_response);
+                _response.SetSuccess(); _response.Message = "Instalação obtida com sucesso."; _response.Data = instalacaoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível adquirir a Instalação informada!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
-        [HttpPost]
+        [HttpPost()]
         public async Task<ActionResult> Post([FromBody] InstalacaoDTO instalacaoDTO)
         {
-            if (instalacaoDTO == null)
+            if (instalacaoDTO is null)
             {
-                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = instalacaoDTO;
+                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = instalacaoDTO;
                 return BadRequest(_response);
             }
 
-            await _instalacaoService.Create(instalacaoDTO);
+            try
+            {
+                string message = "";
 
-            _response.Status = true; _response.Message = "Instalação cadastrada com sucesso."; _response.Data = instalacaoDTO;
-            return Ok(_response);
+                var infraestruturaDTO = await _infraestruturaService.GetById(instalacaoDTO.IdInfraestrutura);
+                if (infraestruturaDTO is null)
+                {
+                    message = "A Infraestrutura informada";
+                }
+
+                var imovelDTO = await _imovelService.GetById(instalacaoDTO.IdImovel);
+                if (imovelDTO is null)
+                {
+                    if (!string.IsNullOrEmpty(message))
+                    {
+                        message += ", o Imóvel informado";
+                    }
+                    else
+                    {
+                        message = "O Imóvel informado";
+                    }
+                }
+
+                if (instalacaoDTO.IdEngenheiro != 0)
+                {
+                    var engenheiroDTO = await _engenheiroService.GetById(instalacaoDTO.IdEngenheiro);
+                    if (engenheiroDTO is null)
+                    {
+                        if (!string.IsNullOrEmpty(message))
+                        {
+                            message += " e o Engenheiro informado";
+                        }
+                        else
+                        {
+                            message = "O Engenheiro informado";
+                        }
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(message))
+                {
+                    _response.SetNotFound(); _response.Message = message + " não existe(m)!"; _response.Data = instalacaoDTO;
+                    return NotFound(_response);
+                }
+
+                await _instalacaoService.Create(instalacaoDTO);
+
+                _response.SetSuccess(); _response.Message = "Instalação de " + infraestruturaDTO.NomeInfraestrutura + " do Imóvel " + imovelDTO.InscricaoCadastral + " cadastrada com sucesso."; _response.Data = instalacaoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível cadastrar a Instalação!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpPut()]
         public async Task<ActionResult> Put([FromBody] InstalacaoDTO instalacaoDTO)
         {
-            if (instalacaoDTO == null)
+            if (instalacaoDTO is null)
             {
-                _response.Status = false; _response.Message = "Dado(s) inválido(s)!"; _response.Data = instalacaoDTO;
+                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = instalacaoDTO;
                 return BadRequest(_response);
             }
 
-            var existingInstalacao = await _instalacaoService.GetById(instalacaoDTO.Id);
-            if (existingInstalacao == null)
+            try
             {
-                _response.Status = false; _response.Message = "A Instalação informada não existe!"; _response.Data = instalacaoDTO;
-                return NotFound(_response);
+                var existingInstalacaoDTO = await _instalacaoService.GetById(instalacaoDTO.Id);
+                if (existingInstalacaoDTO is null)
+                {
+                    _response.SetNotFound(); _response.Message = "A Instalação informada não existe!"; _response.Data = instalacaoDTO;
+                    return NotFound(_response);
+                }
+
+                string message = "";
+
+                var infraestruturaDTO = await _infraestruturaService.GetById(instalacaoDTO.IdInfraestrutura);
+                if (infraestruturaDTO is null)
+                {
+                    message = "A Infraestrutura informada";
+                }
+
+                var imovelDTO = await _imovelService.GetById(instalacaoDTO.IdImovel);
+                if (imovelDTO is null)
+                {
+                    if (!string.IsNullOrEmpty(message))
+                    {
+                        message += ", o Imóvel informado";
+                    }
+                    else
+                    {
+                        message = "O Imóvel informado";
+                    }
+                }
+
+                if (instalacaoDTO.IdEngenheiro != 0)
+                {
+                    var engenheiroDTO = await _engenheiroService.GetById(instalacaoDTO.IdEngenheiro);
+                    if (engenheiroDTO is null)
+                    {
+                        if (!string.IsNullOrEmpty(message))
+                        {
+                            message += " e o Engenheiro informado";
+                        }
+                        else
+                        {
+                            message = "O Engenheiro informado";
+                        }
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(message))
+                {
+                    _response.SetNotFound(); _response.Message = message + " não existe(m)!"; _response.Data = instalacaoDTO;
+                    return NotFound(_response);
+                }
+
+                await _instalacaoService.Update(instalacaoDTO);
+
+                _response.SetSuccess(); _response.Message = "Instalação de " + infraestruturaDTO.NomeInfraestrutura + " do Imóvel " + imovelDTO.InscricaoCadastral + " alterada com sucesso."; _response.Data = instalacaoDTO;
+                return Ok(_response);
             }
-
-            await _instalacaoService.Update(instalacaoDTO);
-
-            _response.Status = true; _response.Message = "Instalação alterada com sucesso."; _response.Data = instalacaoDTO;
-            return Ok(_response);
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível alterar a Instalação!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<InstalacaoDTO>> Delete(int id)
         {
-            var instalacaoDTO = await _instalacaoService.GetById(id);
-            if (instalacaoDTO == null)
+            try
             {
-                _response.Status = false; _response.Message = "Instalação não encontrada!"; _response.Data = instalacaoDTO;
-                return NotFound(_response);
+                var instalacaoDTO = await _instalacaoService.GetById(id);
+                if (instalacaoDTO is null)
+                {
+                    _response.SetNotFound(); _response.Message = "Instalação não encontrada!"; _response.Data = instalacaoDTO;
+                    return NotFound(_response);
+                }
+
+                await _instalacaoService.Remove(id);
+
+                _response.SetSuccess(); _response.Message = "Instalação excluída com sucesso."; _response.Data = instalacaoDTO;
+                return Ok(_response);
             }
-
-            await _instalacaoService.Remove(id);
-
-            _response.Status = true; _response.Message = "Instalação excluída com sucesso."; _response.Data = instalacaoDTO;
-            return Ok(_response);
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível excluir a Instalação!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
     }
 }

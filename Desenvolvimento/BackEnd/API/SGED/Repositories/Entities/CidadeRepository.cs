@@ -22,11 +22,15 @@ public class CidadeRepository : ICidadeRepository
         return await _dbContext.Cidade.AsNoTracking().ToListAsync();
     }
 
+    public async Task<IEnumerable<Cidade>> GetByState(int idEstado)
+    {
+        return await _dbContext.Cidade.Where(c => c.IdEstado == idEstado). AsNoTracking().ToListAsync();
+    }
+
     public async Task<Cidade> GetById(int id)
     {
         return await _dbContext.Cidade.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
     }
-
 
     public async Task<Cidade> Create(Cidade cidade)
     {

@@ -19,7 +19,7 @@ namespace SGED.Repositories.Entities
 			return await _dbContext.Imovel.AsNoTracking().ToListAsync();
 		}
 
-		public async Task<Imovel> GetById(int id)
+        public async Task<Imovel> GetById(int id)
 		{
 			return await _dbContext.Imovel.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
 		}

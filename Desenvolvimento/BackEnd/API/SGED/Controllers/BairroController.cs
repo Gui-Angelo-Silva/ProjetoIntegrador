@@ -70,7 +70,7 @@ namespace SGED.Controllers
         {
             if (bairroDTO is null)
             {
-                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = bairroDTO;
+                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = null;
                 return BadRequest(_response);
             }
 
@@ -79,13 +79,13 @@ namespace SGED.Controllers
                 var cidadeDTO = await _cidadeService.GetById(bairroDTO.IdCidade);
                 if (cidadeDTO is null)
                 {
-                    _response.SetNotFound(); _response.Message = "A Cidade informada não existe!"; _response.Data = bairroDTO;
+                    _response.SetNotFound(); _response.Message = "A Cidade informada não existe!"; _response.Data = new { errorIdCidade = "A Cidade informada não existe!" };
                     return NotFound(_response);
                 }
 
                 if (!await BairroExists(bairroDTO))
                 {
-                    _response.SetConflict(); _response.Message = "Já existe o Bairro " + bairroDTO.NomeBairro + "!"; _response.Data = bairroDTO;
+                    _response.SetConflict(); _response.Message = "Já existe o Bairro " + bairroDTO.NomeBairro + "!"; _response.Data = new { errorNomeBairro = "Já existe o Bairro " + bairroDTO.NomeBairro + "!" };
                     return BadRequest(_response);
                 }
 
@@ -106,7 +106,7 @@ namespace SGED.Controllers
         {
             if (bairroDTO is null)
             {
-                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = bairroDTO;
+                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = null;
                 return BadRequest(_response);
             }
 
@@ -115,20 +115,20 @@ namespace SGED.Controllers
                 var existingBairroDTO = await _bairroService.GetById(bairroDTO.Id);
                 if (existingBairroDTO is null)
                 {
-                    _response.SetNotFound(); _response.Message = "O Bairro informado não existe!"; _response.Data = bairroDTO;
+                    _response.SetNotFound(); _response.Message = "O Bairro informado não existe!"; _response.Data = new { errorId = "O Bairro informado não existe!" };
                     return NotFound(_response);
                 }
 
                 var cidadeDTO = await _cidadeService.GetById(bairroDTO.IdCidade);
                 if (cidadeDTO is null)
                 {
-                    _response.SetNotFound(); _response.Message = "A Cidade informada não existe!"; _response.Data = bairroDTO;
+                    _response.SetNotFound(); _response.Message = "A Cidade informada não existe!"; _response.Data = new { errorIdCidade = "A Cidade informada não existe!" };
                     return NotFound(_response);
                 }
 
                 if (!await BairroExists(bairroDTO))
                 {
-                    _response.SetConflict(); _response.Message = "Já existe o Bairro " + bairroDTO.NomeBairro + "!"; _response.Data = bairroDTO;
+                    _response.SetConflict(); _response.Message = "Já existe o Bairro " + bairroDTO.NomeBairro + "!"; _response.Data = new { errorNomeBairro = "Já existe o Bairro " + bairroDTO.NomeBairro + "!" };
                     return BadRequest(_response);
                 }
 
@@ -152,7 +152,7 @@ namespace SGED.Controllers
                 var bairroDTO = await _bairroService.GetById(id);
                 if (bairroDTO is null)
                 {
-                    _response.SetNotFound(); _response.Message = "Bairro não encontrado!"; _response.Data = bairroDTO;
+                    _response.SetNotFound(); _response.Message = "Bairro não encontrado!"; _response.Data = null;
                     return NotFound(_response);
                 }
 

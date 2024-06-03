@@ -23,7 +23,13 @@ public class InfraestruturaService : IInfraestruturaService
 		return _mapper.Map<IEnumerable<InfraestruturaDTO>>(infraestruturas);
 	}
 
-	public async Task<InfraestruturaDTO> GetById(int id)
+    public async Task<IEnumerable<InfraestruturaDTO>> GetByTypeInfrastructure(int idTipoInfraestrutura)
+    {
+        var infraestruturas = await _infraestruturaRepository.GetByTypeInfrastructure(idTipoInfraestrutura);
+        return _mapper.Map<IEnumerable<InfraestruturaDTO>>(infraestruturas);
+    }
+
+    public async Task<InfraestruturaDTO> GetById(int id)
 	{
 		var infraestrutura = await _infraestruturaRepository.GetById(id);
 		return _mapper.Map<InfraestruturaDTO>(infraestrutura);

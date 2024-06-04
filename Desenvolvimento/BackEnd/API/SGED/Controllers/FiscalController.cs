@@ -64,205 +64,120 @@ namespace SGED.Controllers
 			}
 		}
 
-		[HttpPost]
-		public async Task<ActionResult> Post([FromBody] FiscalDTO fiscalDTO)
-		{
-			if (fiscalDTO == null)
-			{
-				_response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = fiscalDTO;
-				return BadRequest(_response);
-			}
-			fiscalDTO.EmailPessoa = fiscalDTO.EmailPessoa.ToLower();
+        [HttpPost]
+        public async Task<ActionResult> Post([FromBody] FiscalDTO fiscalDTO)
+        {
+            if (fiscalDTO == null)
+            {
+                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = fiscalDTO;
+                return BadRequest(_response);
+            }
+            fiscalDTO.EmailPessoa = fiscalDTO.EmailPessoa.ToLower();
 
-			try
-			{
-				var fiscalsDTO = await _fiscalService.GetAll();
+            try
+            {
+                string email = "";
+                string cpfcnpj = "";
+                string rgie = "";
 
-				string email = "";
-				string cpfcnpj = "";
-				string rgie = "";
+                ValidateFiscalDocuments(fiscalDTO, ref email, ref cpfcnpj, ref rgie);
 
-				int response = fiscalDTO.CpfCnpj();
-				if (response == 0) cpfcnpj = "Documento incompleto!";
-				else if (response == -1) cpfcnpj = "CPF inválido!";
-				else if (response == -2) cpfcnpj = "CNPJ inválido!";
+                if (!string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(cpfcnpj) || !string.IsNullOrEmpty(rgie))
+                {
+                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, fiscalDTO);
+                    _response.SetInvalid(); _response.Message = $"O {error} informado(s) está(ão) inválido(s)!"; _response.Data = new { email, cpfcnpj, rgie };
+                    return BadRequest(_response);
+                }
 
-				response = fiscalDTO.RgIe();
-				if (response == 0) rgie = "Documento incompleto!";
-				else if (response == -1) rgie = "RG inválido!";
-				else if (response == -2) rgie = "IE inválido!";
+                var fiscalsDTO = await _fiscalService.GetAll();
 
-				if (fiscalsDTO is not null)
-				{
-					string existCpfCnpj = "";
-					string existRgIe = "";
+                if (fiscalsDTO is not null && fiscalsDTO.Any())
+                {
+                    CheckFiscalDuplicates(fiscalsDTO, fiscalDTO, ref email, ref cpfcnpj, ref rgie);
+                }
 
-					foreach (var fiscal in fiscalsDTO)
-					{
-						if (fiscalDTO.EmailPessoa == fiscal.EmailPessoa) email = "O e-mail informado já existe!";
+                if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(cpfcnpj) && string.IsNullOrEmpty(rgie))
+                {
+                    await _fiscalService.Create(fiscalDTO);
 
-						if (fiscalDTO.CpfCnpjPessoa == fiscal.CpfCnpjPessoa)
-						{
-							if (fiscalDTO.CpfCnpjPessoa.Length == 14) existCpfCnpj = "O CPF informado já existe!";
-							else existCpfCnpj = "O CNPJ informado já existe!";
-						};
+                    _response.SetSuccess(); _response.Message = "Fiscal " + fiscalDTO.NomePessoa + " cadastrado com sucesso."; _response.Data = fiscalDTO;
+                    return Ok(_response);
+                }
+                else
+                {
+                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, fiscalDTO); _response.SetConflict(); _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie };
+                    return BadRequest(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível cadastrar o Fiscal!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
 
-						if (fiscalDTO.RgIePessoa == fiscal.RgIePessoa)
-						{
-							if (fiscalDTO.RgIePessoa.Length == 12) existRgIe = "O RG informado já existe!";
-							else existRgIe = "O IE informado já existe!";
-						};
-					}
+        [HttpPut()]
+        public async Task<ActionResult> Put([FromBody] FiscalDTO fiscalDTO)
+        {
+            if (fiscalDTO is null)
+            {
+                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = fiscalDTO;
+                return BadRequest(_response);
+            }
+            fiscalDTO.EmailPessoa = fiscalDTO.EmailPessoa.ToLower();
 
-					if (cpfcnpj == "") cpfcnpj = existCpfCnpj;
-					if (rgie == "") rgie = existRgIe;
-				}
+            try
+            {
+                var existingFiscal = await _fiscalService.GetById(fiscalDTO.Id);
+                if (existingFiscal == null)
+                {
+                    _response.SetNotFound(); _response.Message = "O Fiscal informado não existe!"; _response.Data = fiscalDTO;
+                    return NotFound(_response);
+                }
 
-				if (email == "" && cpfcnpj == "" && rgie == "")
-				{
-					await _fiscalService.Create(fiscalDTO);
+                string email = "";
+                string cpfcnpj = "";
+                string rgie = "";
 
-					_response.SetSuccess(); _response.Message = "Fiscal " + fiscalDTO.NomePessoa + " cadastrado com sucesso."; _response.Data = fiscalDTO;
-					return Ok(_response);
-				}
-				else
-				{
-					string error = "";
-					if (!string.IsNullOrEmpty(email))
-					{
-						error = "e-mail";
-					}
-					if (!string.IsNullOrEmpty(cpfcnpj))
-					{
-						if (!string.IsNullOrEmpty(error)) error += ", ";
+                ValidateFiscalDocuments(fiscalDTO, ref email, ref cpfcnpj, ref rgie);
 
-						if (fiscalDTO.CpfCnpjPessoa.Length == 14) error += "CPF";
-						else error += "CNPJ";
-					}
-					if (!string.IsNullOrEmpty(rgie))
-					{
-						if (!string.IsNullOrEmpty(error)) error += ", ";
+                if (!string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(cpfcnpj) || !string.IsNullOrEmpty(rgie))
+                {
+                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, fiscalDTO);
+                    _response.SetInvalid(); _response.Message = $"O {error} informado(s) está(ão) inválido(s)!"; _response.Data = new { email, cpfcnpj, rgie };
+                    return BadRequest(_response);
+                }
 
-						if (fiscalDTO.CpfCnpjPessoa.Length == 12) error += "RG";
-						else error += "IE";
-					}
+                var fiscalsDTO = await _fiscalService.GetAll();
+                fiscalsDTO = fiscalsDTO.Where(u => u.Id != fiscalDTO.Id).ToList();
 
-					_response.SetConflict(); _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie };
-					return BadRequest(_response);
-				}
-			}
-			catch (Exception ex)
-			{
-				_response.SetError(); _response.Message = "Não foi possível alterar o Fiscal!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
-				return StatusCode(StatusCodes.Status500InternalServerError, _response);
-			}
-		}
+                if (fiscalsDTO is not null && fiscalsDTO.Any())
+                {
+                    CheckFiscalDuplicates(fiscalsDTO, fiscalDTO, ref email, ref cpfcnpj, ref rgie);
+                }
 
-		[HttpPut()]
-		public async Task<ActionResult> Put([FromBody] FiscalDTO fiscalDTO)
-		{
-			if (fiscalDTO is null)
-			{
-				_response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = fiscalDTO;
-				return BadRequest(_response);
-			}
-			fiscalDTO.EmailPessoa = fiscalDTO.EmailPessoa.ToLower();
+                if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(cpfcnpj) && string.IsNullOrEmpty(rgie))
+                {
+                    await _fiscalService.Update(fiscalDTO);
 
-			try
-			{
-				var existingFiscal = await _fiscalService.GetById(fiscalDTO.Id);
-				if (existingFiscal == null)
-				{
-					_response.SetNotFound(); _response.Message = "O Fiscal informado não existe!"; _response.Data = fiscalDTO;
-					return NotFound(_response);
-				}
+                    _response.SetSuccess(); _response.Message = "Fiscal " + fiscalDTO.NomePessoa + " alterado com sucesso."; _response.Data = fiscalDTO;
+                    return Ok(_response);
+                }
+                else
+                {
+                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, fiscalDTO);
+                    _response.SetConflict(); _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie };
+                    return BadRequest(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(); _response.Message = "Não foi possível alterar o Fiscal!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
 
-				fiscalDTO.EmailPessoa = fiscalDTO.EmailPessoa.ToLower();
-
-				var fiscalsDTO = await _fiscalService.GetAll();
-				fiscalsDTO = fiscalsDTO.Where(u => u.Id != fiscalDTO.Id);
-
-				string email = "";
-				string cpfcnpj = "";
-				string rgie = "";
-
-				int response = fiscalDTO.CpfCnpj();
-				if (response == 0) cpfcnpj = "Documento incompleto!";
-				else if (response == -1) cpfcnpj = "CPF inválido!";
-				else if (response == -2) cpfcnpj = "CNPJ inválido!";
-
-				response = fiscalDTO.RgIe();
-				if (response == 0) rgie = "Documento incompleto!";
-				else if (response == -1) rgie = "RG inválido!";
-				else if (response == -2) rgie = "IE inválido!";
-
-				if (fiscalsDTO is not null)
-				{
-					string existCpfCnpj = "";
-					string existRgIe = "";
-
-					foreach (var fiscal in fiscalsDTO)
-					{
-						if (fiscalDTO.EmailPessoa == fiscal.EmailPessoa) email = "O e-mail informado já existe!";
-
-						if (fiscalDTO.CpfCnpjPessoa == fiscal.CpfCnpjPessoa)
-						{
-							if (fiscalDTO.CpfCnpjPessoa.Length == 14) existCpfCnpj = "O CPF informado já existe!";
-							else existCpfCnpj = "O CNPJ informado já existe!";
-						};
-
-						if (fiscalDTO.RgIePessoa == fiscal.RgIePessoa)
-						{
-							if (fiscalDTO.RgIePessoa.Length == 12) existRgIe = "O RG informado já existe!";
-							else existRgIe = "O IE informado já existe!";
-						};
-					}
-
-					if (cpfcnpj == "") cpfcnpj = existCpfCnpj;
-					if (rgie == "") rgie = existRgIe;
-				}
-
-				if (email == "" && cpfcnpj == "" && rgie == "")
-				{
-					await _fiscalService.Create(fiscalDTO);
-
-					_response.SetSuccess(); _response.Message = "Fiscal " + fiscalDTO.NomePessoa + " alterado com sucesso."; _response.Data = fiscalDTO;
-					return Ok(_response);
-				}
-				else
-				{
-					string error = "";
-					if (!string.IsNullOrEmpty(email))
-					{
-						error = "e-mail";
-					}
-					if (!string.IsNullOrEmpty(cpfcnpj))
-					{
-						if (!string.IsNullOrEmpty(error)) error += ", ";
-
-						if (fiscalDTO.CpfCnpjPessoa.Length == 14) error += "CPF";
-						else error += "CNPJ";
-					}
-					if (!string.IsNullOrEmpty(rgie))
-					{
-						if (!string.IsNullOrEmpty(error)) error += ", ";
-
-						if (fiscalDTO.CpfCnpjPessoa.Length == 12) error += "RG";
-						else error += "IE";
-					}
-
-					_response.SetConflict(); _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie };
-					return BadRequest(_response);
-				}
-			}
-			catch (Exception ex)
-			{
-				_response.SetError(); _response.Message = "Não foi possível alterar o Fiscal!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
-				return StatusCode(StatusCodes.Status500InternalServerError, _response);
-			}
-		}
-
-		[HttpDelete("{id}")]
+        [HttpDelete("{id}")]
 		public async Task<ActionResult<FiscalDTO>> Delete(int id)
 		{
 			try
@@ -286,5 +201,74 @@ namespace SGED.Controllers
 			}
 		}
 
-	}
+        private void ValidateFiscalDocuments(FiscalDTO fiscalDTO, ref string email, ref string cpfcnpj, ref string rgie)
+        {
+            if (!fiscalDTO.Email())
+            {
+                email = "E-mail inválido!";
+            }
+            else if (Operator.CompareString(fiscalDTO.EmailPessoa, "devops@development.com"))
+            {
+                email = "O e-mail informado já existe!";
+            }
+
+            int response = fiscalDTO.CpfCnpj();
+            switch (response)
+            {
+                case 0:
+                    cpfcnpj = "Documento incompleto!";
+                    break;
+                case -1:
+                    cpfcnpj = "CPF inválido!";
+                    break;
+                case -2:
+                    cpfcnpj = "CNPJ inválido!";
+                    break;
+            }
+
+            response = fiscalDTO.RgIe();
+            switch (response)
+            {
+                case 0:
+                    rgie = "Documento incompleto!";
+                    break;
+                case -1:
+                    rgie = "RG inválido!";
+                    break;
+                case -2:
+                    rgie = "IE inválido!";
+                    break;
+            }
+        }
+
+        private void CheckFiscalDuplicates(IEnumerable<FiscalDTO> fiscalsDTO, FiscalDTO fiscalDTO, ref string email, ref string cpfcnpj, ref string rgie)
+        {
+            foreach (var fiscal in fiscalsDTO)
+            {
+                if (Operator.CompareString(fiscalDTO.EmailPessoa, fiscal.EmailPessoa))
+                {
+                    email = "O e-mail informado já existe!";
+                }
+
+                if (Operator.CompareString(fiscalDTO.CpfCnpjPessoa.ExtractNumbers(), fiscal.CpfCnpjPessoa.ExtractNumbers()))
+                {
+                    cpfcnpj = fiscalDTO.CpfCnpjPessoa.Length == 14 ? "O CPF informado já existe!" : "O CNPJ informado já existe!";
+                }
+
+                if (Operator.CompareString(fiscalDTO.RgIePessoa.ExtractNumbers(), fiscal.RgIePessoa.ExtractNumbers()))
+                {
+                    rgie = fiscalDTO.RgIePessoa.Length == 12 ? "O RG informado já existe!" : "O IE informado já existe!";
+                }
+            }
+        }
+
+        private string GenerateErrorMessage(string email, string cpfcnpj, string rgie, FiscalDTO fiscalDTO)
+        {
+            string error = "";
+            if (!string.IsNullOrEmpty(email)) error += "e-mail";
+            if (!string.IsNullOrEmpty(cpfcnpj)) error += (error == "" ? "" : ", ") + (fiscalDTO.CpfCnpjPessoa.Length == 14 ? "CPF" : "CNPJ");
+            if (!string.IsNullOrEmpty(rgie)) error += (error == "" ? "" : ", ") + (fiscalDTO.RgIePessoa.Length == 12 ? "RG" : "IE");
+            return error;
+        }
+    }
 }

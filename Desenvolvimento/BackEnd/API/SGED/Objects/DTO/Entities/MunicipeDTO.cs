@@ -37,5 +37,10 @@ namespace SGED.Objects.DTO.Entities
 
         [JsonIgnore]
         public ICollection<ImovelDTO>? ImoveisDTOs { get; set; }
+
+
+        public bool Email() => IPessoaExtensions.VerificarEmail(this.EmailPessoa);
+        public int CpfCnpj() => IPessoaExtensions.CpfCnpj(this);
+        public int RgIe() => IPessoaExtensions.RgIe(this);
     }
 }

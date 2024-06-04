@@ -76,58 +76,33 @@ namespace SGED.Controllers
 
             try
             {
-                var engenheirosDTO = await _engenheiroService.GetAll();
-
                 string email = "";
                 string cpfcnpj = "";
                 string rgie = "";
                 string crea = "";
 
-                int response = engenheiroDTO.CpfCnpj();
-                if (response == 0) cpfcnpj = "Documento incompleto!";
-                else if (response == -1) cpfcnpj = "CPF inválido!";
-                else if (response == -2) cpfcnpj = "CNPJ inválido!";
+                ValidateDocuments(engenheiroDTO, ref email, ref cpfcnpj, ref rgie, ref crea);
 
-                response = engenheiroDTO.RgIe();
-                if (response == 0) rgie = "Documento incompleto!";
-                else if (response == -1) rgie = "RG inválido!";
-                else if (response == -2) rgie = "IE inválido!";
-
-                response = engenheiroDTO.Crea();
-                if (response == 0) crea = "Documento incompleto!";
-                else if (response == -1) crea = "CREA inválido!";
-
-                if (engenheirosDTO is not null)
+                if (!string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(cpfcnpj) || !string.IsNullOrEmpty(rgie) || !string.IsNullOrEmpty(crea))
                 {
-                    string existCpfCnpj = "";
-                    string existRgIe = "";
-                    string existCrea = "";
+                    string error = "";
+                    if (!string.IsNullOrEmpty(email)) error += "e-mail";
+                    if (!string.IsNullOrEmpty(cpfcnpj)) error += string.IsNullOrEmpty(error) ? "" : ", " + (engenheiroDTO.CpfCnpjPessoa.Length == 14 ? "CPF" : "CNPJ");
+                    if (!string.IsNullOrEmpty(rgie)) error += string.IsNullOrEmpty(error) ? "" : ", " + (engenheiroDTO.RgIePessoa.Length == 12 ? "RG" : "IE");
+                    if (!string.IsNullOrEmpty(crea)) error += string.IsNullOrEmpty(error) ? "" : ", " + ("CREA");
 
-                    foreach (var engenheiro in engenheirosDTO)
-                    {
-                        if (engenheiroDTO.EmailPessoa == engenheiro.EmailPessoa) email = "O e-mail informado já existe!";
-
-                        if (engenheiroDTO.CpfCnpjPessoa == engenheiro.CpfCnpjPessoa)
-                        {
-                            if (engenheiroDTO.CpfCnpjPessoa.Length == 14) existCpfCnpj = "O CPF informado já existe!";
-                            else existCpfCnpj = "O CNPJ informado já existe!";
-                        };
-
-                        if (engenheiroDTO.RgIePessoa == engenheiro.RgIePessoa)
-                        {
-                            if (engenheiroDTO.RgIePessoa.Length == 12) existRgIe = "O RG informado já existe!";
-                            else existRgIe = "O IE informado já existe!";
-                        };
-
-                        if (engenheiroDTO.CreaEngenheiro == engenheiro.CreaEngenheiro) existCrea = "O CREA informado já existe!";
-                    }
-
-                    if (cpfcnpj == "") cpfcnpj = existCpfCnpj;
-                    if (rgie == "") rgie = existRgIe;
-                    if (crea == "") crea = existCrea;
+                    _response.SetInvalid(); _response.Message = $"O {error} informado(s) está(ão) inválido(s)!"; _response.Data = new { email, cpfcnpj, crea };
+                    return BadRequest(_response);
                 }
 
-                if (email == "" && cpfcnpj == "" && rgie == "" && crea == "")
+                var engenheirosDTO = await _engenheiroService.GetAll();
+
+                if (engenheirosDTO is not null && engenheirosDTO.Any())
+                {
+                    CheckDuplicates(engenheirosDTO, engenheiroDTO, ref email, ref cpfcnpj, ref rgie, ref crea);
+                }
+
+                if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(cpfcnpj) && string.IsNullOrEmpty(rgie))
                 {
                     await _engenheiroService.Create(engenheiroDTO);
 
@@ -136,31 +111,7 @@ namespace SGED.Controllers
                 }
                 else
                 {
-                    string error = "";
-                    if (!string.IsNullOrEmpty(email))
-                    {
-                        error = "e-mail";
-                    }
-                    if (!string.IsNullOrEmpty(cpfcnpj))
-                    {
-                        if (!string.IsNullOrEmpty(error)) error += ", ";
-
-                        if (engenheiroDTO.CpfCnpjPessoa.Length == 14) error += "CPF";
-                        else error += "CNPJ";
-                    }
-                    if (!string.IsNullOrEmpty(rgie))
-                    {
-                        if (!string.IsNullOrEmpty(error)) error += ", ";
-
-                        if (engenheiroDTO.CpfCnpjPessoa.Length == 12) error += "RG";
-                        else error += "IE";
-                    }
-                    if (!string.IsNullOrEmpty(crea))
-                    {
-                        if (!string.IsNullOrEmpty(error)) error += ", ";
-                        error += "CREA";
-                    }
-
+                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, crea, engenheiroDTO);
                     _response.SetConflict(); _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie, crea };
                     return BadRequest(_response);
                 }
@@ -191,61 +142,34 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                engenheiroDTO.EmailPessoa = engenheiroDTO.EmailPessoa.ToLower();
-
-                var engenheirosDTO = await _engenheiroService.GetAll();
-                engenheirosDTO = engenheirosDTO.Where(u => u.Id != engenheiroDTO.Id);
-
                 string email = "";
                 string cpfcnpj = "";
                 string rgie = "";
                 string crea = "";
 
-                int response = engenheiroDTO.CpfCnpj();
-                if (response == 0) cpfcnpj = "Documento incompleto!";
-                else if (response == -1) cpfcnpj = "CPF inválido!";
-                else if (response == -2) cpfcnpj = "CNPJ inválido!";
+                ValidateDocuments(engenheiroDTO, ref email, ref cpfcnpj, ref rgie, ref crea);
 
-                response = engenheiroDTO.RgIe();
-                if (response == 0) rgie = "Documento incompleto!";
-                else if (response == -1) rgie = "RG inválido!";
-                else if (response == -2) rgie = "IE inválido!";
-
-                response = engenheiroDTO.Crea();
-                if (response == 0) crea = "Documento incompleto!";
-                else if (response == -1) crea = "CREA inválido!";
-
-                if (engenheirosDTO is not null)
+                if (!string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(cpfcnpj) || !string.IsNullOrEmpty(rgie) || !string.IsNullOrEmpty(crea))
                 {
-                    string existCpfCnpj = "";
-                    string existRgIe = "";
-                    string existCrea = "";
+                    string error = "";
+                    if (!string.IsNullOrEmpty(email)) error += "e-mail";
+                    if (!string.IsNullOrEmpty(cpfcnpj)) error += string.IsNullOrEmpty(error) ? "" : ", " + (engenheiroDTO.CpfCnpjPessoa.Length == 14 ? "CPF" : "CNPJ");
+                    if (!string.IsNullOrEmpty(rgie)) error += string.IsNullOrEmpty(error) ? "" : ", " + (engenheiroDTO.RgIePessoa.Length == 12 ? "RG" : "IE");
+                    if (!string.IsNullOrEmpty(crea)) error += string.IsNullOrEmpty(error) ? "" : ", " + ("CREA");
 
-                    foreach (var engenheiro in engenheirosDTO)
-                    {
-                        if (engenheiroDTO.EmailPessoa == engenheiro.EmailPessoa) email = "O e-mail informado já existe!";
-
-                        if (engenheiroDTO.CpfCnpjPessoa == engenheiro.CpfCnpjPessoa)
-                        {
-                            if (engenheiroDTO.CpfCnpjPessoa.Length == 14) existCpfCnpj = "O CPF informado já existe!";
-                            else existCpfCnpj = "O CNPJ informado já existe!";
-                        };
-
-                        if (engenheiroDTO.RgIePessoa == engenheiro.RgIePessoa)
-                        {
-                            if (engenheiroDTO.RgIePessoa.Length == 12) existRgIe = "O RG informado já existe!";
-                            else existRgIe = "O IE informado já existe!";
-                        };
-
-                        if (engenheiroDTO.CreaEngenheiro == engenheiro.CreaEngenheiro) existCrea = "O CREA informado já existe!";
-                    }
-
-                    if (cpfcnpj == "") cpfcnpj = existCpfCnpj;
-                    if (rgie == "") rgie = existRgIe;
-                    if (crea == "") crea = existCrea;
+                    _response.SetInvalid(); _response.Message = $"O {error} informado(s) está(ão) inválido(s)!"; _response.Data = new { email, cpfcnpj, crea };
+                    return BadRequest(_response);
                 }
 
-                if (email == "" && cpfcnpj == "" && rgie == "" && crea == "")
+                var engenheirosDTO = await _engenheiroService.GetAll();
+                engenheirosDTO = engenheirosDTO.Where(u => u.Id != engenheiroDTO.Id).ToList();
+
+                if (engenheirosDTO is not null && engenheirosDTO.Any())
+                {
+                    CheckDuplicates(engenheirosDTO, engenheiroDTO, ref email, ref cpfcnpj, ref rgie, ref crea);
+                }
+
+                if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(cpfcnpj) && string.IsNullOrEmpty(rgie))
                 {
                     await _engenheiroService.Update(engenheiroDTO);
 
@@ -254,31 +178,7 @@ namespace SGED.Controllers
                 }
                 else
                 {
-                    string error = "";
-                    if (!string.IsNullOrEmpty(email))
-                    {
-                        error = "e-mail";
-                    }
-                    if (!string.IsNullOrEmpty(cpfcnpj))
-                    {
-                        if (!string.IsNullOrEmpty(error)) error += ", ";
-
-                        if (engenheiroDTO.CpfCnpjPessoa.Length == 14) error += "CPF";
-                        else error += "CNPJ";
-                    }
-                    if (!string.IsNullOrEmpty(rgie))
-                    {
-                        if (!string.IsNullOrEmpty(error)) error += ", ";
-
-                        if (engenheiroDTO.CpfCnpjPessoa.Length == 12) error += "RG";
-                        else error += "IE";
-                    }
-                    if (!string.IsNullOrEmpty(crea))
-                    {
-                        if (!string.IsNullOrEmpty(error)) error += ", ";
-                        error += "CREA";
-                    }
-
+                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, crea, engenheiroDTO);
                     _response.SetConflict(); _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie, crea };
                     return BadRequest(_response);
                 }
@@ -314,5 +214,91 @@ namespace SGED.Controllers
             }
         }
 
+        private void ValidateDocuments(EngenheiroDTO engenheiroDTO, ref string email, ref string cpfcnpj, ref string rgie, ref string crea)
+        {
+            if (!engenheiroDTO.Email())
+            {
+                email = "E-mail inválido!";
+            }
+            else if (Operator.CompareString(engenheiroDTO.EmailPessoa, "devops@development.com"))
+            {
+                email = "O e-mail informado já existe!";
+            }
+
+            int response = engenheiroDTO.CpfCnpj();
+            switch (response)
+            {
+                case 0:
+                    cpfcnpj = "Documento incompleto!";
+                    break;
+                case -1:
+                    cpfcnpj = "CPF inválido!";
+                    break;
+                case -2:
+                    cpfcnpj = "CNPJ inválido!";
+                    break;
+            }
+
+            response = engenheiroDTO.RgIe();
+            switch (response)
+            {
+                case 0:
+                    rgie = "Documento incompleto!";
+                    break;
+                case -1:
+                    rgie = "RG inválido!";
+                    break;
+                case -2:
+                    rgie = "IE inválido!";
+                    break;
+            }
+
+            response = engenheiroDTO.Crea();
+            switch (response)
+            {
+                case 0:
+                    crea = "Documento incompleto!";
+                    break;
+                case -1:
+                    crea = "CREA inválido!";
+                    break;
+            }
+        }
+
+        private void CheckDuplicates(IEnumerable<EngenheiroDTO> engenheirosDTO, EngenheiroDTO engenheiroDTO, ref string email, ref string cpfcnpj, ref string rgie, ref string crea)
+        {
+            foreach (var engenheiro in engenheirosDTO)
+            {
+                if (Operator.CompareString(engenheiroDTO.EmailPessoa, engenheiro.EmailPessoa))
+                {
+                    email = "O e-mail informado já existe!";
+                }
+
+                if (Operator.CompareString(engenheiroDTO.CpfCnpjPessoa.ExtractNumbers(), engenheiro.CpfCnpjPessoa.ExtractNumbers()))
+                {
+                    cpfcnpj = engenheiroDTO.CpfCnpjPessoa.Length == 14 ? "O CPF informado já existe!" : "O CNPJ informado já existe!";
+                }
+
+                if (Operator.CompareString(engenheiroDTO.RgIePessoa.ExtractNumbers(), engenheiro.RgIePessoa.ExtractNumbers()))
+                {
+                    rgie = engenheiroDTO.RgIePessoa.Length == 12 ? "O RG informado já existe!" : "O IE informado já existe!";
+                }
+
+                if (Operator.CompareString(engenheiroDTO.CreaEngenheiro.ExtractNumbers(), engenheiro.CreaEngenheiro.ExtractNumbers()))
+                {
+                    rgie = "O CREA informado já existe!";
+                }
+            }
+        }
+
+        private string GenerateErrorMessage(string email, string cpfcnpj, string rgie, string crea, EngenheiroDTO engenheiroDTO)
+        {
+            string error = "";
+            if (!string.IsNullOrEmpty(email)) error += "e-mail";
+            if (!string.IsNullOrEmpty(cpfcnpj)) error += (error == "" ? "" : ", ") + (engenheiroDTO.CpfCnpjPessoa.Length == 14 ? "CPF" : "CNPJ");
+            if (!string.IsNullOrEmpty(rgie)) error += (error == "" ? "" : ", ") + (engenheiroDTO.RgIePessoa.Length == 12 ? "RG" : "IE");
+            if (!string.IsNullOrEmpty(crea)) error += string.IsNullOrEmpty(error) ? "" : ", " + ("CREA");
+            return error;
+        }
     }
 }

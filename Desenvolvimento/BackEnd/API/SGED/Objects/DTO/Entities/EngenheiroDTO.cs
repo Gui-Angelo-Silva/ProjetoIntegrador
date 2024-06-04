@@ -45,6 +45,7 @@ namespace SGED.Objects.DTO.Entities
         public ICollection<InstalacaoDTO>? InstalacoesDTOs { get; set; }
 
 
+        public bool Email() => IPessoaExtensions.VerificarEmail(this.EmailPessoa);
         public int CpfCnpj() => IPessoaExtensions.CpfCnpj(this);
         public int RgIe() => IPessoaExtensions.RgIe(this);
         public int Crea() => IEngenheiroExtensions.Crea(this);

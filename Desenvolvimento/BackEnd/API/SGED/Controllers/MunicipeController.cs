@@ -37,7 +37,7 @@ namespace SGED.Controllers
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError(); _response.Message = "Não foi possível cadastrar o Munícipe!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
@@ -59,7 +59,7 @@ namespace SGED.Controllers
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError(); _response.Message = "Não foi possível cadastrar o Munícipe!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
@@ -76,49 +76,27 @@ namespace SGED.Controllers
 
             try
             {
-                var municipesDTO = await _municipeService.GetAll();
-
                 string email = "";
                 string cpfcnpj = "";
                 string rgie = "";
 
-                int response = municipeDTO.CpfCnpj();
-                if (response == 0) cpfcnpj = "Documento incompleto!";
-                else if (response == -1) cpfcnpj = "CPF inválido!";
-                else if (response == -2) cpfcnpj = "CNPJ inválido!";
+                ValidateMunicipeDocuments(municipeDTO, ref email, ref cpfcnpj, ref rgie);
 
-                response = municipeDTO.RgIe();
-                if (response == 0) rgie = "Documento incompleto!";
-                else if (response == -1) rgie = "RG inválido!";
-                else if (response == -2) rgie = "IE inválido!";
-
-                if (municipesDTO is not null)
+                if (!string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(cpfcnpj) || !string.IsNullOrEmpty(rgie))
                 {
-                    string existCpfCnpj = "";
-                    string existRgIe = "";
-
-                    foreach (var municipe in municipesDTO)
-                    {
-                        if (municipeDTO.EmailPessoa == municipe.EmailPessoa) email = "O e-mail informado já existe!";
-
-                        if (municipeDTO.CpfCnpjPessoa == municipe.CpfCnpjPessoa)
-                        {
-                            if (municipeDTO.CpfCnpjPessoa.Length == 14) existCpfCnpj = "O CPF informado já existe!";
-                            else existCpfCnpj = "O CNPJ informado já existe!";
-                        };
-
-                        if (municipeDTO.RgIePessoa == municipe.RgIePessoa)
-                        {
-                            if (municipeDTO.RgIePessoa.Length == 12) existRgIe = "O RG informado já existe!";
-                            else existRgIe = "O IE informado já existe!";
-                        };
-                    }
-
-                    if (cpfcnpj == "") cpfcnpj = existCpfCnpj;
-                    if (rgie == "") rgie = existRgIe;
+                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, municipeDTO);
+                    _response.SetInvalid(); _response.Message = $"O {error} informado(s) está(ão) inválido(s)!"; _response.Data = new { email, cpfcnpj, rgie };
+                    return BadRequest(_response);
                 }
 
-                if (email == "" && cpfcnpj == "" && rgie == "")
+                var municipesDTO = await _municipeService.GetAll();
+
+                if (municipesDTO is not null && municipesDTO.Any())
+                {
+                    CheckMunicipeDuplicates(municipesDTO, municipeDTO, ref email, ref cpfcnpj, ref rgie);
+                }
+
+                if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(cpfcnpj) && string.IsNullOrEmpty(rgie))
                 {
                     await _municipeService.Create(municipeDTO);
 
@@ -127,33 +105,14 @@ namespace SGED.Controllers
                 }
                 else
                 {
-                    string error = "";
-                    if (!string.IsNullOrEmpty(email))
-                    {
-                        error = "e-mail";
-                    }
-                    if (!string.IsNullOrEmpty(cpfcnpj))
-                    {
-                        if (!string.IsNullOrEmpty(error)) error += ", ";
-
-                        if (municipeDTO.CpfCnpjPessoa.Length == 14) error += "CPF";
-                        else error += "CNPJ";
-                    }
-                    if (!string.IsNullOrEmpty(rgie))
-                    {
-                        if (!string.IsNullOrEmpty(error)) error += ", ";
-
-                        if (municipeDTO.CpfCnpjPessoa.Length == 12) error += "RG";
-                        else error += "IE";
-                    }
-
+                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, municipeDTO); 
                     _response.SetConflict(); _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie };
                     return BadRequest(_response);
                 }
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError(); _response.Message = "Não foi possível cadastrar o Munícipe!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
@@ -177,87 +136,44 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                municipeDTO.EmailPessoa = municipeDTO.EmailPessoa.ToLower();
-
-                var municipesDTO = await _municipeService.GetAll();
-                municipesDTO = municipesDTO.Where(u => u.Id != municipeDTO.Id);
-
                 string email = "";
                 string cpfcnpj = "";
                 string rgie = "";
 
-                int response = municipeDTO.CpfCnpj();
-                if (response == 0) cpfcnpj = "Documento incompleto!";
-                else if (response == -1) cpfcnpj = "CPF inválido!";
-                else if (response == -2) cpfcnpj = "CNPJ inválido!";
+                ValidateMunicipeDocuments(municipeDTO, ref email, ref cpfcnpj, ref rgie);
 
-                response = municipeDTO.RgIe();
-                if (response == 0) rgie = "Documento incompleto!";
-                else if (response == -1) rgie = "RG inválido!";
-                else if (response == -2) rgie = "IE inválido!";
-
-                if (municipesDTO is not null)
+                if (!string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(cpfcnpj) || !string.IsNullOrEmpty(rgie))
                 {
-                    string existCpfCnpj = "";
-                    string existRgIe = "";
-
-                    foreach (var municipe in municipesDTO)
-                    {
-                        if (municipeDTO.EmailPessoa == municipe.EmailPessoa) email = "O e-mail informado já existe!";
-
-                        if (municipeDTO.CpfCnpjPessoa == municipe.CpfCnpjPessoa)
-                        {
-                            if (municipeDTO.CpfCnpjPessoa.Length == 14) existCpfCnpj = "O CPF informado já existe!";
-                            else existCpfCnpj = "O CNPJ informado já existe!";
-                        };
-
-                        if (municipeDTO.RgIePessoa == municipe.RgIePessoa)
-                        {
-                            if (municipeDTO.RgIePessoa.Length == 12) existRgIe = "O RG informado já existe!";
-                            else existRgIe = "O IE informado já existe!";
-                        };
-                    }
-
-                    if (cpfcnpj == "") cpfcnpj = existCpfCnpj;
-                    if (rgie == "") rgie = existRgIe;
+                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, municipeDTO);
+                    _response.SetInvalid(); _response.Message = $"O {error} informado(s) está(ão) inválido(s)!"; _response.Data = new { email, cpfcnpj, rgie };
+                    return BadRequest(_response);
                 }
 
-                if (email == "" && cpfcnpj == "" && rgie == "")
+                var municipesDTO = await _municipeService.GetAll();
+                municipesDTO = municipesDTO.Where(u => u.Id != municipeDTO.Id).ToList();
+
+                if (municipesDTO is not null && municipesDTO.Any())
                 {
-                    await _municipeService.Create(municipeDTO);
+                    CheckMunicipeDuplicates(municipesDTO, municipeDTO, ref email, ref cpfcnpj, ref rgie);
+                }
+
+                if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(cpfcnpj) && string.IsNullOrEmpty(rgie))
+                {
+                    await _municipeService.Update(municipeDTO);
 
                     _response.SetSuccess(); _response.Message = "Munícipe " + municipeDTO.NomePessoa + " alterado com sucesso."; _response.Data = municipeDTO;
                     return Ok(_response);
                 }
                 else
                 {
-                    string error = "";
-                    if (!string.IsNullOrEmpty(email))
-                    {
-                        error = "e-mail";
-                    }
-                    if (!string.IsNullOrEmpty(cpfcnpj))
-                    {
-                        if (!string.IsNullOrEmpty(error)) error += ", ";
-
-                        if (municipeDTO.CpfCnpjPessoa.Length == 14) error += "CPF";
-                        else error += "CNPJ";
-                    }
-                    if (!string.IsNullOrEmpty(rgie))
-                    {
-                        if (!string.IsNullOrEmpty(error)) error += ", ";
-
-                        if (municipeDTO.CpfCnpjPessoa.Length == 12) error += "RG";
-                        else error += "IE";
-                    }
-
+                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, municipeDTO);
                     _response.SetConflict(); _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie };
                     return BadRequest(_response);
                 }
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError(); _response.Message = "Não foi possível alterar o Munícipe!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
@@ -281,10 +197,79 @@ namespace SGED.Controllers
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível cadastrar a Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError(); _response.Message = "Não foi possível alterar o Munícipe!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
+        private void ValidateMunicipeDocuments(MunicipeDTO municipeDTO, ref string email, ref string cpfcnpj, ref string rgie)
+        {
+            if (!municipeDTO.Email())
+            {
+                email = "E-mail inválido!";
+            }
+            else if (Operator.CompareString(municipeDTO.EmailPessoa, "devops@development.com"))
+            {
+                email = "O e-mail informado já existe!";
+            }
+
+            int response = municipeDTO.CpfCnpj();
+            switch (response)
+            {
+                case 0:
+                    cpfcnpj = "Documento incompleto!";
+                    break;
+                case -1:
+                    cpfcnpj = "CPF inválido!";
+                    break;
+                case -2:
+                    cpfcnpj = "CNPJ inválido!";
+                    break;
+            }
+
+            response = municipeDTO.RgIe();
+            switch (response)
+            {
+                case 0:
+                    rgie = "Documento incompleto!";
+                    break;
+                case -1:
+                    rgie = "RG inválido!";
+                    break;
+                case -2:
+                    rgie = "IE inválido!";
+                    break;
+            }
+        }
+
+        private void CheckMunicipeDuplicates(IEnumerable<MunicipeDTO> municipesDTO, MunicipeDTO municipeDTO, ref string email, ref string cpfcnpj, ref string rgie)
+        {
+            foreach (var municipe in municipesDTO)
+            {
+                if (Operator.CompareString(municipeDTO.EmailPessoa, municipe.EmailPessoa))
+                {
+                    email = "O e-mail informado já existe!";
+                }
+
+                if (Operator.CompareString(municipeDTO.CpfCnpjPessoa.ExtractNumbers(), municipe.CpfCnpjPessoa.ExtractNumbers()))
+                {
+                    cpfcnpj = municipeDTO.CpfCnpjPessoa.Length == 14 ? "O CPF informado já existe!" : "O CNPJ informado já existe!";
+                }
+
+                if (Operator.CompareString(municipeDTO.RgIePessoa.ExtractNumbers(), municipe.RgIePessoa.ExtractNumbers()))
+                {
+                    rgie = municipeDTO.RgIePessoa.Length == 12 ? "O RG informado já existe!" : "O IE informado já existe!";
+                }
+            }
+        }
+
+        private string GenerateErrorMessage(string email, string cpfcnpj, string rgie, MunicipeDTO municipeDTO)
+        {
+            string error = "";
+            if (!string.IsNullOrEmpty(email)) error += "e-mail";
+            if (!string.IsNullOrEmpty(cpfcnpj)) error += (error == "" ? "" : ", ") + (municipeDTO.CpfCnpjPessoa.Length == 14 ? "CPF" : "CNPJ");
+            if (!string.IsNullOrEmpty(rgie)) error += (error == "" ? "" : ", ") + (municipeDTO.RgIePessoa.Length == 12 ? "RG" : "IE");
+            return error;
+        }
     }
 }

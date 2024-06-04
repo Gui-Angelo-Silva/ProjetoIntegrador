@@ -5,6 +5,7 @@ namespace SGED.Objects.Interfaces
 {
     public interface IStatusState
     {
+        string State { get; }
         bool CanEdit();
         bool CanRelate();
         bool CanToRemove();
@@ -22,6 +23,12 @@ namespace SGED.Objects.Interfaces
                 StatusEnum.Desativado => new DesativadoState(),
                 _ => new HabilitadoState()
             };
+        }
+
+        public static string GetState(StatusEnum status)
+        {
+            IStatusState statusState = CreateState(status);
+            return statusState.State;
         }
 
         public static bool CanEdit(StatusEnum status)

@@ -116,9 +116,9 @@ namespace SGED.Controllers
                     _response.SetNotFound(); _response.Message = "Não existe o Tipo Processo informado!"; _response.Data = tipoProcessoDTO;
                     return BadRequest(_response);
                 }
-                else if (!existingTipoProcesso.Status)
+                else if (!existingTipoProcesso.CanEdit())
                 {
-                    _response.SetConflict(); _response.Message = "O Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " está desabilitado para alteração!"; _response.Data = tipoProcessoDTO;
+                    _response.SetConflict(); _response.Message = "Não é possível alterar o Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " pois está " + tipoProcessoDTO.GetState().ToLower() + "!"; _response.Data = tipoProcessoDTO;
                     return BadRequest(_response);
                 }
 
@@ -141,7 +141,7 @@ namespace SGED.Controllers
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível alterar o Uso!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError(); _response.Message = "Não foi possível alterar o uso!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
@@ -158,7 +158,7 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                if (!tipoProcessoDTO.Status)
+                if (tipoProcessoDTO.Status != )
                 {
                     tipoProcessoDTO.EnableAllOperations();
                     await _tipoProcessoService.Update(tipoProcessoDTO);

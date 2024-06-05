@@ -5,6 +5,7 @@ using SGED.Objects.Models.Entities;
 using SGED.Objects.Utilities;
 using SGED.Repositories.Entities;
 using SGED.Services.Interfaces;
+using System.Collections;
 
 namespace SGED.Controllers
 {
@@ -24,80 +25,96 @@ namespace SGED.Controllers
             _response = new Response();
         }
 
-        [HttpGet]
+        [HttpGet()]
         public async Task<ActionResult<IEnumerable<EtapaDTO>>> GetAll()
         {
             try
             {
-                var etapas = await _etapaService.GetAll();
-                _response.SetSuccess(); _response.Data = etapas;
-                _response.Message = etapas.Any() ?
+                var etapasDTO = await _etapaService.GetAll();
+                _response.SetSuccess();
+                _response.Message = etapasDTO.Any() ?
                     "Lista da(s) Etapa(s) obtida com sucesso." :
                     "Nenhuma Etapa encontrada!";
+                _response.Data = etapasDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível alterar o Etapa!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista da(s) Etapa(s)!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
-        [HttpGet("id", Name = "GetEtapa")]
-        public async Task<ActionResult<EtapaDTO>> GetById(int id)
-        {
-            try
-            {
-                var etapaDTO = await _etapaService.GetById(id);
-                if (etapaDTO == null)
-                {
-                    _response.SetNotFound(); _response.Message = "Etapa não encontrada!"; _response.Data = etapaDTO;
-                    return NotFound(_response);
-                };
-
-                _response.SetSuccess(); _response.Message = "Etapa " + etapaDTO.NomeEtapa + " obtida com sucesso."; _response.Data = etapaDTO;
-                return Ok(_response);
-            }
-            catch (Exception ex)
-            {
-                _response.SetError(); _response.Message = "Não foi possível alterar o Etapa!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
-                return StatusCode(StatusCodes.Status500InternalServerError, _response);
-            }
-        }
-
-        [HttpGet("GetRelatedToTypeProcess/{idTipoProcesso}")]
+        [HttpGet("GetRelatedToTypeProcess/{idTipoProcesso:int}")]
         public async Task<ActionResult<IEnumerable<EtapaDTO>>> GetStagesRelatedToTypeProcess(int idTipoProcesso)
         {
             try
             {
                 var tipoProcessoDTO = await _tipoProcessoService.GetById(idTipoProcesso);
-                if (tipoProcessoDTO == null)
+                if (tipoProcessoDTO is null)
                 {
-                    _response.SetNotFound(); _response.Message = "O Tipo Processo informado não existe!"; _response.Data = null;
+                    _response.SetNotFound();
+                    _response.Message = "O Tipo Processo informado não existe!";
+                    _response.Data = new ArrayList();
                     return NotFound(_response);
                 }
 
                 var etapas = await _etapaService.GetStagesRelatedToTypeProcess(idTipoProcesso);
 
-                _response.SetSuccess(); _response.Data = etapas.OrderBy(etapa => etapa.Posicao);
+                _response.SetSuccess();
                 _response.Message = etapas.Any() ?
                     "Lista da(s) Etapa(s) relacionada(s) ao Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " obtida com sucesso." :
                     "Nenhuma Etapa relacionada ao Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " foi encontrada!";
+                _response.Data = etapas.OrderBy(etapa => etapa.Posicao);
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível alterar o Etapa!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista da(s) Etapa(s) relacionada(s) ao Tipo Processo!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
-        [HttpPost]
+        [HttpGet("{id:int}", Name = "GetEtapa")]
+        public async Task<ActionResult<EtapaDTO>> GetById(int id)
+        {
+            try
+            {
+                var etapaDTO = await _etapaService.GetById(id);
+                if (etapaDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "Etapa não encontrada!";
+                    _response.Data = etapaDTO;
+                    return NotFound(_response);
+                };
+
+                _response.SetSuccess();
+                _response.Message = "Etapa " + etapaDTO.NomeEtapa + " obtida com sucesso.";
+                _response.Data = etapaDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a Etapa informada!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpPost()]
         public async Task<ActionResult> Post([FromBody] EtapaDTO etapaDTO)
         {
-            if (etapaDTO == null)
+            if (etapaDTO is null)
             {
-                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = etapaDTO;
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
+                _response.Data = etapaDTO;
                 return BadRequest(_response);
             }
 
@@ -105,21 +122,27 @@ namespace SGED.Controllers
             {
                 var tipoProcessoDTO = await _tipoProcessoService.GetById(etapaDTO.IdTipoProcesso);
 
-                if (tipoProcessoDTO == null)
+                if (tipoProcessoDTO is null)
                 {
-                    _response.SetNotFound(); _response.Message = "O Tipo Processo não existe!"; _response.Data = etapaDTO;
+                    _response.SetNotFound();
+                    _response.Message = "O Tipo Processo não existe!";
+                    _response.Data = new { errorIdTipoProcesso = "O Tipo Processo não existe!" };
                     return NotFound(_response);
                 }
-                else if (!tipoProcessoDTO.Status)
+                else if (!tipoProcessoDTO.CanRelate())
                 {
-                    _response.SetConflict(); _response.Message = "O Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " está desabilitado para adicionar novas etapas!"; _response.Data = etapaDTO;
+                    _response.SetConflict();
+                    _response.Message = "Não é possível relacionar a Etapa ao Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " porque ele está " + tipoProcessoDTO.GetState().ToLower() + "!";
+                    _response.Data = new { errorIdTipoProcesso = "Não é possível relacionar a Etapa ao Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " porque ele está " + tipoProcessoDTO.GetState().ToLower() + "!" };
                     return BadRequest(_response);
                 }
 
                 var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(etapaDTO.IdTipoProcesso);
-                if (etapasDTO.FirstOrDefault(etapa => etapa.NomeEtapa == etapaDTO.NomeEtapa) != null)
+                if (etapasDTO.FirstOrDefault(etapa => etapa.NomeEtapa == etapaDTO.NomeEtapa) is not null)
                 {
-                    _response.SetConflict(); _response.Message = "Já existe a Etapa " + etapaDTO.NomeEtapa + " no Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + "!"; _response.Data = etapaDTO;
+                    _response.SetConflict();
+                    _response.Message = "Já existe a Etapa " + etapaDTO.NomeEtapa + " relacionada ao Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + "!";
+                    _response.Data = new { errorNomeEtapa = "Já existe a Etapa " + etapaDTO.NomeEtapa + " relacionada ao Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + "!" };
                     return BadRequest(_response);
                 }
 
@@ -127,12 +150,16 @@ namespace SGED.Controllers
                 etapaDTO.EnableAllOperations();
                 await _etapaService.Create(etapaDTO);
 
-                _response.SetSuccess(); _response.Message = "Etapa " + etapaDTO.NomeEtapa + " cadastrada com sucesso."; _response.Data = etapaDTO;
+                _response.SetSuccess();
+                _response.Message = "Etapa " + etapaDTO.NomeEtapa + " cadastrada com sucesso.";
+                _response.Data = etapaDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível alterar o Etapa!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError(); 
+                _response.Message = "Não foi possível alterar o Etapa!"; 
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
@@ -140,41 +167,47 @@ namespace SGED.Controllers
         [HttpPut()]
         public async Task<ActionResult> Put([FromBody] EtapaDTO etapaDTO)
         {
-            if (etapaDTO == null)
+            if (etapaDTO is null)
             {
-                _response.SetInvalid(); _response.Message = "Dado Inválido!"; _response.Data = etapaDTO;
+                _response.SetInvalid(); 
+                _response.Message = "Dado Inválido!"; 
+                _response.Data = etapaDTO;
                 return BadRequest(_response);
             }
 
             try
             {
                 var existingEtapa = await _etapaService.GetById(etapaDTO.Id);
-                if (existingEtapa == null)
+                if (existingEtapa is null)
                 {
-                    _response.SetNotFound(); _response.Message = "Não existe a Etapa informada!"; _response.Data = etapaDTO;
+                    _response.SetNotFound(); 
+                    _response.Message = "A Etapa informada não existe!";
+                    _response.Data = new { errorId = "A Etapa informada não existe!" };
                     return NotFound(_response);
                 }
                 else if (!existingEtapa.Status)
                 {
-                    _response.SetConflict(); _response.Message = "A Etapa " + existingEtapa.NomeEtapa + " está desabilitada para alteração!"; _response.Data = etapaDTO;
+                    _response.SetConflict(); 
+                    _response.Message = "A Etapa " + existingEtapa.NomeEtapa + " está desabilitada para alteração!"; 
+                    _response.Data = etapaDTO;
                     return BadRequest(_response);
                 }
 
                 var tipoProcessoDTO = await _tipoProcessoService.GetById(etapaDTO.IdTipoProcesso);
 
-                if (tipoProcessoDTO == null)
+                if (tipoProcessoDTO is null)
                 {
                     _response.SetNotFound(); _response.Message = "O Tipo Processo não existe!"; _response.Data = etapaDTO;
                     return NotFound(_response);
                 }
-                else if (!tipoProcessoDTO.Status)
+                else if (!tipoProcessoDTO.CanRelate())
                 {
                     _response.SetConflict(); _response.Message = "O Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " está desabilitado para adicionar novas etapas!"; _response.Data = etapaDTO;
                     return BadRequest(_response);
                 }
 
                 var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(tipoProcessoDTO.Id);
-                if (etapasDTO.FirstOrDefault(etapa => etapa.NomeEtapa == etapaDTO.NomeEtapa) != null)
+                if (etapasDTO.FirstOrDefault(etapa => etapa.NomeEtapa == etapaDTO.NomeEtapa) is not null)
                 {
                     _response.SetConflict(); _response.Message = "Já existe a Etapa " + etapaDTO.NomeEtapa + " no Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + "!"; _response.Data = etapaDTO;
                     return BadRequest(_response);
@@ -206,7 +239,7 @@ namespace SGED.Controllers
             try
             {
                 var etapaDTO = await _etapaService.GetById(id);
-                if (etapaDTO == null)
+                if (etapaDTO is null)
                 {
                     _response.SetNotFound(); _response.Message = "Etapa não encontrada!"; _response.Data = etapaDTO;
                     return NotFound(_response);
@@ -229,7 +262,7 @@ namespace SGED.Controllers
                     _response.SetConflict(); _response.Message = "A Etapa " + etapaDTO.NomeEtapa + " não pode assumir a posição " + position + "º porque existe somente " + etapas.Count() + " Etapa(s) relacionada(s) ao Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + "!"; _response.Data = etapaDTO;
                     return BadRequest(_response);
                 }
-                else if (etapas.Where(etapa => etapa.Id != etapaDTO.Id) != null)
+                else if (etapas.Where(etapa => etapa.Id != etapaDTO.Id) is not null)
                 {
                     List<EtapaDTO> selecionadas;
 
@@ -282,7 +315,7 @@ namespace SGED.Controllers
             try
             {
                 var etapaDTO = await _etapaService.GetById(id);
-                if (etapaDTO == null)
+                if (etapaDTO is null)
                 {
                     _response.SetNotFound(); _response.Message = "Etapa não encontrada!"; _response.Data = etapaDTO;
                     return NotFound(_response);
@@ -310,7 +343,7 @@ namespace SGED.Controllers
             try
             {
                 var etapaDTO = await _etapaService.GetById(id);
-                if (etapaDTO == null)
+                if (etapaDTO is null)
                 {
                     _response.SetNotFound(); _response.Message = "Etapa não encontrada!"; _response.Data = etapaDTO;
                     return NotFound(_response);
@@ -338,7 +371,7 @@ namespace SGED.Controllers
             try
             {
                 var etapaDTO = await _etapaService.GetById(id);
-                if (etapaDTO == null)
+                if (etapaDTO is null)
                 {
                     _response.SetNotFound(); _response.Message = "Etapa não encontrada!"; _response.Data = etapaDTO;
                     return NotFound(_response);

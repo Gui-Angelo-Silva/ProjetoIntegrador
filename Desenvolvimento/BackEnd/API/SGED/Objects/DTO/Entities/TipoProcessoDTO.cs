@@ -29,6 +29,7 @@ namespace SGED.Objects.DTO.Entities
 
         public string GetState() => IStatusStateExtensions.GetState(this.Status);
         public bool CanEdit() => IStatusStateExtensions.CanEdit(this.Status);
+        public bool CanRelate() => IStatusStateExtensions.CanRelate(this.Status);
         public bool CanRemove() => IStatusStateExtensions.CanRemove(this.Status);
     }
 }

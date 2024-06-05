@@ -7,7 +7,6 @@ using SGED.Objects.Utilities;
 
 namespace SGED.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
     public class EstadoController : Controller
@@ -28,20 +27,23 @@ namespace SGED.Controllers
             try
             {
                 var estadosDTO = await _estadoService.GetAll();
-                _response.SetSuccess(); _response.Data = estadosDTO;
-                _response.Message = estadosDTO.Any() ?
-                    "Lista do(s) Estado(s) obtida com sucesso." :
+                _response.SetSuccess();
+                _response.Message = estadosDTO.Any() ? 
+                    "Lista do(s) Estado(s) obtida com sucesso." : 
                     "Nenhum Estado encontrado.";
+                _response.Data = estadosDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível adquirir a lista do(s) Estado(s)!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError(); 
+                _response.Message = "Não foi possível adquirir a lista do(s) Estado(s)!"; 
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
-        [HttpGet("{id}", Name = "GetEstado")]
+        [HttpGet("{id:int}", Name = "GetEstado")]
         public async Task<ActionResult<EstadoDTO>> Get(int id)
         {
             try
@@ -49,16 +51,22 @@ namespace SGED.Controllers
                 var estadoDTO = await _estadoService.GetById(id);
                 if (estadoDTO is null)
                 {
-                    _response.SetNotFound(); _response.Message = "Estado não encontrado!"; _response.Data = estadoDTO;
+                    _response.SetNotFound(); 
+                    _response.Message = "Estado não encontrado!"; 
+                    _response.Data = estadoDTO;
                     return NotFound(_response);
                 };
 
-                _response.SetSuccess(); _response.Message = "Estado " + estadoDTO.NomeEstado + " obtido com sucesso."; _response.Data = estadoDTO;
+                _response.SetSuccess(); 
+                _response.Message = "Estado " + estadoDTO.NomeEstado + " obtido com sucesso."; 
+                _response.Data = estadoDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível adquirir o Estado informado!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError(); 
+                _response.Message = "Não foi possível adquirir o Estado informado!"; 
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
@@ -68,7 +76,9 @@ namespace SGED.Controllers
         {
             if (estadoDTO is null)
             {
-                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = estadoDTO;
+                _response.SetInvalid(); 
+                _response.Message = "Dado(s) inválido(s)!"; 
+                _response.Data = estadoDTO;
                 return BadRequest(_response);
             }
 
@@ -76,18 +86,24 @@ namespace SGED.Controllers
             {
                 if (await EstadoExists(estadoDTO))
                 {
-                    _response.SetConflict(); _response.Message = "Já existe o Estado " + estadoDTO.NomeEstado + "!"; _response.Data = estadoDTO;
+                    _response.SetConflict(); 
+                    _response.Message = "Já existe o Estado " + estadoDTO.NomeEstado + "!"; 
+                    _response.Data = estadoDTO;
                     return BadRequest(_response);
                 }
 
                 await _estadoService.Create(estadoDTO);
 
-                _response.SetSuccess(); _response.Message = "Estado " + estadoDTO.NomeEstado + " cadastrado com sucesso."; _response.Data = estadoDTO;
+                _response.SetSuccess(); 
+                _response.Message = "Estado " + estadoDTO.NomeEstado + " cadastrado com sucesso."; 
+                _response.Data = estadoDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível cadastrar o Estado!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError(); 
+                _response.Message = "Não foi possível cadastrar o Estado!"; 
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
@@ -97,7 +113,9 @@ namespace SGED.Controllers
         {
             if (estadoDTO is null)
             {
-                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = estadoDTO;
+                _response.SetInvalid(); 
+                _response.Message = "Dado(s) inválido(s)!"; 
+                _response.Data = estadoDTO;
                 return BadRequest(_response);
             }
 
@@ -106,29 +124,36 @@ namespace SGED.Controllers
                 var existingEstadoDTO = await _estadoService.GetById(estadoDTO.Id);
                 if (existingEstadoDTO is null)
                 {
-                    _response.SetNotFound(); _response.Message = "O Estado informado não existe!"; _response.Data = estadoDTO;
+                    _response.SetNotFound(); 
+                    _response.Message = "O Estado informado não existe!"; 
+                    _response.Data = estadoDTO;
                     return NotFound(_response);
                 }
-
-                if (await EstadoExists(estadoDTO))
+                else if (await EstadoExists(estadoDTO))
                 {
-                    _response.SetConflict(); _response.Message = "Já existe o Estado " + estadoDTO.NomeEstado + "!"; _response.Data = estadoDTO;
+                    _response.SetConflict(); 
+                    _response.Message = "Já existe o Estado " + estadoDTO.NomeEstado + "!"; 
+                    _response.Data = estadoDTO;
                     return BadRequest(_response);
                 }
 
                 await _estadoService.Update(estadoDTO);
 
-                _response.SetSuccess(); _response.Message = "Estado " + estadoDTO.NomeEstado + " alterado com sucesso."; _response.Data = estadoDTO;
+                _response.SetSuccess(); 
+                _response.Message = "Estado " + estadoDTO.NomeEstado + " alterado com sucesso."; 
+                _response.Data = estadoDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível alterar o Estado!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError(); 
+                _response.Message = "Não foi possível alterar o Estado!"; 
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<ActionResult<EstadoDTO>> Delete(int id)
         {
             try
@@ -136,18 +161,24 @@ namespace SGED.Controllers
                 var estadoDTO = await _estadoService.GetById(id);
                 if (estadoDTO is null)
                 {
-                    _response.SetNotFound(); _response.Message = "Estado não encontrado!"; _response.Data = estadoDTO;
+                    _response.SetNotFound(); 
+                    _response.Message = "Estado não encontrado!"; 
+                    _response.Data = estadoDTO;
                     return NotFound(_response);
                 }
 
                 await _estadoService.Remove(id);
 
-                _response.SetSuccess(); _response.Message = "Estado " + estadoDTO.NomeEstado + " excluído com sucesso."; _response.Data = estadoDTO;
+                _response.SetSuccess(); 
+                _response.Message = "Estado " + estadoDTO.NomeEstado + " excluído com sucesso."; 
+                _response.Data = estadoDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível excluir o Estado!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError(); 
+                _response.Message = "Não foi possível excluir o Estado!"; 
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }

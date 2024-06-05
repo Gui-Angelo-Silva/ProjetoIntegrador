@@ -231,7 +231,7 @@ namespace SGED.Controllers
                 {
                     _response.SetNotFound(); 
                     _response.Message = "Engenheiro não encontrado!";
-                    _response.Data = engenheiroDTO;
+                    _response.Data = new { errorId = "Engenheiro não encontrado!" };
                     return NotFound(_response);
                 }
 

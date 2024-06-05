@@ -183,8 +183,8 @@ namespace SGED.Controllers
                 if (cidadeDTO is null)
                 {
                     _response.SetNotFound(); 
-                    _response.Message = "Cidade não encontrada!"; 
-                    _response.Data = cidadeDTO;
+                    _response.Message = "Cidade não encontrada!";
+                    _response.Data = new { errorId = "Cidade não encontrada!" };
                     return NotFound(_response);
                 }
 

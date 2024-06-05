@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using SGED.Objects.Enums;
 using SGED.Objects.Interfaces;
 using SGED.Objects.Utilities;
 
 namespace SGED.Objects.Models.Entities
 {
     [Table("tipodocumento")]
-    public class TipoDocumento : IStatus
+    public class TipoDocumento
     {
         [Column("idTipoDocumento")]
         public int Id { get; set; }
@@ -17,7 +18,7 @@ namespace SGED.Objects.Models.Entities
         public string DescricaoTipoDocumento { get; set; }
 
         [Column("statustipoprocesso")]
-        public bool Status { get; set; }
+        public StatusEnum Status { get; set; }
 
         public ICollection<TipoDocumentoEtapa>? TipoDocumentoEtapas { get; set; }
     }

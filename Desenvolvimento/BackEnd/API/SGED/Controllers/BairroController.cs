@@ -182,7 +182,7 @@ namespace SGED.Controllers
                 {
                     _response.SetNotFound();
                     _response.Message = "Bairro não encontrado!";
-                    _response.Data = null;
+                    _response.Data = new { errorId = "Bairro não encontrado!" };
                     return NotFound(_response);
                 }
 

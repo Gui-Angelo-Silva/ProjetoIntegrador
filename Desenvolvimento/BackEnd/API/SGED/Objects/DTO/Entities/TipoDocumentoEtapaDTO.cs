@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using SGED.Objects.Enums;
 using SGED.Objects.Interfaces;
 using SGED.Objects.Utilities;
 
 namespace SGED.Objects.DTO.Entities
 {
-	public class TipoDocumentoEtapaDTO : IStatus, IPosicao
+	public class TipoDocumentoEtapaDTO : IPosicao
 	{
 		public int Id { get; set; }
 
@@ -13,9 +14,9 @@ namespace SGED.Objects.DTO.Entities
 		public int Posicao { get; set; }
 
 		[Required(ErrorMessage = "O status é requerido!")]
-		public bool Status { get; set; }
+        public StatusEnum Status { get; set; }
 
-		[JsonIgnore]
+        [JsonIgnore]
 		public TipoDocumentoDTO? TipoDocumentoDTO { get; set; }
 
 		[Required(ErrorMessage = "O Tipo Documento é requerido!")]
@@ -26,7 +27,16 @@ namespace SGED.Objects.DTO.Entities
 
 		[Required(ErrorMessage = "A Etapa é requerida!")]
 		public int IdEtapa { get; set; }
-		public void DisableAllOperations() => IStatusExtensions.DisableAllOperations(this);
-		public void EnableAllOperations() => IStatusExtensions.EnableAllOperations(this);
-	}
+
+
+        public void Enable() => Status = StatusEnumExtensions.Enable();
+        public void Wait() => Status = StatusEnumExtensions.Wait();
+        public void Block() => Status = StatusEnumExtensions.Block();
+        public void Disable() => Status = StatusEnumExtensions.Disable();
+
+        public string GetState() => IStatusStateExtensions.GetState(this.Status);
+        public bool CanEdit() => IStatusStateExtensions.CanEdit(this.Status);
+        public bool CanRelate() => IStatusStateExtensions.CanRelate(this.Status);
+        public bool CanRemove() => IStatusStateExtensions.CanRemove(this.Status);
+    }
 }

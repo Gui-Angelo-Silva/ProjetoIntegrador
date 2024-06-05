@@ -163,7 +163,7 @@ namespace SGED.Controllers
                 {
                     _response.SetNotFound(); 
                     _response.Message = "Estado não encontrado!"; 
-                    _response.Data = estadoDTO;
+                    _response.Data = new { errorId = "Estado não encontrado!" };
                     return NotFound(_response);
                 }
 

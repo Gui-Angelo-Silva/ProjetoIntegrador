@@ -32,7 +32,7 @@ namespace SGED.Controllers
         public async Task<ActionResult<BairroDTO>> Get(int id)
         {
             var BairroDTO = await _BairroService.GetById(id);
-            if (BairroDTO == null) return NotFound("Bairro não encontrada");
+            if (BairroDTO == null) return NotFound("Bairro não encontrado!");
             return Ok(BairroDTO);
         }
 
@@ -47,7 +47,7 @@ namespace SGED.Controllers
         [HttpPut()]
         public async Task<ActionResult> Put([FromBody] BairroDTO BairroDTO)
         {
-            if (BairroDTO is null) return BadRequest("Dado invalido!");
+            if (BairroDTO is null) return BadRequest("Dado inválido!");
             await _BairroService.Update(BairroDTO);
             return Ok(BairroDTO);
         }
@@ -56,7 +56,7 @@ namespace SGED.Controllers
         public async Task<ActionResult<BairroDTO>> Delete(int id)
         {
             var BairroDTO = await _BairroService.GetById(id);
-            if (BairroDTO == null) return NotFound("Bairro não econtrado!");
+            if (BairroDTO == null) return NotFound("Bairro não encontrado!");
             await _BairroService.Remove(id);
             return Ok(BairroDTO);
         }

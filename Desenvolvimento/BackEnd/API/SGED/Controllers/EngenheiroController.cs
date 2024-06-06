@@ -323,7 +323,7 @@ namespace SGED.Controllers
 
                 if (Operator.CompareString(engenheiroDTO.CreaEngenheiro.ExtractNumbers(), engenheiro.CreaEngenheiro.ExtractNumbers()))
                 {
-                    rgie = "O CREA informado já existe!";
+                    crea = "O CREA informado já existe!";
                 }
             }
         }

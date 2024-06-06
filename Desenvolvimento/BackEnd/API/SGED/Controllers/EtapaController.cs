@@ -138,7 +138,7 @@ namespace SGED.Controllers
                 }
 
                 var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(etapaDTO.IdTipoProcesso);
-                if (etapasDTO.FirstOrDefault(etapa => etapa.NomeEtapa == etapaDTO.NomeEtapa) is not null)
+                if (etapasDTO.FirstOrDefault(etapa => Operator.CompareString(etapa.NomeEtapa, etapaDTO.NomeEtapa)) is not null)
                 {
                     _response.SetConflict();
                     _response.Message = "Já existe a Etapa " + etapaDTO.NomeEtapa + " relacionada ao Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + "!";
@@ -188,7 +188,8 @@ namespace SGED.Controllers
                 {
                     _response.SetConflict();
                     _response.Message = "Não é possível alterar a Etapa " + existingEtapa.NomeEtapa + " porque ela está " + existingEtapa.GetState().ToLower() + "!";
-                    _response.Data = new { errorStatus = "Não é possível alterar a Etapa " + existingEtapa.NomeEtapa + " porque ela está " + existingEtapa.GetState().ToLower() + "!" };
+                    _response.Data = new { errorStatus = "Não é possível alterar a Etapa " + existingEtapa.NomeEtapa 
+                        + " porque ela está " + existingEtapa.GetState().ToLower() + "!" };
                     return BadRequest(_response);
                 }
 
@@ -210,7 +211,7 @@ namespace SGED.Controllers
                 }
 
                 var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(etapaDTO.IdTipoProcesso);
-                if (etapasDTO.FirstOrDefault(etapa => etapa.NomeEtapa == etapaDTO.NomeEtapa) is not null)
+                if (etapasDTO.FirstOrDefault(etapa => etapa.Id != etapaDTO.Id && Operator.CompareString(etapa.NomeEtapa, etapaDTO.NomeEtapa)) is not null)
                 {
                     _response.SetConflict();
                     _response.Message = "Já existe a Etapa " + etapaDTO.NomeEtapa + " relacionada ao Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + "!";

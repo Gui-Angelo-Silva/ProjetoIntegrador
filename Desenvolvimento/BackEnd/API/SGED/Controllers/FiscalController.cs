@@ -8,68 +8,79 @@ using SGED.Services.Entities;
 
 namespace SGED.Controllers
 {
-	[Route("api/[controller]")]
-	[ApiController]
-	public class FiscalController : Controller
-	{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class FiscalController : Controller
+    {
 
-		private readonly IFiscalService _fiscalService;
-		private readonly Response _response;
+        private readonly IFiscalService _fiscalService;
+        private readonly Response _response;
 
-		public FiscalController(IFiscalService fiscalService, AppDBContext context)
-		{
-			_fiscalService = fiscalService;
+        public FiscalController(IFiscalService fiscalService)
+        {
+            _fiscalService = fiscalService;
 
-			_response = new Response();
-		}
+            _response = new Response();
+        }
 
-		[HttpGet]
-		public async Task<ActionResult<IEnumerable<FiscalDTO>>> Get()
-		{
-			try
-			{
-				var fiscalsDTO = await _fiscalService.GetAll();
-				_response.SetSuccess(); _response.Data = fiscalsDTO;
-				_response.Message = fiscalsDTO.Any() ?
-					"Lista do(s) Fiscal(s) obtida com sucesso." :
-					"Nenhum Fiscal encontrado.";
-				return Ok(_response);
-			}
-			catch (Exception ex)
-			{
-				_response.SetError(); _response.Message = "Não foi possível alterar o Fiscal!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
-				return StatusCode(StatusCodes.Status500InternalServerError, _response);
-			}
-		}
+        [HttpGet()]
+        public async Task<ActionResult<IEnumerable<FiscalDTO>>> Get()
+        {
+            try
+            {
+                var fiscalsDTO = await _fiscalService.GetAll();
+                _response.SetSuccess();
+                _response.Message = fiscalsDTO.Any() ?
+                    "Lista do(s) Fiscal(s) obtida com sucesso." :
+                    "Nenhum Fiscal encontrado.";
+                _response.Data = fiscalsDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista do(s) Fiscal(s)!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
 
-		[HttpGet("{id}", Name = "GetFiscal")]
-		public async Task<ActionResult<FiscalDTO>> Get(int id)
-		{
-			try
-			{
-				var fiscalDTO = await _fiscalService.GetById(id);
-				if (fiscalDTO == null)
-				{
-					_response.SetNotFound(); _response.Message = "Fiscal não encontrado!"; _response.Data = fiscalDTO;
-					return NotFound(_response);
-				};
+        [HttpGet("{id:int}", Name = "GetFiscal")]
+        public async Task<ActionResult<FiscalDTO>> Get(int id)
+        {
+            try
+            {
+                var fiscalDTO = await _fiscalService.GetById(id);
+                if (fiscalDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "Fiscal não encontrado!";
+                    _response.Data = fiscalDTO;
+                    return NotFound(_response);
+                };
 
-				_response.SetSuccess(); _response.Message = "Fiscal " + fiscalDTO.NomePessoa + " obtido com sucesso."; _response.Data = fiscalDTO;
-				return Ok(_response);
-			}
-			catch (Exception ex)
-			{
-				_response.SetError(); _response.Message = "Não foi possível alterar o Fiscal!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
-				return StatusCode(StatusCodes.Status500InternalServerError, _response);
-			}
-		}
+                _response.SetSuccess();
+                _response.Message = "Fiscal " + fiscalDTO.NomePessoa + " obtido com sucesso.";
+                _response.Data = fiscalDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir o Fiscal informado!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
 
-        [HttpPost]
+        [HttpPost()]
         public async Task<ActionResult> Post([FromBody] FiscalDTO fiscalDTO)
         {
-            if (fiscalDTO == null)
+            if (fiscalDTO is null)
             {
-                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = fiscalDTO;
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
+                _response.Data = fiscalDTO;
                 return BadRequest(_response);
             }
             fiscalDTO.EmailPessoa = fiscalDTO.EmailPessoa.ToLower();
@@ -80,12 +91,18 @@ namespace SGED.Controllers
                 string cpfcnpj = "";
                 string rgie = "";
 
-                ValidateFiscalDocuments(fiscalDTO, ref email, ref cpfcnpj, ref rgie);
+                ValidateDocuments(fiscalDTO, ref email, ref cpfcnpj, ref rgie);
 
                 if (!string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(cpfcnpj) || !string.IsNullOrEmpty(rgie))
                 {
-                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, fiscalDTO);
-                    _response.SetInvalid(); _response.Message = $"O {error} informado(s) está(ão) inválido(s)!"; _response.Data = new { email, cpfcnpj, rgie };
+                    string error = "";
+                    if (!string.IsNullOrEmpty(email)) error += "e-mail";
+                    if (!string.IsNullOrEmpty(cpfcnpj)) error += string.IsNullOrEmpty(error) ? "" : ", " + (fiscalDTO.CpfCnpjPessoa.Length == 14 ? "CPF" : "CNPJ");
+                    if (!string.IsNullOrEmpty(rgie)) error += string.IsNullOrEmpty(error) ? "" : ", " + (fiscalDTO.RgIePessoa.Length == 12 ? "RG" : "IE");
+
+                    _response.SetInvalid();
+                    _response.Message = $"O {error} informado(s) está(ão) inválido(s)!";
+                    _response.Data = new { errorEmailPessoa = email, errorCpfCnpjPessoa = cpfcnpj, errorRgIePessoa = rgie };
                     return BadRequest(_response);
                 }
 
@@ -93,25 +110,32 @@ namespace SGED.Controllers
 
                 if (fiscalsDTO is not null && fiscalsDTO.Any())
                 {
-                    CheckFiscalDuplicates(fiscalsDTO, fiscalDTO, ref email, ref cpfcnpj, ref rgie);
+                    CheckDuplicates(fiscalsDTO, fiscalDTO, ref email, ref cpfcnpj, ref rgie);
                 }
 
                 if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(cpfcnpj) && string.IsNullOrEmpty(rgie))
                 {
                     await _fiscalService.Create(fiscalDTO);
 
-                    _response.SetSuccess(); _response.Message = "Fiscal " + fiscalDTO.NomePessoa + " cadastrado com sucesso."; _response.Data = fiscalDTO;
+                    _response.SetSuccess();
+                    _response.Message = "Fiscal " + fiscalDTO.NomePessoa + " cadastrado com sucesso.";
+                    _response.Data = fiscalDTO;
                     return Ok(_response);
                 }
                 else
                 {
-                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, fiscalDTO); _response.SetConflict(); _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie };
+                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, fiscalDTO);
+                    _response.SetConflict();
+                    _response.Message = $"O {error} informado(s) já existe(m)!";
+                    _response.Data = new { errorEmailPessoa = email, errorCpfCnpjPessoa = cpfcnpj, errorRgIePessoa = rgie };
                     return BadRequest(_response);
                 }
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível cadastrar o Fiscal!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError();
+                _response.Message = "Não foi possível cadastrar o Fiscal!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
@@ -121,7 +145,9 @@ namespace SGED.Controllers
         {
             if (fiscalDTO is null)
             {
-                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = fiscalDTO;
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
+                _response.Data = fiscalDTO;
                 return BadRequest(_response);
             }
             fiscalDTO.EmailPessoa = fiscalDTO.EmailPessoa.ToLower();
@@ -129,9 +155,11 @@ namespace SGED.Controllers
             try
             {
                 var existingFiscal = await _fiscalService.GetById(fiscalDTO.Id);
-                if (existingFiscal == null)
+                if (existingFiscal is null)
                 {
-                    _response.SetNotFound(); _response.Message = "O Fiscal informado não existe!"; _response.Data = fiscalDTO;
+                    _response.SetNotFound();
+                    _response.Message = "O Fiscal informado não existe!";
+                    _response.Data = new { errorId = "O Fiscal informado não existe!" };
                     return NotFound(_response);
                 }
 
@@ -139,12 +167,18 @@ namespace SGED.Controllers
                 string cpfcnpj = "";
                 string rgie = "";
 
-                ValidateFiscalDocuments(fiscalDTO, ref email, ref cpfcnpj, ref rgie);
+                ValidateDocuments(fiscalDTO, ref email, ref cpfcnpj, ref rgie);
 
                 if (!string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(cpfcnpj) || !string.IsNullOrEmpty(rgie))
                 {
-                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, fiscalDTO);
-                    _response.SetInvalid(); _response.Message = $"O {error} informado(s) está(ão) inválido(s)!"; _response.Data = new { email, cpfcnpj, rgie };
+                    string error = "";
+                    if (!string.IsNullOrEmpty(email)) error += "e-mail";
+                    if (!string.IsNullOrEmpty(cpfcnpj)) error += string.IsNullOrEmpty(error) ? "" : ", " + (fiscalDTO.CpfCnpjPessoa.Length == 14 ? "CPF" : "CNPJ");
+                    if (!string.IsNullOrEmpty(rgie)) error += string.IsNullOrEmpty(error) ? "" : ", " + (fiscalDTO.RgIePessoa.Length == 12 ? "RG" : "IE");
+
+                    _response.SetError();
+                    _response.Message = $"O {error} informado(s) está(ão) inválido(s)!";
+                    _response.Data = new { errorEmailPessoa = email, errorCpfCnpjPessoa = cpfcnpj, errorRgIePessoa = rgie };
                     return BadRequest(_response);
                 }
 
@@ -153,55 +187,67 @@ namespace SGED.Controllers
 
                 if (fiscalsDTO is not null && fiscalsDTO.Any())
                 {
-                    CheckFiscalDuplicates(fiscalsDTO, fiscalDTO, ref email, ref cpfcnpj, ref rgie);
+                    CheckDuplicates(fiscalsDTO, fiscalDTO, ref email, ref cpfcnpj, ref rgie);
                 }
 
                 if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(cpfcnpj) && string.IsNullOrEmpty(rgie))
                 {
                     await _fiscalService.Update(fiscalDTO);
 
-                    _response.SetSuccess(); _response.Message = "Fiscal " + fiscalDTO.NomePessoa + " alterado com sucesso."; _response.Data = fiscalDTO;
+                    _response.SetSuccess();
+                    _response.Message = "Fiscal " + fiscalDTO.NomePessoa + " alterado com sucesso.";
+                    _response.Data = fiscalDTO;
                     return Ok(_response);
                 }
                 else
                 {
                     string error = GenerateErrorMessage(email, cpfcnpj, rgie, fiscalDTO);
-                    _response.SetConflict(); _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie };
+                    _response.SetConflict();
+                    _response.Message = $"O {error} informado(s) já existe(m)!";
+                    _response.Data = new { errorEmailPessoa = email, errorCpfCnpjPessoa = cpfcnpj, errorRgIePessoa = rgie };
                     return BadRequest(_response);
                 }
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível alterar o Fiscal!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError();
+                _response.Message = "Não foi possível alterar o Fiscal!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
-        [HttpDelete("{id}")]
-		public async Task<ActionResult<FiscalDTO>> Delete(int id)
-		{
-			try
-			{
-				var fiscalDTO = await _fiscalService.GetById(id);
-				if (fiscalDTO == null)
-				{
-					_response.SetNotFound(); _response.Message = "Fiscal não encontrado!"; _response.Data = fiscalDTO;
-					return NotFound(_response);
-				}
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<FiscalDTO>> Delete(int id)
+        {
+            try
+            {
+                var fiscalDTO = await _fiscalService.GetById(id);
+                if (fiscalDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "Fiscal não encontrado!";
+                    _response.Data = new { errorId = "Fiscal não encontrado!" };
+                    return NotFound(_response);
+                }
 
-				await _fiscalService.Remove(id);
+                await _fiscalService.Remove(id);
 
-				_response.SetSuccess(); _response.Message = "Fiscal " + fiscalDTO.NomePessoa + " excluído com sucesso."; _response.Data = fiscalDTO;
-				return Ok(_response);
-			}
-			catch (Exception ex)
-			{
-				_response.SetError(); _response.Message = "Não foi possível alterar o Fiscal!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
-				return StatusCode(StatusCodes.Status500InternalServerError, _response);
-			}
-		}
+                _response.SetSuccess();
+                _response.Message = "Fiscal " + fiscalDTO.NomePessoa + " excluído com sucesso.";
+                _response.Data = fiscalDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível excluir o Fiscal!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
 
-        private void ValidateFiscalDocuments(FiscalDTO fiscalDTO, ref string email, ref string cpfcnpj, ref string rgie)
+        private void ValidateDocuments(FiscalDTO fiscalDTO, ref string email, ref string cpfcnpj, ref string rgie)
         {
             if (!fiscalDTO.Email())
             {
@@ -241,7 +287,7 @@ namespace SGED.Controllers
             }
         }
 
-        private void CheckFiscalDuplicates(IEnumerable<FiscalDTO> fiscalsDTO, FiscalDTO fiscalDTO, ref string email, ref string cpfcnpj, ref string rgie)
+        private void CheckDuplicates(IEnumerable<FiscalDTO> fiscalsDTO, FiscalDTO fiscalDTO, ref string email, ref string cpfcnpj, ref string rgie)
         {
             foreach (var fiscal in fiscalsDTO)
             {

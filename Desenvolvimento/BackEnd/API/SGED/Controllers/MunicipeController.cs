@@ -16,60 +16,71 @@ namespace SGED.Controllers
         private readonly IMunicipeService _municipeService;
         private readonly Response _response;
 
-        public MunicipeController(IMunicipeService municipeService, AppDBContext context)
+        public MunicipeController(IMunicipeService municipeService)
         {
             _municipeService = municipeService;
 
             _response = new Response();
         }
 
-        [HttpGet]
+        [HttpGet()]
         public async Task<ActionResult<IEnumerable<MunicipeDTO>>> Get()
         {
             try
             {
                 var municipesDTO = await _municipeService.GetAll();
-                _response.SetSuccess(); _response.Data = municipesDTO;
+                _response.SetSuccess();
                 _response.Message = municipesDTO.Any() ?
                     "Lista do(s) Munícipe(s) obtida com sucesso." :
-                    "Nenhum Munícipe encontrado.";
+                    "Nenhum Municipe encontrado.";
+                _response.Data = municipesDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível cadastrar o Munícipe!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista do(s) Munícipe(s)!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
-        [HttpGet("{id}", Name = "GetMunicipe")]
+        [HttpGet("{id:int}", Name = "GetMunicipe")]
         public async Task<ActionResult<MunicipeDTO>> Get(int id)
         {
             try
             {
                 var municipeDTO = await _municipeService.GetById(id);
-                if (municipeDTO == null)
+                if (municipeDTO is null)
                 {
-                    _response.SetNotFound(); _response.Message = "Munícipe não encontrado!"; _response.Data = municipeDTO;
+                    _response.SetNotFound();
+                    _response.Message = "Munícipe não encontrado!";
+                    _response.Data = municipeDTO;
                     return NotFound(_response);
                 };
 
-                _response.SetSuccess(); _response.Message = "Munícipe " + municipeDTO.NomePessoa + " obtido com sucesso."; _response.Data = municipeDTO;
+                _response.SetSuccess();
+                _response.Message = "Munícipe " + municipeDTO.NomePessoa + " obtido com sucesso.";
+                _response.Data = municipeDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível cadastrar o Munícipe!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir o Munícipe informado!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
-        [HttpPost]
+        [HttpPost()]
         public async Task<ActionResult> Post([FromBody] MunicipeDTO municipeDTO)
         {
-            if (municipeDTO == null)
+            if (municipeDTO is null)
             {
-                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = municipeDTO;
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
+                _response.Data = municipeDTO;
                 return BadRequest(_response);
             }
             municipeDTO.EmailPessoa = municipeDTO.EmailPessoa.ToLower();
@@ -80,12 +91,18 @@ namespace SGED.Controllers
                 string cpfcnpj = "";
                 string rgie = "";
 
-                ValidateMunicipeDocuments(municipeDTO, ref email, ref cpfcnpj, ref rgie);
+                ValidateDocuments(municipeDTO, ref email, ref cpfcnpj, ref rgie);
 
                 if (!string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(cpfcnpj) || !string.IsNullOrEmpty(rgie))
                 {
-                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, municipeDTO);
-                    _response.SetInvalid(); _response.Message = $"O {error} informado(s) está(ão) inválido(s)!"; _response.Data = new { email, cpfcnpj, rgie };
+                    string error = "";
+                    if (!string.IsNullOrEmpty(email)) error += "e-mail";
+                    if (!string.IsNullOrEmpty(cpfcnpj)) error += string.IsNullOrEmpty(error) ? "" : ", " + (municipeDTO.CpfCnpjPessoa.Length == 14 ? "CPF" : "CNPJ");
+                    if (!string.IsNullOrEmpty(rgie)) error += string.IsNullOrEmpty(error) ? "" : ", " + (municipeDTO.RgIePessoa.Length == 12 ? "RG" : "IE");
+
+                    _response.SetInvalid();
+                    _response.Message = $"O {error} informado(s) está(ão) inválido(s)!";
+                    _response.Data = new { errorEmailPessoa = email, errorCpfCnpjPessoa = cpfcnpj, errorRgIePessoa = rgie };
                     return BadRequest(_response);
                 }
 
@@ -93,26 +110,32 @@ namespace SGED.Controllers
 
                 if (municipesDTO is not null && municipesDTO.Any())
                 {
-                    CheckMunicipeDuplicates(municipesDTO, municipeDTO, ref email, ref cpfcnpj, ref rgie);
+                    CheckDuplicates(municipesDTO, municipeDTO, ref email, ref cpfcnpj, ref rgie);
                 }
 
                 if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(cpfcnpj) && string.IsNullOrEmpty(rgie))
                 {
                     await _municipeService.Create(municipeDTO);
 
-                    _response.SetSuccess(); _response.Message = "Munícipe " + municipeDTO.NomePessoa + " cadastrado com sucesso."; _response.Data = municipeDTO;
+                    _response.SetSuccess();
+                    _response.Message = "Munícipe " + municipeDTO.NomePessoa + " cadastrado com sucesso.";
+                    _response.Data = municipeDTO;
                     return Ok(_response);
                 }
                 else
                 {
-                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, municipeDTO); 
-                    _response.SetConflict(); _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie };
+                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, municipeDTO);
+                    _response.SetConflict();
+                    _response.Message = $"O {error} informado(s) já existe(m)!";
+                    _response.Data = new { errorEmailPessoa = email, errorCpfCnpjPessoa = cpfcnpj, errorRgIePessoa = rgie };
                     return BadRequest(_response);
                 }
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível cadastrar o Munícipe!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError();
+                _response.Message = "Não foi possível cadastrar o Munícipe!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
@@ -122,7 +145,9 @@ namespace SGED.Controllers
         {
             if (municipeDTO is null)
             {
-                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = municipeDTO;
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
+                _response.Data = municipeDTO;
                 return BadRequest(_response);
             }
             municipeDTO.EmailPessoa = municipeDTO.EmailPessoa.ToLower();
@@ -130,9 +155,11 @@ namespace SGED.Controllers
             try
             {
                 var existingMunicipe = await _municipeService.GetById(municipeDTO.Id);
-                if (existingMunicipe == null)
+                if (existingMunicipe is null)
                 {
-                    _response.SetNotFound(); _response.Message = "O Munícipe informado não existe!"; _response.Data = municipeDTO;
+                    _response.SetNotFound();
+                    _response.Message = "O Munícipe informado não existe!";
+                    _response.Data = new { errorId = "O Munícipe informado não existe!" };
                     return NotFound(_response);
                 }
 
@@ -140,12 +167,18 @@ namespace SGED.Controllers
                 string cpfcnpj = "";
                 string rgie = "";
 
-                ValidateMunicipeDocuments(municipeDTO, ref email, ref cpfcnpj, ref rgie);
+                ValidateDocuments(municipeDTO, ref email, ref cpfcnpj, ref rgie);
 
                 if (!string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(cpfcnpj) || !string.IsNullOrEmpty(rgie))
                 {
-                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, municipeDTO);
-                    _response.SetInvalid(); _response.Message = $"O {error} informado(s) está(ão) inválido(s)!"; _response.Data = new { email, cpfcnpj, rgie };
+                    string error = "";
+                    if (!string.IsNullOrEmpty(email)) error += "e-mail";
+                    if (!string.IsNullOrEmpty(cpfcnpj)) error += string.IsNullOrEmpty(error) ? "" : ", " + (municipeDTO.CpfCnpjPessoa.Length == 14 ? "CPF" : "CNPJ");
+                    if (!string.IsNullOrEmpty(rgie)) error += string.IsNullOrEmpty(error) ? "" : ", " + (municipeDTO.RgIePessoa.Length == 12 ? "RG" : "IE");
+
+                    _response.SetError();
+                    _response.Message = $"O {error} informado(s) está(ão) inválido(s)!";
+                    _response.Data = new { errorEmailPessoa = email, errorCpfCnpjPessoa = cpfcnpj, errorRgIePessoa = rgie };
                     return BadRequest(_response);
                 }
 
@@ -154,55 +187,67 @@ namespace SGED.Controllers
 
                 if (municipesDTO is not null && municipesDTO.Any())
                 {
-                    CheckMunicipeDuplicates(municipesDTO, municipeDTO, ref email, ref cpfcnpj, ref rgie);
+                    CheckDuplicates(municipesDTO, municipeDTO, ref email, ref cpfcnpj, ref rgie);
                 }
 
                 if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(cpfcnpj) && string.IsNullOrEmpty(rgie))
                 {
                     await _municipeService.Update(municipeDTO);
 
-                    _response.SetSuccess(); _response.Message = "Munícipe " + municipeDTO.NomePessoa + " alterado com sucesso."; _response.Data = municipeDTO;
+                    _response.SetSuccess();
+                    _response.Message = "Munícipe " + municipeDTO.NomePessoa + " alterado com sucesso.";
+                    _response.Data = municipeDTO;
                     return Ok(_response);
                 }
                 else
                 {
                     string error = GenerateErrorMessage(email, cpfcnpj, rgie, municipeDTO);
-                    _response.SetConflict(); _response.Message = $"O {error} informado(s) já existe(m)!"; _response.Data = new { email, cpfcnpj, rgie };
+                    _response.SetConflict();
+                    _response.Message = $"O {error} informado(s) já existe(m)!";
+                    _response.Data = new { errorEmailPessoa = email, errorCpfCnpjPessoa = cpfcnpj, errorRgIePessoa = rgie };
                     return BadRequest(_response);
                 }
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível alterar o Munícipe!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError();
+                _response.Message = "Não foi possível alterar o Munícipe!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<ActionResult<MunicipeDTO>> Delete(int id)
         {
             try
             {
                 var municipeDTO = await _municipeService.GetById(id);
-                if (municipeDTO == null)
+                if (municipeDTO is null)
                 {
-                    _response.SetNotFound(); _response.Message = "Munícipe não encontrado!"; _response.Data = municipeDTO;
+                    _response.SetNotFound();
+                    _response.Message = "Munícipe não encontrado!";
+                    _response.Data = new { errorId = "Municipe não encontrado!" };
                     return NotFound(_response);
                 }
 
                 await _municipeService.Remove(id);
 
-                _response.SetSuccess(); _response.Message = "Munícipe " + municipeDTO.NomePessoa + " excluído com sucesso."; _response.Data = municipeDTO;
+                _response.SetSuccess();
+                _response.Message = "Munícipe " + municipeDTO.NomePessoa + " excluído com sucesso.";
+                _response.Data = municipeDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível alterar o Munícipe!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError();
+                _response.Message = "Não foi possível excluir o Munícipe!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
-        private void ValidateMunicipeDocuments(MunicipeDTO municipeDTO, ref string email, ref string cpfcnpj, ref string rgie)
+        private void ValidateDocuments(MunicipeDTO municipeDTO, ref string email, ref string cpfcnpj, ref string rgie)
         {
             if (!municipeDTO.Email())
             {
@@ -242,7 +287,7 @@ namespace SGED.Controllers
             }
         }
 
-        private void CheckMunicipeDuplicates(IEnumerable<MunicipeDTO> municipesDTO, MunicipeDTO municipeDTO, ref string email, ref string cpfcnpj, ref string rgie)
+        private void CheckDuplicates(IEnumerable<MunicipeDTO> municipesDTO, MunicipeDTO municipeDTO, ref string email, ref string cpfcnpj, ref string rgie)
         {
             foreach (var municipe in municipesDTO)
             {

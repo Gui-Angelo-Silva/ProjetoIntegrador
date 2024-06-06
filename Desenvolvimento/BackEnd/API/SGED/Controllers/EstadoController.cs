@@ -80,15 +80,22 @@ namespace SGED.Controllers
                 _response.Message = "Dado(s) inválido(s)!"; 
                 _response.Data = estadoDTO;
                 return BadRequest(_response);
-            }
+            } estadoDTO.Id = 0;
 
             try
             {
-                if (await EstadoExists(estadoDTO))
+                else if (await EstadoExists(estadoDTO))
                 {
-                    _response.SetConflict(); 
-                    _response.Message = "Já existe o Estado " + estadoDTO.NomeEstado + "!"; 
-                    _response.Data = estadoDTO;
+                    _response.SetConflict();
+                    _response.Message = "Já existe o Estado " + estadoDTO.NomeEstado + "!";
+                    _response.Data = new { errorNomeEstado = "Já existe o Estado " + estadoDTO.NomeEstado + "!" };
+                    return BadRequest(_response);
+                }
+                else if (await UfExists(estadoDTO))
+                {
+                    _response.SetConflict();
+                    _response.Message = "Já existe o UF " + estadoDTO.UfEstado + "!";
+                    _response.Data = new { errorUfEstado = "Já existe o UF " + estadoDTO.UfEstado + "!" };
                     return BadRequest(_response);
                 }
 
@@ -133,7 +140,14 @@ namespace SGED.Controllers
                 {
                     _response.SetConflict(); 
                     _response.Message = "Já existe o Estado " + estadoDTO.NomeEstado + "!"; 
-                    _response.Data = estadoDTO;
+                    _response.Data = new { errorNomeEstado = "Já existe o Estado " + estadoDTO.NomeEstado + "!" };
+                    return BadRequest(_response);
+                }
+                else if (await UfExists(estadoDTO))
+                {
+                    _response.SetConflict();
+                    _response.Message = "Já existe o UF " + estadoDTO.UfEstado + "!";
+                    _response.Data = new { errorUfEstado = "Já existe o UF " + estadoDTO.UfEstado + "!" };
                     return BadRequest(_response);
                 }
 
@@ -186,7 +200,13 @@ namespace SGED.Controllers
         private async Task<bool> EstadoExists(EstadoDTO estadoDTO)
         {
             var estadosDTO = await _estadoService.GetAll();
-            return estadosDTO.FirstOrDefault(e => Operator.CompareString(e.NomeEstado, estadoDTO.NomeEstado) || Operator.CompareString(e.UfEstado, estadoDTO.UfEstado)) is not null;
+            return estadosDTO.FirstOrDefault(e => e.Id != estadoDTO.Id && Operator.CompareString(e.NomeEstado, estadoDTO.NomeEstado)) is not null;
+        }
+
+        private async Task<bool> UfExists(EstadoDTO estadoDTO)
+        {
+            var estadosDTO = await _estadoService.GetAll();
+            return estadosDTO.FirstOrDefault(e => e.Id != estadoDTO.Id && Operator.CompareString(e.UfEstado, estadoDTO.UfEstado)) is not null;
         }
     }
 }

@@ -82,7 +82,7 @@ namespace SGED.Controllers
                 _response.Message = "Dado(s) inválido(s)!";
                 _response.Data = bairroDTO;
                 return BadRequest(_response);
-            }
+            } bairroDTO.Id = 0;
 
             try
             {
@@ -205,7 +205,7 @@ namespace SGED.Controllers
         private async Task<bool> BairroExists(BairroDTO bairroDTO)
         {
             var bairrosDTO = await _bairroService.GetByCity(bairroDTO.IdCidade);
-            return bairrosDTO.FirstOrDefault(b => Operator.CompareString(b.NomeBairro, bairroDTO.NomeBairro)) is not null;
+            return bairrosDTO.FirstOrDefault(b => b.Id != bairroDTO.Id && Operator.CompareString(b.NomeBairro, bairroDTO.NomeBairro)) is not null;
         }
     }
 }

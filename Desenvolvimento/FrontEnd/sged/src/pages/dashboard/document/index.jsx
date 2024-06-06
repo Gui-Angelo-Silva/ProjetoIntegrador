@@ -33,7 +33,7 @@ export default function Document() {
 
     return (
         <LayoutPage>
-            <Title title="Processo" />
+            <Title title="Documento" />
             <Subtitle subtitle="Funções" />
             <div className="flex mt-10">
                 {cards.map((card, index) => (

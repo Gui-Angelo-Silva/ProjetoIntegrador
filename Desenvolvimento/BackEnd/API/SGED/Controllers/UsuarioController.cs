@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using SGED.Context;
-using SGED.Objects.Interfaces.Pessoa;
 using SGED.Objects.DTO.Entities;
 using SGED.Services.Interfaces;
 

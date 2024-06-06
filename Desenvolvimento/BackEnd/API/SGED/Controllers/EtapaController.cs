@@ -129,13 +129,6 @@ namespace SGED.Controllers
                     _response.Data = new { errorIdTipoProcesso = "O Tipo Processo não existe!" };
                     return NotFound(_response);
                 }
-                else if (!tipoProcessoDTO.CanRelate())
-                {
-                    _response.SetConflict();
-                    _response.Message = "Não é possível relacionar a Etapa ao Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " porque ele está " + tipoProcessoDTO.GetState().ToLower() + "!";
-                    _response.Data = new { errorIdTipoProcesso = "Não é possível relacionar a Etapa ao Tipo Processo " + tipoProcessoDTO.NomeTipoProcesso + " porque ele está " + tipoProcessoDTO.GetState().ToLower() + "!" };
-                    return BadRequest(_response);
-                }
 
                 var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(etapaDTO.IdTipoProcesso);
                 if (etapasDTO.FirstOrDefault(etapa => Operator.CompareString(etapa.NomeEtapa, etapaDTO.NomeEtapa)) is not null)
@@ -188,8 +181,7 @@ namespace SGED.Controllers
                 {
                     _response.SetConflict();
                     _response.Message = "Não é possível alterar a Etapa " + existingEtapa.NomeEtapa + " porque ela está " + existingEtapa.GetState().ToLower() + "!";
-                    _response.Data = new { errorStatus = "Não é possível alterar a Etapa " + existingEtapa.NomeEtapa 
-                        + " porque ela está " + existingEtapa.GetState().ToLower() + "!" };
+                    _response.Data = new { errorStatus = "Não é possível alterar a Etapa " + existingEtapa.NomeEtapa + " porque ela está " + existingEtapa.GetState().ToLower() + "!" };
                     return BadRequest(_response);
                 }
 

@@ -30,8 +30,8 @@ namespace SGED.Controllers
             {
                 var bairrosDTO = await _bairroService.GetAll();
                 _response.SetSuccess();
-                _response.Message = bairrosDTO.Any() ? 
-                    "Lista do(s) Bairro(s) obtida com sucesso." : 
+                _response.Message = bairrosDTO.Any() ?
+                    "Lista do(s) Bairro(s) obtida com sucesso." :
                     "Nenhum Bairro encontrado.";
                 _response.Data = bairrosDTO;
                 return Ok(_response);
@@ -82,7 +82,8 @@ namespace SGED.Controllers
                 _response.Message = "Dado(s) inválido(s)!";
                 _response.Data = bairroDTO;
                 return BadRequest(_response);
-            } bairroDTO.Id = 0;
+            }
+            bairroDTO.Id = 0;
 
             try
             {

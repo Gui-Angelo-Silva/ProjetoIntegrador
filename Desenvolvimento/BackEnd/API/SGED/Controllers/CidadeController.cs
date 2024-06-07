@@ -30,16 +30,16 @@ namespace SGED.Controllers
             {
                 var cidadesDTO = await _cidadeService.GetAll();
                 _response.SetSuccess();
-                _response.Message = cidadesDTO.Any() ? 
-                    "Lista da(s) Cidade(s) obtida com sucesso." : 
+                _response.Message = cidadesDTO.Any() ?
+                    "Lista da(s) Cidade(s) obtida com sucesso." :
                     "Nenhuma Cidade encontrada.";
                 _response.Data = cidadesDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível adquirir a lista da(s) Cidade(s)!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista da(s) Cidade(s)!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -53,21 +53,21 @@ namespace SGED.Controllers
                 var cidadeDTO = await _cidadeService.GetById(id);
                 if (cidadeDTO is null)
                 {
-                    _response.SetNotFound(); 
-                    _response.Message = "Cidade não encontrada!"; 
+                    _response.SetNotFound();
+                    _response.Message = "Cidade não encontrada!";
                     _response.Data = cidadeDTO;
                     return NotFound(_response);
                 };
 
-                _response.SetSuccess(); 
-                _response.Message = "Cidade " + cidadeDTO.NomeCidade + " obtida com sucesso."; 
+                _response.SetSuccess();
+                _response.Message = "Cidade " + cidadeDTO.NomeCidade + " obtida com sucesso.";
                 _response.Data = cidadeDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível adquirir a Cidade informada!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a Cidade informada!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -78,42 +78,43 @@ namespace SGED.Controllers
         {
             if (cidadeDTO is null)
             {
-                _response.SetInvalid(); 
-                _response.Message = "Dado(s) inválido(s)!"; 
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
                 _response.Data = cidadeDTO;
                 return BadRequest(_response);
-            } cidadeDTO.Id = 0;
+            }
+            cidadeDTO.Id = 0;
 
             try
             {
                 var estadoDTO = await _estadoService.GetById(cidadeDTO.IdEstado);
                 if (estadoDTO is null)
                 {
-                    _response.SetNotFound(); 
-                    _response.Message = "O Estado informado não existe!"; 
+                    _response.SetNotFound();
+                    _response.Message = "O Estado informado não existe!";
                     _response.Data = new { errorIdEstado = "O Estado informado não existe!" };
                     return NotFound(_response);
                 }
 
                 if (await CidadeExists(cidadeDTO))
                 {
-                    _response.SetConflict(); 
-                    _response.Message = "Já existe a Cidade " + cidadeDTO.NomeCidade + " relacionada ao Estado " + estadoDTO.NomeEstado + "!"; 
+                    _response.SetConflict();
+                    _response.Message = "Já existe a Cidade " + cidadeDTO.NomeCidade + " relacionada ao Estado " + estadoDTO.NomeEstado + "!";
                     _response.Data = new { errorNomeCidade = "Já existe a Cidade " + cidadeDTO.NomeCidade + " relacionada ao Estado " + estadoDTO.NomeEstado + "!" };
                     return BadRequest(_response);
                 }
 
                 await _cidadeService.Create(cidadeDTO);
 
-                _response.SetSuccess(); 
-                _response.Message = "Cidade " + cidadeDTO.NomeCidade + " cadastrada com sucesso."; 
+                _response.SetSuccess();
+                _response.Message = "Cidade " + cidadeDTO.NomeCidade + " cadastrada com sucesso.";
                 _response.Data = cidadeDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível cadastrar a Cidade!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível cadastrar a Cidade!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -124,8 +125,8 @@ namespace SGED.Controllers
         {
             if (cidadeDTO is null)
             {
-                _response.SetInvalid(); 
-                _response.Message = "Dado(s) inválido(s)!"; 
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
                 _response.Data = cidadeDTO;
                 return BadRequest(_response);
             }
@@ -135,8 +136,8 @@ namespace SGED.Controllers
                 var existingCidadeDTO = await _cidadeService.GetById(cidadeDTO.Id);
                 if (existingCidadeDTO is null)
                 {
-                    _response.SetNotFound(); 
-                    _response.Message = "A Cidade informada não existe!"; 
+                    _response.SetNotFound();
+                    _response.Message = "A Cidade informada não existe!";
                     _response.Data = new { errorId = "A Cidade informada não existe!" };
                     return NotFound(_response);
                 }
@@ -144,8 +145,8 @@ namespace SGED.Controllers
                 var estadoDTO = await _estadoService.GetById(cidadeDTO.IdEstado);
                 if (estadoDTO is null)
                 {
-                    _response.SetNotFound(); 
-                    _response.Message = "O Estado informado não existe!"; 
+                    _response.SetNotFound();
+                    _response.Message = "O Estado informado não existe!";
                     _response.Data = new { errorIdEstado = "O Estado informado não existe!" };
                     return NotFound(_response);
                 }
@@ -160,15 +161,15 @@ namespace SGED.Controllers
 
                 await _cidadeService.Update(cidadeDTO);
 
-                _response.SetSuccess(); 
-                _response.Message = "Cidade " + cidadeDTO.NomeCidade + " alterada com sucesso."; 
+                _response.SetSuccess();
+                _response.Message = "Cidade " + cidadeDTO.NomeCidade + " alterada com sucesso.";
                 _response.Data = cidadeDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível alterar a Cidade!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível alterar a Cidade!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -182,7 +183,7 @@ namespace SGED.Controllers
                 var cidadeDTO = await _cidadeService.GetById(id);
                 if (cidadeDTO is null)
                 {
-                    _response.SetNotFound(); 
+                    _response.SetNotFound();
                     _response.Message = "Cidade não encontrada!";
                     _response.Data = new { errorId = "Cidade não encontrada!" };
                     return NotFound(_response);
@@ -190,15 +191,15 @@ namespace SGED.Controllers
 
                 await _cidadeService.Remove(id);
 
-                _response.SetSuccess(); 
-                _response.Message = "Cidade " + cidadeDTO.NomeCidade + " excluída com sucesso."; 
+                _response.SetSuccess();
+                _response.Message = "Cidade " + cidadeDTO.NomeCidade + " excluída com sucesso.";
                 _response.Data = cidadeDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível excluir a Cidade!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível excluir a Cidade!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }

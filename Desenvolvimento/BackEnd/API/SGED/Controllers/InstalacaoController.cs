@@ -87,7 +87,8 @@ namespace SGED.Controllers
                 _response.Message = "Dado(s) inválido(s)!";
                 _response.Data = instalacaoDTO;
                 return BadRequest(_response);
-            } instalacaoDTO.Id = 0;
+            }
+            instalacaoDTO.Id = 0;
 
             try
             {
@@ -123,15 +124,15 @@ namespace SGED.Controllers
 
                 await _instalacaoService.Create(instalacaoDTO);
 
-                _response.SetSuccess(); 
-                _response.Message = "Instalação de " + infraestruturaDTO.NomeInfraestrutura + " do Imóvel " + imovelDTO.InscricaoCadastral + " cadastrada com sucesso."; 
+                _response.SetSuccess();
+                _response.Message = "Instalação de " + infraestruturaDTO.NomeInfraestrutura + " do Imóvel " + imovelDTO.InscricaoCadastral + " cadastrada com sucesso.";
                 _response.Data = instalacaoDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível cadastrar a Instalação!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível cadastrar a Instalação!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -142,8 +143,8 @@ namespace SGED.Controllers
         {
             if (instalacaoDTO is null)
             {
-                _response.SetInvalid(); 
-                _response.Message = "Dado(s) inválido(s)!"; 
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
                 _response.Data = instalacaoDTO;
                 return BadRequest(_response);
             }
@@ -153,8 +154,8 @@ namespace SGED.Controllers
                 var existingInstalacaoDTO = await _instalacaoService.GetById(instalacaoDTO.Id);
                 if (existingInstalacaoDTO is null)
                 {
-                    _response.SetNotFound(); 
-                    _response.Message = "A Instalação informada não existe!"; 
+                    _response.SetNotFound();
+                    _response.Message = "A Instalação informada não existe!";
                     _response.Data = new { errorId = "A Instalação informada não existe!" };
                     return NotFound(_response);
                 }
@@ -191,15 +192,15 @@ namespace SGED.Controllers
 
                 await _instalacaoService.Update(instalacaoDTO);
 
-                _response.SetSuccess(); 
-                _response.Message = "Instalação de " + infraestruturaDTO.NomeInfraestrutura + " do Imóvel " + imovelDTO.InscricaoCadastral + " alterada com sucesso."; 
+                _response.SetSuccess();
+                _response.Message = "Instalação de " + infraestruturaDTO.NomeInfraestrutura + " do Imóvel " + imovelDTO.InscricaoCadastral + " alterada com sucesso.";
                 _response.Data = instalacaoDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível alterar a Instalação!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível alterar a Instalação!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -213,23 +214,23 @@ namespace SGED.Controllers
                 var instalacaoDTO = await _instalacaoService.GetById(id);
                 if (instalacaoDTO is null)
                 {
-                    _response.SetNotFound(); 
-                    _response.Message = "Instalação não encontrada!"; 
+                    _response.SetNotFound();
+                    _response.Message = "Instalação não encontrada!";
                     _response.Data = new { errorId = "Instalação não encontrada!" };
                     return NotFound(_response);
                 }
 
                 await _instalacaoService.Remove(id);
 
-                _response.SetSuccess(); 
-                _response.Message = "Instalação excluída com sucesso."; 
+                _response.SetSuccess();
+                _response.Message = "Instalação excluída com sucesso.";
                 _response.Data = instalacaoDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível excluir a Instalação!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível excluir a Instalação!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }

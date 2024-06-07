@@ -3,6 +3,8 @@ using SGED.Services.Interfaces;
 using SGED.Services.Server.Attributes;
 using SGED.Objects.DTO.Entities;
 using SGED.Objects.Server;
+using SGED.Objects.Utilities;
+using SGED.Services.Entities;
 
 namespace SGED.Controllers
 {
@@ -15,26 +17,125 @@ namespace SGED.Controllers
         private readonly ISessaoService _sessaoService;
         private readonly IUsuarioService _usuarioService;
         private readonly ITipoUsuarioService _tipoUsuarioService;
+        private readonly Response _response;
 
         public SessaoController(ISessaoService sessaoService, IUsuarioService usuarioService, ITipoUsuarioService tipoUsuarioService)
         {
             _sessaoService = sessaoService;
             _usuarioService = usuarioService;
             _tipoUsuarioService = tipoUsuarioService;
+
+            _response = new Response();
+        }
+
+        [HttpGet("GetAllSessions")]
+        public async Task<ActionResult<IEnumerable<SessaoDTO>>> GetAllSessions()
+        {
+            try
+            {
+                var usuariosDTO = await _sessaoService.GetAll();
+                _response.SetSuccess();
+                _response.Message = usuariosDTO.Any() ?
+                    "Lista da(s) Sessão(ões) obtida com sucesso." :
+                    "Nenhuma Sessão encontrada.";
+                _response.Data = usuariosDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista da(s) Sessão(ões)!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpGet("GetAllOpenSessions")]
+        public async Task<ActionResult<IEnumerable<SessaoDTO>>> GetAllOpenSessions()
+        {
+            try
+            {
+                var usuariosDTO = await _sessaoService.GetOpenSessions();
+                _response.SetSuccess();
+                _response.Message = usuariosDTO.Any() ?
+                    "Lista da(s) Sessão(ões) aberta(s) obtida com sucesso." :
+                    "Nenhuma Sessão aberta encontrada.";
+                _response.Data = usuariosDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista da(s) Sessão(ões) aberta(s)!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpGet("GetAllCloseSessions")]
+        public async Task<ActionResult<IEnumerable<SessaoDTO>>> GetAllCloseSessions()
+        {
+            try
+            {
+                var usuariosDTO = await _sessaoService.GetCloseSessions();
+                _response.SetSuccess();
+                _response.Message = usuariosDTO.Any() ?
+                    "Lista da(s) Sessão(ões) fechada(s) obtida com sucesso." :
+                    "Nenhuma Sessão fechada encontrada.";
+                _response.Data = usuariosDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista da(s) Sessão(ões) fechada(s)!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpGet("GetOnlineUsers")]
         public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetOnlineUsers()
         {
-            var usuariosDTO = await _sessaoService.GetOnlineUsers();
-            return Ok(usuariosDTO);
+            try
+            {
+                var usuariosDTO = await _sessaoService.GetOnlineUsers();
+                _response.SetSuccess();
+                _response.Message = usuariosDTO.Any() ?
+                    "Lista do(s) Usuários(s) online obtida com sucesso." :
+                    "Nenhum Usuário online encontrado.";
+                _response.Data = usuariosDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista do(s) Usuário(s) online!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpGet("GetOfflineUsers")]
         public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetOfflineUsers()
         {
-            var usuariosDTO = await _sessaoService.GetOfflineUsers();
-            return Ok(usuariosDTO);
+            try
+            {
+                var usuariosDTO = await _sessaoService.GetOfflineUsers();
+                _response.SetSuccess();
+                _response.Message = usuariosDTO.Any() ?
+                    "Lista do(s) Usuários(s) offline obtida com sucesso." :
+                    "Nenhum Usuário offline encontrado.";
+                _response.Data = usuariosDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista do(s) Usuário(s) offline!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpGet("GetSession")]
@@ -60,7 +161,7 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpGet("GetUser/{token}")]
+        [HttpGet("{token}/GetUser")]
         [Anonymous]
         public async Task<ActionResult<UsuarioDTO>> GetUser(string token)
         {
@@ -168,13 +269,11 @@ namespace SGED.Controllers
             return Ok(new { status = true, response = "Sessão encerrada com sucesso!" });
         }
 
-        [HttpPut("CloseUserSession")]
+        [HttpPut("CloseUserSessions")]
         public async Task<IActionResult> CloseUserSession(int id)
         {
-            if (id == 1) return Ok(new { status = true, response = "Nenhuma sessão aberta encontrada!" });
-
             var sessoes = await _sessaoService.GetOpenSessionByUser(id);
-            if (sessoes == null) return Ok(new { status = true, response = "Nenhuma sessão aberta encontrada!" });
+            if (sessoes is null || id == 1) return Ok(new { status = true, response = "Nenhuma sessão aberta encontrada!" });
 
             foreach (var sessao in sessoes)
             {
@@ -185,37 +284,8 @@ namespace SGED.Controllers
 
             return Ok(new { status = true, response = "Sessão do usuário encerrada!" });
         }
-
-
-
-
-
-
-
-
-
-        [HttpGet("GetAllSessions")]
-        public async Task<ActionResult<IEnumerable<SessaoDTO>>> GetAllSessions()
-        {
-            var sessoesDTO = await _sessaoService.GetAll();
-            return Ok(sessoesDTO);
-        }
-
-        [HttpGet("GetAllOpenSessions")]
-        public async Task<ActionResult<IEnumerable<SessaoDTO>>> GetAllOpenSessions()
-        {
-            var sessoesDTO = await _sessaoService.GetOpenSessions();
-            return Ok(sessoesDTO);
-        }
-
-        [HttpGet("GetAllCloseSessions")]
-        public async Task<ActionResult<IEnumerable<SessaoDTO>>> GetAllCloseSessions()
-        {
-            var sessoesDTO = await _sessaoService.GetCloseSessions();
-            return Ok(sessoesDTO);
-        }
-
-        [HttpDelete("Delete")]
+        
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
             var sessaoDTO = await _sessaoService.GetById(id);

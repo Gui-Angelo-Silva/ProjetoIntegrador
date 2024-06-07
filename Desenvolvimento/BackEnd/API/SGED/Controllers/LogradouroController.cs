@@ -43,8 +43,8 @@ namespace SGED.Controllers
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível adquirir a lista do(s) Logradouro(s)!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista do(s) Logradouro(s)!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -58,21 +58,21 @@ namespace SGED.Controllers
                 var logradouroDTO = await _logradouroService.GetById(id);
                 if (logradouroDTO is null)
                 {
-                    _response.SetNotFound(); 
+                    _response.SetNotFound();
                     _response.Message = "Logradouro não encontrado!";
                     _response.Data = logradouroDTO;
                     return NotFound(_response);
                 };
 
-                _response.SetSuccess(); 
-                _response.Message = "Logradouro obtido com sucesso."; 
+                _response.SetSuccess();
+                _response.Message = "Logradouro obtido com sucesso.";
                 _response.Data = logradouroDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível adquirir o Logradouro informado!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir o Logradouro informado!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -83,11 +83,12 @@ namespace SGED.Controllers
         {
             if (logradouroDTO is null)
             {
-                _response.SetInvalid(); 
-                _response.Message = "Dado(s) inválido(s)!"; 
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
                 _response.Data = logradouroDTO;
                 return BadRequest(_response);
-            } logradouroDTO.Id = 0;
+            }
+            logradouroDTO.Id = 0;
 
             try
             {
@@ -111,23 +112,23 @@ namespace SGED.Controllers
 
                 if (await LogradouroExists(logradouroDTO))
                 {
-                    _response.SetConflict(); 
-                    _response.Message = "Já existe o Logradouro" + logradouroDTO.Cep + "!"; 
+                    _response.SetConflict();
+                    _response.Message = "Já existe o Logradouro" + logradouroDTO.Cep + "!";
                     _response.Data = new { errorCep = "Já existe o Logradouro" + logradouroDTO.Cep + "!" };
                     return BadRequest(_response);
                 }
 
                 await _logradouroService.Create(logradouroDTO);
 
-                _response.SetSuccess(); 
-                _response.Message = "Logradouro " + logradouroDTO.Cep + " cadastrado com sucesso."; 
+                _response.SetSuccess();
+                _response.Message = "Logradouro " + logradouroDTO.Cep + " cadastrado com sucesso.";
                 _response.Data = logradouroDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível cadastrar o Logradouro!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível cadastrar o Logradouro!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -138,8 +139,8 @@ namespace SGED.Controllers
         {
             if (logradouroDTO is null)
             {
-                _response.SetInvalid(); 
-                _response.Message = "Dado(s) inválido(s)!"; 
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
                 _response.Data = logradouroDTO;
                 return BadRequest(_response);
             }
@@ -149,8 +150,8 @@ namespace SGED.Controllers
                 var existingLogradouroDTO = await _logradouroService.GetById(logradouroDTO.Id);
                 if (existingLogradouroDTO is null)
                 {
-                    _response.SetNotFound(); 
-                    _response.Message = "O Logradouro informado não existe!"; 
+                    _response.SetNotFound();
+                    _response.Message = "O Logradouro informado não existe!";
                     _response.Data = new { errorId = "O Logradouro informado não existe!" };
                     return NotFound(_response);
                 }
@@ -183,15 +184,15 @@ namespace SGED.Controllers
 
                 await _logradouroService.Update(logradouroDTO);
 
-                _response.SetSuccess(); 
-                _response.Message = "Logradouro " + logradouroDTO.Cep + " alterado com sucesso."; 
+                _response.SetSuccess();
+                _response.Message = "Logradouro " + logradouroDTO.Cep + " alterado com sucesso.";
                 _response.Data = logradouroDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível alterar o Logradouro!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível alterar o Logradouro!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -205,23 +206,23 @@ namespace SGED.Controllers
                 var logradouroDTO = await _logradouroService.GetById(id);
                 if (logradouroDTO is null)
                 {
-                    _response.SetNotFound(); 
-                    _response.Message = "Logradouro não encontrado!"; 
+                    _response.SetNotFound();
+                    _response.Message = "Logradouro não encontrado!";
                     _response.Data = new { errorId = "Logradouro não encontrado!" };
                     return NotFound(_response);
                 }
 
                 await _logradouroService.Remove(id);
 
-                _response.SetSuccess(); 
-                _response.Message = "Logradouro " + logradouroDTO.Cep + " excluído com sucesso."; 
+                _response.SetSuccess();
+                _response.Message = "Logradouro " + logradouroDTO.Cep + " excluído com sucesso.";
                 _response.Data = logradouroDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível excluir o Logradouro!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível excluir o Logradouro!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }

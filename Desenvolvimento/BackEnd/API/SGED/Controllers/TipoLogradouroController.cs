@@ -28,20 +28,23 @@ namespace SGED.Controllers
             try
             {
                 var tipoLogradourosDTO = await _tipoLogradouroService.GetAll();
-                _response.SetSuccess(); _response.Data = tipoLogradourosDTO;
+                _response.SetSuccess();
                 _response.Message = tipoLogradourosDTO.Any() ?
                     "Lista do(s) Tipo(s) de Logradouro obtida com sucesso." :
                     "Nenhum TipoLogradouro encontrado.";
+                _response.Data = tipoLogradourosDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível adquirir a lista do(s) Tipo(s) de Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista do(s) Tipo(s) de Logradouro!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
-        [HttpGet("{id}", Name = "GetTipoLogradouro")]
+        [HttpGet("{id:int}", Name = "GetTipoLogradouro")]
         public async Task<ActionResult<TipoLogradouroDTO>> Get(int id)
         {
             try
@@ -49,11 +52,15 @@ namespace SGED.Controllers
                 var tipoLogradouroDTO = await _tipoLogradouroService.GetById(id);
                 if (tipoLogradouroDTO is null)
                 {
-                    _response.SetNotFound(); _response.Message = "Tipo de Logradouro não encontrado!"; _response.Data = tipoLogradouroDTO;
+                    _response.SetNotFound();
+                    _response.Message = "Tipo de Logradouro não encontrado!";
+                    _response.Data = tipoLogradouroDTO;
                     return NotFound(_response);
                 };
 
-                _response.SetSuccess(); _response.Message = "Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + " obtido com sucesso."; _response.Data = tipoLogradouroDTO;
+                _response.SetSuccess();
+                _response.Message = "Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + " obtido com sucesso.";
+                _response.Data = tipoLogradouroDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
@@ -68,7 +75,9 @@ namespace SGED.Controllers
         {
             if (tipoLogradouroDTO is null)
             {
-                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = tipoLogradouroDTO;
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
+                _response.Data = tipoLogradouroDTO;
                 return BadRequest(_response);
             }
 
@@ -76,13 +85,17 @@ namespace SGED.Controllers
             {
                 if (await TipoLogradouroExists(tipoLogradouroDTO))
                 {
-                    _response.SetConflict(); _response.Message = "Já existe o Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + "!"; _response.Data = tipoLogradouroDTO;
+                    _response.SetConflict();
+                    _response.Message = "Já existe o Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + "!";
+                    _response.Data = new { errorCodigoInformativo = "Já existe o Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + "!" };
                     return BadRequest(_response);
                 }
 
                 await _tipoLogradouroService.Create(tipoLogradouroDTO);
 
-                _response.SetSuccess(); _response.Message = "Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + " cadastrado com sucesso."; _response.Data = tipoLogradouroDTO;
+                _response.SetSuccess();
+                _response.Message = "Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + " cadastrado com sucesso.";
+                _response.Data = tipoLogradouroDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
@@ -97,7 +110,9 @@ namespace SGED.Controllers
         {
             if (tipoLogradouroDTO is null)
             {
-                _response.SetInvalid(); _response.Message = "Dado(s) inválido(s)!"; _response.Data = tipoLogradouroDTO;
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
+                _response.Data = tipoLogradouroDTO;
                 return BadRequest(_response);
             }
 
@@ -106,29 +121,37 @@ namespace SGED.Controllers
                 var existingTipoLogradouroDTO = await _tipoLogradouroService.GetById(tipoLogradouroDTO.Id);
                 if (existingTipoLogradouroDTO is null)
                 {
-                    _response.SetNotFound(); _response.Message = "O Tipo de Logradouro informado não existe!"; _response.Data = tipoLogradouroDTO;
+                    _response.SetNotFound();
+                    _response.Message = "O Tipo de Logradouro informado não existe!";
+                    _response.Data = new { errorId = "O Tipo de Logradouro informado não existe!" };
                     return NotFound(_response);
                 }
 
                 if (await TipoLogradouroExists(tipoLogradouroDTO))
                 {
-                    _response.SetConflict(); _response.Message = "Já existe o Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + "!"; _response.Data = tipoLogradouroDTO;
+                    _response.SetConflict();
+                    _response.Message = "Já existe o Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + "!";
+                    _response.Data = new { errorCodigoInformativo = "Já existe o Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + "!" };
                     return BadRequest(_response);
                 }
 
                 await _tipoLogradouroService.Update(tipoLogradouroDTO);
 
-                _response.SetSuccess(); _response.Message = "Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + " alterado com sucesso."; _response.Data = tipoLogradouroDTO;
+                _response.SetSuccess();
+                _response.Message = "Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + " alterado com sucesso.";
+                _response.Data = tipoLogradouroDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível alterar o Tipo de Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError();
+                _response.Message = "Não foi possível alterar o Tipo de Logradouro!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<ActionResult<TipoLogradouroDTO>> Delete(int id)
         {
             try
@@ -136,18 +159,24 @@ namespace SGED.Controllers
                 var tipoLogradouroDTO = await _tipoLogradouroService.GetById(id);
                 if (tipoLogradouroDTO is null)
                 {
-                    _response.SetNotFound(); _response.Message = "Tipo de Logradouro não encontrado!"; _response.Data = tipoLogradouroDTO;
+                    _response.SetNotFound();
+                    _response.Message = "Tipo de Logradouro não encontrado!";
+                    _response.Data = new { errorId = "Tipo de Logradouro não encontrado!" };
                     return NotFound(_response);
                 }
 
                 await _tipoLogradouroService.Remove(id);
 
-                _response.SetSuccess(); _response.Message = "Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + " excluído com sucesso."; _response.Data = tipoLogradouroDTO;
+                _response.SetSuccess();
+                _response.Message = "Tipo de Logradouro " + tipoLogradouroDTO.CodigoInformativo + " excluído com sucesso.";
+                _response.Data = tipoLogradouroDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); _response.Message = "Não foi possível excluir o Tipo de Logradouro!"; _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                _response.SetError();
+                _response.Message = "Não foi possível excluir o Tipo de Logradouro!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
@@ -155,7 +184,7 @@ namespace SGED.Controllers
         private async Task<bool> TipoLogradouroExists(TipoLogradouroDTO tipoLogradouroDTO)
         {
             var tipoLogradourosDTO = await _tipoLogradouroService.GetAll();
-            return tipoLogradourosDTO.FirstOrDefault(tl => Operator.CompareString(tl.CodigoInformativo, tipoLogradouroDTO.CodigoInformativo)) is not null;
+            return tipoLogradourosDTO.FirstOrDefault(tl => tl.Id != tipoLogradouroDTO.Id && Operator.CompareString(tl.CodigoInformativo, tipoLogradouroDTO.CodigoInformativo)) is not null;
         }
     }
 }

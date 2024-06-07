@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SGED.Objects.DTO.Entities;
+using SGED.Objects.Enums;
 using SGED.Objects.Interfaces;
 using SGED.Objects.Models.Entities;
 using SGED.Objects.Utilities;
 using SGED.Repositories.Entities;
+using SGED.Services.Entities;
 using SGED.Services.Interfaces;
 using System.Collections;
 
@@ -219,8 +221,8 @@ namespace SGED.Controllers
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível alterar a Etapa!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível alterar a Etapa!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -231,7 +233,9 @@ namespace SGED.Controllers
         {
             if (position <= 0)
             {
-                _response.SetInvalid(); _response.Message = "Dado inválido!"; _response.Data = null;
+                _response.SetInvalid();
+                _response.Message = "Dado inválido!";
+                _response.Data = null;
                 return BadRequest(_response);
             }
 
@@ -334,17 +338,23 @@ namespace SGED.Controllers
                     _response.Data = new { errorId = "Etapa não encontrada!" };
                     return NotFound(_response);
                 }
-
-                if (!etapaDTO.CanEdit())
+                else if (etapaDTO.Status == StatusEnum.Habilitado)
+                {
+                    _response.SetSuccess();
+                    _response.Message = "A Etapa já está " + etapaDTO.GetState().ToLower() + ".";
+                    _response.Data = etapaDTO;
+                    return Ok(_response);
+                }
+                else
                 {
                     etapaDTO.Enable();
                     await _etapaService.Update(etapaDTO);
-                }
 
-                _response.SetSuccess();
-                _response.Message = "Etapa " + etapaDTO.NomeEtapa + " ativada com sucesso.";
-                _response.Data = etapaDTO;
-                return Ok(_response);
+                    _response.SetSuccess();
+                    _response.Message = "Etapa " + etapaDTO.GetState().ToLower() + " com sucesso.";
+                    _response.Data = etapaDTO;
+                    return Ok(_response);
+                }
             }
             catch (Exception ex)
             {
@@ -368,17 +378,23 @@ namespace SGED.Controllers
                     _response.Data = new { errorId = "Etapa não encontrada!" };
                     return NotFound(_response);
                 }
-
-                if (etapaDTO.CanEdit())
+                else if (etapaDTO.Status == StatusEnum.Habilitado)
                 {
-                    etapaDTO.Disable();
-                    await _etapaService.Update(etapaDTO);
+                    _response.SetSuccess();
+                    _response.Message = "A Etapa já está " + etapaDTO.GetState().ToLower() + ".";
+                    _response.Data = etapaDTO;
+                    return Ok(_response);
                 }
+                else
+                {
+                    etapaDTO.Enable();
+                    await _etapaService.Update(etapaDTO);
 
-                _response.SetSuccess();
-                _response.Message = "Etapa " + etapaDTO.NomeEtapa + " desativada com sucesso.";
-                _response.Data = etapaDTO;
-                return Ok(_response);
+                    _response.SetSuccess();
+                    _response.Message = "Etapa " + etapaDTO.GetState().ToLower() + " com sucesso.";
+                    _response.Data = etapaDTO;
+                    return Ok(_response);
+                }
             }
             catch (Exception ex)
             {
@@ -406,7 +422,7 @@ namespace SGED.Controllers
                 {
                     _response.SetConflict();
                     _response.Message = "Não é possível excluir a Etapa " + etapaDTO.NomeEtapa + " porque ela está " + etapaDTO.GetState().ToLower() + "!";
-                    _response.Data = new { errorStatus = "Não é possível excluir a Etapa " + etapaDTO.NomeEtapa + " porque ela está " + etapaDTO.GetState().ToLower() + "!" };
+                    _response.Data = etapaDTO;
                     return BadRequest(_response);
                 }
 
@@ -421,15 +437,15 @@ namespace SGED.Controllers
 
                 await _etapaService.Remove(id);
 
-                _response.SetSuccess(); 
-                _response.Message = "Etapa " + etapaDTO.NomeEtapa + " excluída com sucesso."; 
+                _response.SetSuccess();
+                _response.Message = "Etapa " + etapaDTO.NomeEtapa + " excluída com sucesso.";
                 _response.Data = etapaDTO;
                 return Ok(etapaDTO);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível excluir a Etapa!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível excluir a Etapa!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }

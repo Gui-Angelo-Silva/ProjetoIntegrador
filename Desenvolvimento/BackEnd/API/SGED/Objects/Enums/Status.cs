@@ -5,14 +5,17 @@ namespace SGED.Objects.Enums
     public enum StatusEnum
     {
         Habilitado = 1,
-        EmEspera = 2,
-        Bloqueado = 3,
-        Desativado = 4
+        Pendente = 2,
+        EmEspera = 3,
+        Bloqueado = 4,
+        Desativado = 5
     }
 
     public static class StatusEnumExtensions
     {
         public static StatusEnum Enable() => StatusEnum.Habilitado;
+
+        public static StatusEnum Pending() => StatusEnum.Pendente;
 
         public static StatusEnum Wait() => StatusEnum.EmEspera;
 

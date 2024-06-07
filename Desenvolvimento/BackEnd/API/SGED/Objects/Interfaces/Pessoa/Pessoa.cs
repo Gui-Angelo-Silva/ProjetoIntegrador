@@ -226,7 +226,8 @@ namespace SGED.Objects.Interfaces.Pessoa
 
         public static bool VerificarIe(string ie)
         {
-            ie = ie.Trim().Replace(".", "").Replace("-", "");
+            return true;
+            /*ie = ie.Trim().Replace(".", "").Replace("-", "");
 
             if (ie.Length != 12) return false;
 
@@ -256,7 +257,7 @@ namespace SGED.Objects.Interfaces.Pessoa
             string strDigito1 = intResto.ToString().Substring(intResto.ToString().Length - 1);
             strBase2 = ie.Substring(0, 8) + strDigito1 + ie.Substring(9, 3);
 
-            return strBase2 == ie;
+            return strBase2 == ie;*/
         }
     }
 }

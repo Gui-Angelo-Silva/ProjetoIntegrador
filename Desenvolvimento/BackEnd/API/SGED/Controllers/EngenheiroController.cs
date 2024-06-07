@@ -30,16 +30,16 @@ namespace SGED.Controllers
             {
                 var engenheirosDTO = await _engenheiroService.GetAll();
                 _response.SetSuccess();
-                _response.Message = engenheirosDTO.Any() ? 
-                    "Lista do(s) Engenheiro(s) obtida com sucesso." : 
+                _response.Message = engenheirosDTO.Any() ?
+                    "Lista do(s) Engenheiro(s) obtida com sucesso." :
                     "Nenhum Engenheiro encontrado.";
                 _response.Data = engenheirosDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível adquirir a lista do(s) Engenheiro(s)!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista do(s) Engenheiro(s)!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -53,21 +53,21 @@ namespace SGED.Controllers
                 var engenheiroDTO = await _engenheiroService.GetById(id);
                 if (engenheiroDTO is null)
                 {
-                    _response.SetNotFound(); 
-                    _response.Message = "Engenheiro não encontrado!"; 
+                    _response.SetNotFound();
+                    _response.Message = "Engenheiro não encontrado!";
                     _response.Data = engenheiroDTO;
                     return NotFound(_response);
                 };
 
-                _response.SetSuccess(); 
-                _response.Message = "Engenheiro " + engenheiroDTO.NomePessoa + " obtido com sucesso."; 
+                _response.SetSuccess();
+                _response.Message = "Engenheiro " + engenheiroDTO.NomePessoa + " obtido com sucesso.";
                 _response.Data = engenheiroDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível adquirir o Engenheiro informado!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir o Engenheiro informado!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -78,8 +78,8 @@ namespace SGED.Controllers
         {
             if (engenheiroDTO is null)
             {
-                _response.SetInvalid(); 
-                _response.Message = "Dado(s) inválido(s)!"; 
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
                 _response.Data = engenheiroDTO;
                 return BadRequest(_response);
             }
@@ -102,8 +102,8 @@ namespace SGED.Controllers
                     if (!string.IsNullOrEmpty(rgie)) error += string.IsNullOrEmpty(error) ? "" : ", " + (engenheiroDTO.RgIePessoa.Length == 12 ? "RG" : "IE");
                     if (!string.IsNullOrEmpty(crea)) error += string.IsNullOrEmpty(error) ? "" : ", " + ("CREA");
 
-                    _response.SetInvalid(); 
-                    _response.Message = $"O {error} informado(s) está(ão) inválido(s)!"; 
+                    _response.SetInvalid();
+                    _response.Message = $"O {error} informado(s) está(ão) inválido(s)!";
                     _response.Data = new { errorEmailPessoa = email, errorCpfCnpjPessoa = cpfcnpj, errorRgIePessoa = rgie, errorCreaEngenheiro = crea };
                     return BadRequest(_response);
                 }
@@ -119,24 +119,24 @@ namespace SGED.Controllers
                 {
                     await _engenheiroService.Create(engenheiroDTO);
 
-                    _response.SetSuccess(); 
-                    _response.Message = "Engenheiro " + engenheiroDTO.NomePessoa + " cadastrado com sucesso."; 
+                    _response.SetSuccess();
+                    _response.Message = "Engenheiro " + engenheiroDTO.NomePessoa + " cadastrado com sucesso.";
                     _response.Data = engenheiroDTO;
                     return Ok(_response);
                 }
                 else
                 {
                     string error = GenerateErrorMessage(email, cpfcnpj, rgie, crea, engenheiroDTO);
-                    _response.SetConflict(); 
-                    _response.Message = $"O {error} informado(s) já existe(m)!"; 
+                    _response.SetConflict();
+                    _response.Message = $"O {error} informado(s) já existe(m)!";
                     _response.Data = new { errorEmailPessoa = email, errorCpfCnpjPessoa = cpfcnpj, errorRgIePessoa = rgie, errorCreaEngenheiro = crea };
                     return BadRequest(_response);
                 }
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível cadastrar o Engenheiro!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível cadastrar o Engenheiro!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -147,8 +147,8 @@ namespace SGED.Controllers
         {
             if (engenheiroDTO is null)
             {
-                _response.SetInvalid(); 
-                _response.Message = "Dado(s) inválido(s)!"; 
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
                 _response.Data = engenheiroDTO;
                 return BadRequest(_response);
             }
@@ -159,8 +159,8 @@ namespace SGED.Controllers
                 var existingEngenheiro = await _engenheiroService.GetById(engenheiroDTO.Id);
                 if (existingEngenheiro is null)
                 {
-                    _response.SetNotFound(); 
-                    _response.Message = "O Engenheiro informado não existe!"; 
+                    _response.SetNotFound();
+                    _response.Message = "O Engenheiro informado não existe!";
                     _response.Data = new { errorId = "O Engenheiro informado não existe!" };
                     return NotFound(_response);
                 }
@@ -180,8 +180,8 @@ namespace SGED.Controllers
                     if (!string.IsNullOrEmpty(rgie)) error += string.IsNullOrEmpty(error) ? "" : ", " + (engenheiroDTO.RgIePessoa.Length == 12 ? "RG" : "IE");
                     if (!string.IsNullOrEmpty(crea)) error += string.IsNullOrEmpty(error) ? "" : ", " + ("CREA");
 
-                    _response.SetError(); 
-                    _response.Message = $"O {error} informado(s) está(ão) inválido(s)!"; 
+                    _response.SetError();
+                    _response.Message = $"O {error} informado(s) está(ão) inválido(s)!";
                     _response.Data = new { errorEmailPessoa = email, errorCpfCnpjPessoa = cpfcnpj, errorRgIePessoa = rgie, errorCreaEngenheiro = crea };
                     return BadRequest(_response);
                 }
@@ -198,24 +198,24 @@ namespace SGED.Controllers
                 {
                     await _engenheiroService.Update(engenheiroDTO);
 
-                    _response.SetSuccess(); 
-                    _response.Message = "Engenheiro " + engenheiroDTO.NomePessoa + " alterado com sucesso."; 
+                    _response.SetSuccess();
+                    _response.Message = "Engenheiro " + engenheiroDTO.NomePessoa + " alterado com sucesso.";
                     _response.Data = engenheiroDTO;
                     return Ok(_response);
                 }
                 else
                 {
                     string error = GenerateErrorMessage(email, cpfcnpj, rgie, crea, engenheiroDTO);
-                    _response.SetConflict(); 
-                    _response.Message = $"O {error} informado(s) já existe(m)!"; 
+                    _response.SetConflict();
+                    _response.Message = $"O {error} informado(s) já existe(m)!";
                     _response.Data = new { errorEmailPessoa = email, errorCpfCnpjPessoa = cpfcnpj, errorRgIePessoa = rgie, errorCreaEngenheiro = crea };
                     return BadRequest(_response);
                 }
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível alterar o Engenheiro!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível alterar o Engenheiro!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -229,7 +229,7 @@ namespace SGED.Controllers
                 var engenheiroDTO = await _engenheiroService.GetById(id);
                 if (engenheiroDTO is null)
                 {
-                    _response.SetNotFound(); 
+                    _response.SetNotFound();
                     _response.Message = "Engenheiro não encontrado!";
                     _response.Data = new { errorId = "Engenheiro não encontrado!" };
                     return NotFound(_response);
@@ -237,15 +237,15 @@ namespace SGED.Controllers
 
                 await _engenheiroService.Remove(id);
 
-                _response.SetSuccess(); 
-                _response.Message = "Engenheiro " + engenheiroDTO.NomePessoa + " excluído com sucesso."; 
+                _response.SetSuccess();
+                _response.Message = "Engenheiro " + engenheiroDTO.NomePessoa + " excluído com sucesso.";
                 _response.Data = engenheiroDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível excluir o Engenheiro!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível excluir o Engenheiro!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }

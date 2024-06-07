@@ -37,6 +37,7 @@ namespace SGED.Objects.DTO.Entities
 
 
         public void Enable() => Status = StatusEnumExtensions.Enable();
+        public void Pending() => Status = StatusEnumExtensions.Pending();
         public void Wait() => Status = StatusEnumExtensions.Wait();
         public void Block() => Status = StatusEnumExtensions.Block();
         public void Disable() => Status = StatusEnumExtensions.Disable();

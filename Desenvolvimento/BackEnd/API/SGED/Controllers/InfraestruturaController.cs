@@ -39,8 +39,8 @@ namespace SGED.Controllers
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível adquirir a lista da(s) Infraestrutura(s)!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista da(s) Infraestrutura(s)!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -54,21 +54,21 @@ namespace SGED.Controllers
                 var infraestruturaDTO = await _infraestruturaService.GetById(id);
                 if (infraestruturaDTO is null)
                 {
-                    _response.SetNotFound(); 
-                    _response.Message = "Infraestrutura não encontrada!"; 
+                    _response.SetNotFound();
+                    _response.Message = "Infraestrutura não encontrada!";
                     _response.Data = infraestruturaDTO;
                     return NotFound(_response);
                 };
 
-                _response.SetSuccess(); 
-                _response.Message = "Infraestrutura " + infraestruturaDTO.NomeInfraestrutura + " obtida com sucesso."; 
+                _response.SetSuccess();
+                _response.Message = "Infraestrutura " + infraestruturaDTO.NomeInfraestrutura + " obtida com sucesso.";
                 _response.Data = infraestruturaDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível adquirir a Infraestrutura informada!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a Infraestrutura informada!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -79,42 +79,43 @@ namespace SGED.Controllers
         {
             if (infraestruturaDTO is null)
             {
-                _response.SetInvalid(); 
-                _response.Message = "Dado(s) inválido(s)!"; 
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
                 _response.Data = infraestruturaDTO;
                 return BadRequest(_response);
-            } infraestruturaDTO.Id = 0;
+            }
+            infraestruturaDTO.Id = 0;
 
             try
             {
                 var tipoInfraestruturaDTO = await _tipoInfraestruturaService.GetById(infraestruturaDTO.IdTipoInfraestrutura);
                 if (tipoInfraestruturaDTO is null)
                 {
-                    _response.SetNotFound(); 
-                    _response.Message = "O Tipo de Infraestrutura informado não existe!"; 
+                    _response.SetNotFound();
+                    _response.Message = "O Tipo de Infraestrutura informado não existe!";
                     _response.Data = new { errorId = "O Tipo de Infraestrutura informado não existe!" };
                     return NotFound(_response);
                 }
 
                 if (await InfraestruturaExists(infraestruturaDTO))
                 {
-                    _response.SetConflict(); 
-                    _response.Message = "Já existe a Infraestrutura " + infraestruturaDTO.NomeInfraestrutura + "!"; 
+                    _response.SetConflict();
+                    _response.Message = "Já existe a Infraestrutura " + infraestruturaDTO.NomeInfraestrutura + "!";
                     _response.Data = new { errorNomeInfraestrutura = "Já existe a Infraestrutura " + infraestruturaDTO.NomeInfraestrutura + "!" };
                     return BadRequest(_response);
                 }
 
                 await _infraestruturaService.Create(infraestruturaDTO);
 
-                _response.SetSuccess(); 
-                _response.Message = "Infraestrutura " + infraestruturaDTO.NomeInfraestrutura + " cadastrada com sucesso."; 
+                _response.SetSuccess();
+                _response.Message = "Infraestrutura " + infraestruturaDTO.NomeInfraestrutura + " cadastrada com sucesso.";
                 _response.Data = infraestruturaDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível cadastrar a Infraestrutura!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível cadastrar a Infraestrutura!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -125,8 +126,8 @@ namespace SGED.Controllers
         {
             if (infraestruturaDTO is null)
             {
-                _response.SetInvalid(); 
-                _response.Message = "Dado(s) inválido(s)!"; 
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
                 _response.Data = infraestruturaDTO;
                 return BadRequest(_response);
             }
@@ -136,8 +137,8 @@ namespace SGED.Controllers
                 var existingInfraestruturaDTO = await _infraestruturaService.GetById(infraestruturaDTO.Id);
                 if (existingInfraestruturaDTO is null)
                 {
-                    _response.SetNotFound(); 
-                    _response.Message = "A Infraestrutura informada não existe!"; 
+                    _response.SetNotFound();
+                    _response.Message = "A Infraestrutura informada não existe!";
                     _response.Data = new { errorId = "A Infraestrutura informada não existe!" };
                     return NotFound(_response);
                 }
@@ -161,15 +162,15 @@ namespace SGED.Controllers
 
                 await _infraestruturaService.Update(infraestruturaDTO);
 
-                _response.SetSuccess(); 
-                _response.Message = "Infraestrutura " + infraestruturaDTO.NomeInfraestrutura + " alterada com sucesso."; 
+                _response.SetSuccess();
+                _response.Message = "Infraestrutura " + infraestruturaDTO.NomeInfraestrutura + " alterada com sucesso.";
                 _response.Data = infraestruturaDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível alterar a Infraestrutura!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível alterar a Infraestrutura!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -183,23 +184,23 @@ namespace SGED.Controllers
                 var infraestruturaDTO = await _infraestruturaService.GetById(id);
                 if (infraestruturaDTO is null)
                 {
-                    _response.SetNotFound(); 
-                    _response.Message = "Infraestrutura não encontrada!"; 
+                    _response.SetNotFound();
+                    _response.Message = "Infraestrutura não encontrada!";
                     _response.Data = new { errorId = "Infraestrutura não encontrada!" };
                     return NotFound(_response);
                 }
 
                 await _infraestruturaService.Remove(id);
 
-                _response.SetSuccess(); 
-                _response.Message = "Infraestrutura " + infraestruturaDTO.NomeInfraestrutura + " excluída com sucesso."; 
+                _response.SetSuccess();
+                _response.Message = "Infraestrutura " + infraestruturaDTO.NomeInfraestrutura + " excluída com sucesso.";
                 _response.Data = infraestruturaDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.SetError(); 
-                _response.Message = "Não foi possível excluir a Infraestrutura!"; 
+                _response.SetError();
+                _response.Message = "Não foi possível excluir a Infraestrutura!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }

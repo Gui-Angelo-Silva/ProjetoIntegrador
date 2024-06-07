@@ -10,6 +10,7 @@ using System.Text.Json.Serialization;
 using System.Text;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using SGED.Services.Server.Tasks;
+using SGED.Objects.Utilities;
 using SGED.Services.Server.Middleware;
 using SGED.Services.Server.Attributes;
 using SGED.Objects.Server;
@@ -105,7 +106,7 @@ namespace SGED
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             // Injeção de dependências
-            
+
             // Conjunto: Pessoa
 
             // Dependência: Municipe
@@ -167,8 +168,8 @@ namespace SGED
             services.AddScoped<ITopografiaService, TopografiaService>();
 
             // Dependência: Tipo Uso
-            services.AddScoped<ITipoUsoRepository, TipoUsoRepository>();
-            services.AddScoped<ITipoUsoService, TipoUsoService>();
+            services.AddScoped<IUsoRepository, UsoRepository>();
+            services.AddScoped<IUsoService, UsoService>();
 
             // Dependência: Ocupação Atual
             services.AddScoped<IOcupacaoAtualRepository, OcupacaoAtualRepository>();
@@ -264,7 +265,7 @@ namespace SGED
 
                 await next(context);
             });*/
-            
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

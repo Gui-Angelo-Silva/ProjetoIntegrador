@@ -24,12 +24,12 @@ public class UsuarioRepository : IUsuarioRepository
 
     public async Task<Usuario> GetById(int id)
     {
-        return await _dbContext.Usuario.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id && u.Id != 1);
+        return await _dbContext.Usuario.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
     }
 
     public async Task<IEnumerable<Usuario>> GetByEmail(int id, string email)
     {
-        return await _dbContext.Usuario.Where(u => u.Id != id && u.EmailPessoa.Contains(email) && u.Id != 1).AsNoTracking().ToListAsync();
+        return await _dbContext.Usuario.Where(u => u.EmailPessoa.Contains(email)).AsNoTracking().ToListAsync();
     }
 
     public async Task<Usuario> Login(Login login)

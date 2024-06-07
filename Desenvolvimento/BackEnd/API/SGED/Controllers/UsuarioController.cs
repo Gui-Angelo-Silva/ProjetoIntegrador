@@ -25,7 +25,7 @@ namespace SGED.Controllers
             _response = new Response();
         }
 
-        [HttpGet]
+        [HttpGet()]
         public async Task<ActionResult<IEnumerable<UsuarioDTO>>> Get()
         {
             try

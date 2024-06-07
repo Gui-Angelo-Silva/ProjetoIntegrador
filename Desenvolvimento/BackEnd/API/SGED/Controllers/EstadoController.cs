@@ -22,7 +22,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
-        public async Task<ActionResult<IEnumerable<EstadoDTO>>> Get()
+        public async Task<ActionResult<IEnumerable<EstadoDTO>>> GetAll()
         {
             try
             {
@@ -44,7 +44,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetEstado")]
-        public async Task<ActionResult<EstadoDTO>> Get(int id)
+        public async Task<ActionResult<EstadoDTO>> GetById(int id)
         {
             try
             {

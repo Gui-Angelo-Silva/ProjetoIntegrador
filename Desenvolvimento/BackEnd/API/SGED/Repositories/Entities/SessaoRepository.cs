@@ -86,7 +86,7 @@ public class SessaoRepository : ISessaoRepository
             u => u.Id,
             s => s.IdUsuario,
             (u, sessoes) => new { Usuario = u, UltimaSessao = sessoes.OrderByDescending(s => s.Id).FirstOrDefault() }
-        ).Where(s => s.Usuario.Id != 1 && (s.UltimaSessao != null && s.UltimaSessao.StatusSessao)).AsNoTracking().Select(s => s.Usuario).ToListAsync();
+        ).Where(s => /*s.Usuario.Id != 1 &&*/ (s.UltimaSessao != null && s.UltimaSessao.StatusSessao)).AsNoTracking().Select(s => s.Usuario).ToListAsync();
     }
 
     public async Task<IEnumerable<Usuario>> GetOfflineUsers()
@@ -96,7 +96,7 @@ public class SessaoRepository : ISessaoRepository
             u => u.Id,
             s => s.IdUsuario,
             (u, sessoes) => new { Usuario = u, UltimaSessao = sessoes.OrderByDescending(s => s.Id).FirstOrDefault() }
-        ).Where(s => s.Usuario.Id != 1 && (s.UltimaSessao == null || !s.UltimaSessao.StatusSessao)).AsNoTracking().Select(s => s.Usuario).ToListAsync();
+        ).Where(s => /*s.Usuario.Id != 1 &&*/ (s.UltimaSessao == null || !s.UltimaSessao.StatusSessao)).AsNoTracking().Select(s => s.Usuario).ToListAsync();
     }
 
     public async Task<IEnumerable<Sessao>> GetOpenSessionByUser(int id)

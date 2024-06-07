@@ -9,14 +9,16 @@ namespace SGEDTest.Controllers.Test
 	[TestFixture]
 	public class CidadeControllerTest
 	{
-		private Mock<ICidadeService> _cidadeServiceMock;
+        private Mock<IEstadoService> _estadoServiceMock;
+        private Mock<ICidadeService> _cidadeServiceMock;
 		private CidadeController _cidadeController;
 
 		[SetUp]
 		public void Setup()
 		{
-			_cidadeServiceMock = new Mock<ICidadeService>();
-			_cidadeController = new CidadeController(_cidadeServiceMock.Object);
+            _estadoServiceMock = new Mock<IEstadoService>();
+            _cidadeServiceMock = new Mock<ICidadeService>();
+			_cidadeController = new CidadeController(_estadoServiceMock.Object, _cidadeServiceMock.Object);
 		}
 
 		[Test]

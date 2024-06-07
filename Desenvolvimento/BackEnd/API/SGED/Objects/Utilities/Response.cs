@@ -28,6 +28,11 @@ namespace SGED.Objects.Utilities
             this.Status = ResponseStatus.Conflict;
         }
 
+        public void SetUnauthorized()
+        {
+            this.Status = ResponseStatus.Unauthorized;
+        }
+
         public void SetError()
         {
             this.Status = ResponseStatus.Error;

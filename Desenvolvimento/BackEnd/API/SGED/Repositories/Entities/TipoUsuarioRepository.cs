@@ -21,7 +21,7 @@ namespace SGED.Repositories.Entities
 
 		public async Task<TipoUsuario> GetById(int id)
 		{
-			return await _dbContext.TipoUsuario.AsNoTracking().FirstOrDefaultAsync(tu => tu.Id == id && tu.Id != 1);
+			return await _dbContext.TipoUsuario.AsNoTracking().FirstOrDefaultAsync(tu => tu.Id == id);
 		}
 
 		public async Task<TipoUsuario> Create(TipoUsuario tipousuario)

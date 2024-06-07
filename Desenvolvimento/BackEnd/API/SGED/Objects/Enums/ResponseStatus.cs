@@ -6,6 +6,7 @@
         Invalid = 2,
         NotFound = 3,
         Conflict = 4,
-        Error = 5
+        Unauthorized = 5,
+        Error = 6
     }
 }

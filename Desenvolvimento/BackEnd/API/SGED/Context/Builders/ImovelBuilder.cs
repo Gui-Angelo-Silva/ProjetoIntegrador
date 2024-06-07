@@ -24,7 +24,7 @@ namespace SGED.Context.Builders
             modelBuilder.Entity<Imovel>().Property(i => i.IdProprietario).IsRequired();
             modelBuilder.Entity<Imovel>().Property(i => i.IdContribuinte).IsRequired(); 
             modelBuilder.Entity<Imovel>().Property(i => i.IdTopografia).IsRequired();
-            modelBuilder.Entity<Imovel>().Property(i => i.IdTipoUso).IsRequired();
+            modelBuilder.Entity<Imovel>().Property(i => i.IdUso).IsRequired();
             modelBuilder.Entity<Imovel>().Property(i => i.IdOcupacaoAtual).IsRequired();
 
             // Configuração do conversor para LocalizacaoGeografica (array de long)
@@ -81,9 +81,9 @@ namespace SGED.Context.Builders
 
             // Relacionamento: TipoUso -> Imovel
             modelBuilder.Entity<Imovel>()
-                .HasOne(i => i.TipoUso)
+                .HasOne(i => i.Uso)
                 .WithMany(tu => tu.Imoveis)
-                .HasForeignKey(i => i.IdTipoUso)
+                .HasForeignKey(i => i.IdUso)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Relacionamento: OcupacaoAtual -> Imovel

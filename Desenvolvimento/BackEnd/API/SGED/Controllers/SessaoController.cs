@@ -5,6 +5,7 @@ using SGED.Objects.DTO.Entities;
 using SGED.Objects.Server;
 using SGED.Objects.Utilities;
 using SGED.Services.Entities;
+using System.Collections;
 
 namespace SGED.Controllers
 {
@@ -138,51 +139,69 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpGet("GetSession")]
-        [Anonymous]
-        public async Task<ActionResult<SessaoDTO>> GetSession([FromQuery] TokenAcess token)
+        [HttpGet("{id:int}/GetSession")]
+        public async Task<ActionResult<SessaoDTO>> GetSession(int id)
         {
-            if (token is null) return BadRequest(new { status = false, response = "Dados inválidos!" });
-
-            var sessaoDTO = await _sessaoService.GetByToken(token.Token);
-            if (sessaoDTO is null) return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
-            else if (sessaoDTO.StatusSessao && sessaoDTO.ValidateToken())
+            try
             {
-                return Ok(new { status = true, response = sessaoDTO });
+                var sessaoDTO = await _sessaoService.GetById(id);
+                if (sessaoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "Sessão não encontrada!";
+                    _response.Data = null;
+                    return NotFound(_response);
+                }
+
+                _response.SetSuccess();
+                _response.Message = "Sessão obtida com sucesso.";
+                _response.Data = sessaoDTO;
+                return Ok(_response);
             }
-            else
+            catch (Exception ex)
             {
-                sessaoDTO.StatusSessao = false;
-                sessaoDTO.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-                await _sessaoService.Update(sessaoDTO);
-
-                Response.Headers.Remove("Authorization");
-                return Unauthorized(new { status = false, response = "Sessão expirada!" });
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a Sessão informada!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
         [HttpGet("{token}/GetUser")]
-        [Anonymous]
         public async Task<ActionResult<UsuarioDTO>> GetUser(string token)
         {
-            if (token is null) return BadRequest(new { status = false, response = "Dados inválidos!" });
-
-            var sessaoDTO = await _sessaoService.GetByToken(token);
-            if (sessaoDTO is null) return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
-            else if (sessaoDTO.StatusSessao && sessaoDTO.ValidateToken())
+            if (token is null)
             {
+                _response.SetInvalid();
+                _response.Message = "Dado inválido!";
+                _response.Data = null;
+                return BadRequest(_response);
+            }
+
+            try
+            {
+                var sessaoDTO = await _sessaoService.GetByToken(token);
+                if (sessaoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "Sessão não encontrada";
+                    _response.Data = null;
+                    return Unauthorized(_response);
+                }
+
                 var usuarioDTO = await _sessaoService.GetUser(token);
 
-                return Ok(new { status = true, response = usuarioDTO });
+                _response.SetNotFound();
+                _response.Message = "Usuário " + usuarioDTO.NomePessoa + " obtido com sucesso!";
+                _response.Data = usuarioDTO;
+                return Ok(_response);
             }
-            else
+            catch (Exception ex)
             {
-                sessaoDTO.StatusSessao = false;
-                sessaoDTO.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-                await _sessaoService.Update(sessaoDTO);
-
-                Response.Headers.Remove("Authorization");
-                return Unauthorized(new { status = false, response = "Sessão expirada!" });
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir o Usuário!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
@@ -190,66 +209,118 @@ namespace SGED.Controllers
         [Anonymous]
         public async Task<ActionResult> CreateSession([FromBody] LoginDTO loginDTO)
         {
-            if (loginDTO is null) return BadRequest(new { status = false, response = "Dados inválidos!" });
-            var usuarioDTO = await _usuarioService.Login(loginDTO);
-
-            if (usuarioDTO is not null)
+            if (loginDTO is null)
             {
-                var tipoUsuarioDTO = await _tipoUsuarioService.GetById(usuarioDTO.Id);
-                var ultimaSessao = await _sessaoService.GetLastSession(usuarioDTO.Id);
-                SessaoDTO sessaoDTO = new()
-                {
-                    IdUsuario = usuarioDTO.Id,
-                    DataHoraInicio = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"),
-                    StatusSessao = true,
-
-                    EmailPessoa = usuarioDTO.EmailPessoa,
-                    NivelAcesso = tipoUsuarioDTO.NivelAcesso
-                }; sessaoDTO.GenerateToken();
-
-                if (ultimaSessao is null || !ultimaSessao.StatusSessao)
-                {
-                    //await _sessaoService.Remove(ultimaSessao.Id);
-
-                    await _sessaoService.Create(sessaoDTO);
-                    return Ok(new { status = true, response = sessaoDTO.TokenSessao });
-                }
-                else if (ultimaSessao.StatusSessao)
-                {
-                    if (sessaoDTO.IdUsuario != 1) return Unauthorized(new { status = "waiting", response = "Já existe uma sessão aberta!" });
-                    else
-                    {
-                        await _sessaoService.Create(sessaoDTO);
-                        return Ok(new { status = true, response = sessaoDTO.TokenSessao });
-                    }
-                }
+                _response.SetNotFound();
+                _response.Message = "Dado(s) inválido(s)!";
+                _response.Data = loginDTO;
+                return BadRequest(_response);
             }
 
-            return Unauthorized(new { status = false, response = "E-mail ou senha incorretos!" });
+            try
+            {
+                var usuarioDTO = await _usuarioService.Login(loginDTO);
+                if (usuarioDTO is not null)
+                {
+                    var tipoUsuarioDTO = await _tipoUsuarioService.GetById(usuarioDTO.IdTipoUsuario);
+                    var ultimaSessao = await _sessaoService.GetLastSession(usuarioDTO.Id);
+                    SessaoDTO sessaoDTO = new()
+                    {
+                        IdUsuario = usuarioDTO.Id,
+                        DataHoraInicio = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"),
+                        StatusSessao = true,
+
+                        EmailPessoa = usuarioDTO.EmailPessoa,
+                        NivelAcesso = tipoUsuarioDTO.NivelAcesso
+                    }; sessaoDTO.GenerateToken();
+
+                    if (ultimaSessao is null || !ultimaSessao.StatusSessao)
+                    {
+                        await _sessaoService.Create(sessaoDTO);
+
+                        _response.SetSuccess();
+                        _response.Message = "Sessão aberta com sucesso!";
+                        _response.Data = sessaoDTO.TokenSessao;
+                        return Ok(_response);
+                    }
+                    else if (ultimaSessao.StatusSessao)
+                    {
+                        if (sessaoDTO.IdUsuario != 1)
+                        {
+                            _response.SetUnauthorized();
+                            _response.Message = "Já existe uma sessão aberta!";
+                            _response.Data = new { errorLogin = "Já existe uma sessão aberta!" };
+                            return Unauthorized(_response);
+                        }
+                        else
+                        {
+                            await _sessaoService.Create(sessaoDTO);
+
+                            _response.SetSuccess();
+                            _response.Message = "Sessão aberta com sucesso!";
+                            _response.Data = sessaoDTO.TokenSessao;
+                            return Ok(_response);
+                        }
+                    }
+                }
+
+                _response.SetUnauthorized();
+                _response.Message = "E-mail ou senha incorretos!";
+                _response.Data = new { errorLogin = "E-mail ou senha incorretos!" };
+                return Unauthorized(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível realizar o Login!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpPut("Validation")]
         [Anonymous]
         public async Task<IActionResult> ValidateSession([FromBody] TokenAcess token)
         {
-            var sessaoDTO = await _sessaoService.GetByToken(token.Token);
-            if (sessaoDTO is null) return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
-
-            if (sessaoDTO.StatusSessao && sessaoDTO.ValidateToken())
+            try
             {
-                sessaoDTO.GenerateToken();
-                await _sessaoService.Update(sessaoDTO);
+                var sessaoDTO = await _sessaoService.GetByToken(token.Token);
+                if (sessaoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "Sessão não encontrada!";
+                    _response.Data = new { errorToken = "Sessão não encontrada!" };
+                    return NotFound(_response);
+                }
 
-                return Ok(new { status = true, response = sessaoDTO.TokenSessao });
+                if (sessaoDTO.StatusSessao && sessaoDTO.ValidateToken())
+                {
+                    sessaoDTO.GenerateToken();
+                    await _sessaoService.Update(sessaoDTO);
+
+                    _response.SetSuccess();
+                    _response.Message = "Sessão validada com sucesso.";
+                    _response.Data = sessaoDTO;
+                    return Ok(_response);
+                }
+                else
+                {
+                    sessaoDTO.StatusSessao = false;
+                    sessaoDTO.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                    await _sessaoService.Update(sessaoDTO);
+
+                    _response.SetUnauthorized();
+                    _response.Message = "A Sessão expirou.";
+                    _response.Data = new { errorToken = "A Sessão expirou." };
+                    return Unauthorized(_response);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                sessaoDTO.StatusSessao = false;
-                sessaoDTO.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-                await _sessaoService.Update(sessaoDTO);
-
-                Response.Headers.Remove("Authorization");
-                return Unauthorized(new { status = false, response = "Sessão expirada!" });
+                _response.SetError();
+                _response.Message = "Não foi possível validar a Sessão!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
@@ -257,41 +328,99 @@ namespace SGED.Controllers
         [Anonymous]
         public async Task<IActionResult> CloseSession([FromBody] TokenAcess token)
         {
-            Response.Headers.Remove("Authorization");
-            var sessaoDTO = await _sessaoService.GetByToken(token.Token);
-            if (sessaoDTO is null) { Response.Headers.Remove("Authorization"); return Unauthorized(new { status = false, response = "Sessão não encontrada!" }); }
-
-            sessaoDTO.StatusSessao = false;
-            sessaoDTO.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-            await _sessaoService.Update(sessaoDTO);
-
-
-            return Ok(new { status = true, response = "Sessão encerrada com sucesso!" });
-        }
-
-        [HttpPut("CloseUserSessions")]
-        public async Task<IActionResult> CloseUserSession(int id)
-        {
-            var sessoes = await _sessaoService.GetOpenSessionByUser(id);
-            if (sessoes is null || id == 1) return Ok(new { status = true, response = "Nenhuma sessão aberta encontrada!" });
-
-            foreach (var sessao in sessoes)
+            try
             {
-                sessao.StatusSessao = false;
-                sessao.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-                await _sessaoService.Update(sessao);
-            }
+                var sessaoDTO = await _sessaoService.GetByToken(token.Token);
+                if (sessaoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "Sessão não encontrada!";
+                    _response.Data = sessaoDTO;
+                    return NotFound(_response);
+                }
 
-            return Ok(new { status = true, response = "Sessão do usuário encerrada!" });
+                sessaoDTO.StatusSessao = false;
+                sessaoDTO.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                await _sessaoService.Update(sessaoDTO);
+
+                _response.SetSuccess();
+                _response.Message = "Sessão fechada com sucesso.";
+                _response.Data = sessaoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível fechar a Sessão!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
-        
+
+        [HttpPut("{idUsuario:int}/CloseUserSessions")]
+        public async Task<IActionResult> CloseUserSession(int idUsuario)
+        {
+            try
+            {
+                var sessoes = await _sessaoService.GetOpenSessionByUser(idUsuario);
+                if (sessoes is null)
+                {
+                    _response.SetSuccess();
+                    _response.Message = "Nenhuma sessão aberta encontrada.";
+                    _response.Data = idUsuario == 1 ? new ArrayList() : sessoes;
+                    return Ok(_response);
+                };
+
+                foreach (var sessao in sessoes)
+                {
+                    sessao.TokenSessao = "";
+                    sessao.StatusSessao = false;
+                    sessao.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                    await _sessaoService.Update(sessao);
+                }
+
+                _response.SetSuccess();
+                _response.Message = "Sessão(ões) do Usuário fechada(s)!";
+                _response.Data = idUsuario == 1 ? new ArrayList() : sessoes;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível fechar a(s) Sessão(ões) relacionada(s) ao Usuário!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var sessaoDTO = await _sessaoService.GetById(id);
-            if (sessaoDTO is null || sessaoDTO.IdUsuario == 1) return Unauthorized(new { status = false, response = "Sessão não encontrada!" });
-            await _sessaoService.Remove(id);
-            return Ok(new { status = true, response = "Sessão removida com sucesso!" });
+            try
+            {
+                var sessaoDTO = await _sessaoService.GetById(id);
+                if (sessaoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "Sessão não encontrada!";
+                    _response.Data = new { errorId = "Sessão não encontrada!" };
+                    return NotFound(_response);
+                }
+
+                await _sessaoService.Remove(id);
+
+                _response.SetSuccess();
+                _response.Message = "Sessao excluída com sucesso.";
+                _response.Data = sessaoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível excluir a Sessão!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
     }
 }

@@ -38,7 +38,6 @@ namespace SGEDTest.RepositoriesServices.Test
 		[Test]
 		public async Task Obter_CidadesMapeadasPorId()
 		{
-
 			var cidade = new Cidade { Id = 1, NomeCidade = "Jales", IdEstado = 1 };
 			var cidadeDTO =  new CidadeDTO { Id = 1, NomeCidade = "Jales", IdEstado = 1 };
 			_cidadeRepositoryMock.Setup(repo => repo.GetById(1)).ReturnsAsync(cidade);

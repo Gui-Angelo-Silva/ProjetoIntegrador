@@ -233,6 +233,7 @@ export default function City() {
                 currentPage={list.currentPage}
                 totalPages={list.totalPages}
             />
+            
             <Modal isOpen={modalInsert}>
                 <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Cidade</ModalHeader>
                 <ModalBody>

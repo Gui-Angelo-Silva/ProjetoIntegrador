@@ -90,7 +90,7 @@ namespace SGEDTest.Controllers.Test
 		}
 
 		[Test]
-		public async Task Ataualiza_ComRetornoOKDaCidade()
+		public async Task Atualiza_ComRetornoOKDaCidade()
 		{
 			var cidadeDTO = new CidadeDTO { Id = 1, NomeCidade = "Jales", IdEstado = 1 };
 			_cidadeServiceMock.Setup(service => service.Update(cidadeDTO)).Returns(Task.CompletedTask);

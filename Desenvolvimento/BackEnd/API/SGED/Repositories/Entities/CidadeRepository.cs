@@ -1,9 +1,6 @@
 ﻿using SGED.Context;
-using SGED.DTO.Entities;
 using SGED.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Collections.Generic;
 using SGED.Objects.Models.Entities;
 
 namespace SGED.Repositories.Entities;
@@ -53,5 +50,4 @@ public class CidadeRepository : ICidadeRepository
         await _dbContext.SaveChangesAsync();
         return cidade;
     }
-
 }

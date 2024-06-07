@@ -59,12 +59,13 @@ export default function SignIn() {
       await delay(1000); setIsLoading('Criando Sessão...');
 
       const response = await session.createSession(login);
+      console.log(response);
 
       if (response.validation) {
         await delay(1000); setIsLoading('Liberando Entrada...');
         await delay(1000); server.clearSegment("principal");
       } else {
-        setLoginError(response.message);
+        setLoginError(typeof response.message === 'string'? response.message : loginError);
       }
     }
 

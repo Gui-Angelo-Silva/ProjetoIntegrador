@@ -191,7 +191,7 @@ namespace SGED.Controllers
 
                 var usuarioDTO = await _sessaoService.GetUser(token);
 
-                _response.SetNotFound();
+                _response.SetSuccess();
                 _response.Message = "Usuário " + usuarioDTO.NomePessoa + " obtido com sucesso!";
                 _response.Data = usuarioDTO;
                 return Ok(_response);
@@ -300,7 +300,7 @@ namespace SGED.Controllers
 
                     _response.SetSuccess();
                     _response.Message = "Sessão validada com sucesso.";
-                    _response.Data = sessaoDTO;
+                    _response.Data = sessaoDTO.TokenSessao;
                     return Ok(_response);
                 }
                 else

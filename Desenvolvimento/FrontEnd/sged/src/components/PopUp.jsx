@@ -2,32 +2,39 @@ import React, { useState, useEffect, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { X } from '@phosphor-icons/react';
 
-const PopUp = ({ action, status, message, onClose, index }) => {
+const PopUp = ({ action, status, message, onClose, code, index }) => {
     const [visible, setVisible] = useState(true);
+    const [timer, setTimer] = useState(5); // Inicializa o timer com 5 segundos
     const nodeRef = useRef(null);
 
     const initialBottomPosition = 100;
     const bottomPosition = `${initialBottomPosition + (index * 100)}px`;
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setVisible(false);
-            onClose(index);
-        }, 5000);
+        const timerId = setInterval(() => {
+            setTimer(prevTimer => prevTimer - 1);
+        }, 1000);
 
-        return () => clearTimeout(timer);
+        return () => clearInterval(timerId);
     }, []);
+
+    useEffect(() => {
+        if (timer === 0) {
+            setVisible(false);
+            onClose(code);
+        }
+    }, [timer, onClose, code]);
 
     const getColor = () => {
         switch (status) {
             case 'success':
-                return action === 'get' ? 'blue' : 'green';
+                return action === 'get' ? 'cyan' : 'green';
             case 'invalid':
             case 'not found':
             case 'conflict':
                 return 'yellow';
             case 'unauthorized':
-                return 'orange';
+                return 'pink';
             case 'error':
                 return 'red';
             default:
@@ -39,15 +46,15 @@ const PopUp = ({ action, status, message, onClose, index }) => {
     const getTitle = () => {
         switch (status) {
             case 'success':
-                return 'Sucesso';
+                return `Sucesso`;
             case 'invalid':
             case 'not found':
             case 'conflict':
-                return 'Negado';
+                return `Negado`;
             case 'unauthorized':
-                return 'Não Autorizado';
+                return `Não Autorizado`;
             case 'error':
-                return 'Erro';
+                return `Erro`;
             default:
                 return '';
         }
@@ -56,7 +63,7 @@ const PopUp = ({ action, status, message, onClose, index }) => {
 
     const handleClose = () => {
         setVisible(false);
-        onClose(index);
+        onClose(code);
     };
 
     return (
@@ -81,7 +88,7 @@ const PopUp = ({ action, status, message, onClose, index }) => {
                         </div>
                     </div>
                     <button onClick={handleClose} className="ml-4 mt-1">
-                        <X size={20} weight="light" color={`text-${color}-900`} />
+                        <X size={20} weight="light" className={`text-${color}-900`} />
                     </button>
                 </div>
             </div>

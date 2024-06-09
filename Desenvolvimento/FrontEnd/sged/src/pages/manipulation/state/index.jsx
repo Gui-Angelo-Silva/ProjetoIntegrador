@@ -153,14 +153,15 @@ export default function State() {
     return (
         <>
             {<div>
-                {managerPopUp.popups.map((popup, index) => (
+                {managerPopUp.popups.map(popup => (
                     <PopUp
-                        key={index}
+                        key={popup.id}
                         action={popup.action}
                         status={popup.status}
                         message={popup.message}
-                        onClose={() => managerPopUp.removePopUp(index)}
-                        index={index}
+                        onClose={managerPopUp.removePopUp}
+                        code={popup.code}
+                        index={popup.index}
                     />
                 ))}
             </div>}

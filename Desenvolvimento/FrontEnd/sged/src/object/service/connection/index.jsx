@@ -4,7 +4,6 @@ import CookieModule from '../../modules/cookie';
 
 export default class ConnectionService {
     constructor() {
-        this.popup = false;
         this.api = new ApiService();
         this.responseModel = {
             status: 0,
@@ -173,14 +172,6 @@ export default class ConnectionService {
         return parameter ?
             await axios.delete(`${this.url}/${parameter}`, this.api.headerConfig()) :
             await axios.delete(this.url, this.api.headerConfig());
-    }
-
-    shootPopUp() {
-        this.popup = true;
-    }
-
-    closePopUp() {
-        this.popup = false;
     }
 
     getList() {

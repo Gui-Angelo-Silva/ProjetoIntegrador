@@ -25,23 +25,45 @@ const PopUp = ({ action, status, message, onClose, code, index }) => {
         }
     }, [timer, onClose, code]);
 
-    const getColor = () => {
+    const getStyles = () => {
         switch (status) {
             case 'success':
-                return action === 'get' ? 'blue' : 'green';
+                if (action === 'get') {
+                    return {
+                        primary: 'text-[#007A8C] border-[#007A8C]',
+                        background: 'bg-[#E0F8FC]'
+                    };
+                }
+                return {
+                    primary: 'text-[#005CE7] border-[#005CE7]',
+                    background: 'bg-[#D6ECFF]'
+                };
             case 'invalid':
             case 'not found':
             case 'conflict':
-                return 'yellow';
+                return {
+                    primary: 'text-[#7D00DF] border-[#7D00DF]',
+                    background: 'bg-[#F0D9FF]'
+                };
             case 'unauthorized':
-                return 'orange';
+                return {
+                    primary: 'text-[#676767] border-[#676767]',
+                    background: 'bg-[#F0F0F0]'
+                };
             case 'error':
-                return 'red';
+                return {
+                    primary: 'text-[#D7000D] border-[#D7000D]',
+                    background: 'bg-[#FFDEE0]'
+                };
             default:
-                return '';
+                return {
+                    primary: 'text-[#D7000D] border-[#D7000D]',
+                    background: 'bg-[#FFDEE0]'
+                };
         }
     };
-    const color = getColor();
+
+    const styles = getStyles();
 
     const getTitle = () => {
         switch (status) {
@@ -56,7 +78,8 @@ const PopUp = ({ action, status, message, onClose, code, index }) => {
             case 'error':
                 return `Erro`;
             default:
-                return '';
+                message = 'Erro não identificado!';
+                return 'Erro';
         }
     };
     const title = getTitle();
@@ -74,21 +97,26 @@ const PopUp = ({ action, status, message, onClose, code, index }) => {
             unmountOnExit
             nodeRef={nodeRef}
         >
-            <div ref={nodeRef} style={{ bottom: bottomPosition }} className={`fixed right-4 border-t-4 rounded-b px-4 py-3 shadow-md bg-${color}-100 border-${color}-500 text-${color}-900`} role="alert">
+            <div
+                ref={nodeRef}
+                style={{ bottom: bottomPosition }}
+                className={`fixed right-4 border-t-4 rounded-b px-4 py-3 shadow-md ${styles.background} ${styles.primary}`}
+                role="alert"
+            >
                 <div className="flex justify-between items-start">
                     <div className="flex">
                         <div className="py-1">
-                            <svg className={`fill-current h-6 w-6 mr-4 text-${color}-900`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <svg className={`fill-current h-6 w-6 mr-4 ${styles.primary}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                 <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
                             </svg>
                         </div>
                         <div>
-                            <p className={`font-bold text-${color}-900`}>{title}</p>
+                            <p className={`font-bold ${styles.primary}`}>{title}</p>
                             <p className="text-sm">{message}</p>
                         </div>
                     </div>
                     <button onClick={handleClose} className="ml-4 mt-1">
-                        <X size={20} weight="light" className={`text-${color}-900`} />
+                        <X size={20} weight="light" className={styles.primary} />
                     </button>
                 </div>
             </div>

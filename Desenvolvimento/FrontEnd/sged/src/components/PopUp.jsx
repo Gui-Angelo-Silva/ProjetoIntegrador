@@ -28,13 +28,13 @@ const PopUp = ({ action, status, message, onClose, code, index }) => {
     const getColor = () => {
         switch (status) {
             case 'success':
-                return action === 'get' ? 'cyan' : 'green';
+                return action === 'get' ? 'blue' : 'green';
             case 'invalid':
             case 'not found':
             case 'conflict':
                 return 'yellow';
             case 'unauthorized':
-                return 'pink';
+                return 'orange';
             case 'error':
                 return 'red';
             default:

@@ -30,13 +30,13 @@ const PopUp = ({ action, status, message, onClose, code, index }) => {
             case 'success':
                 if (action === 'get') {
                     return {
-                        primary: 'text-[#007A8C] border-[#007A8C]',
-                        background: 'bg-[#E0F8FC]'
+                        primary: 'text-[#005CE7] border-[#005CE7]',
+                        background: 'bg-[#D6ECFF]'
                     };
                 }
                 return {
-                    primary: 'text-[#005CE7] border-[#005CE7]',
-                    background: 'bg-[#D6ECFF]'
+                    primary: 'text-[#007A8C] border-[#007A8C]',
+                    background: 'bg-[#E0F8FC]'
                 };
             case 'invalid':
             case 'not found':

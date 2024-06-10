@@ -59,7 +59,6 @@ export default function SignIn() {
       await delay(1000); setIsLoading('Criando Sessão...');
 
       const response = await session.createSession(login);
-      console.log(response);
 
       if (response.validation) {
         await delay(1000); setIsLoading('Liberando Entrada...');

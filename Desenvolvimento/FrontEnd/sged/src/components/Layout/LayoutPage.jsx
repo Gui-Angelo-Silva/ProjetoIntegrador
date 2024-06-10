@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 const LayoutPage = ({ children }) => {
     return (
         <div className="flex flex-col min-h-screen overflow-hidden">
-            <div className="flex fixed w-full top-0 z-10">
+            <div className="flex fixed w-full top-0 z-10" style={{ minHeight: '50px' }}>
                 <NavBar />
             </div>
 

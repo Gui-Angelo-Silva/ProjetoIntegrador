@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Trash } from "@phosphor-icons/react";
+import { FilePlus, Pen, Trash } from "@phosphor-icons/react";
 import LinkTitle from "../../../components/Title/LinkTitle";
 
 import { useMontage } from '../../../object/modules/montage';
@@ -47,7 +47,7 @@ export default function State() {
             openCloseModalEdit(true);
         }
         else {
-            setOpen(true);
+            setModalDelete(true);
         }
     };
 
@@ -130,8 +130,12 @@ export default function State() {
 
     useEffect(() => {
         if (updateData) {
-            GetState();
             setUpdateData(false);
+            GetState();
+
+            openCloseModalInsert(false);
+            openCloseModalEdit(false);
+            openCloseModalDelete(false);
         }
 
         list.searchBy ? null : list.setSearchBy('nomeEstado');
@@ -187,7 +191,12 @@ export default function State() {
                 />
 
                 <Modal isOpen={modalInsert} >
-                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Estado</ModalHeader>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC] flex flex-col items-center">
+                        <div className="flex items-center justify-center">
+                            <FilePlus size={32} className="mr-2 text-write font-bold" />
+                            <h3 className="m-0">Cadastrar Estado</h3>
+                        </div>
+                    </ModalHeader>
                     <ModalBody>
                         <div className="form-group">
                             <label className="text-[#444444]">Nome: </label>
@@ -214,8 +223,13 @@ export default function State() {
                         confirmText="Cadastrar"
                     />
                 </Modal>
-                <Modal isOpen={modalEdit}>
-                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC]">Editar Estado</ModalHeader>
+                <Modal isOpen={modalEdit} >
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC] flex flex-col items-center">
+                        <div className="flex items-center justify-center">
+                            <Pen size={32} className="mr-2 text-write font-bold" />
+                            <h3 className="m-0">Alterar Estado</h3>
+                        </div>
+                    </ModalHeader>
                     <ModalBody>
                         <div className="form-group">
                             <label className="text-[#444444]">ID: </label><br />
@@ -242,29 +256,27 @@ export default function State() {
                         </div>
                     </ModalFooter>
                 </Modal>
-                <ModalDelete open={open} onClose={() => setOpen(false)}>
-                    <div className="text-center w-56">
-                        <Trash size={56} className="mx-auto text-red-500" />
-                        <div className="mx-auto my-4 w-48">
-                            <h3 className="text-lg font-black text-gray-800">Confirma a exclusão?</h3>
-                            <p className="text-sm text-gray-500">
-                                Você realmente deseja excluir o estado de
-                                <span className="pl-1 text-[#BC2D2D]">
-                                    {state.stateName}
-                                </span>
-                            </p>
+                <Modal isOpen={modalDelete} className="max-w-md">
+                    <ModalHeader className="text-white text-xl bg-[#ff5c5c] border-[#BCBCBC] flex flex-col items-center justify-center">
+                        <div className="flex items-center">
+                            <Trash size={32} className="mr-2 text-write font-bold" />
+                            <h3 className="m-0">Excluir Estado</h3>
                         </div>
-                        <div className="flex gap-4">
-                            <button
-                                className="btn btn-light w-full"
-                                onClick={() => setOpen(false)}
-                            >
-                                Cancelar
-                            </button>
-                            <button className={`btn w-full h-[40px] ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#f05252] text-white hover:text-white hover:bg-[#BC2D2D]'}`} onClick={() => inOperation ? null : DeleteState()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Excluir'} </button>{"  "}
+                    </ModalHeader>
+                    <ModalBody className="text-center flex flex-col justify-center">
+                        <h3 className="pl-4 text-lg font-thin">
+                            Deseja realmente excluir o
+                            <br />
+                            Estado <span className="text-[#ff5c5c] font-bold">{state.stateName}</span>?
+                        </h3>
+                    </ModalBody>
+                    <ModalFooter className="flex justify-center">
+                        <div className="mt-4 flex gap-3">
+                            <button className="btn btn-light w-32 mr-2" onClick={() => openCloseModalDelete(false)}>Cancelar</button>
+                            <button className={`btn w-32 ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#f05252] text-white hover:text-white hover:bg-[#BC2D2D]'}`} onClick={() => inOperation ? null : DeleteState()} disabled={inOperation}>{inOperation ? 'Aguarde' : 'Excluir'}</button>
                         </div>
-                    </div>
-                </ModalDelete>
+                    </ModalFooter>
+                </Modal>
             </LayoutPage>
         </>
     );

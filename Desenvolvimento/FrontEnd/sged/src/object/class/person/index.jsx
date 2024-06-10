@@ -572,6 +572,10 @@ function PersonClass() {
             handleRgIe(personRgIe);
         }, [identifyRgIe]);
 
+        useEffect(() => {
+            console.log(personPicture);
+        }, [personPicture]);
+
     }
 
     return {

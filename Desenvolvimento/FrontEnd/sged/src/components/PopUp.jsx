@@ -4,7 +4,7 @@ import { X } from '@phosphor-icons/react';
 
 const PopUp = ({ action, status, message, onClose, code, index }) => {
     const [visible, setVisible] = useState(true);
-    const [timer, setTimer] = useState(5); // Inicializa o timer com 5 segundos
+    const [timer, setTimer] = useState(7); // Inicializa o timer com 7 segundos
     const nodeRef = useRef(null);
 
     const initialBottomPosition = 100;
@@ -68,6 +68,18 @@ const PopUp = ({ action, status, message, onClose, code, index }) => {
     const getTitle = () => {
         switch (status) {
             case 'success':
+                if (action === 'get') {
+                    return `Dados Adquiridos`;
+                }
+                if (action === 'post') {
+                    return `Cadastro Bem-sucedido`;
+                }
+                if (action === 'put') {
+                    return `Alteração Bem-sucedida`;
+                }
+                if (action === 'delete') {
+                    return `Exclusão Bem-sucedida`;
+                }
                 return `Sucesso`;
             case 'invalid':
             case 'not found':

@@ -1,24 +1,21 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FilePlus, Pen, Trash } from "@phosphor-icons/react";
+import { FilePlus, Pen, Trash, Minus } from "@phosphor-icons/react";
 import LinkTitle from "../../../components/Title/LinkTitle";
-
+import SearchBar from "../../../components/Search/SearchBar";
+import RegistrationButton from "../../../components/Button/RegistrationButton";
+import CancelButton from "../../../components/Button/CancelButton";
+import CustomTable from "../../../components/Table/Table";
+import PopUpManager from "../../../components/PopUpManager";
+import PopUp from "../../../components/PopUp";
+import LayoutPage from "../../../components/Layout/LayoutPage";
+import ButtonTable from "../../../components/Table/ButtonTable";
 import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
 import StateClass from '../../../object/class/state';
-import Search from "../../../assets/pages/SearchImg";
-import ModalDelete from "../../../components/Modal/ModalDelete";
-import CustomTable from "../../../components/Table/Table";
-import RegistrationButton from "../../../components/Button/RegistrationButton";
-import CancelButton from "../../../components/Button/CancelButton";
-import CustomModalFooter from "../../../components/Modal/CustomModalFooter";
-import LayoutPage from "../../../components/Layout/LayoutPage";
-import ButtonTable from "../../../components/Table/ButtonTable";
-import SearchBar from "../../../components/Search/SearchBar";
-import PopUpManager from "../../../components/PopUpManager";
-import PopUp from "../../../components/PopUp";
+import ActionManager from '../../../object/modules/action';
 
 export default function State() {
 
@@ -32,13 +29,13 @@ export default function State() {
     const managerPopUp = PopUpManager();
     const list = ListModule();
     const state = StateClass();
+    const action = ActionManager();
 
     const [modalInsert, setModalInsert] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
     const [updateData, setUpdateData] = useState(true);
     const [inOperation, setInOperation] = useState(false);
-    const [open, setOpen] = useState(false);
 
     const SelectState = (object, option) => {
         state.setData(object);
@@ -85,35 +82,25 @@ export default function State() {
     };
 
     const PostState = async () => {
-        setInOperation(true);
+        action.setStatus(2);
 
-        if (state.verifyData()) {
-            await connection.endpoint("Estado").post(state.getData());
-            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
+        await connection.endpoint("Estado").post(state.getData());
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
-            openCloseModalInsert(!connection.response.status);
-            setUpdateData(connection.response.status);
-        } else {
-            console.log('Dados inválidos!');
-        }
-
-        setInOperation(false);
+        state.setError(connection.response.data);
+        openCloseModalInsert(!connection.response.status);
+        setUpdateData(connection.response.status);
     };
 
     const PutState = async () => {
-        setInOperation(true);
+        action.setStatus(2);
 
-        if (state.verifyData()) {
-            await connection.endpoint("Estado").put(state.getData());
-            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
+        await connection.endpoint("Estado").put(state.getData());
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
-            openCloseModalEdit(!connection.response.status);
-            setUpdateData(connection.response.status);
-        } else {
-            console.log('Dados inválidos!');
-        }
-
-        setInOperation(false);
+        state.setError(connection.response.data);
+        openCloseModalEdit(!connection.response.status);
+        setUpdateData(connection.response.status);
     };
 
     const DeleteState = async () => {
@@ -122,7 +109,7 @@ export default function State() {
         await connection.endpoint("Estado").delete(state.getData().id);
         managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
-        setOpen(!connection.response.status);
+        setModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);
 
         setInOperation(false);
@@ -140,6 +127,10 @@ export default function State() {
 
         list.searchBy ? null : list.setSearchBy('nomeEstado');
     }, [updateData]);
+
+    useEffect(() => {
+        action.setStatus(state.dataValid ? 1 : 0);
+    }, [state.dataValid]);
 
     const dataForTable = list.currentList.map((estado) => {
         return {
@@ -190,7 +181,7 @@ export default function State() {
                     totalPages={list.totalPages}
                 />
 
-                <Modal isOpen={modalInsert} >
+                <Modal isOpen={modalInsert}>
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC] flex flex-col items-center">
                         <div className="flex items-center justify-center">
                             <FilePlus size={32} className="mr-2 text-write font-bold" />
@@ -199,29 +190,34 @@ export default function State() {
                     </ModalHeader>
                     <ModalBody>
                         <div className="form-group">
-                            <label className="text-[#444444]">Nome: </label>
+                            <label className="text-[#444444]">Nome: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => state.setStateName(e.target.value)} />
-                            <div className="text-sm text-red-600">
-                                {state.errorStateName}
-                            </div>
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onBlur={() => state.verifyName()} onChange={(e) => state.setStateName(e.target.value)} />
+                            {state.errorStateName.map((error, index) => (
+                                <div key={index} className="flex items-center">
+                                    <Minus size={16} className="text-red-600 mr-2" />
+                                    <span className="text-sm text-red-600">{error}</span>
+                                </div>
+                            ))}
                             <br />
-                            <label className="text-[#444444]">Sigla:</label>
+                            <label className="text-[#444444]">Sigla: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => state.verifyUf(e.target.value.toUpperCase())} value={state.stateUf} maxLength={2} />
-                            <div className="text-sm text-red-600">
-                                {state.errorStateUf}
-                            </div>
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onBlur={() => state.verifyUf()} value={state.stateUf} onChange={(e) => state.setStateUf(e.target.value.toUpperCase())} maxLength={2} />
+                            {state.errorStateUf.map((error, index) => (
+                                <div key={index} className="flex items-center">
+                                    <Minus size={16} className="text-red-600 mr-2" />
+                                    <span className="text-sm text-red-600">{error}</span>
+                                </div>
+                            ))}
                             <br />
                         </div>
                     </ModalBody>
-                    <CustomModalFooter
-                        cancelAction={() => openCloseModalInsert(false)}
-                        confirmAction={PostState}
-                        confirmType="cadastrar"
-                        inOperation={inOperation}
-                        confirmText="Cadastrar"
-                    />
+                    <ModalFooter>
+                        <div className="flex justify-center gap-4">
+                            <CancelButton action={() => openCloseModalInsert(false)} />
+                            <button className={`btn ${action.canPerformAction() ? 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' : 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]'}`} onClick={() => action.canPerformAction() ? PostState() : null} disabled={!state.dataValid || !action.canPerformAction()} > {action.canPerformAction() ? 'Cadastrar' : action.getState()} </button>
+                        </div>
+                    </ModalFooter>
                 </Modal>
                 <Modal isOpen={modalEdit} >
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC] flex flex-col items-center">

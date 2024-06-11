@@ -120,7 +120,7 @@ export default class ConnectionService {
                 this.messageRequest = { type: 'error', content: 'Erro ao executar a requisição!' };
             }
 
-            return { status: false, data: 'status' in error.response.data ? error.response.data.message : null };
+            return { status: false, data: 'status' in error.response.data ? error.response.data.data : null };
         }
     }
 

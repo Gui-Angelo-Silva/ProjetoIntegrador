@@ -25,7 +25,7 @@ const LayoutPage = ({ children }) => {
                     transition={{ type: 'spring', velocity: 2 }}
                     className="flex-grow overflow-y-auto scrollable-container"
                     style={{
-                        paddingLeft: 'calc(55px + 15px)',  // Espaçamento quando SideBarAdm está compacto
+                        paddingLeft: 'calc(60px + 15px)',  // Espaçamento quando SideBarAdm está compacto
                         paddingTop: '15px',
                         paddingRight: '15px',
                         paddingBottom: '15px',

@@ -134,7 +134,7 @@ namespace SGED.Controllers
                 {
                     _response.SetNotFound();
                     _response.Message = "O Estado informado não existe!";
-                    _response.Data = estadoDTO;
+                    _response.Data = new { errorId = "O Estado informado não existe!" };
                     return NotFound(_response);
                 }
                 else if (await EstadoExists(estadoDTO))

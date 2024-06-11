@@ -42,20 +42,18 @@ function StateClass() {
     setStateName(object.nomeEstado);
     setStateUf(object.ufEstado);
     setStateId(object.id);
-
-    setDataValid(true);
   }
 
   function setError(object) {
-    if (object.errorId) {
+    if (object && object.errorId) {
       setErrorStateId(prevErrors => [...prevErrors, object.errorId]);
     }
 
-    if (object.errorNomeEstado) {
+    if (object && object.errorNomeEstado) {
       setErrorStateName(prevErrors => [...prevErrors, object.errorNomeEstado]);
     }
 
-    if (object.errorUfEstado) {
+    if (object && object.errorUfEstado) {
       setErrorStateUf(prevErrors => [...prevErrors, object.errorUfEstado]);
     }
   }
@@ -117,6 +115,7 @@ function StateClass() {
     errorStateName,
     errorStateUf,
     dataValid,
+    setDataValid,
 
     // Funções Essenciais
     propertyName,

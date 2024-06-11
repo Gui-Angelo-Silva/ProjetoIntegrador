@@ -11,11 +11,11 @@ function ActionManager() {
   function getPointerFromStatus(number) {
     switch (number) {
       case 0:
-        return 'blocked';
+        return 'not-allowed';
       case 1:
-        return 'clickable';
+        return 'pointer';
       case 2:
-        return 'waiting';
+        return 'wait';
       default:
         return 'default';
     }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FilePlus, Pen, Trash, Minus } from "@phosphor-icons/react";
+import { FilePlus, Pen, Trash, Warning } from "@phosphor-icons/react";
 import LinkTitle from "../../../components/Title/LinkTitle";
 import SearchBar from "../../../components/Search/SearchBar";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
@@ -38,6 +38,10 @@ export default function State() {
     const [modalDelete, setModalDelete] = useState(false);
     const [updateData, setUpdateData] = useState(true);
     const [inOperation, setInOperation] = useState(false);
+
+    const [lastRequisition, setLastRequisition] = useState('');
+    const [modalError, setModalError] = useState(false);
+    const [timeLeft, setTimeLeft] = useState(0);
 
     const SelectState = (object, option) => {
         state.setData(object);
@@ -79,7 +83,23 @@ export default function State() {
         }
     };
 
+    const openCloseModalError = (boolean) => {
+        state.clearError();
+        state.clearData();
+
+        setModalInsert(false);
+        setModalEdit(false);
+        setModalDelete(false);
+        setModalError(boolean);
+
+        if (!boolean) {
+            setUpdateData(true);
+        }
+    };
+
     const GetState = async () => {
+        setLastRequisition("buscar");
+
         await connection.endpoint("Estado").get();
         managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
@@ -88,9 +108,7 @@ export default function State() {
 
     const PostState = async () => {
         setInOperation(true);
-
-        // Adiciona um atraso de 5 segundos (5000 milissegundos)
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        setLastRequisition("cadastrar");
 
         await connection.endpoint("Estado").post(state.getData());
         managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
@@ -104,9 +122,7 @@ export default function State() {
 
     const PutState = async () => {
         setInOperation(true);
-
-        // Adiciona um atraso de 5 segundos (5000 milissegundos)
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        setLastRequisition("alterar");
 
         await connection.endpoint("Estado").put(state.getData());
         managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
@@ -120,9 +136,7 @@ export default function State() {
 
     const DeleteState = async () => {
         setInOperation(true);
-
-        // Adiciona um atraso de 5 segundos (5000 milissegundos)
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        setLastRequisition("excluir");
 
         await connection.endpoint("Estado").delete(state.getData().id);
         managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
@@ -159,13 +173,40 @@ export default function State() {
 
     useEffect(() => {
         if (state.errorStateId.length !== 0) {
-            openCloseModalInsert(false);
-            openCloseModalEdit(false);
-            openCloseModalDelete(false);
-
-            setUpdateData(true);
+            openCloseModalError(true);
         }
     }, [state.errorStateId]);
+
+    useEffect(() => {
+        let timer = null;
+
+        if (modalError) {
+            // Limpa o timer anterior
+            if (timer) {
+                clearInterval(timer);
+            }
+
+            // Inicia um novo timer de 10 segundos
+            let startTime = Date.now();
+            timer = setInterval(() => {
+                // Calcula o tempo restante
+                let elapsedTime = Date.now() - startTime;
+                let remainingTime = Math.max(0, 20 - Math.floor(elapsedTime / 1000));
+
+                // Atualiza o tempo restante
+                setTimeLeft(remainingTime);
+
+                // Fecha o modal de erro após 10 segundos
+                if (remainingTime === 0) {
+                    openCloseModalError(false);
+                }
+            }, 1000);
+        }
+
+        return () => {
+            clearInterval(timer);
+        };
+    }, [modalError]);
 
     const dataForTable = list.currentList.map((estado) => {
         return {
@@ -227,7 +268,7 @@ export default function State() {
                         <div className="form-group">
                             <label className="text-[#444444]">Nome: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" placeholder="Informe o nome do Estado, com 3 letras no mínimo..." disabled={inOperation} onBlur={() => state.verifyName()} onChange={(e) => state.setStateName(e.target.value)} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} onBlur={() => state.verifyName()} onChange={(e) => state.setStateName(e.target.value)} />
                             {state.errorStateName.map((error, index) => (
                                 <div key={index} className="flex items-center">
                                     <span className="text-sm text-red-600">- {error}</span>
@@ -236,7 +277,7 @@ export default function State() {
                             <br />
                             <label className="text-[#444444]">Sigla: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} placeholder="Informe a sigla do Estado, deve possuir 2 letras..." disabled={inOperation} onBlur={() => state.verifyUf()} value={state.stateUf} onChange={(e) => state.setStateUf(e.target.value.toUpperCase())} maxLength={2} />
+                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation} onBlur={() => state.verifyUf()} value={state.stateUf} onChange={(e) => state.setStateUf(e.target.value.toUpperCase())} maxLength={2} />
                             {state.errorStateUf.map((error, index) => (
                                 <div key={index} className="flex items-center">
                                     <span className="text-sm text-red-600">- {error}</span>
@@ -278,7 +319,7 @@ export default function State() {
                             <br />
                             <label className="text-[#444444]">Nome: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" placeholder="Informe o nome do Estado, com 3 letras no mínimo..." disabled={inOperation} onBlur={() => state.verifyName()} value={state.stateName} onChange={(e) => state.setStateName(e.target.value)} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} onBlur={() => state.verifyName()} value={state.stateName} onChange={(e) => state.setStateName(e.target.value)} />
                             {state.errorStateName.map((error, index) => (
                                 <div key={index} className="flex items-center">
                                     <span className="text-sm text-red-600">- {error}</span>
@@ -287,7 +328,7 @@ export default function State() {
                             <br />
                             <label className="text-[#444444]">Sigla: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} placeholder="Informe a sigla do Estado, deve possuir 2 letras..." disabled={inOperation} onBlur={() => state.verifyUf()} value={state.stateUf} onChange={(e) => state.setStateUf(e.target.value.toUpperCase())} maxLength={2} />
+                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation} onBlur={() => state.verifyUf()} value={state.stateUf} onChange={(e) => state.setStateUf(e.target.value.toUpperCase())} maxLength={2} />
                             {state.errorStateUf.map((error, index) => (
                                 <div key={index} className="flex items-center">
                                     <span className="text-sm text-red-600">- {error}</span>
@@ -336,6 +377,34 @@ export default function State() {
                         </div>
                     </ModalFooter>
                 </Modal>
+                <Modal isOpen={modalError} className="max-w-lg">
+                    <ModalHeader className="text-white text-xl bg-[#ff5c5c] border-[#BCBCBC] flex flex-col items-center justify-center">
+                        <div className="flex items-center">
+                            <Warning size={32} className="mr-2 text-write font-bold" />
+                            <h3 className="m-0">Erro ao {lastRequisition} o Estado</h3>
+                        </div>
+                    </ModalHeader>
+                    <ModalBody className="text-center flex flex-col justify-center items-center">
+                        <h3 className="pl-4 text-lg font-thin">
+                            O Estado não existe no banco de dados.
+                            <br />
+                            O sistema irá carregar os dados atualizados após o fechamento da tela.
+                            Tempo restante: {timeLeft}s
+                        </h3>
+                    </ModalBody>
+                    <ModalFooter className="flex justify-center">
+                        <div className="mt-4 flex gap-3">
+                            <button
+                                className="btn btn-light"
+                                style={{ width: '120px' }}
+                                onClick={() => openCloseModalError(false)}
+                            >
+                                Fechar
+                            </button>
+                        </div>
+                    </ModalFooter>
+                </Modal>
+
             </LayoutPage>
         </>
     );

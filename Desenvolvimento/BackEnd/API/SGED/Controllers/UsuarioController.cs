@@ -4,6 +4,8 @@ using SGED.Objects.DTO.Entities;
 using SGED.Services.Interfaces;
 using SGED.Objects.Utilities;
 using SGED.Services.Entities;
+using System.Dynamic;
+using SGED.Objects.Models.Entities;
 
 namespace SGED.Controllers
 {
@@ -89,38 +91,32 @@ namespace SGED.Controllers
 
             try
             {
-                var tipoUsuarioDTO = await _tipoUsuarioService.GetById(usuarioDTO.IdTipoUsuario);
-                if (tipoUsuarioDTO is null)
+                var result = await CheckExistRelationalData(usuarioDTO);
+                dynamic errors = result.errors;
+                bool hasErrors = result.hasErrors;
+
+                if (!hasErrors)
                 {
                     _response.SetNotFound();
-                    _response.Message = "O Tipo Usuário informado não existe!";
-                    _response.Data = new { errorIdTipoUsuario = "O Tipo Usuário informado não existe!" };
+                    _response.Message = "Dado(s) com conflito!";
+                    _response.Data = errors;
                     return NotFound(_response);
                 }
 
-                string email = "";
-                string cpfcnpj = "";
-                string rgie = "";
+                ValidateDocuments(usuarioDTO, ref errors, ref hasErrors);
 
-                ValidateDocuments(usuarioDTO, ref email, ref cpfcnpj, ref rgie);
-
-                if (!string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(cpfcnpj) || !string.IsNullOrEmpty(rgie))
+                if (!hasErrors)
                 {
-                    string error = "";
-                    if (!string.IsNullOrEmpty(email)) error += "e-mail";
-                    if (!string.IsNullOrEmpty(cpfcnpj)) error += string.IsNullOrEmpty(error) ? "" : ", " + (usuarioDTO.CpfCnpjPessoa.Length == 14 ? "CPF" : "CNPJ");
-                    if (!string.IsNullOrEmpty(rgie)) error += string.IsNullOrEmpty(error) ? "" : ", " + (usuarioDTO.RgIePessoa.Length == 12 ? "RG" : "IE");
-
                     _response.SetInvalid();
-                    _response.Message = $"O {error} informado(s) está(ão) inválido(s)!";
-                    _response.Data = new { errorEmailPessoa = email, errorCpfCnpjPessoa = cpfcnpj, errorRgIePessoa = rgie };
+                    _response.Message = "Dado(s) inválido(s)!";
+                    _response.Data = errors;
                     return BadRequest(_response);
                 }
 
                 var usuariosDTO = await _usuarioService.GetAll();
-                CheckDuplicates(usuariosDTO, usuarioDTO, ref email, ref cpfcnpj, ref rgie);
+                CheckDuplicates(usuariosDTO, usuarioDTO, ref errors, ref hasErrors);
 
-                if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(cpfcnpj) && string.IsNullOrEmpty(rgie))
+                if (hasErrors)
                 {
                     await _usuarioService.Create(usuarioDTO);
 
@@ -131,11 +127,9 @@ namespace SGED.Controllers
                 }
                 else
                 {
-                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, usuarioDTO);
-
                     _response.SetConflict();
-                    _response.Message = $"O {error} informado(s) já existe(m)!";
-                    _response.Data = new { errorEmailPessoa = email, errorCpfCnpjPessoa = cpfcnpj, errorRgIePessoa = rgie };
+                    _response.Message = "Dado(s) com conflito!";
+                    _response.Data = errors;
                     return BadRequest(_response);
                 }
             }
@@ -166,43 +160,37 @@ namespace SGED.Controllers
                 if (existingUsuario is null)
                 {
                     _response.SetNotFound();
-                    _response.Message = "O Usuário informado não existe!";
+                    _response.Message = "Dado(s) com conflito!";
                     _response.Data = new { errorId = "O Usuário informado não existe!" };
                     return NotFound(_response);
                 }
 
-                var tipoUsuarioDTO = await _tipoUsuarioService.GetById(usuarioDTO.IdTipoUsuario);
-                if (tipoUsuarioDTO is null)
+                var result = await CheckExistRelationalData(usuarioDTO);
+                dynamic errors = result.errors;
+                bool hasErrors = result.hasErrors;
+
+                if (!hasErrors)
                 {
                     _response.SetNotFound();
-                    _response.Message = "O Tipo Usuário informado não existe!";
-                    _response.Data = new { errorIdTipoUsuario = "O Tipo Usuário informado não existe!" };
+                    _response.Message = "Dado(s) com conflito!";
+                    _response.Data = errors;
                     return NotFound(_response);
                 }
 
-                string email = "";
-                string cpfcnpj = "";
-                string rgie = "";
+                ValidateDocuments(usuarioDTO, ref errors, ref hasErrors);
 
-                ValidateDocuments(usuarioDTO, ref email, ref cpfcnpj, ref rgie);
-
-                if (!string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(cpfcnpj) || !string.IsNullOrEmpty(rgie))
+                if (!hasErrors)
                 {
-                    string error = "";
-                    if (!string.IsNullOrEmpty(email)) error += "e-mail";
-                    if (!string.IsNullOrEmpty(cpfcnpj)) error += string.IsNullOrEmpty(error) ? "" : ", " + (usuarioDTO.CpfCnpjPessoa.Length == 14 ? "CPF" : "CNPJ");
-                    if (!string.IsNullOrEmpty(rgie)) error += string.IsNullOrEmpty(error) ? "" : ", " + (usuarioDTO.RgIePessoa.Length == 12 ? "RG" : "IE");
-
                     _response.SetInvalid();
-                    _response.Message = $"O {error} informado(s) está(ão) inválido(s)!";
-                    _response.Data = new { errorEmailPessoa = email, errorCpfCnpjPessoa = cpfcnpj, errorRgIePessoa = rgie };
+                    _response.Message = "Dado(s) inválido(s)!";
+                    _response.Data = errors;
                     return BadRequest(_response);
                 }
 
                 var usuariosDTO = await _usuarioService.GetAll();
-                CheckDuplicates(usuariosDTO, usuarioDTO, ref email, ref cpfcnpj, ref rgie);
+                CheckDuplicates(usuariosDTO, usuarioDTO, ref errors, ref hasErrors);
 
-                if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(cpfcnpj) && string.IsNullOrEmpty(rgie))
+                if (hasErrors)
                 {
                     await _usuarioService.Update(usuarioDTO);
 
@@ -213,11 +201,9 @@ namespace SGED.Controllers
                 }
                 else
                 {
-                    string error = GenerateErrorMessage(email, cpfcnpj, rgie, usuarioDTO);
-
                     _response.SetConflict();
-                    _response.Message = $"O {error} informado(s) já existe(m)!";
-                    _response.Data = new { errorEmailPessoa = email, errorCpfCnpjPessoa = cpfcnpj, errorRgIePessoa = rgie };
+                    _response.Message = "Dado(s) com conflito!";
+                    _response.Data = errors;
                     return BadRequest(_response);
                 }
             }
@@ -260,28 +246,28 @@ namespace SGED.Controllers
             }
         }
 
-        private void ValidateDocuments(UsuarioDTO usuarioDTO, ref string email, ref string cpfcnpj, ref string rgie)
+        private static void ValidateDocuments(UsuarioDTO usuarioDTO, ref dynamic errors, ref bool hasErrors)
         {
             if (!usuarioDTO.Email())
             {
-                email = "E-mail inválido!";
-            }
-            else if (Operator.CompareString(usuarioDTO.EmailPessoa, "devops@development.com"))
-            {
-                email = "O e-mail informado já existe!";
+                errors.errorEmailPessoa = "E-mail inválido!";
+                hasErrors = true;
             }
 
             int response = usuarioDTO.CpfCnpj();
             switch (response)
             {
                 case 0:
-                    cpfcnpj = "Documento incompleto!";
+                    errors.errorCpfCnpjPessoa = "Documento incompleto!";
+                    hasErrors = true;
                     break;
                 case -1:
-                    cpfcnpj = "CPF inválido!";
+                    errors.errorCpfCnpjPessoa = "CPF inválido!";
+                    hasErrors = true;
                     break;
                 case -2:
-                    cpfcnpj = "CNPJ inválido!";
+                    errors.errorCpfCnpjPessoa = "CNPJ inválido!";
+                    hasErrors = true;
                     break;
             }
 
@@ -289,18 +275,21 @@ namespace SGED.Controllers
             switch (response)
             {
                 case 0:
-                    rgie = "Documento incompleto!";
+                    errors.errorRgIePessoa = "Documento incompleto!";
+                    hasErrors = true;
                     break;
                 case -1:
-                    rgie = "RG inválido!";
+                    errors.errorRgIePessoa = "RG inválido!";
+                    hasErrors = true;
                     break;
                 case -2:
-                    rgie = "IE inválido!";
+                    errors.errorRgIePessoa = "IE inválido!";
+                    hasErrors = true;
                     break;
             }
         }
 
-        private void CheckDuplicates(IEnumerable<UsuarioDTO> usuariosDTO, UsuarioDTO usuarioDTO, ref string email, ref string cpfcnpj, ref string rgie)
+        private static void CheckDuplicates(IEnumerable<UsuarioDTO> usuariosDTO, UsuarioDTO usuarioDTO, ref dynamic errors, ref bool hasErrors)
         {
             foreach (var usuario in usuariosDTO)
             {
@@ -311,28 +300,42 @@ namespace SGED.Controllers
 
                 if (Operator.CompareString(usuarioDTO.EmailPessoa, usuario.EmailPessoa))
                 {
-                    email = "O e-mail informado já existe!";
+                    errors.errorEmailPessoa = "O e-mail informado já existe!";
+                    hasErrors = true;
                 }
 
                 if (Operator.CompareString(usuarioDTO.CpfCnpjPessoa.ExtractNumbers(), usuario.CpfCnpjPessoa.ExtractNumbers()))
                 {
-                    cpfcnpj = usuarioDTO.CpfCnpjPessoa.Length == 14 ? "O CPF informado já existe!" : "O CNPJ informado já existe!";
+                    errors.errorCpfCnpjPessoa = usuarioDTO.CpfCnpjPessoa.Length == 14 ? "O CPF informado já existe!" : "O CNPJ informado já existe!";
+                    hasErrors = true;
                 }
 
                 if (Operator.CompareString(usuarioDTO.RgIePessoa.ExtractNumbers(), usuario.RgIePessoa.ExtractNumbers()))
                 {
-                    rgie = usuarioDTO.RgIePessoa.Length == 12 ? "O RG informado já existe!" : "O IE informado já existe!";
+                    errors.errorRgIePessoa = usuarioDTO.RgIePessoa.Length == 12 ? "O RG informado já existe!" : "O IE informado já existe!";
+                    hasErrors = true;
                 }
+            }
+
+            if (Operator.CompareString(usuarioDTO.EmailPessoa, "devops@development.com"))
+            {
+                errors.errorEmailPessoa = "O e-mail informado já existe!";
+                hasErrors = true;
             }
         }
 
-        private string GenerateErrorMessage(string email, string cpfcnpj, string rgie, UsuarioDTO usuarioDTO)
+        private async Task<dynamic> CheckExistRelationalData(UsuarioDTO usuarioDTO)
         {
-            string error = "";
-            if (!string.IsNullOrEmpty(email)) error += "e-mail";
-            if (!string.IsNullOrEmpty(cpfcnpj)) error += (error == "" ? "" : ", ") + (usuarioDTO.CpfCnpjPessoa.Length == 14 ? "CPF" : "CNPJ");
-            if (!string.IsNullOrEmpty(rgie)) error += (error == "" ? "" : ", ") + (usuarioDTO.RgIePessoa.Length == 12 ? "RG" : "IE");
-            return error;
+            dynamic errors = new ExpandoObject();
+            bool hasErrors = false;
+
+            if (await _tipoUsuarioService.GetById(usuarioDTO.IdTipoUsuario) is not null)
+            {
+                errors.errorIdTipoUsuario = "O Tipo Usuário informado não existe!";
+                hasErrors = true;
+            }
+
+            return new { Errors = errors, HasErrors = hasErrors };
         }
     }
 }

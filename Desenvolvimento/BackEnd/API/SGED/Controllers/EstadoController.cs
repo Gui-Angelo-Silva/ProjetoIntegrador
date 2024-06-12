@@ -4,6 +4,7 @@ using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
+using System.Dynamic;
 
 namespace SGED.Controllers
 {
@@ -85,18 +86,17 @@ namespace SGED.Controllers
 
             try
             {
-                if (await EstadoExists(estadoDTO))
+                dynamic errors = new ExpandoObject();
+                var hasErrors = false;
+
+                var estadosDTO = await _estadoService.GetAll();
+                CheckDuplicates(estadosDTO, estadoDTO, ref errors, ref hasErrors);
+
+                if (hasErrors)
                 {
                     _response.SetConflict();
-                    _response.Message = "Já existe o Estado " + estadoDTO.NomeEstado + "!";
-                    _response.Data = new { errorNomeEstado = "Já existe o Estado " + estadoDTO.NomeEstado + "!" };
-                    return BadRequest(_response);
-                }
-                else if (await UfExists(estadoDTO))
-                {
-                    _response.SetConflict();
-                    _response.Message = "Já existe o UF " + estadoDTO.UfEstado + "!";
-                    _response.Data = new { errorUfEstado = "Já existe o UF " + estadoDTO.UfEstado + "!" };
+                    _response.Message = "Dado(s) com conflito!";
+                    _response.Data = errors;
                     return BadRequest(_response);
                 }
 
@@ -133,22 +133,22 @@ namespace SGED.Controllers
                 if (existingEstadoDTO is null)
                 {
                     _response.SetNotFound();
-                    _response.Message = "O Estado informado não existe!";
+                    _response.Message = "Dado(s) com conflito!";
                     _response.Data = new { errorId = "O Estado informado não existe!" };
                     return NotFound(_response);
                 }
-                else if (await EstadoExists(estadoDTO))
+
+                dynamic errors = new ExpandoObject();
+                var hasErrors = false;
+
+                var estadosDTO = await _estadoService.GetAll();
+                CheckDuplicates(estadosDTO, estadoDTO, ref errors, ref hasErrors);
+
+                if (hasErrors)
                 {
                     _response.SetConflict();
-                    _response.Message = "Já existe o Estado " + estadoDTO.NomeEstado + "!";
-                    _response.Data = new { errorNomeEstado = "Já existe o Estado " + estadoDTO.NomeEstado + "!" };
-                    return BadRequest(_response);
-                }
-                else if (await UfExists(estadoDTO))
-                {
-                    _response.SetConflict();
-                    _response.Message = "Já existe o UF " + estadoDTO.UfEstado + "!";
-                    _response.Data = new { errorUfEstado = "Já existe o UF " + estadoDTO.UfEstado + "!" };
+                    _response.Message = "Dado(s) com conflito!";
+                    _response.Data = errors;
                     return BadRequest(_response);
                 }
 
@@ -177,7 +177,7 @@ namespace SGED.Controllers
                 if (estadoDTO is null)
                 {
                     _response.SetNotFound();
-                    _response.Message = "Estado não encontrado!";
+                    _response.Message = "Dado com conflito!";
                     _response.Data = new { errorId = "Estado não encontrado!" };
                     return NotFound(_response);
                 }
@@ -198,16 +198,27 @@ namespace SGED.Controllers
             }
         }
 
-        private async Task<bool> EstadoExists(EstadoDTO estadoDTO)
+        private static void CheckDuplicates(IEnumerable<EstadoDTO> estadosDTO, EstadoDTO estadoDTO, ref dynamic errors, ref bool hasErrors)
         {
-            var estadosDTO = await _estadoService.GetAll();
-            return estadosDTO.FirstOrDefault(e => e.Id != estadoDTO.Id && Operator.CompareString(e.NomeEstado, estadoDTO.NomeEstado)) is not null;
-        }
+            foreach (var estado in estadosDTO)
+            {
+                if (estadoDTO.Id == estado.Id)
+                {
+                    continue;
+                }
 
-        private async Task<bool> UfExists(EstadoDTO estadoDTO)
-        {
-            var estadosDTO = await _estadoService.GetAll();
-            return estadosDTO.FirstOrDefault(e => e.Id != estadoDTO.Id && Operator.CompareString(e.UfEstado, estadoDTO.UfEstado)) is not null;
+                if (Operator.CompareString(estadoDTO.NomeEstado, estado.NomeEstado))
+                {
+                    errors.errorNomeEstado = "Já existe o Estado " + estadoDTO.NomeEstado + "!";
+                    hasErrors = true;
+                }
+
+                if (Operator.CompareString(estadoDTO.UfEstado, estado.UfEstado))
+                {
+                    errors.errorUfEstado = "Já existe o UF " + estadoDTO.UfEstado + "!";
+                    hasErrors = true;
+                }
+            }
         }
     }
 }

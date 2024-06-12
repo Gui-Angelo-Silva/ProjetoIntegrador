@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { CaretRight, CaretLeft } from '@phosphor-icons/react';
-import Person3Icon from '@mui/icons-material/Person3';
+import { CaretRight, CaretLeft, HardDrives } from '@phosphor-icons/react';
+import FolderCopyIcon from '@mui/icons-material/FolderCopy';
 import DescriptionIcon from '@mui/icons-material/Description';
 import SaveIcon from '@mui/icons-material/Save';
 import GroupsIcon from '@mui/icons-material/Groups';
@@ -73,8 +73,8 @@ export default function SideBarAdm() {
                     isSidebarExpanded={isSidebarExpanded}
                 />
                 <MenuItem
-                    icon={Person3Icon}
-                    text="Atendente"
+                    icon={FolderCopyIcon}
+                    text="Controle"
                     onClick={handleToggleAtendente}
                     isSidebarExpanded={isSidebarExpanded}
                     isOpen={isAtendenteOpen}
@@ -85,7 +85,7 @@ export default function SideBarAdm() {
                         <SubMenuItem
                             icon={SaveIcon}
                             text="Cadastros"
-                            onClick={() => clearSegment("controle")}
+                            onClick={() => clearSegment("cadastros")}
                             isSidebarExpanded={isSidebarExpanded}
                         />
                         <SubMenuItem

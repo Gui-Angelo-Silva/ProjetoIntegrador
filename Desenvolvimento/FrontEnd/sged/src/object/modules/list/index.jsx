@@ -32,7 +32,13 @@ function ListModule() {
         filterList();
     }, [searchTerm, searchBy, list]);
 
-    const [currentPage, setCurrentPage] = useState(1);
+    useEffect(() => {
+        if (list.length >= 0 && currentPage === 0) {
+            setCurrentPage(1);
+        }
+    }, [list]);
+
+    const [currentPage, setCurrentPage] = useState(0);
     let itemsPerPage = 10;
     let totalItems = listToRender.length;
     let totalPages = Math.ceil(totalItems / itemsPerPage);

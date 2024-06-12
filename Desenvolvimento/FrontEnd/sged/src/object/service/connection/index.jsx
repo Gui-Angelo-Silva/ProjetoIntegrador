@@ -175,14 +175,15 @@ export default class ConnectionService {
     }
 
     getList() {
-        return this.response.data ?
+        return this.response.data && Array.isArray(this.response.data) ?
             this.response.data
             : [];
     }
-
+    
     getObject() {
-        return this.response.data ?
+        return this.response.data && !Array.isArray(this.response.data) && typeof this.response.data === 'object' ?
             this.response.data
             : null;
     }
+    
 }

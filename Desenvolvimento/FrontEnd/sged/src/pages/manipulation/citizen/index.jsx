@@ -22,7 +22,7 @@ export default function Citizen() {
         componentMounted();
     }, []);
 
-    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
+    const connection = new ConnectionService();
     const citizen = CitizenClass();
     const list = ListModule();
     const selectBox = SelectModule();

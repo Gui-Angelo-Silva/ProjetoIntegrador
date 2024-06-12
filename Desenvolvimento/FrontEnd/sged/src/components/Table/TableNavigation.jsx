@@ -1,13 +1,44 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 
 const TableNavigation = ({ onPageChange, currentPage, totalPages }) => {
-    React.useEffect(() => {
+    const [showModal, setShowModal] = useState(false);
+    const modalRef = useRef(null);
+
+    useEffect(() => {
         if (currentPage > totalPages) {
             onPageChange(totalPages);
         }
     }, [currentPage, totalPages, onPageChange]);
+
+    const handleClickOutside = (event) => {
+        if (modalRef.current && !modalRef.current.contains(event.target)) {
+            setShowModal(false);
+        }
+    };
+
+    useEffect(() => {
+        if (showModal) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showModal]);
+
+    const handleSelectClick = () => {
+        if (totalPages > 0) {
+            setShowModal(true);
+        }
+    };
+
+    const handlePageChange = (page) => {
+        setShowModal(false);
+        onPageChange(page);
+    };
 
     return (
         <>
@@ -15,23 +46,34 @@ const TableNavigation = ({ onPageChange, currentPage, totalPages }) => {
                 <button onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1} aria-label="Página Anterior">
                     <CaretLeft size={22} className="text-[#58AFAE]" />
                 </button>
-                <select
+                <button
+                    onClick={handleSelectClick}
                     className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5]"
-                    value={currentPage}
-                    onChange={(e) => onPageChange(Number(e.target.value))}
                     aria-label="Selecionar Página"
+                    style={{ cursor: totalPages > 0 ? 'pointer' : 'default', minWidth: '50px', minHeight: '35px' }}
                 >
-                    {[...Array(totalPages)].map((_, index) => (
-                        <option key={index + 1} value={index + 1}>
-                            {index + 1}
-                        </option>
-                    ))}
-                </select>
+                    {totalPages > 0 ? currentPage : ''}
+                </button>
                 <button onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages} aria-label="Próxima Página">
                     <CaretRight size={22} className="text-[#58AFAE]" />
                 </button>
             </div>
             <div className="mt-4" />
+            {showModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div ref={modalRef} className="bg-white p-4 rounded shadow-lg" style={{ minWidth: '300px', minHeight: '200px', overflow: 'auto' }}>
+                        <div className="grid gap-2" style={{
+                            gridTemplateColumns: `repeat(${totalPages > 20 ? 3 : totalPages > 10 ? 2 : 1}, 1fr)`
+                        }}>
+                            {[...Array(totalPages)].map((_, index) => (
+                                <button key={index + 1} onClick={() => handlePageChange(index + 1)} className="p-2 border rounded hover:bg-gray-200">
+                                    {index + 1}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 };

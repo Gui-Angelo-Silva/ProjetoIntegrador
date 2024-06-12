@@ -89,30 +89,32 @@ export default function NavBar() {
           height: 64,
         }}
       >
-        <Typography sx={{ fontSize: '20px', marginLeft: '8px', display: 'flex', alignItems: 'center', maxWidth: 'calc(100% - 48px)' }}>
-          <>
-            <img
-              src={user.personPicture}
-              style={{
-                cursor: 'pointer',
-                borderRadius: '50%',
-                width: '35px',
-                height: '35px',
-                objectFit: 'cover',
-                border: '1px solid #2D636B',
-                boxShadow: '0 0 0 1px white',
-                backgroundColor: 'white',
-                marginRight: '8px'
-              }}
-              alt="User"
-            />
-            <div>
+        <div style={{ display: 'flex', alignItems: 'center', maxWidth: 'calc(100% - 48px)' }}>
+          <img
+            src={user.personPicture}
+            style={{
+              cursor: 'pointer',
+              borderRadius: '50%',
+              width: '35px',
+              height: '35px',
+              objectFit: 'cover',
+              border: '1px solid #2D636B',
+              boxShadow: '0 0 0 1px white',
+              backgroundColor: 'white',
+              marginRight: '8px'
+            }}
+            alt="User"
+          />
+          <div>
+            <Typography sx={{ fontSize: '20px', marginLeft: '8px', display: 'flex', alignItems: 'center' }}>
               {user.personName.length > 20 ? user.personName.substring(0, 14) + '...' : user.personName}
-              <Typography sx={{ fontSize: '12px', marginLeft: '4px', marginTop: '-5px' }}>{user.personEmail}</Typography>
-            </div>
-          </>
-        </Typography>
-
+            </Typography>
+            <Typography sx={{ fontSize: '12px', marginLeft: '4px', marginTop: '-5px' }}>
+              {user.personEmail}
+            </Typography>
+          </div>
+        </div>
+  
         <IconButton onClick={toggleDrawer(false)} style={{ color: 'white' }}>
           <X size={24} />
         </IconButton>

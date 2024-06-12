@@ -42,21 +42,33 @@ const TableNavigation = ({ onPageChange, currentPage, totalPages }) => {
 
     return (
         <>
-            <div className="pt-4 flex justify-center gap-2 border-t-[1px] border-[#C8E5E5]">
-                <button onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1} aria-label="Página Anterior">
-                    <CaretLeft size={22} className="text-[#58AFAE]" />
-                </button>
+            <div className="pt-4 flex items-center border-t-[1px] border-[#C8E5E5] relative">
+                {currentPage > 1 && (
+                    <button
+                        onClick={() => onPageChange(currentPage - 1)}
+                        aria-label="Página Anterior"
+                        className="absolute left-[calc(50%-60px)]"
+                    >
+                        <CaretLeft size={22} className="text-[#58AFAE]" />
+                    </button>
+                )}
                 <button
                     onClick={handleSelectClick}
-                    className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5]"
+                    className="border-[1px] border-[#C8E5E5] rounded-sm hover:border-[#C8E5E5] mx-auto"
                     aria-label="Selecionar Página"
                     style={{ cursor: totalPages > 0 ? 'pointer' : 'default', minWidth: '50px', minHeight: '35px' }}
                 >
                     {totalPages > 0 ? currentPage : ''}
                 </button>
-                <button onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages} aria-label="Próxima Página">
-                    <CaretRight size={22} className="text-[#58AFAE]" />
-                </button>
+                {currentPage < totalPages && (
+                    <button
+                        onClick={() => onPageChange(currentPage + 1)}
+                        aria-label="Próxima Página"
+                        className="absolute right-[calc(50%-60px)]"
+                    >
+                        <CaretRight size={22} className="text-[#58AFAE]" />
+                    </button>
+                )}
             </div>
             <div className="mt-4" />
             {showModal && (

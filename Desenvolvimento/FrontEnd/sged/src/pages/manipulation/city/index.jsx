@@ -83,6 +83,8 @@ export default function City() {
 
     const GetCity = async () => {
         await connection.endpoint("Cidade").get();
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
+
         list.setList(connection.getList());
     };
 
@@ -91,6 +93,7 @@ export default function City() {
 
         if (city.verifyData()) {
             await connection.endpoint("Cidade").post(city.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -104,6 +107,7 @@ export default function City() {
 
         if (city.verifyData()) {
             await connection.endpoint("Cidade").put(city.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -116,6 +120,7 @@ export default function City() {
         setInOperation(true);
 
         await connection.endpoint("Cidade").delete(city.getData().id);
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

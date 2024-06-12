@@ -71,6 +71,8 @@ export default function TypeDocument() {
 
     const GetTypeDocument = async () => {
         await connection.endpoint("TipoDocumento").get();
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
+
         list.setList(connection.getList());
     };
 
@@ -79,6 +81,7 @@ export default function TypeDocument() {
 
         if (typedocument.verifyData()) {
             await connection.endpoint("TipoDocumento").post(typedocument.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -92,6 +95,7 @@ export default function TypeDocument() {
 
         if (typedocument.verifyData()) {
             await connection.endpoint("TipoDocumento").put(typedocument.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -104,6 +108,7 @@ export default function TypeDocument() {
         setInOperation(true);
 
         await connection.endpoint("TipoDocumento").delete(typedocument.getData().id);
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

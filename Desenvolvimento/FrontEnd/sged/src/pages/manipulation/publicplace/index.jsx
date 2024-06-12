@@ -89,6 +89,8 @@ export default function PublicPlace() {
 
     const GetPublicPlace = async () => {
         await connection.endpoint("Logradouro").get();
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
+
         list.setList(connection.getList());
     };
 
@@ -96,6 +98,7 @@ export default function PublicPlace() {
         setInOperation(false);
         if (publicplace.verifyData(list.list)) {
             await connection.endpoint("Logradouro").post(publicplace.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -111,6 +114,7 @@ export default function PublicPlace() {
 
         if (publicplace.verifyData(list.list)) {
             await connection.endpoint("Logradouro").put(publicplace.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -125,6 +129,7 @@ export default function PublicPlace() {
         setInOperation(true);
 
         await connection.endpoint("Logradouro").delete(publicplace.getData().id);
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

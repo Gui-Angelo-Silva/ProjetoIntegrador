@@ -70,6 +70,8 @@ export default function TypePublicPlace() {
 
     const GetTypePublicPlace = async () => {
         await connection.endpoint("TipoLogradouro").get();
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
+
         list.setList(connection.getList());
     };
 
@@ -78,6 +80,7 @@ export default function TypePublicPlace() {
 
         if (typepublicplace.verifyData()) {
             await connection.endpoint("TipoLogradouro").post(typepublicplace.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -93,6 +96,7 @@ export default function TypePublicPlace() {
 
         if (typepublicplace.verifyData()) {
             await connection.endpoint("TipoLogradouro").put(typepublicplace.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -107,6 +111,7 @@ export default function TypePublicPlace() {
         setInOperation(true);
 
         await connection.endpoint("TipoLogradouro").delete(typepublicplace.getData().id);
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

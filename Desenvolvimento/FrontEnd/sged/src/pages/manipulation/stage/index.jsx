@@ -80,6 +80,8 @@ export default function Stage() {
 
     const GetStage = async () => {
         await connection.endpoint("Etapa").get();
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
+
         list.setList(connection.getList());
     };
 
@@ -88,6 +90,7 @@ export default function Stage() {
 
         if (stage.verifyData(list.list)) {
             await connection.endpoint("Etapa").post(stage.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -101,6 +104,7 @@ export default function Stage() {
 
         if (stage.verifyData(list.list)) {
             await connection.endpoint("Etapa").put(stage.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -113,6 +117,7 @@ export default function Stage() {
         setInOperation(true);
 
         await connection.endpoint("Etapa").delete(stage.getData().id);
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

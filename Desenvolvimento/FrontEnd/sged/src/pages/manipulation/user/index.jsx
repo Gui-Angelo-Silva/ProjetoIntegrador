@@ -79,6 +79,8 @@ export default function User() {
 
     const GetUser = async () => {
         await connection.endpoint("Usuario").get();
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
+
         list.setList(connection.getList());
     };
 
@@ -87,6 +89,7 @@ export default function User() {
 
         if (user.verifyData()) {
             await connection.endpoint("Usuario").post(user.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -102,6 +105,7 @@ export default function User() {
 
         if (user.verifyData()) {
             await connection.endpoint("Usuario").put(user.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -116,6 +120,7 @@ export default function User() {
         setInOperation(true);
 
         await connection.endpoint("Usuario").delete(user.getData().id);
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

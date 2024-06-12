@@ -1,16 +1,23 @@
+// React and Reactstrap imports
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
+
+// Icon imports
 import { FilePlus, Pen, Trash, Warning } from "@phosphor-icons/react";
+
+// Component imports
 import LinkTitle from "../../../components/Title/LinkTitle";
 import SearchBar from "../../../components/Search/SearchBar";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
 import CancelButton from "../../../components/Button/CancelButton";
 import CustomTable from "../../../components/Table/Table";
 import PopUpManager from "../../../components/PopUpManager";
-import PopUp from "../../../components/PopUp";
 import LayoutPage from "../../../components/Layout/LayoutPage";
 import ButtonTable from "../../../components/Table/ButtonTable";
+import PopUp from "../../../components/PopUp";
+
+// Module and service imports
 import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';

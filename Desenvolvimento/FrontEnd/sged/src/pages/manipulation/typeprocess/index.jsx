@@ -70,6 +70,8 @@ export default function TypeProcess() {
 
     const GetTypeProcess = async () => {
         await connection.endpoint("TipoProcesso").get();
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
+
         list.setList(connection.getList());
     };
 
@@ -78,6 +80,7 @@ export default function TypeProcess() {
 
         if (typeprocess.verifyData()) {
             await connection.endpoint("TipoProcesso").post(typeprocess.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -91,6 +94,7 @@ export default function TypeProcess() {
 
         if (typeprocess.verifyData()) {
             await connection.endpoint("TipoProcesso").put(typeprocess.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -103,6 +107,7 @@ export default function TypeProcess() {
         setInOperation(true);
 
         await connection.endpoint("TipoProcesso").delete(typeprocess.getData().id);
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

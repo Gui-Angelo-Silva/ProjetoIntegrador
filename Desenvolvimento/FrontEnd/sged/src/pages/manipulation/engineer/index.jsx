@@ -74,6 +74,8 @@ export default function Engineer() {
 
     const GetEngineer = async () => {
         await connection.endpoint("Engenheiro").get();
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
+
         list.setList(connection.getList());
     };
 
@@ -82,6 +84,7 @@ export default function Engineer() {
 
         if (engineer.verifyData()) {
             await connection.endpoint("Engenheiro").post(engineer.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -97,6 +100,7 @@ export default function Engineer() {
 
         if (engineer.verifyData()) {
             await connection.endpoint("Engenheiro").put(engineer.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);

@@ -93,6 +93,8 @@ export default function RealState() {
 
     const GetRealState = async () => {
         await connection.endpoint("Imovel").get();
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
+
         list.setList(connection.getList());
     };
 
@@ -103,6 +105,7 @@ export default function RealState() {
 
         if (realstate.verifyData(list.list)) {
             await connection.endpoint("Imovel").post(realstate.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -120,6 +123,7 @@ export default function RealState() {
 
         if (realstate.verifyData(list.list)) {
             await connection.endpoint("Imovel").put(realstate.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -134,6 +138,7 @@ export default function RealState() {
         setInOperation(true);
 
         await connection.endpoint("Imovel").delete(realstate.getData().id);
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

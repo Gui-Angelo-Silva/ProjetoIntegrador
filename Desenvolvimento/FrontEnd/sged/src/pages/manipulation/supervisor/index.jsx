@@ -77,6 +77,8 @@ export default function Supervisor() {
 
     const GetSupervisor = async () => {
         await connection.endpoint("Fiscal").get();
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
+
         list.setList(connection.getList());
     };
 
@@ -85,6 +87,7 @@ export default function Supervisor() {
 
         if (fiscal.verifyData()) {
             await connection.endpoint("Fiscal").post(fiscal.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -100,6 +103,7 @@ export default function Supervisor() {
 
         if (fiscal.verifyData()) {
             await connection.endpoint("Fiscal").put(fiscal.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -114,6 +118,7 @@ export default function Supervisor() {
         setInOperation(true);
 
         await connection.endpoint("Fiscal").delete(fiscal.getData().id);
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

@@ -1,18 +1,25 @@
+// React and Reactstrap imports
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
+
+// Component imports
 import LinkTitle from "../../../components/Title/LinkTitle";
 import ButtonTable from "../../../components/Table/ButtonTable";
+import CustomTable from "../../../components/Table/Table";
+import RegistrationButton from "../../../components/Button/RegistrationButton";
+import LayoutPage from "../../../components/Layout/LayoutPage";
+import PopUp from "../../../components/PopUp";
+
+// Asset imports
 import Search from "../../../assets/pages/SearchImg";
 
+// Module and service imports
 import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
 import CitizenClass from '../../../object/class/citizen';
 import SelectModule from '../../../object/modules/select';
-import CustomTable from "../../../components/Table/Table";
-import RegistrationButton from "../../../components/Button/RegistrationButton";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 
 export default function Citizen() {
 
@@ -73,7 +80,9 @@ export default function Citizen() {
     };
 
     const GetCitizen = async () => {
-        await connection.endpoint("Cidade").get();
+        await connection.endpoint("Municipe").get();
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
+        
         list.setList(connection.getList());
     };
 
@@ -81,7 +90,8 @@ export default function Citizen() {
         setInOperation(true);
 
         if (citizen.verifyData()) {
-            await connection.endpoint("Cidade").post(citizen.getData());
+            await connection.endpoint("Municipe").post(citizen.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -94,7 +104,8 @@ export default function Citizen() {
         setInOperation(true);
 
         if (citizen.verifyData()) {
-            await connection.endpoint("Cidade").put(citizen.getData());
+            await connection.endpoint("Municipe").put(citizen.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -106,7 +117,8 @@ export default function Citizen() {
     const DeleteCitizen = async () => {
         setInOperation(true);
 
-        await connection.endpoint("Cidade").delete(citizen.getData().id);
+        await connection.endpoint("Municipe").delete(citizen.getData().id);
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

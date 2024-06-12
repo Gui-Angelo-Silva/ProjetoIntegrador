@@ -80,6 +80,8 @@ export default function Neighborhood() {
 
     const GetNeighborhood = async () => {
         await connection.endpoint("Bairro").get();
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
+
         list.setList(connection.getList());
     };
 
@@ -88,6 +90,7 @@ export default function Neighborhood() {
 
         if (neighborhood.verifyData(list.list)) {
             await connection.endpoint("Bairro").post(neighborhood.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalInsert(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -103,6 +106,7 @@ export default function Neighborhood() {
 
         if (neighborhood.verifyData(list.list)) {
             await connection.endpoint("Bairro").put(neighborhood.getData());
+            managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalEdit(!connection.response.status);
             setUpdateData(connection.response.status);
@@ -117,6 +121,7 @@ export default function Neighborhood() {
         setInOperation(true);
 
         await connection.endpoint("Bairro").delete(neighborhood.getData().id);
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
         openCloseModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);

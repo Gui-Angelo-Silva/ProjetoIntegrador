@@ -14,9 +14,9 @@ const TableRow = ({ item }) => {
         <div
           key={index}
           className={`flex items-center justify-center border-t-[1px] border-r-[1px]  border-[#C8E5E5] text-gray-700 p-2 text-left ${index === 0 ? 'truncate' : ''}`}
-          // ${index === 0 ? "justify-start pl-5" : "justify-center" }
+        // ${index === 0 ? "justify-start pl-5" : "justify-center" }
         >
-          {key.toLowerCase().includes('descricao') ? `${value.substring(0, 50)}${value.length > 50 ? '...' : ''}` : value}
+          {key.toLowerCase().includes('descricao') ? value.length <= 40 ? value : `${value.substring(0, value.lastIndexOf(' ', 40))}...` : value}
         </div>
       ))}
     </li>

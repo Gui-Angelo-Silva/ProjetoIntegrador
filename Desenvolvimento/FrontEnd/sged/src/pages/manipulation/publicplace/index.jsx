@@ -249,6 +249,7 @@ export default function PublicPlace() {
             cep: logradouro.cep,
             numeroInicial: logradouro.numeroInicial,
             numeroFinal: logradouro.numeroFinal,
+            rua: logradouro.ruaLogradouro,
             nomeBairro: getBairro(logradouro.idBairro),
             descricao: getTipoLogradouro(logradouro.idTipoLogradouro),
             acoes: (
@@ -303,8 +304,8 @@ export default function PublicPlace() {
                 </div>
 
                 <CustomTable
-                    totalColumns={6}
-                    headers={["CEP", "Número Inicial", "Número Final", "Bairro", "Descrição", "Ações"]}
+                    totalColumns={7}
+                    headers={["CEP", "Número Inicial", "Número Final", "Rua", "Bairro", "Descrição", "Ações"]}
                     data={dataForTable}
                     onPageChange={(page) => list.goToPage(page)}
                     currentPage={list.currentPage}

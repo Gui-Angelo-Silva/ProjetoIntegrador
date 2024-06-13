@@ -142,30 +142,8 @@ export default function TypeDocument() {
         if (!searchTerm) {
             list.setListToRender(list.list);
         } else {
-            if (searchBy === 'nomeEtapa') {
-                const filteredStage = listStage.list.filter((stage) => {
-                    const stageFilter = stage[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                    return stageFilter.toLowerCase().includes(searchTermNormalized.toLowerCase());
-                });
-
-                const filteredIds = filteredStage.map((stage) => stage.id);
-
-                const filtered = list.list.filter((typedocument) => {
-                    return filteredIds.includes(typedocument.idEtapa);
-                });
-
-                list.setListToRender(filtered);
-            } else if (searchBy === 'descricaoTipoDocumento') {
-                const filtered = list.list.filter((typedocument) => {
-                    const typedocumentFilter = typedocument[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                    return typedocumentFilter.toLowerCase().includes(searchTermNormalized.toLowerCase());
-                });
-
-                list.setListToRender(filtered);
-            } else {
-                list.setSearchTerm(searchTerm);
-                list.setSearchBy(searchBy);
-            }
+            list.setSearchTerm(searchTerm);
+            list.setSearchBy(searchBy);
         }
     };
 
@@ -181,10 +159,26 @@ export default function TypeDocument() {
         }
     }, [updateData]);
 
+    const getStatus = (status) => {
+        switch (status) {
+            case 1:
+                return "Habilitado";
+            case 2:
+                return "Pendente";
+            case 3:
+                return "Em Espera";
+            case 4:
+                return "Bloqueado";
+            case 5:
+                return "Desativado";
+        }
+    };
+
     const dataForTable = list.currentList.map((tipodocumento) => {
         return {
-            nomeTipoDocumento: tipodocumento.nomeTipoDocumento,
-            descricaoTipoDocumento: tipodocumento.descricaoTipoDocumento,
+            nome: tipodocumento.nomeTipoDocumento,
+            descricao: tipodocumento.descricaoTipoDocumento,
+            status: getStatus(tipodocumento.status),
             acoes: (
                 <div className="flex items-center justify-center gap-2 text-gray-700">
                     <ButtonTable func={() => SelectTypeDocument(tipodocumento, "Editar")} text="Editar" />
@@ -192,7 +186,7 @@ export default function TypeDocument() {
                 </div>
             )
         }
-    })
+    });
 
     return (
         <>
@@ -234,11 +228,11 @@ export default function TypeDocument() {
                     </div>
                 </div>
                 <CustomTable
-                    totalColumns={3}
-                    headers={["Tipo de Documento", "Descrição", "Ações"]}
+                    totalColumns={4}
+                    headers={["Tipo Documento", "Descrição", "Status", "Ações"]}
                     data={dataForTable}
                     onPageChange={(page) => list.goToPage(page)}
-                    currentPage={list.currentList}
+                    currentPage={list.currentPage}
                     totalPages={list.totalPages}
                 />
                 <Modal isOpen={modalInsert} >

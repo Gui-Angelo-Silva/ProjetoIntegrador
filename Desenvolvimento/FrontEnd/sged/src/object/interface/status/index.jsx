@@ -1,11 +1,11 @@
 import { useState } from "react";
 
 function StatusInterface() {
-    const [status, setStatus] = useState(false);
+    const [status, setStatus] = useState(0);
 
     function canAction() {
-        status !== undefined? 
-            status :
+        status !== 0 ?
+            status === 1 :
             false
     }
 

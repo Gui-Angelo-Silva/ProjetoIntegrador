@@ -8,7 +8,7 @@ function PublicPlaceClass() {
     const [publicPlaceCep, setPublicPlaceCep] = useState("");
     const [publicPlaceInitialNumber, setPublicPlaceInitialNumber] = useState("");
     const [publicPlaceFinalNumber, setPublicPlaceFinalNumber] = useState("");
-    const [publicPlaceStreet, setPublicPlaceStreet] = useState('')
+    const [publicPlaceStreet, setPublicPlaceStreet] = useState("")
     const [idNeighborhood, setIdNeighborhood] = useState(0);
     const [idTypePublicPlace, setIdTypePublicPlace] = useState(0);
 
@@ -192,10 +192,9 @@ function PublicPlaceClass() {
     return {
         // Atributos
         publicPlaceId,
-        setPublicPlaceId,
-        publicPlaceCep,
         publicPlaceStreet,
         setPublicPlaceStreet,
+        publicPlaceCep,
         setPublicPlaceCep,
         publicPlaceInitialNumber,
         setPublicPlaceInitialNumber,

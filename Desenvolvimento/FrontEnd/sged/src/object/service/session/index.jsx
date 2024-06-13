@@ -23,8 +23,8 @@ function SessionService() {
 
         if (token) {
             try {
-                await connection.endpoint("Sessao").action("GetUser").data(token).get();
-                return connection.response.status && connection.response.data.status? connection.response.data.response : null;
+                await connection.endpoint("Sessao").data(token).action("GetUser").get();
+                return connection.response.status? connection.response.data : null;
 
             } catch (error) {
                 return null;
@@ -64,7 +64,7 @@ function SessionService() {
             await connection.endpoint("Sessao").action("Autentication").post(object.getData());
 
             if (connection.response.status) {
-                setToken(connection.response.data.response);
+                setToken(connection.response.data);
 
                 if (object.persistLogin) {
                     setLogin(object);
@@ -82,7 +82,7 @@ function SessionService() {
 
             } else {
                 defaultToken();
-                return { validation: autentication, message: connection.response.data.response };
+                return { validation: autentication, message: connection.response.data };
             }
 
         } catch (error) {
@@ -125,7 +125,7 @@ function SessionService() {
             try {
                 await connection.endpoint("Sessao").action("Validation").put(data);
 
-                if (connection.response.status) setToken(connection.response.data.response);
+                if (connection.response.status) setToken(connection.response.data);
                 else defaultToken();
 
                 return true;

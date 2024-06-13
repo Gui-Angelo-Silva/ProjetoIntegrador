@@ -42,8 +42,8 @@ public class TipoProcessoService : ITipoProcessoService
         await _tipoProcessoRepository.Update(tipoProcesso);
     }
 
-    public async Task Delete(int id)
+    public async Task Remove(int id)
     {
-        await _tipoProcessoRepository.Delete(id);
+        await _tipoProcessoRepository.Remove(id);
     }
 }

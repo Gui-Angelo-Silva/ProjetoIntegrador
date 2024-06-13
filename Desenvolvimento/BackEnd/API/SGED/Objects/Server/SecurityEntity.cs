@@ -6,7 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace SGED.Objects.Utilities
+namespace SGED.Objects.Server
 {
     public class SecurityEntity
     {

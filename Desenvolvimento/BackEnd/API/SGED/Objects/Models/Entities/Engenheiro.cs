@@ -30,5 +30,7 @@ namespace SGED.Objects.Models.Entities
 
         [Column("creaengenheiro")]
         public string CreaEngenheiro { get; set; }
+
+        public ICollection<Instalacao>? Instalacoes { get; set; }
     }
 }

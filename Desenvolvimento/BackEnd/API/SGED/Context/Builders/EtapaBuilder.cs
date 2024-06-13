@@ -8,15 +8,19 @@ namespace SGED.Context.Builders
         public static void Build(ModelBuilder modelBuilder)
         {
             // Builder
-            modelBuilder.Entity<Etapa>().HasKey(b => b.Id);
-            modelBuilder.Entity<Etapa>().Property(b => b.NomeEtapa).HasMaxLength(50).IsRequired();
-            modelBuilder.Entity<Etapa>().Property(b => b.DescricaoEtapa).HasMaxLength(250).IsRequired();
-            modelBuilder.Entity<Etapa>().Property(b => b.Posicao).IsRequired();
-            modelBuilder.Entity<Etapa>().Property(b => b.Status).IsRequired();
-            modelBuilder.Entity<Etapa>().HasOne(b => b.TipoProcesso).WithMany().HasForeignKey(b => b.IdTipoProcesso);
+            modelBuilder.Entity<Etapa>().HasKey(e => e.Id);
+            modelBuilder.Entity<Etapa>().Property(e => e.NomeEtapa).HasMaxLength(50).IsRequired();
+            modelBuilder.Entity<Etapa>().Property(e => e.DescricaoEtapa).HasMaxLength(250).IsRequired();
+            modelBuilder.Entity<Etapa>().Property(e => e.Posicao).IsRequired();
+            modelBuilder.Entity<Etapa>().Property(e => e.Status).IsRequired();
+            modelBuilder.Entity<Etapa>().Property(e => e.IdTipoProcesso).IsRequired();
 
             // Relacionamento: TipoProcesso -> Etapa
-            modelBuilder.Entity<TipoProcesso>().HasMany(p => p.Etapas).WithOne(b => b.TipoProcesso).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Etapa>()
+                .HasOne(e => e.TipoProcesso)
+                .WithMany(tp => tp.Etapas)
+                .HasForeignKey(e => e.IdTipoProcesso)
+                .OnDelete(DeleteBehavior.Cascade);
 
 
 

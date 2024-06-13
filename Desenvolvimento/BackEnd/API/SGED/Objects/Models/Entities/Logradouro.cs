@@ -11,6 +11,9 @@ namespace SGED.Objects.Models.Entities
         [Column("ceplogradouro")]
         public string Cep { get; set; }
 
+        [Column("rualogradouro")]
+        public string RuaLogradouro { get; set; }
+
         [Column("numeroInicial")]
         public string NumeroInicial { get; set; }
 
@@ -27,6 +30,6 @@ namespace SGED.Objects.Models.Entities
         [ForeignKey("idtipologradouro")]
         public int IdTipoLogradouro { get; set; }
 
-        public ICollection<Imovel>? Imovels { get; set; }
+        public ICollection<Imovel>? Imoveis { get; set; }
     }
 }

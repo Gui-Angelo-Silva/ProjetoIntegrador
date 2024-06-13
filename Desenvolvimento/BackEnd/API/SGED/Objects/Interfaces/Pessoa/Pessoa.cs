@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Net.Mail;
 using System.Text.RegularExpressions;
 
 namespace SGED.Objects.Interfaces.Pessoa
@@ -26,7 +27,61 @@ namespace SGED.Objects.Interfaces.Pessoa
             return statusIdentity;
         }
 
-        public static int CpfCnpj(this IPessoa pessoa)
+
+		public static bool VerificarEmail(string email)
+		{
+			bool status = true;
+
+			if (string.IsNullOrWhiteSpace(email))
+			{
+				status = false;
+			}
+			else if (email.Contains(' '))
+			{
+				status = false;
+			}
+			else
+			{
+				var hasAtSymbol = email.Contains('@');
+				var hasDot = email.Contains('.');
+				var lastDotPosition = email.LastIndexOf('.');
+				var quantSymbol = email.Split('@').Length - 1;
+				var indexSymbol = email.IndexOf('@');
+				var indexLastCaracter = email.Length - 1;
+
+				if (!hasAtSymbol || !hasDot || quantSymbol > 1 || lastDotPosition <= indexSymbol)
+				{
+					status = false;
+				}
+				else
+				{
+					var emailParts = email.Split('@');
+					if (emailParts.Length != 2)
+					{
+						status = false;
+					}
+					else
+					{
+						var emailAddress = emailParts[0];
+						var domain = emailParts[1];
+
+						if (string.IsNullOrEmpty(emailAddress) || string.IsNullOrEmpty(domain))
+						{
+							status = false;
+						}
+						else if (email[indexSymbol + 1] == '.' || email[indexLastCaracter] == '.')
+						{
+							status = false;
+						}
+					}
+				}
+			}
+
+			return status;
+		}
+
+
+		public static int CpfCnpj(this IPessoa pessoa)
         {
             var cpfCnpj = pessoa.CpfCnpjPessoa.Trim().Replace(".", "").Replace("-", "").Replace("/", "");
 
@@ -171,7 +226,8 @@ namespace SGED.Objects.Interfaces.Pessoa
 
         public static bool VerificarIe(string ie)
         {
-            ie = ie.Trim().Replace(".", "").Replace("-", "");
+            return true;
+            /*ie = ie.Trim().Replace(".", "").Replace("-", "");
 
             if (ie.Length != 12) return false;
 
@@ -201,7 +257,7 @@ namespace SGED.Objects.Interfaces.Pessoa
             string strDigito1 = intResto.ToString().Substring(intResto.ToString().Length - 1);
             strBase2 = ie.Substring(0, 8) + strDigito1 + ie.Substring(9, 3);
 
-            return strBase2 == ie;
+            return strBase2 == ie;*/
         }
     }
 }

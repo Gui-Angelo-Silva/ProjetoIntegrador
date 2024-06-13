@@ -9,10 +9,15 @@ namespace SGED.Objects.DTO.Entities
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "CEP do bairro requerido!")]
+        [Required(ErrorMessage = "O CEP do logradouro é requerido!")]
         [MinLength(9)]
         [MaxLength(9)]
         public string Cep { get; set; }
+
+        [Required(ErrorMessage = "A rua do logradouro é requerida!")]
+        [MinLength(3)]
+        [MaxLength(100)]
+        public string RuaLogradouro { get; set; }
 
         [MinLength(1)]
         [MaxLength(10)]
@@ -31,10 +36,10 @@ namespace SGED.Objects.DTO.Entities
         [JsonIgnore]
         public TipoLogradouro? TipoLogradouro { get; set; }
 
-        [Required(ErrorMessage = "O Tipo de logradouro é requerido!")]
+        [Required(ErrorMessage = "O Tipo de Logradouro é requerido!")]
         public int IdTipoLogradouro { get; set; }
 
         [JsonIgnore]
-        public ICollection<ImovelDTO>? ImovelDTOs { get; set; }
+        public ICollection<ImovelDTO>? ImoveisDTOs { get; set; }
     }
 }

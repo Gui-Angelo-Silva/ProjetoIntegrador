@@ -23,7 +23,13 @@ namespace SGED.Services.Entities
 			return _mapper.Map<IEnumerable<LogradouroDTO>>(logradouro);
 		}
 
-		public async Task<LogradouroDTO> GetById(int id)
+        public async Task<IEnumerable<LogradouroDTO>> GetByNeighbourhood(int idBairro)
+        {
+            var logradouro = await _logradouroRepository.GetByNeighbourhood(idBairro);
+            return _mapper.Map<IEnumerable<LogradouroDTO>>(logradouro);
+        }
+
+        public async Task<LogradouroDTO> GetById(int id)
 		{
 			var logradouro = await _logradouroRepository.GetById(id);
 			return _mapper.Map<LogradouroDTO>(logradouro);

@@ -7,11 +7,11 @@ const MenuItem = ({ icon: Icon, text, onClick, isSidebarExpanded, isOpen, hasDro
         onClick={onClick}
     >
         <Icon />
-        <span className={`w-full sm:inline-block pl-2 ${isSidebarExpanded ? "inline-block" : "hidden"}`}>
+        <span className={`w-full sm:inline-block pl-2 transition-opacity duration-300 ${isSidebarExpanded ? "inline-block opacity-100" : "hidden opacity-0"}`}>
             {text}
         </span>
         {hasDropdown && (
-            <div className={`sm:flex sm:justify-end sm:w-full pr-2 ${isSidebarExpanded ? "inline-block" : "hidden"}`}>
+            <div className={`sm:flex sm:justify-end sm:w-full pr-2 transition-opacity duration-300 ${isSidebarExpanded ? "inline-block opacity-100" : "hidden opacity-0"}`}>
                 <KeyboardArrowRightIcon className={isOpen ? 'transform rotate-90' : ''} />
             </div>
         )}

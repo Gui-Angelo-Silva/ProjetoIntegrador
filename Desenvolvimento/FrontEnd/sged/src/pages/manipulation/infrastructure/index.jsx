@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
+import Select from 'react-select';
 //import { motion } from "framer-motion";
 
 // Icon imports
@@ -22,11 +23,12 @@ import PopUp from "../../../components/PopUp";
 import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
-import StateClass from '../../../object/class/state';
+import InfrastructureClass from '../../../object/class/infrastructure';
 import ActionManager from '../../../object/modules/action';
 import CompareModule from '../../../object/modules/compare';
+import SelectModule from '../../../object/modules/select';
 
-export default function State() {
+export default function Infrastructure() {
 
     // Marking the assembled component
     const montage = useMontage();
@@ -35,15 +37,17 @@ export default function State() {
         montage.componentMounted();
     }, []);
 
-    // State and service initialization
+    // Infrastructure and service initialization
     const connection = new ConnectionService();
     const managerPopUp = PopUpManager();
+    const infrastructure = InfrastructureClass();
     const list = ListModule();
-    const state = StateClass();
+    const listTypeInfrastructure = ListModule();
+    const selectBoxTypeInfrastructure = SelectModule();
     const action = ActionManager();
     const compare = CompareModule();
 
-    // State hooks
+    // Infrastructure hooks
     const [modalInsert, setModalInsert] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
@@ -56,32 +60,47 @@ export default function State() {
     // useEffect hooks
     useEffect(() => {
         if (updateData) {
-            setUpdateData(false);
-            GetState();
+            GetTypeInfrastructure();
+            GetInfrastructure();
+
+            infrastructure.setIdTypeInfrastructure(listTypeInfrastructure.list[0]?.id);
 
             openCloseModalInsert(false);
             openCloseModalEdit(false);
             openCloseModalDelete(false);
+
+            setUpdateData(false);
         }
 
-        list.searchBy ? null : list.setSearchBy('nomeEstado');
+        list.searchBy ? null : list.setSearchBy('nomeInfraestrutura');
     }, [updateData]);
 
     useEffect(() => {
-        action.setStatus(state.dataValid ? 1 : 0);
-    }, [state.dataValid]);
-
-    useEffect(() => {
-        if (modalEdit && state.dataValid) {
-            state.setDataValid(!compare.compareObjects(state.getData()));
+        if (!modalInsert && !modalEdit && !modalDelete) {
+            selectBoxTypeInfrastructure.updateOptions(listTypeInfrastructure.list, "id", "nomeTipoInfraestrutura");
+            selectBoxTypeInfrastructure.selectOption(listTypeInfrastructure.list[0]?.id);
         }
-    }, [state.stateName, state.stateUf, state.dataValid]);
+    }, [listTypeInfrastructure.list, modalInsert, modalEdit, modalDelete]);
 
     useEffect(() => {
-        if (state.errorStateId.length !== 0) {
+        infrastructure.setIdTypeInfrastructure(selectBoxTypeInfrastructure.selectedOption.value ? selectBoxTypeInfrastructure.selectedOption.value : 0);
+    }, [selectBoxTypeInfrastructure.selectedOption]);
+
+    /*useEffect(() => {
+        action.setStatus(infrastructure.dataValid ? 1 : 0);
+    }, [infrastructure.dataValid]);
+
+    useEffect(() => {
+        if (modalEdit && infrastructure.dataValid) {
+            infrastructure.setDataValid(!compare.compareObjects(infrastructure.getData()));
+        }
+    }, [infrastructure.infrastructureName, infrastructure.infrastructureDescricao, infrastructure.dataValid]);
+
+    useEffect(() => {
+        if (infrastructure.errorInfrastructureId.length !== 0) {
             openCloseModalError(true);
         }
-    }, [state.errorStateId]);
+    }, [infrastructure.errorInfrastructureId]);
 
     useEffect(() => {
         let timer = null;
@@ -107,11 +126,11 @@ export default function State() {
         return () => {
             clearInterval(timer);
         };
-    }, [modalError]);
+    }, [modalError]);*/
 
-    // State selection handler
-    const selectState = (object, option) => {
-        state.setData(object);
+    // Infrastructure selection handler
+    const selectInfrastructure = (object, option) => {
+        infrastructure.setData(object);
 
         if (option === "Editar") {
             compare.setData(object);
@@ -126,8 +145,8 @@ export default function State() {
         setModalInsert(boolean);
 
         if (!boolean) {
-            state.clearError();
-            state.clearData();
+            infrastructure.clearError();
+            infrastructure.clearData();
         }
     };
 
@@ -135,8 +154,8 @@ export default function State() {
         setModalEdit(boolean);
 
         if (!boolean) {
-            state.clearError();
-            state.clearData();
+            infrastructure.clearError();
+            infrastructure.clearData();
             compare.setData({});
         }
     };
@@ -145,13 +164,13 @@ export default function State() {
         setModalDelete(boolean);
 
         if (!boolean) {
-            state.clearData();
+            infrastructure.clearData();
         }
     };
 
     const openCloseModalError = (boolean) => {
-        state.clearError();
-        state.clearData();
+        infrastructure.clearError();
+        infrastructure.clearData();
 
         setModalInsert(false);
         setModalEdit(false);
@@ -164,51 +183,56 @@ export default function State() {
     };
 
     // CRUD operations
-    const GetState = async () => {
+    const GetTypeInfrastructure = async () => {
+        await connection.endpoint("TipoInfraestrutura").get();
+        listTypeInfrastructure.setList(connection.getList());
+    };
+
+    const GetInfrastructure = async () => {
         setLastRequisition("buscar");
 
-        await connection.endpoint("Estado").get();
+        await connection.endpoint("Infraestrutura").get();
         managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
         list.setList(connection.getList());
     };
 
-    const PostState = async () => {
+    const PostInfrastructure = async () => {
         setInOperation(true);
         setLastRequisition("cadastrar");
 
-        await connection.endpoint("Estado").post(state.getData());
+        await connection.endpoint("Infraestrutura").post(infrastructure.getData());
         managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
-        state.setError(connection.response.data);
+        //infrastructure.setError(connection.response.data);
         openCloseModalInsert(!connection.response.status);
         setUpdateData(connection.response.status);
 
         setInOperation(false);
     };
 
-    const PutState = async () => {
+    const PutInfrastructure = async () => {
         setInOperation(true);
         setLastRequisition("alterar");
 
-        await connection.endpoint("Estado").put(state.getData());
+        await connection.endpoint("Infraestrutura").put(infrastructure.getData());
         managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
-        state.setError(connection.response.data);
+        //infrastructure.setError(connection.response.data);
         openCloseModalEdit(!connection.response.status);
         setUpdateData(connection.response.status);
 
         setInOperation(false);
     };
 
-    const DeleteState = async () => {
+    const DeleteInfrastructure = async () => {
         setInOperation(true);
         setLastRequisition("excluir");
 
-        await connection.endpoint("Estado").delete(state.getData().id);
+        await connection.endpoint("Infraestrutura").delete(infrastructure.getData().id);
         managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
-        state.setError(connection.response.data);
+        //infrastructure.setError(connection.response.data);
         setModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);
 
@@ -216,14 +240,19 @@ export default function State() {
     };
 
     // Data for table
-    const dataForTable = list.currentList.map((estado) => {
+    const getTypeInfrastructure = (idTipoInfraestrutura) => {
+        const typeInfrastructure = listTypeInfrastructure.list.find((tipoInfraestrutura) => tipoInfraestrutura.id === idTipoInfraestrutura);
+        return typeInfrastructure ? typeInfrastructure.nomeTipoInfraestrutura : "N/A";
+    };
+
+    const dataForTable = list.currentList.map((infraestrutura) => {
         return {
-            nomeEstado: estado.nomeEstado,
-            ufEstado: estado.ufEstado,
+            nomeInfraestrutura: infraestrutura.nomeInfraestrutura,
+            nomeTipoInfraestrutura: getTypeInfrastructure(infraestrutura.idTipoInfraestrutura),
             acoes: (
                 <div className="flex items-center justify-center gap-2 text-gray-700">
-                    <ButtonTable func={() => selectState(estado, "Editar")} text="Editar" />
-                    <ButtonTable func={() => selectState(estado, "Excluir")} text="Excluir" />
+                    <ButtonTable func={() => selectInfrastructure(infraestrutura, "Editar")} text="Editar" />
+                    <ButtonTable func={() => selectInfrastructure(infraestrutura, "Excluir")} text="Excluir" />
                 </div>
             )
         };
@@ -245,20 +274,19 @@ export default function State() {
                 ))}
             </div>}
             <LayoutPage>
-                <LinkTitle pageName="Estado" />
+                <LinkTitle pageName="Infraestrutura" />
                 <SearchBar
-                    placeholder="Pesquisar Estado"
+                    placeholder="Pesquisar Infraestrutura"
                     onSearchChange={(value) => list.handleSearch(value)}
                     onSearchByChange={(value) => list.handleSearchBy(value)}
                     options={[
-                        { label: 'Estado', value: 'nomeEstado' },
-                        { label: 'Sigla', value: 'ufEstado' },
+                        { label: 'Nome', value: 'nomeInfraestrutura' }
                     ]}
                     button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
                 />
                 <CustomTable
                     totalColumns={3}
-                    headers={["Estado", "UF", "Ações"]}
+                    headers={["Nome", "Tipo Infraestrutura", "Ações"]}
                     data={dataForTable}
                     onPageChange={(page) => list.goToPage(page)}
                     currentPage={list.currentPage}
@@ -269,28 +297,35 @@ export default function State() {
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC] flex flex-col items-center">
                         <div className="flex items-center justify-center">
                             <FilePlus size={32} className="mr-2 text-write font-bold" />
-                            <h3 className="m-0">Cadastrar Estado</h3>
+                            <h3 className="m-0">Cadastrar Infraestrutura</h3>
                         </div>
                     </ModalHeader>
                     <ModalBody>
                         <div className="form-group">
                             <label className="text-[#444444]">Nome: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} onBlur={() => state.verifyName()} onChange={(e) => state.setStateName(e.target.value)} />
-                            {state.errorStateName.map((error, index) => (
-                                <div key={index} className="flex items-center">
-                                    <span className="text-sm text-red-600">- {error}</span>
-                                </div>
-                            ))}
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} onChange={(e) => infrastructure.setInfrastructureName(e.target.value)} />
                             <br />
-                            <label className="text-[#444444]">Sigla: <span className="text-red-600">*</span></label>
+                            <label className="text-[#444444]">Tipo Infraestrutura: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation} onBlur={() => state.verifyUf()} value={state.stateUf} onChange={(e) => state.setStateUf(e.target.value.toUpperCase())} maxLength={2} />
-                            {state.errorStateUf.map((error, index) => (
-                                <div key={index} className="flex items-center">
-                                    <span className="text-sm text-red-600">- {error}</span>
-                                </div>
-                            ))}
+                            <Select
+                                value={selectBoxTypeInfrastructure.selectedOption}
+                                onChange={selectBoxTypeInfrastructure.handleChange}
+                                onInputChange={selectBoxTypeInfrastructure.delayedSearch}
+                                loadOptions={selectBoxTypeInfrastructure.loadOptions}
+                                options={selectBoxTypeInfrastructure.options}
+                                placeholder="Pesquisar tipo infraestrutura . . ."
+                                isClearable
+                                isSearchable
+                                noOptionsMessage={() => {
+                                    if (listTypeInfrastructure.list.length === 0) {
+                                        return "Nenhum tipo infraestrutura cadastrado!";
+                                    } else {
+                                        return "Nenhuma opção encontrada!";
+                                    }
+                                }}
+                                className="style-select"
+                            />
                             <br />
                         </div>
                     </ModalBody>
@@ -298,8 +333,8 @@ export default function State() {
                         <div className="flex justify-center gap-4 ">
                             <CancelButton action={() => openCloseModalInsert(false)} liberate={!inOperation} />
                             <button
-                                className={`btn w-full ${state.dataValid && !inOperation ? 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' : 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5] hover:bg-gray-100'}`}
-                                onClick={() => state.dataValid && !inOperation ? PostState() : null}
+                                className={`btn w-full ${!inOperation ? 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' : 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5] hover:bg-gray-100'}`}
+                                onClick={() => !inOperation ? PostInfrastructure() : null}
                                 style={{ width: '120px' }}
                             >
                                 {!inOperation ? 'Cadastrar' : 'Aguarde...'}
@@ -311,37 +346,39 @@ export default function State() {
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC] flex flex-col items-center">
                         <div className="flex items-center justify-center">
                             <Pen size={32} className="mr-2 text-write font-bold" />
-                            <h3 className="m-0">Alterar Estado</h3>
+                            <h3 className="m-0">Alterar Infraestrutura</h3>
                         </div>
                     </ModalHeader>
                     <ModalBody>
                         <div className="form-group">
                             <label className="text-[#444444]">ID: </label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} readOnly value={state.stateId} />
-                            {state.errorStateId.map((error, index) => (
-                                <div key={index} className="flex items-center">
-                                    <span className="text-sm text-red-600">- {error}</span>
-                                </div>
-                            ))}
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} readOnly value={infrastructure.infrastructureId} />
                             <br />
                             <label className="text-[#444444]">Nome: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} onBlur={() => state.verifyName()} value={state.stateName} onChange={(e) => state.setStateName(e.target.value)} />
-                            {state.errorStateName.map((error, index) => (
-                                <div key={index} className="flex items-center">
-                                    <span className="text-sm text-red-600">- {error}</span>
-                                </div>
-                            ))}
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} value={infrastructure.infrastructureName} onChange={(e) => infrastructure.setInfrastructureName(e.target.value)} />
                             <br />
-                            <label className="text-[#444444]">Sigla: <span className="text-red-600">*</span></label>
+                            <label className="text-[#444444]">Tipo Infraestrutura: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation} onBlur={() => state.verifyUf()} value={state.stateUf} onChange={(e) => state.setStateUf(e.target.value.toUpperCase())} maxLength={2} />
-                            {state.errorStateUf.map((error, index) => (
-                                <div key={index} className="flex items-center">
-                                    <span className="text-sm text-red-600">- {error}</span>
-                                </div>
-                            ))}
+                            <Select
+                                value={selectBoxTypeInfrastructure.selectedOption}
+                                onChange={selectBoxTypeInfrastructure.handleChange}
+                                onInputChange={selectBoxTypeInfrastructure.delayedSearch}
+                                loadOptions={selectBoxTypeInfrastructure.loadOptions}
+                                options={selectBoxTypeInfrastructure.options}
+                                placeholder="Pesquisar tipo infraestrutura . . ."
+                                isClearable
+                                isSearchable
+                                noOptionsMessage={() => {
+                                    if (listTypeInfrastructure.list.length === 0) {
+                                        return "Nenhum tipo infraestrutura cadastrado!";
+                                    } else {
+                                        return "Nenhuma opção encontrada!";
+                                    }
+                                }}
+                                className="style-select"
+                            />
                             <br />
                         </div>
                     </ModalBody>
@@ -349,8 +386,8 @@ export default function State() {
                         <div className="flex justify-center gap-4 ">
                             <CancelButton action={() => openCloseModalEdit(false)} liberate={!inOperation} />
                             <button
-                                className={`btn w-full ${state.dataValid && !inOperation ? 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' : 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5] hover:bg-gray-100'}`}
-                                onClick={() => state.dataValid && !inOperation ? PutState() : null}
+                                className={`btn w-full ${!inOperation ? 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' : 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5] hover:bg-gray-100'}`}
+                                onClick={() => !inOperation ? PutInfrastructure() : null}
                                 style={{ width: '120px' }}
                             >
                                 {!inOperation ? 'Alterar' : 'Aguarde...'}
@@ -362,14 +399,14 @@ export default function State() {
                     <ModalHeader className="text-white text-xl bg-[#ff5c5c] border-[#BCBCBC] flex flex-col items-center justify-center">
                         <div className="flex items-center">
                             <Trash size={32} className="mr-2 text-write font-bold" />
-                            <h3 className="m-0">Excluir Estado</h3>
+                            <h3 className="m-0">Excluir Infraestrutura</h3>
                         </div>
                     </ModalHeader>
                     <ModalBody className="text-center flex flex-col justify-center">
                         <h3 className="pl-4 text-lg font-thin">
-                            Deseja realmente excluir o
+                            Deseja realmente excluir a
                             <br />
-                            Estado <span className="text-[#ff5c5c] font-bold">{state.stateName}</span>?
+                            Infraestrutura <span className="text-[#ff5c5c] font-bold">{infrastructure.infrastructureName}</span>?
                         </h3>
                     </ModalBody>
                     <ModalFooter className="flex justify-center">
@@ -377,7 +414,7 @@ export default function State() {
                             <CancelButton action={() => openCloseModalDelete(false)} liberate={!inOperation} />
                             <button
                                 className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#f05252] text-white hover:text-white hover:bg-[#BC2D2D]'}`}
-                                onClick={() => inOperation ? null : DeleteState()} disabled={inOperation}
+                                onClick={() => inOperation ? null : DeleteInfrastructure()} disabled={inOperation}
                                 style={{ width: '120px' }}
                             >
                                 {inOperation ? 'Aguarde' : 'Excluir'}
@@ -389,12 +426,12 @@ export default function State() {
                     <ModalHeader className="text-white text-xl bg-[#ff5c5c] border-[#BCBCBC] flex flex-col items-center justify-center">
                         <div className="flex items-center">
                             <Warning size={32} className="mr-2 text-write font-bold" />
-                            <h3 className="m-0">Erro ao {lastRequisition} o Estado</h3>
+                            <h3 className="m-0">Erro ao {lastRequisition} a Infraestrutura</h3>
                         </div>
                     </ModalHeader>
                     <ModalBody className="text-center flex flex-col justify-center items-center">
                         <h3 className="pl-4 text-lg font-thin">
-                            O Estado não existe no banco de dados.
+                            A Infraestrutura não existe no banco de dados.
                             <br />
                             O sistema irá carregar os dados atualizados após o fechamento da tela.
                             Tempo restante: {timeLeft}s

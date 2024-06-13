@@ -40,6 +40,34 @@ const TableNavigation = ({ onPageChange, currentPage, totalPages }) => {
         onPageChange(page);
     };
 
+    const renderPageButtons = () => {
+        const buttons = [];
+        const numGroups = Math.ceil(totalPages / 10);
+    
+        for (let i = 0; i < numGroups; i++) {
+            const startIndex = i * 10 + 1;
+            const endIndex = Math.min(startIndex + 9, totalPages);
+    
+            buttons.push(
+                <div key={`group-${i}`} className="flex flex-col">
+                    {Array.from({ length: endIndex - startIndex + 1 }, (_, index) => (
+                        <React.Fragment key={startIndex + index}> {/* Usar React.Fragment para evitar divs adicionais desnecessárias */}
+                            <button
+                                onClick={() => handlePageChange(startIndex + index)}
+                                className="p-2 border rounded hover:bg-gray-200"
+                            >
+                                {startIndex + index}
+                            </button>
+                            <div className="mt-2" />
+                        </React.Fragment>
+                    ))}
+                </div>
+            );
+        }
+    
+        return buttons;
+    };    
+
     return (
         <>
             <div className="pt-4 flex items-center border-t-[1px] border-[#C8E5E5] relative">
@@ -75,13 +103,11 @@ const TableNavigation = ({ onPageChange, currentPage, totalPages }) => {
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div ref={modalRef} className="bg-white p-4 rounded shadow-lg" style={{ minWidth: '300px', minHeight: '200px', overflow: 'auto' }}>
                         <div className="grid gap-2" style={{
-                            gridTemplateColumns: `repeat(${totalPages > 20 ? 3 : totalPages > 10 ? 2 : 1}, 1fr)`
+                            display: 'grid',
+                            gridTemplateColumns: `repeat(${Math.ceil(totalPages / 10)}, 1fr)`, // Cria uma nova coluna a cada 10 páginas
+                            gridAutoRows: 'minmax(40px, auto)', // Altura mínima de 40px
                         }}>
-                            {[...Array(totalPages)].map((_, index) => (
-                                <button key={index + 1} onClick={() => handlePageChange(index + 1)} className="p-2 border rounded hover:bg-gray-200">
-                                    {index + 1}
-                                </button>
-                            ))}
+                            {renderPageButtons()}
                         </div>
                     </div>
                 </div>

@@ -22,11 +22,11 @@ import PopUp from "../../../components/PopUp";
 import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
-import StateClass from '../../../object/class/state';
+import TopographyClass from '../../../object/class/topography';
 import ActionManager from '../../../object/modules/action';
 import CompareModule from '../../../object/modules/compare';
 
-export default function State() {
+export default function Topography() {
 
     // Marking the assembled component
     const montage = useMontage();
@@ -35,15 +35,15 @@ export default function State() {
         montage.componentMounted();
     }, []);
 
-    // State and service initialization
+    // Topography and service initialization
     const connection = new ConnectionService();
     const managerPopUp = PopUpManager();
     const list = ListModule();
-    const state = StateClass();
+    const topography = TopographyClass();
     const action = ActionManager();
     const compare = CompareModule();
 
-    // State hooks
+    // Topography hooks
     const [modalInsert, setModalInsert] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
@@ -57,31 +57,31 @@ export default function State() {
     useEffect(() => {
         if (updateData) {
             setUpdateData(false);
-            GetState();
+            GetTopography();
 
             openCloseModalInsert(false);
             openCloseModalEdit(false);
             openCloseModalDelete(false);
         }
 
-        list.searchBy ? null : list.setSearchBy('nomeEstado');
+        list.searchBy ? null : list.setSearchBy('nomeTopografia');
     }, [updateData]);
 
-    useEffect(() => {
-        action.setStatus(state.dataValid ? 1 : 0);
-    }, [state.dataValid]);
+    /*useEffect(() => {
+        action.setStatus(topography.dataValid ? 1 : 0);
+    }, [topography.dataValid]);
 
     useEffect(() => {
-        if (modalEdit && state.dataValid) {
-            state.setDataValid(!compare.compareObjects(state.getData()));
+        if (modalEdit && topography.dataValid) {
+            topography.setDataValid(!compare.compareObjects(topography.getData()));
         }
-    }, [state.stateName, state.stateUf, state.dataValid]);
+    }, [topography.topographyName, topography.topographyDescricao, topography.dataValid]);
 
     useEffect(() => {
-        if (state.errorStateId.length !== 0) {
+        if (topography.errorTopographyId.length !== 0) {
             openCloseModalError(true);
         }
-    }, [state.errorStateId]);
+    }, [topography.errorTopographyId]);
 
     useEffect(() => {
         let timer = null;
@@ -107,11 +107,11 @@ export default function State() {
         return () => {
             clearInterval(timer);
         };
-    }, [modalError]);
+    }, [modalError]);*/
 
-    // State selection handler
-    const selectState = (object, option) => {
-        state.setData(object);
+    // Topography selection handler
+    const selectTopography = (object, option) => {
+        topography.setData(object);
 
         if (option === "Editar") {
             compare.setData(object);
@@ -126,8 +126,8 @@ export default function State() {
         setModalInsert(boolean);
 
         if (!boolean) {
-            state.clearError();
-            state.clearData();
+            topography.clearError();
+            topography.clearData();
         }
     };
 
@@ -135,8 +135,8 @@ export default function State() {
         setModalEdit(boolean);
 
         if (!boolean) {
-            state.clearError();
-            state.clearData();
+            topography.clearError();
+            topography.clearData();
             compare.setData({});
         }
     };
@@ -145,13 +145,13 @@ export default function State() {
         setModalDelete(boolean);
 
         if (!boolean) {
-            state.clearData();
+            topography.clearData();
         }
     };
 
     const openCloseModalError = (boolean) => {
-        state.clearError();
-        state.clearData();
+        topography.clearError();
+        topography.clearData();
 
         setModalInsert(false);
         setModalEdit(false);
@@ -164,51 +164,51 @@ export default function State() {
     };
 
     // CRUD operations
-    const GetState = async () => {
+    const GetTopography = async () => {
         setLastRequisition("buscar");
 
-        await connection.endpoint("Estado").get();
+        await connection.endpoint("Topografia").get();
         managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
         list.setList(connection.getList());
     };
 
-    const PostState = async () => {
+    const PostTopography = async () => {
         setInOperation(true);
         setLastRequisition("cadastrar");
 
-        await connection.endpoint("Estado").post(state.getData());
+        await connection.endpoint("Topografia").post(topography.getData());
         managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
-        state.setError(connection.response.data);
+        //topography.setError(connection.response.data);
         openCloseModalInsert(!connection.response.status);
         setUpdateData(connection.response.status);
 
         setInOperation(false);
     };
 
-    const PutState = async () => {
+    const PutTopography = async () => {
         setInOperation(true);
         setLastRequisition("alterar");
 
-        await connection.endpoint("Estado").put(state.getData());
+        await connection.endpoint("Topografia").put(topography.getData());
         managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
-        state.setError(connection.response.data);
+        //topography.setError(connection.response.data);
         openCloseModalEdit(!connection.response.status);
         setUpdateData(connection.response.status);
 
         setInOperation(false);
     };
 
-    const DeleteState = async () => {
+    const DeleteTopography = async () => {
         setInOperation(true);
         setLastRequisition("excluir");
 
-        await connection.endpoint("Estado").delete(state.getData().id);
+        await connection.endpoint("Topografia").delete(topography.getData().id);
         managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
-        state.setError(connection.response.data);
+        //topography.setError(connection.response.data);
         setModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);
 
@@ -216,14 +216,13 @@ export default function State() {
     };
 
     // Data for table
-    const dataForTable = list.currentList.map((estado) => {
+    const dataForTable = list.currentList.map((topografia) => {
         return {
-            nomeEstado: estado.nomeEstado,
-            ufEstado: estado.ufEstado,
+            nomeTopografia: topografia.nomeTopografia,
             acoes: (
                 <div className="flex items-center justify-center gap-2 text-gray-700">
-                    <ButtonTable func={() => selectState(estado, "Editar")} text="Editar" />
-                    <ButtonTable func={() => selectState(estado, "Excluir")} text="Excluir" />
+                    <ButtonTable func={() => selectTopography(topografia, "Editar")} text="Editar" />
+                    <ButtonTable func={() => selectTopography(topografia, "Excluir")} text="Excluir" />
                 </div>
             )
         };
@@ -245,20 +244,19 @@ export default function State() {
                 ))}
             </div>}
             <LayoutPage>
-                <LinkTitle pageName="Estado" />
+                <LinkTitle pageName="Topografia" />
                 <SearchBar
-                    placeholder="Pesquisar Estado"
+                    placeholder="Pesquisar Topografia"
                     onSearchChange={(value) => list.handleSearch(value)}
                     onSearchByChange={(value) => list.handleSearchBy(value)}
                     options={[
-                        { label: 'Estado', value: 'nomeEstado' },
-                        { label: 'Sigla', value: 'ufEstado' },
+                        { label: 'Nome', value: 'nomeTopografia' }
                     ]}
                     button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
                 />
                 <CustomTable
-                    totalColumns={3}
-                    headers={["Estado", "UF", "Ações"]}
+                    totalColumns={2}
+                    headers={["Nome", "Ações"]}
                     data={dataForTable}
                     onPageChange={(page) => list.goToPage(page)}
                     currentPage={list.currentPage}
@@ -269,28 +267,14 @@ export default function State() {
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC] flex flex-col items-center">
                         <div className="flex items-center justify-center">
                             <FilePlus size={32} className="mr-2 text-write font-bold" />
-                            <h3 className="m-0">Cadastrar Estado</h3>
+                            <h3 className="m-0">Cadastrar Topografia</h3>
                         </div>
                     </ModalHeader>
                     <ModalBody>
                         <div className="form-group">
                             <label className="text-[#444444]">Nome: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} onBlur={() => state.verifyName()} onChange={(e) => state.setStateName(e.target.value)} />
-                            {state.errorStateName.map((error, index) => (
-                                <div key={index} className="flex items-center">
-                                    <span className="text-sm text-red-600">- {error}</span>
-                                </div>
-                            ))}
-                            <br />
-                            <label className="text-[#444444]">Sigla: <span className="text-red-600">*</span></label>
-                            <br />
-                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation} onBlur={() => state.verifyUf()} value={state.stateUf} onChange={(e) => state.setStateUf(e.target.value.toUpperCase())} maxLength={2} />
-                            {state.errorStateUf.map((error, index) => (
-                                <div key={index} className="flex items-center">
-                                    <span className="text-sm text-red-600">- {error}</span>
-                                </div>
-                            ))}
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} onChange={(e) => topography.setTopographyName(e.target.value)} />
                             <br />
                         </div>
                     </ModalBody>
@@ -298,8 +282,8 @@ export default function State() {
                         <div className="flex justify-center gap-4 ">
                             <CancelButton action={() => openCloseModalInsert(false)} liberate={!inOperation} />
                             <button
-                                className={`btn w-full ${state.dataValid && !inOperation ? 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' : 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5] hover:bg-gray-100'}`}
-                                onClick={() => state.dataValid && !inOperation ? PostState() : null}
+                                className={`btn w-full ${!inOperation ? 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' : 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5] hover:bg-gray-100'}`}
+                                onClick={() => !inOperation ? PostTopography() : null}
                                 style={{ width: '120px' }}
                             >
                                 {!inOperation ? 'Cadastrar' : 'Aguarde...'}
@@ -311,37 +295,18 @@ export default function State() {
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC] flex flex-col items-center">
                         <div className="flex items-center justify-center">
                             <Pen size={32} className="mr-2 text-write font-bold" />
-                            <h3 className="m-0">Alterar Estado</h3>
+                            <h3 className="m-0">Alterar Topografia</h3>
                         </div>
                     </ModalHeader>
                     <ModalBody>
                         <div className="form-group">
                             <label className="text-[#444444]">ID: </label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} readOnly value={state.stateId} />
-                            {state.errorStateId.map((error, index) => (
-                                <div key={index} className="flex items-center">
-                                    <span className="text-sm text-red-600">- {error}</span>
-                                </div>
-                            ))}
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} readOnly value={topography.topographyId} />
                             <br />
                             <label className="text-[#444444]">Nome: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} onBlur={() => state.verifyName()} value={state.stateName} onChange={(e) => state.setStateName(e.target.value)} />
-                            {state.errorStateName.map((error, index) => (
-                                <div key={index} className="flex items-center">
-                                    <span className="text-sm text-red-600">- {error}</span>
-                                </div>
-                            ))}
-                            <br />
-                            <label className="text-[#444444]">Sigla: <span className="text-red-600">*</span></label>
-                            <br />
-                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation} onBlur={() => state.verifyUf()} value={state.stateUf} onChange={(e) => state.setStateUf(e.target.value.toUpperCase())} maxLength={2} />
-                            {state.errorStateUf.map((error, index) => (
-                                <div key={index} className="flex items-center">
-                                    <span className="text-sm text-red-600">- {error}</span>
-                                </div>
-                            ))}
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} value={topography.topographyName} onChange={(e) => topography.setTopographyName(e.target.value)} />
                             <br />
                         </div>
                     </ModalBody>
@@ -349,8 +314,8 @@ export default function State() {
                         <div className="flex justify-center gap-4 ">
                             <CancelButton action={() => openCloseModalEdit(false)} liberate={!inOperation} />
                             <button
-                                className={`btn w-full ${state.dataValid && !inOperation ? 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' : 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5] hover:bg-gray-100'}`}
-                                onClick={() => state.dataValid && !inOperation ? PutState() : null}
+                                className={`btn w-full ${!inOperation ? 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' : 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5] hover:bg-gray-100'}`}
+                                onClick={() => !inOperation ? PutTopography() : null}
                                 style={{ width: '120px' }}
                             >
                                 {!inOperation ? 'Alterar' : 'Aguarde...'}
@@ -362,14 +327,14 @@ export default function State() {
                     <ModalHeader className="text-white text-xl bg-[#ff5c5c] border-[#BCBCBC] flex flex-col items-center justify-center">
                         <div className="flex items-center">
                             <Trash size={32} className="mr-2 text-write font-bold" />
-                            <h3 className="m-0">Excluir Estado</h3>
+                            <h3 className="m-0">Excluir Topografia</h3>
                         </div>
                     </ModalHeader>
                     <ModalBody className="text-center flex flex-col justify-center">
                         <h3 className="pl-4 text-lg font-thin">
-                            Deseja realmente excluir o
+                            Deseja realmente excluir a
                             <br />
-                            Estado <span className="text-[#ff5c5c] font-bold">{state.stateName}</span>?
+                            Topografia <span className="text-[#ff5c5c] font-bold">{topography.topographyName}</span>?
                         </h3>
                     </ModalBody>
                     <ModalFooter className="flex justify-center">
@@ -377,7 +342,7 @@ export default function State() {
                             <CancelButton action={() => openCloseModalDelete(false)} liberate={!inOperation} />
                             <button
                                 className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#f05252] text-white hover:text-white hover:bg-[#BC2D2D]'}`}
-                                onClick={() => inOperation ? null : DeleteState()} disabled={inOperation}
+                                onClick={() => inOperation ? null : DeleteTopography()} disabled={inOperation}
                                 style={{ width: '120px' }}
                             >
                                 {inOperation ? 'Aguarde' : 'Excluir'}
@@ -389,12 +354,12 @@ export default function State() {
                     <ModalHeader className="text-white text-xl bg-[#ff5c5c] border-[#BCBCBC] flex flex-col items-center justify-center">
                         <div className="flex items-center">
                             <Warning size={32} className="mr-2 text-write font-bold" />
-                            <h3 className="m-0">Erro ao {lastRequisition} o Estado</h3>
+                            <h3 className="m-0">Erro ao {lastRequisition} a Topografia</h3>
                         </div>
                     </ModalHeader>
                     <ModalBody className="text-center flex flex-col justify-center items-center">
                         <h3 className="pl-4 text-lg font-thin">
-                            O Estado não existe no banco de dados.
+                            A Topografia não existe no banco de dados.
                             <br />
                             O sistema irá carregar os dados atualizados após o fechamento da tela.
                             Tempo restante: {timeLeft}s

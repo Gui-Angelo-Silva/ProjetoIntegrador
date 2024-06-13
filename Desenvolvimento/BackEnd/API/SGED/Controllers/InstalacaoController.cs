@@ -20,9 +20,11 @@ namespace SGED.Controllers
         private readonly IInstalacaoService _instalacaoService;
         private readonly Response _response;
 
-        public InstalacaoController(IInfraestruturaService infraestruturaService, IInstalacaoService instalacaoService)
+        public InstalacaoController(IInfraestruturaService infraestruturaService, IImovelService imovelService, IEngenheiroService engenheiroService, IInstalacaoService instalacaoService)
         {
             _infraestruturaService = infraestruturaService;
+            _imovelService = imovelService;
+            _engenheiroService = engenheiroService;
             _instalacaoService = instalacaoService;
 
             _response = new Response();

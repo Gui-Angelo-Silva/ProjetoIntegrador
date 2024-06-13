@@ -13,11 +13,6 @@ namespace SGED.Objects.DTO.Entities
         [Required(ErrorMessage = "Inscrição cadastral é requerida!")]
         public string InscricaoCadastral { get; set; }
 
-        [Required(ErrorMessage = "CEP do imóvel é requerido!")]
-        [MinLength(9)]
-        [MaxLength(9)]
-        public string CepImovel { get; set; }
-
         [Required(ErrorMessage = "Número do imóvel é requerido!")]
         [MinLength(1)]
         [MaxLength(6)]
@@ -65,10 +60,10 @@ namespace SGED.Objects.DTO.Entities
         public int IdTopografia { get; set; }
 
         [JsonIgnore]
-        public MunicipeDTO? TipoUsoDTO { get; set; }
+        public UsoDTO? UsoDTO { get; set; }
 
-        [Required(ErrorMessage = "Tipo uso é requerido!")]
-        public int IdTipoUso { get; set; }
+        [Required(ErrorMessage = "Uso é requerido!")]
+        public int IdUso { get; set; }
 
         [JsonIgnore]
         public OcupacaoAtualDTO? OcupacaoAtualDTO { get; set; }

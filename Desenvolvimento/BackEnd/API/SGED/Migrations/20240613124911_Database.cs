@@ -367,6 +367,7 @@ namespace SGED.Migrations
                     idlogradouro = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ceplogradouro = table.Column<string>(type: "character varying(9)", maxLength: 9, nullable: false),
+                    rualogradouro = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     numeroInicial = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
                     numeroFinal = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
                     IdBairro = table.Column<int>(type: "integer", nullable: false),
@@ -397,13 +398,12 @@ namespace SGED.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     imagemimovel = table.Column<string>(type: "text", nullable: true),
                     inscricaocadastral = table.Column<string>(type: "text", nullable: false),
-                    cepimovel = table.Column<string>(type: "character varying(9)", maxLength: 9, nullable: false),
                     numeroimovel = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
-                    areaterreno = table.Column<float>(type: "real", nullable: false),
-                    areacomstruida = table.Column<float>(type: "real", nullable: false),
+                    areaterreno = table.Column<string>(type: "text", nullable: false),
+                    areacomstruida = table.Column<string>(type: "text", nullable: false),
                     condicoessolo = table.Column<string>(type: "text", nullable: false),
-                    valorvenal = table.Column<float>(type: "real", nullable: false),
-                    valormercado = table.Column<float>(type: "real", nullable: false),
+                    valorvenal = table.Column<string>(type: "text", nullable: false),
+                    valormercado = table.Column<string>(type: "text", nullable: false),
                     localizacaogeografica = table.Column<string>(type: "text", nullable: true),
                     IdLogradouro = table.Column<int>(type: "integer", nullable: false),
                     IdProprietario = table.Column<int>(type: "integer", nullable: false),
@@ -463,17 +463,17 @@ namespace SGED.Migrations
                     situacaoinstalacao = table.Column<string>(type: "text", nullable: false),
                     IdInfraestrutura = table.Column<int>(type: "integer", nullable: false),
                     IdImovel = table.Column<int>(type: "integer", nullable: false),
-                    IdEngenheiro = table.Column<int>(type: "integer", nullable: false)
+                    EngenheiroId = table.Column<int>(type: "integer", nullable: true),
+                    idengenheiro = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_instalacao", x => x.idinstalacao);
                     table.ForeignKey(
-                        name: "FK_instalacao_engenheiro_IdEngenheiro",
-                        column: x => x.IdEngenheiro,
+                        name: "FK_instalacao_engenheiro_EngenheiroId",
+                        column: x => x.EngenheiroId,
                         principalTable: "engenheiro",
-                        principalColumn: "idengenheiro",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "idengenheiro");
                     table.ForeignKey(
                         name: "FK_instalacao_imovel_IdImovel",
                         column: x => x.IdImovel,
@@ -521,6 +521,11 @@ namespace SGED.Migrations
                     { 26, "Sergipe", "SE" },
                     { 27, "Tocantins", "TO" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "municipe",
+                columns: new[] { "idmunicipe", "cpfcnpjpessoa", "emailpessoa", "imagempessoa", "nomepessoa", "rgiepessoa", "telefonepessoa" },
+                values: new object[] { 1, "000.000.000-00", "admin@gmail.com", "data:application/octet-stream;base64,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", "Secretário Geral", "00.000.000-0", "(00) 00000-0000" });
 
             migrationBuilder.InsertData(
                 table: "ocupacaoatual",
@@ -806,6 +811,115 @@ namespace SGED.Migrations
                     { 2, "Secretário Geral", "000.000.000-00", "admin@gmail.com", 2, "data:application/octet-stream;base64,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", "Secretário Geral", "00.000.000-0", "987654", true, "(00) 00000-0000" }
                 });
 
+            migrationBuilder.InsertData(
+                table: "bairro",
+                columns: new[] { "idbairro", "IdCidade", "nomebairro" },
+                values: new object[,]
+                {
+                    { 1, 1, "Aeroporto" },
+                    { 2, 1, "Aeroporto Municipal" },
+                    { 3, 1, "Alto do Ipê" },
+                    { 4, 1, "Centro" },
+                    { 5, 1, "Chácara Bela Vista" },
+                    { 6, 1, "Chácaras Bandeirantes" },
+                    { 7, 1, "Conjunto Habitacional Doutor Pedro Nogueira" },
+                    { 8, 1, "Jardim Aclimação" },
+                    { 9, 1, "Jardim América - Primeira Parte" },
+                    { 10, 1, "Jardim América - Segunda Parte" },
+                    { 11, 1, "Jardim América - Terceira Parte" },
+                    { 12, 1, "Jardim América - Quarta Parte" },
+                    { 13, 1, "Jardim Ana Cristina" },
+                    { 14, 1, "Jardim Arapuã" },
+                    { 15, 1, "Jardim Bom Jesus" },
+                    { 16, 1, "Jardim Brasil" },
+                    { 17, 1, "Jardim Brasília" },
+                    { 18, 1, "Jardim Castelo" },
+                    { 19, 1, "Jardim das Palmeiras" },
+                    { 20, 1, "Jardim do Bosque" },
+                    { 21, 1, "Jardim Doutor Euplhy Jalles" },
+                    { 22, 1, "Jardim Eldorado" },
+                    { 23, 1, "Jardim Elisa" },
+                    { 24, 1, "Jardim Estados Unidos" },
+                    { 25, 1, "Jardim Europa" },
+                    { 26, 1, "Jardim Formosa" },
+                    { 27, 1, "Jardim Morumbi" },
+                    { 28, 1, "Jardim Pêgolo" },
+                    { 29, 1, "Jardim Pires de Andrade" },
+                    { 30, 1, "Jardim Primavera" },
+                    { 31, 1, "Jardim Samambaia" },
+                    { 32, 1, "Jardim Santa Paula" },
+                    { 33, 1, "Jardim Santo Expedito" },
+                    { 34, 1, "Jardim São Gabriel" },
+                    { 35, 1, "Jardim São Francisco" },
+                    { 36, 1, "Jardim São Jorge" },
+                    { 37, 1, "Jardim São Judas Tadeu" },
+                    { 38, 1, "Jardim São Luiz" },
+                    { 39, 1, "Jardim São Marcos" },
+                    { 40, 1, "Jardim São Mateus" },
+                    { 41, 1, "Jardim São Paulo" },
+                    { 42, 1, "Jardim São Pedro" },
+                    { 43, 1, "Jardim São Sebastião" },
+                    { 44, 1, "Jardim São Vicente" },
+                    { 45, 1, "Jardim Seminário" },
+                    { 46, 1, "Jardim Trianon" },
+                    { 47, 1, "Jardim Universitário" },
+                    { 48, 1, "Jardim Vitória" },
+                    { 49, 1, "Jardim Zafira" },
+                    { 50, 1, "Parque das Flores" },
+                    { 51, 1, "Parque Industrial I" },
+                    { 52, 1, "Parque Industrial II" },
+                    { 53, 1, "Parque Industrial III" },
+                    { 54, 1, "Parque Industrial IV" },
+                    { 55, 1, "Parque Industrial V" },
+                    { 56, 1, "Parque Municipal" },
+                    { 57, 1, "Parque Residencial Jales" },
+                    { 58, 1, "Residencial Nova Jales" },
+                    { 59, 1, "Vila Aparecida" },
+                    { 60, 1, "Vila Bela" },
+                    { 61, 1, "Vila Mariana" },
+                    { 62, 1, "Vila Pinheiro" },
+                    { 63, 1, "Vila Santa Isabel" },
+                    { 64, 1, "Vila União" },
+                    { 65, 1, "Vila Nossa Senhora Aparecida" },
+                    { 66, 1, "Vila Rodrigues" },
+                    { 67, 1, "Vila Maria" },
+                    { 68, 1, "Vila Santo Antônio" },
+                    { 69, 1, "Vila São José" },
+                    { 70, 1, "Vila São Pedro" },
+                    { 71, 1, "Vila São Sebastião" },
+                    { 72, 1, "Vila São Vicente de Paulo" },
+                    { 73, 1, "Vila Tupi" },
+                    { 74, 1, "Vila Urano" },
+                    { 75, 1, "Vila Vargas" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "logradouro",
+                columns: new[] { "idlogradouro", "ceplogradouro", "IdBairro", "IdTipoLogradouro", "numeroFinal", "numeroInicial", "rualogradouro" },
+                values: new object[,]
+                {
+                    { 1, "15700-002", 1, 129, "2598", "2000", "Rua 1" },
+                    { 2, "15700-004", 1, 129, "3198", "2600", "Rua 1" },
+                    { 3, "15700-360", 2, 17, "", "", "Rua 1" },
+                    { 4, "15704-006", 2, 84, "", "", "Rua 1" },
+                    { 5, "15704-023", 2, 1, "2735", "2645", "Rua 1" },
+                    { 6, "15704-040", 3, 129, "2643", "2455", "Rua 1" },
+                    { 7, "15704-068", 4, 13, "2453", "2415", "Rua 1" },
+                    { 8, "15704-094", 4, 129, "2413", "2343", "Rua 1" },
+                    { 9, "15704-108", 4, 13, "2341", "2169", "Rua 1" },
+                    { 10, "15704-176", 4, 129, "2167", "2077", "Rua 1" },
+                    { 11, "15704-218", 4, 129, "2075", "1911", "Rua 1" },
+                    { 12, "15704-220", 4, 129, "1909", "1368", "Rua 1" },
+                    { 13, "15704-250", 4, 17, "", "", "Rua 1" },
+                    { 14, "15706-268", 5, 84, "", "", "Rua 1" },
+                    { 15, "15700-068", 5, 1, "", "", "Rua 10" },
+                    { 16, "15700-070", 5, 129, "2499", "2000", "Rua 10" },
+                    { 17, "15704-096", 6, 13, "", "", "Rua 10" },
+                    { 18, "15704-098", 7, 129, "1998", "1690", "Rua 10" },
+                    { 19, "15704-100", 7, 13, "1688", "1628 ", "Rua 10" },
+                    { 20, "15704-130", 8, 129, "", "", "Rua 10" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_bairro_IdCidade",
                 table: "bairro",
@@ -857,9 +971,9 @@ namespace SGED.Migrations
                 column: "IdTipoInfraestrutura");
 
             migrationBuilder.CreateIndex(
-                name: "IX_instalacao_IdEngenheiro",
+                name: "IX_instalacao_EngenheiroId",
                 table: "instalacao",
-                column: "IdEngenheiro");
+                column: "EngenheiroId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_instalacao_IdImovel",

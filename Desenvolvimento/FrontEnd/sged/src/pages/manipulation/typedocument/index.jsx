@@ -1,19 +1,27 @@
+// React imports
 import { useEffect, useState } from "react";
+
+// Reactstrap imports
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
-import Select from 'react-select';
-import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icons/react";
-import LinkTitle from "../../../components/Title/LinkTitle";
 
+// Component imports
+import LinkTitle from "../../../components/Title/LinkTitle";
+import ButtonTable from "../../../components/Table/ButtonTable";
+import CustomTable from "../../../components/Table/Table";
+import RegistrationButton from "../../../components/Button/RegistrationButton";
+import LayoutPage from "../../../components/Layout/LayoutPage";
+import PopUpManager from "../../../components/PopUpManager";
+import PopUp from "../../../components/PopUp";
+
+// Asset imports
+import Search from "../../../assets/pages/SearchImg";
+
+// Module and service imports
 import { useMontage } from "../../../object/modules/montage";
 import ConnectionService from "../../../object/service/connection";
 import ListModule from "../../../object/modules/list";
 import TypeDocumentClass from "../../../object/class/typedocument";
-import Search from "../../../assets/pages/SearchImg";
-import RegistrationButton from "../../../components/Button/RegistrationButton";
-import LayoutPage from "../../../components/Layout/LayoutPage";
-import ButtonTable from "../../../components/Table/ButtonTable";
-import CustomTable from "../../../components/Table/Table";
 
 export default function TypeDocument() {
 
@@ -23,7 +31,8 @@ export default function TypeDocument() {
         componentMounted();
     }, []);
 
-    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
+    const connection = new ConnectionService();
+    const managerPopUp = PopUpManager();
     const typedocument = TypeDocumentClass();
     const list = ListModule();
 
@@ -186,104 +195,119 @@ export default function TypeDocument() {
     })
 
     return (
-        <LayoutPage>
-            <LinkTitle pageName="Tipo Documento" />
-            <div className="flex items-center">
-                <div className="flex justify-center items-center mx-auto w-[450px]">
-                    <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
-                        <div className="pl-2">
-                            <Search />
-                        </div>
-                        <input type="search" id="default-search" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar tipo documento" required onChange={(e) => list.handleSearch(e.target.value)} />
-                        {/* <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar tipo documento" required onChange={(e) => list.handleSearch(e.target.value)} /> */}
-                        <select className="form-control w-28 text-gray-800 h-full cursor-pointer" onChange={(e) => list.handleSearchBy(e.target.value)} >
-                            <option key="nomeTipoDocumento" value="nomeTipoDocumento">
-                                Tipo Documento
-                            </option>
-                            <option key="descricaoTipoDocumento" value="descricaoTipoDocumento">
-                                Descrição
-                            </option>
-                        </select>
-                    </div>
-                </div>
+        <>
+            {<div>
+                {managerPopUp.popups.map(popup => (
+                    <PopUp
+                        key={popup.id}
+                        action={popup.action}
+                        status={popup.status}
+                        message={popup.message}
+                        onClose={managerPopUp.removePopUp}
+                        code={popup.code}
+                        index={popup.index}
+                    />
+                ))}
+            </div>}
+            <LayoutPage>
+                <LinkTitle pageName="Tipo Documento" />
                 <div className="flex items-center">
-                    <RegistrationButton action={() => openCloseModalInsert(true)} />
+                    <div className="flex justify-center items-center mx-auto w-[450px]">
+                        <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
+                            <div className="pl-2">
+                                <Search />
+                            </div>
+                            <input type="search" id="default-search" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar tipo documento" required onChange={(e) => list.handleSearch(e.target.value)} />
+                            {/* <input type="search" id="default-search" className="block w-full pt-3 pb-3 pl-10 mr-1 rounded-l-lg ps-10 text-sm border-none text-gray-900 g-gray-50 focus:ring-green-600 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pesquisar tipo documento" required onChange={(e) => list.handleSearch(e.target.value)} /> */}
+                            <select className="form-control w-28 text-gray-800 h-full cursor-pointer" onChange={(e) => list.handleSearchBy(e.target.value)} >
+                                <option key="nomeTipoDocumento" value="nomeTipoDocumento">
+                                    Tipo Documento
+                                </option>
+                                <option key="descricaoTipoDocumento" value="descricaoTipoDocumento">
+                                    Descrição
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className="flex items-center">
+                        <RegistrationButton action={() => openCloseModalInsert(true)} />
+                    </div>
                 </div>
-            </div>
-            <CustomTable 
-                totalColumns={3}
-                headers={["Tipo de Documento", "Descrição", "Ações"]}
-                data={dataForTable}
-                onPageChange={(page) => list.goToPage(page)}
-                currentPage={list.currentList}
-                totalPages={list.totalPages}
-            />
-            <Modal isOpen={modalInsert} >
-                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Tipo de Documento</ModalHeader>
-                <ModalBody>
-                    <div className="form-group">
-                        <label className="text-[#444444]">Nome: </label>
-                        <br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typedocument.setTypeDocumentName(e.target.value)} />
-                        <div className="text-sm text-red-600">
-                            {typedocument.errorTypeDocumentName}
+                <CustomTable
+                    totalColumns={3}
+                    headers={["Tipo de Documento", "Descrição", "Ações"]}
+                    data={dataForTable}
+                    onPageChange={(page) => list.goToPage(page)}
+                    currentPage={list.currentList}
+                    totalPages={list.totalPages}
+                />
+                <Modal isOpen={modalInsert} >
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Tipo de Documento</ModalHeader>
+                    <ModalBody>
+                        <div className="form-group">
+                            <label className="text-[#444444]">Nome: </label>
+                            <br />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typedocument.setTypeDocumentName(e.target.value)} />
+                            <div className="text-sm text-red-600">
+                                {typedocument.errorTypeDocumentName}
+                            </div>
+                            <br />
+                            <label className="text-[#444444]">Descrição:</label>
+                            <br />
+                            <textarea className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typedocument.setTypeDocumentDescription(e.target.value)} />
+                            <div className="text-sm text-red-600">
+                                {typedocument.errorTypeDocumentDescription}
+                            </div>
+                            <br />
                         </div>
-                        <br />
-                        <label className="text-[#444444]">Descrição:</label>
-                        <br />
-                        <textarea className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => typedocument.setTypeDocumentDescription(e.target.value)} />
-                        <div className="text-sm text-red-600">
-                            {typedocument.errorTypeDocumentDescription}
+                    </ModalBody>
+                    <ModalFooter>
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white w-[100px] h-[40px]" onClick={() => openCloseModalInsert(false)}>Cancelar</button>
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostTypeDocument()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Cadastrar'} </button>{"  "}
+                    </ModalFooter>
+                </Modal>
+                <Modal isOpen={modalEdit}>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC]">Editar Tipo de Documento</ModalHeader>
+                    <ModalBody>
+                        <div className="form-group">
+                            <label className="text-[#444444]">ID: </label><br />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={typedocument.typeDocumentId} /> <br />
+                            <label className="text-[#444444]">Nome:</label>
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomeTipoLogradouro" onChange={(e) => typedocument.setTypeDocumentName(e.target.value)} value={typedocument.typeDocumentName} />
+                            <div className="text-sm text-red-600">
+                                {typedocument.errorTypeDocumentName}
+                            </div>
+                            <br />
+                            <label className="text-[#444444]">Descrição:</label>
+                            <br />
+                            <textarea className="form-control rounded-md border-[#BCBCBC]" name="descricaoTipoLogradouro" onChange={(e) => typedocument.setTypeDocumentDescription(e.target.value)} value={typedocument.typeDocumentDescription} />
+                            <div className="text-sm text-red-600">
+                                {typedocument.errorTypeDocumentDescription}
+                            </div>
+                            <br />
                         </div>
-                        <br />
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white w-[100px] h-[40px]" onClick={() => openCloseModalInsert(false)}>Cancelar</button>
-                    <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostTypeDocument()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Cadastrar'} </button>{"  "}
-                </ModalFooter>
-            </Modal>
-            <Modal isOpen={modalEdit}>
-                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC]">Editar Tipo de Documento</ModalHeader>
-                <ModalBody>
-                    <div className="form-group">
-                        <label className="text-[#444444]">ID: </label><br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={typedocument.typeDocumentId} /> <br />
-                        <label className="text-[#444444]">Nome:</label>
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomeTipoLogradouro" onChange={(e) => typedocument.setTypeDocumentName(e.target.value)} value={typedocument.typeDocumentName} />
-                        <div className="text-sm text-red-600">
-                            {typedocument.errorTypeDocumentName}
+                    </ModalBody>
+                    <ModalFooter>
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white w-[100px] h-[40px]" onClick={() => openCloseModalEdit(false)}>Cancelar</button>
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutTypeDocument()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Atualizar'} </button>{"  "}
+                    </ModalFooter>
+                </Modal>
+                <Modal isOpen={modalDelete}>
+                    <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
+                    <ModalBody className="justify-center">
+                        <div className="flex flex-row justify-center p-2">
+                            Confirme a exclusão deste Tipo de Documento:
+                            <div className="text-[#059669] ml-1">
+                                {typedocument.typeDocumentName}
+                            </div> ?
                         </div>
-                        <br />
-                        <label className="text-[#444444]">Descrição:</label>
-                        <br />
-                        <textarea className="form-control rounded-md border-[#BCBCBC]" name="descricaoTipoLogradouro" onChange={(e) => typedocument.setTypeDocumentDescription(e.target.value)} value={typedocument.typeDocumentDescription} />
-                        <div className="text-sm text-red-600">
-                            {typedocument.errorTypeDocumentDescription}
+                        <div className="flex justify-center gap-2 pt-3">
+                            <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white w-[100px] h-[40px]" onClick={() => openCloseModalDelete(false)}>Cancelar</button>
+                            <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteTypeDocument()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'} </button>{"  "}
                         </div>
-                        <br />
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white w-[100px] h-[40px]" onClick={() => openCloseModalEdit(false)}>Cancelar</button>
-                    <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutTypeDocument()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Atualizar'} </button>{"  "}
-                </ModalFooter>
-            </Modal>
-            <Modal isOpen={modalDelete}>
-                <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
-                <ModalBody className="justify-center">
-                    <div className="flex flex-row justify-center p-2">
-                        Confirme a exclusão deste Tipo de Documento:
-                        <div className="text-[#059669] ml-1">
-                            {typedocument.typeDocumentName}
-                        </div> ?
-                    </div>
-                    <div className="flex justify-center gap-2 pt-3">
-                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white w-[100px] h-[40px]" onClick={() => openCloseModalDelete(false)}>Cancelar</button>
-                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteTypeDocument()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'} </button>{"  "}
-                    </div>
-                </ModalBody>
-            </Modal>
-        </LayoutPage>
+                    </ModalBody>
+                </Modal>
+            </LayoutPage>
+        </>
     );
 }

@@ -13,7 +13,6 @@ namespace SGED.Context.Builders
             // Builder
             modelBuilder.Entity<Imovel>().HasKey(i => i.Id);
             modelBuilder.Entity<Imovel>().Property(i => i.InscricaoCadastral).IsRequired();
-            modelBuilder.Entity<Imovel>().Property(i => i.CepImovel).HasMaxLength(9).IsRequired();
             modelBuilder.Entity<Imovel>().Property(i => i.NumeroImovel).HasMaxLength(6).IsRequired();
             modelBuilder.Entity<Imovel>().Property(i => i.AreaTerreno).IsRequired();
             modelBuilder.Entity<Imovel>().Property(i => i.AreaConstruida).IsRequired();

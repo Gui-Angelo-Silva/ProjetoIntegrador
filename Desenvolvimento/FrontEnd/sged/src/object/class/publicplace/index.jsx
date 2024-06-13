@@ -78,8 +78,8 @@ function PublicPlaceClass() {
 
     function checkNumberBetweenInterval(number) {
         return (publicPlaceInitialNumber && publicPlaceFinalNumber)? 
-            ((publicPlaceInitialNumber <= number) && (number <= publicPlaceFinalNumber)) : 
-            false;
+            ((parseInt(publicPlaceInitialNumber) <= number) && (number <= parseInt(publicPlaceFinalNumber))) : 
+            true;
     }
 
     function verifyData(list) {

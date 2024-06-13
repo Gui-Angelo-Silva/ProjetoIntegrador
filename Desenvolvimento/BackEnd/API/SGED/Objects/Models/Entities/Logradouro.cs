@@ -11,6 +11,9 @@ namespace SGED.Objects.Models.Entities
         [Column("ceplogradouro")]
         public string Cep { get; set; }
 
+        [Column("rualogradouro")]
+        public string RuaLogradouro { get; set; }
+
         [Column("numeroInicial")]
         public string NumeroInicial { get; set; }
 

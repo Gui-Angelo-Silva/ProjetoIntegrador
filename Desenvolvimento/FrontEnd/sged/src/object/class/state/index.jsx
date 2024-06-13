@@ -22,14 +22,6 @@ function StateClass() {
     }
   }, [errorStateId, errorStateName, errorStateUf]);
 
-  function propertyName() {
-    return "Estado " + stateName;
-  }
-
-  function gender() {
-    return "o";
-  }
-
   function getData() {
     return {
       id: stateId,
@@ -118,8 +110,6 @@ function StateClass() {
     setDataValid,
 
     // Funções Essenciais
-    propertyName,
-    gender,
     getData,
     setData,
     setError,

@@ -5,48 +5,84 @@ function RealStateClass() {
     const publicplaceClass = PublicPlaceClass();
 
     const [realStateId, setRealStateId] = useState(0);
+    const [realStateImage, setRealStateImage] = useState([]);
+    const [cadastralRegistration, setCadastralRegistration] = useState(0);
     const [realStateNumber, setRealStateNumber] = useState("");
+    const [realStateLandArea, setRealStateLandArea] = useState("");
+    const [realStateBuildingArea, setRealStateBuildingArea] = useState("");
+    const [realStateSoilConditions, setRealStateSoilConditions] = useState("");
+    const [realStateSalesValue, setRealStateSalesValue] = useState("");
+    const [realStateMarketValue, setRealStateMarketValue] = useState("");
+    const [geographicLocation, setGeographicLocation] = useState([]);
     const [idPublicPlace, setIdPublicPlace] = useState(0);
-    const [idCitizen, setIdCitizen] = useState(0);
+    const [idOwner, setIdOwner] = useState(0);
+    const [idTaxpayer, setIdTaxpayer] = useState(0);
+    const [idTopography, setIdTopography] = useState(0);
+    const [idUsage, setIdUsage] = useState(0);
+    const [idCurrentOccupation, setIdCurrentOccupation] = useState(0);
 
     const [errorRealStateNumber, setErrorRealStateNumber] = useState("");
     const [errorIdPublicPlace, setErrorIdPublicPlace] = useState("");
-    const [errorIdCitizen, setErrorIdCitizen] = useState("");
-
-    function propertyName() {
-        return "Imóvel " + realStateNumber;
-    }
-
-    function gender() {
-        return "o";
-    }
 
     function getData() {
         return {
             id: realStateId,
+            inscricaoCadastral: cadastralRegistration,
             numeroImovel: realStateNumber,
+            areaTerreno: realStateLandArea,
+            areaConstruida: realStateBuildingArea,
+            condicoesSolo: realStateSoilConditions,
+            valorVenal: realStateSalesValue,
+            valorMercado: realStateMarketValue,
             idLogradouro: idPublicPlace,
-            idMunicipe: idCitizen
+            idProprietario: idOwner,
+            idContribuinte: idTaxpayer,
+            idTopografia: idTopography,
+            idUso: idUsage,
+            idOcupacaoAtual: idCurrentOccupation
         };
     }
 
     function setData(object) {
         setRealStateId(object.id);
+        setRealStateImage(object.imagemImovel);
+        setCadastralRegistration(object.inscricaoCadastral);
         setRealStateNumber(object.numeroImovel);
+        setRealStateLandArea(object.areaTerreno);
+        setRealStateBuildingArea(object.areaConstruida);
+        setRealStateSoilConditions(object.condicoesSolo);
+        setRealStateSalesValue(object.valorVenal);
+        setRealStateMarketValue(object.valorMercado);
+        setGeographicLocation(object.localizacaoGeografica);
         setIdPublicPlace(object.idLogradouro);
-        setIdCitizen(object.idMunicipe);
+        setIdOwner(object.idProprietario);
+        setIdTaxpayer(object.idContribuinte);
+        setIdTopography(object.idTopografia);
+        setIdUsage(object.idUso);
+        setIdCurrentOccupation(object.idOcupacaoAtual);
     }
 
     function clearData() {
         setRealStateId(0);
-        setRealStateNumber('');
+        setRealStateImage([]);
+        setCadastralRegistration(0);
+        setRealStateNumber("");
+        setRealStateLandArea("");
+        setRealStateBuildingArea("");
+        setRealStateSoilConditions("");
+        setRealStateSalesValue("");
+        setRealStateMarketValue("");
+        setGeographicLocation([]);
         setIdPublicPlace(0);
-        setIdCitizen(0);
+        setIdOwner(0);
+        setIdTaxpayer(0);
+        setIdTopography(0);
+        setIdUsage(0);
+        setIdCurrentOccupation(0);
     }
 
     function clearError() {
         setErrorIdPublicPlace('');
-        setErrorIdCitizen('');
     }
 
     function verifyData() {
@@ -72,13 +108,7 @@ function RealStateClass() {
             status = false;
         }
 
-        if (!idCitizen) {
-            citizen = 'O Munícipe é requerido!';
-            status = false;
-        }
-
         setErrorRealStateNumber(number);
-        setErrorIdCitizen(citizen);
         setErrorIdPublicPlace(publicplace)
 
         return status;
@@ -87,22 +117,38 @@ function RealStateClass() {
     return {
         // Atributos
         realStateId,
-        setRealStateId,
+        cadastralRegistration,
+        setCadastralRegistration,
         realStateNumber,
         setRealStateNumber,
+        realStateLandArea,
+        setRealStateLandArea,
+        realStateBuildingArea,
+        setRealStateBuildingArea,
+        realStateSoilConditions,
+        setRealStateSoilConditions,
+        realStateSalesValue,
+        setRealStateSalesValue,
+        realStateMarketValue,
+        setRealStateMarketValue,
         idPublicPlace,
         setIdPublicPlace,
-        idCitizen,
-        setIdCitizen,
+        idOwner,
+        setIdOwner,
+        idTaxpayer,
+        setIdTaxpayer,
+        idTopography,
+        setIdTopography,
+        idUsage,
+        setIdUsage,
+        idCurrentOccupation,
+        setIdCurrentOccupation,
 
         // Erros
         errorRealStateNumber,
         errorIdPublicPlace,
-        errorIdCitizen,
 
         // Funções Essenciais
-        propertyName,
-        gender,
         getData,
         setData,
         clearData,

@@ -1,4 +1,5 @@
 ﻿using SGED.Objects.Interfaces.Pessoa;
+using SGED.Objects.Models.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -36,7 +37,9 @@ namespace SGED.Objects.DTO.Entities
         public string RgIePessoa { get; set; }
 
         [JsonIgnore]
-        public ICollection<ImovelDTO>? ImoveisDTOs { get; set; }
+        public ICollection<ImovelDTO> ImoveisProprietarioDTO { get; set; }
+        [JsonIgnore]
+        public ICollection<ImovelDTO> ImoveisContribuinteDTO { get; set; }
 
 
         public bool Email() => IPessoaExtensions.VerificarEmail(this.EmailPessoa);

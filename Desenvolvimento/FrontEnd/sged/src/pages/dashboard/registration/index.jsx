@@ -84,14 +84,17 @@ export default function Registrations() {
                         <option key="Todos" value="Todos">
                             Todos
                         </option>
-                        <option key="Imóvel" value="Imovel">
-                            Imóvel
+                        <option key="Endereço e Imóvel" value="Endereço e Imóvel">
+                            Endereço e Imóvel
                         </option>
-                        <option key="Usuário" value="Usuario">
-                            Usuário
+                        <option key="Dados Adicionais" value="Dados Adicionais">
+                            Dados Adicionais
+                        </option>
+                        <option key="Usuários e Pessoas" value="Usuários e Pessoas">
+                            Usuários e Pessoas
                         </option>
                         <option key="Configuração de Processo" value="Configuração de Processo">
-                            Processo
+                            Configuração de Processo
                         </option>
                     </select>
                 </div>

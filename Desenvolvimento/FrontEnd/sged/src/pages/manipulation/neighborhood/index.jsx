@@ -1,19 +1,29 @@
+// React imports
 import { useEffect, useState } from "react";
+import Select from 'react-select';
+
+// Reactstrap imports
 import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Select from 'react-select';
+
+// Component imports
 import LinkTitle from "../../../components/Title/LinkTitle";
 import ButtonTable from "../../../components/Table/ButtonTable";
+import CustomTable from "../../../components/Table/Table";
+import RegistrationButton from "../../../components/Button/RegistrationButton";
+import LayoutPage from "../../../components/Layout/LayoutPage";
+import PopUpManager from "../../../components/PopUpManager";
+import PopUp from "../../../components/PopUp";
 
+// Asset imports
+import Search from "../../../assets/pages/SearchImg";
+
+// Module and service imports
 import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
 import NeighborhoodClass from '../../../object/class/neighborhood';
 import SelectModule from '../../../object/modules/select';
-import Search from "../../../assets/pages/SearchImg";
-import CustomTable from "../../../components/Table/Table";
-import RegistrationButton from "../../../components/Button/RegistrationButton";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 
 export default function Neighborhood() {
 
@@ -23,7 +33,8 @@ export default function Neighborhood() {
         componentMounted();
     }, []);
 
-    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
+    const connection = new ConnectionService();
+    const managerPopUp = PopUpManager();
     const neighborhood = NeighborhoodClass();
     const list = ListModule();
     const listCity = ListModule();
@@ -215,161 +226,176 @@ export default function Neighborhood() {
     });
 
     return (
-        <LayoutPage>
-            <LinkTitle pageName="Bairro" />
-            <div className="flex items-center">
-                <div className="flex justify-center items-center mx-auto w-[450px]">
-                    <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
-                        <div className="pl-2">
-                            <Search />
-                        </div>
-                        <input type="search" id="default-search" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar bairro" required onChange={(e) => handleSearch(e.target.value)} />
-                        <select className="form-control w-28 text-gray-800 h-full cursor-pointer" onChange={(e) => handleSearchBy(e.target.value)}>
-                            <option key="nomeBairro" value="nomeBairro">
-                                Bairro
-                            </option>
-                            <option key="nomeCidade" value="nomeCidade">
-                                Cidade
-                            </option>
-                        </select>
-                    </div>
-                </div>
+        <>
+            {<div>
+                {managerPopUp.popups.map(popup => (
+                    <PopUp
+                        key={popup.id}
+                        action={popup.action}
+                        status={popup.status}
+                        message={popup.message}
+                        onClose={managerPopUp.removePopUp}
+                        code={popup.code}
+                        index={popup.index}
+                    />
+                ))}
+            </div>}
+            <LayoutPage>
+                <LinkTitle pageName="Bairro" />
                 <div className="flex items-center">
-                    <RegistrationButton action={() => openCloseModalInsert(true)} />
+                    <div className="flex justify-center items-center mx-auto w-[450px]">
+                        <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
+                            <div className="pl-2">
+                                <Search />
+                            </div>
+                            <input type="search" id="default-search" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar bairro" required onChange={(e) => handleSearch(e.target.value)} />
+                            <select className="form-control w-28 text-gray-800 h-full cursor-pointer" onChange={(e) => handleSearchBy(e.target.value)}>
+                                <option key="nomeBairro" value="nomeBairro">
+                                    Bairro
+                                </option>
+                                <option key="nomeCidade" value="nomeCidade">
+                                    Cidade
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className="flex items-center">
+                        <RegistrationButton action={() => openCloseModalInsert(true)} />
+                    </div>
                 </div>
-            </div>
 
-            <CustomTable
-                totalColumns={3}
-                headers={["Bairro", "Cidade", "Ações"]}
-                data={dataForTable}
-                onPageChange={(page) => list.goToPage(page)}
-                currentPage={list.currentPage}
-                totalPages={list.totalPages}
-            />
-            <Modal isOpen={modalInsert}>
-                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Bairro</ModalHeader>
-                <ModalBody>
-                    <div className="form-group">
-                        <label className="text-[#444444]">Nome: </label>
-                        <br />
-                        <input
-                            type="text"
-                            className="form-control rounded-md border-[#BCBCBC]"
-                            onChange={(e) => neighborhood.setNeighborhoodName(e.target.value)}
-                        />
-                        <div className="text-sm text-red-600">
-                            {neighborhood.errorNeighborhoodName}
+                <CustomTable
+                    totalColumns={3}
+                    headers={["Bairro", "Cidade", "Ações"]}
+                    data={dataForTable}
+                    onPageChange={(page) => list.goToPage(page)}
+                    currentPage={list.currentPage}
+                    totalPages={list.totalPages}
+                />
+                <Modal isOpen={modalInsert}>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Bairro</ModalHeader>
+                    <ModalBody>
+                        <div className="form-group">
+                            <label className="text-[#444444]">Nome: </label>
+                            <br />
+                            <input
+                                type="text"
+                                className="form-control rounded-md border-[#BCBCBC]"
+                                onChange={(e) => neighborhood.setNeighborhoodName(e.target.value)}
+                            />
+                            <div className="text-sm text-red-600">
+                                {neighborhood.errorNeighborhoodName}
+                            </div>
+                            <br />
+                            <label className="text-[#444444]">Cidade:</label>
+                            <br />
+                            <Select
+                                value={selectBox.selectedOption}
+                                onChange={selectBox.handleChange}
+                                onInputChange={selectBox.delayedSearch}
+                                loadOptions={selectBox.loadOptions}
+                                options={selectBox.options}
+                                placeholder="Pesquisar cidade . . ."
+                                isClearable
+                                isSearchable
+                                noOptionsMessage={() => {
+                                    if (listCity.list.length === 0) {
+                                        return "Nenhuma cidade cadastrada!";
+                                    } else {
+                                        return "Nenhuma opção encontrada!";
+                                    }
+                                }}
+                                className="style-select"
+                            />
+                            <div className="text-sm text-red-600">
+                                {neighborhood.errorIdCity}
+                            </div>
                         </div>
-                        <br />
-                        <label className="text-[#444444]">Cidade:</label>
-                        <br />
-                        <Select
-                            value={selectBox.selectedOption}
-                            onChange={selectBox.handleChange}
-                            onInputChange={selectBox.delayedSearch}
-                            loadOptions={selectBox.loadOptions}
-                            options={selectBox.options}
-                            placeholder="Pesquisar cidade . . ."
-                            isClearable
-                            isSearchable
-                            noOptionsMessage={() => {
-                                if (listCity.list.length === 0) {
-                                    return "Nenhuma cidade cadastrada!";
-                                } else {
-                                    return "Nenhuma opção encontrada!";
-                                }
-                            }}
-                            className="style-select"
-                        />
-                        <div className="text-sm text-red-600">
-                            {neighborhood.errorIdCity}
+                    </ModalBody>
+                    <ModalFooter>
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert(false)}>
+                            Cancelar
+                        </button>
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostNeighborhood()} disabled={inOperation} >
+                            {inOperation ? 'Aguarde' : 'Cadastrar'}
+                        </button>
+                    </ModalFooter>
+                </Modal>
+                <Modal isOpen={modalEdit}>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Bairro</ModalHeader>
+                    <ModalBody>
+                        <div className="form-group">
+                            <label className="text-[#444444]">ID: </label>
+                            <br />
+                            <input
+                                type="text"
+                                className="form-control rounded-md border-[#BCBCBC]"
+                                readOnly
+                                value={neighborhood.neighborhoodId}
+                            />
+                            <br />
+                            <label className="text-[#444444]">Nome:</label>
+                            <input
+                                type="text"
+                                className="form-control rounded-md border-[#BCBCBC]"
+                                name="nomeCidade"
+                                onChange={(e) => neighborhood.setNeighborhoodName(e.target.value)}
+                                value={neighborhood.neighborhoodName}
+                            />
+                            <div className="text-sm text-red-600">
+                                {neighborhood.errorNeighborhoodName}
+                            </div>
+                            <br />
+                            <label className="text-[#444444]">Cidade:</label>
+                            <br />
+                            <Select
+                                value={selectBox.selectedOption}
+                                onChange={selectBox.handleChange}
+                                onInputChange={selectBox.delayedSearch}
+                                loadOptions={selectBox.loadOptions}
+                                options={selectBox.options}
+                                placeholder="Pesquisar cidade . . ."
+                                isClearable
+                                isSearchable
+                                noOptionsMessage={() => {
+                                    if (listCity.list.length === 0) {
+                                        return "Nenhuma cidade cadastrada!";
+                                    } else {
+                                        return "Nenhuma opção encontrada!";
+                                    }
+                                }}
+                            />
+                            <div className="text-sm text-red-600">
+                                {neighborhood.errorIdCity}
+                            </div>
+                            <br />
                         </div>
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalInsert(false)}>
-                        Cancelar
-                    </button>
-                    <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PostNeighborhood()} disabled={inOperation} >
-                        {inOperation ? 'Aguarde' : 'Cadastrar'}
-                    </button>
-                </ModalFooter>
-            </Modal>
-            <Modal isOpen={modalEdit}>
-                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Editar Bairro</ModalHeader>
-                <ModalBody>
-                    <div className="form-group">
-                        <label className="text-[#444444]">ID: </label>
-                        <br />
-                        <input
-                            type="text"
-                            className="form-control rounded-md border-[#BCBCBC]"
-                            readOnly
-                            value={neighborhood.neighborhoodId}
-                        />
-                        <br />
-                        <label className="text-[#444444]">Nome:</label>
-                        <input
-                            type="text"
-                            className="form-control rounded-md border-[#BCBCBC]"
-                            name="nomeCidade"
-                            onChange={(e) => neighborhood.setNeighborhoodName(e.target.value)}
-                            value={neighborhood.neighborhoodName}
-                        />
-                        <div className="text-sm text-red-600">
-                            {neighborhood.errorNeighborhoodName}
+                    </ModalBody>
+                    <ModalFooter>
+                        <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit(false)}>
+                            Cancelar
+                        </button>
+                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutNeighborhood()} disabled={inOperation} >
+                            {inOperation ? 'Aguarde' : 'Atualizar'}
+                        </button>{" "}
+                    </ModalFooter>
+                </Modal>
+                <Modal isOpen={modalDelete}>
+                    <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
+                    <ModalBody className="justify-center">
+                        <div className="flex flex-row justify-center p-2">
+                            Confirmar a exclusão deste bairro:
+                            <div className="text-[#059669] ml-1">
+                                {neighborhood.neighborhoodName}
+                            </div> ?
                         </div>
-                        <br />
-                        <label className="text-[#444444]">Cidade:</label>
-                        <br />
-                        <Select
-                            value={selectBox.selectedOption}
-                            onChange={selectBox.handleChange}
-                            onInputChange={selectBox.delayedSearch}
-                            loadOptions={selectBox.loadOptions}
-                            options={selectBox.options}
-                            placeholder="Pesquisar cidade . . ."
-                            isClearable
-                            isSearchable
-                            noOptionsMessage={() => {
-                                if (listCity.list.length === 0) {
-                                    return "Nenhuma cidade cadastrada!";
-                                } else {
-                                    return "Nenhuma opção encontrada!";
-                                }
-                            }}
-                        />
-                        <div className="text-sm text-red-600">
-                            {neighborhood.errorIdCity}
+                        <div className="flex justify-center gap-2 pt-3">
+                            <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete(false)}>Cancelar</button>
+                            <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteNeighborhood()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'}</button>
                         </div>
-                        <br />
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <button className="btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white" onClick={() => openCloseModalEdit(false)}>
-                        Cancelar
-                    </button>
-                    <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutNeighborhood()} disabled={inOperation} >
-                        {inOperation ? 'Aguarde' : 'Atualizar'}
-                    </button>{" "}
-                </ModalFooter>
-            </Modal>
-            <Modal isOpen={modalDelete}>
-                <ModalHeader className="justify-center text-[#444444] text-2xl font-medium">Atenção!</ModalHeader>
-                <ModalBody className="justify-center">
-                    <div className="flex flex-row justify-center p-2">
-                        Confirmar a exclusão deste bairro:
-                        <div className="text-[#059669] ml-1">
-                            {neighborhood.neighborhoodName}
-                        </div> ?
-                    </div>
-                    <div className="flex justify-center gap-2 pt-3">
-                        <button className='btn bg-none border-[#D93442] text-[#D93442] hover:bg-[#D93442] hover:text-white' onClick={() => openCloseModalDelete(false)}>Cancelar</button>
-                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : DeleteNeighborhood()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Confirmar'}</button>
-                    </div>
-                </ModalBody>
-            </Modal>
-        </LayoutPage>
+                    </ModalBody>
+                </Modal>
+            </LayoutPage>
+        </>
     )
 }

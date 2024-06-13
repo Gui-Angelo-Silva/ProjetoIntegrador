@@ -15,26 +15,23 @@ namespace SGED.Objects.Models.Entities
         [Column("inscricaocadastral")]
         public string InscricaoCadastral { get; set; }
 
-        [Column("cepimovel")]
-        public string CepImovel { get; set; }
-
         [Column("numeroimovel")]
         public string NumeroImovel { get; set; }
 
         [Column("areaterreno")]
-        public float AreaTerreno { get; set; }
+        public string AreaTerreno { get; set; }
 
         [Column("areacomstruida")]
-        public float AreaConstruida { get; set; }
+        public string AreaConstruida { get; set; }
 
         [Column("condicoessolo")]
         public string CondicoesSolo { get; set; }
 
         [Column("valorvenal")]
-        public float ValorVenal { get; set; }
+        public string ValorVenal { get; set; }
 
         [Column("valormercado")]
-        public float ValorMercado { get; set; }
+        public string ValorMercado { get; set; }
 
         [Column("localizacaogeografica")]
         public long[]? LocalizacaoGeografica { get; set; } = new long[2];

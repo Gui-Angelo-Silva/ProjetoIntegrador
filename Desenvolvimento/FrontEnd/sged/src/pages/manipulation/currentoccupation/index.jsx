@@ -22,11 +22,11 @@ import PopUp from "../../../components/PopUp";
 import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
-import StateClass from '../../../object/class/state';
+import CurrentOccupationClass from '../../../object/class/currentoccupation';
 import ActionManager from '../../../object/modules/action';
 import CompareModule from '../../../object/modules/compare';
 
-export default function State() {
+export default function CurrentOccupation() {
 
     // Marking the assembled component
     const montage = useMontage();
@@ -35,15 +35,15 @@ export default function State() {
         montage.componentMounted();
     }, []);
 
-    // State and service initialization
+    // CurrentOccupation and service initialization
     const connection = new ConnectionService();
     const managerPopUp = PopUpManager();
     const list = ListModule();
-    const state = StateClass();
+    const currentOccupation = CurrentOccupationClass();
     const action = ActionManager();
     const compare = CompareModule();
 
-    // State hooks
+    // CurrentOccupation hooks
     const [modalInsert, setModalInsert] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
@@ -57,31 +57,31 @@ export default function State() {
     useEffect(() => {
         if (updateData) {
             setUpdateData(false);
-            GetState();
+            GetCurrentOccupation();
 
             openCloseModalInsert(false);
             openCloseModalEdit(false);
             openCloseModalDelete(false);
         }
 
-        list.searchBy ? null : list.setSearchBy('nomeEstado');
+        list.searchBy ? null : list.setSearchBy('nomeOcupacaoAtual');
     }, [updateData]);
 
-    useEffect(() => {
-        action.setStatus(state.dataValid ? 1 : 0);
-    }, [state.dataValid]);
+    /*useEffect(() => {
+        action.setStatus(currentOccupation.dataValid ? 1 : 0);
+    }, [currentOccupation.dataValid]);
 
     useEffect(() => {
-        if (modalEdit && state.dataValid) {
-            state.setDataValid(!compare.compareObjects(state.getData()));
+        if (modalEdit && currentOccupation.dataValid) {
+            currentOccupation.setDataValid(!compare.compareObjects(currentOccupation.getData()));
         }
-    }, [state.stateName, state.stateUf, state.dataValid]);
+    }, [currentOccupation.currentOccupationName, currentOccupation.currentOccupationDescricao, currentOccupation.dataValid]);
 
     useEffect(() => {
-        if (state.errorStateId.length !== 0) {
+        if (currentOccupation.errorCurrentOccupationId.length !== 0) {
             openCloseModalError(true);
         }
-    }, [state.errorStateId]);
+    }, [currentOccupation.errorCurrentOccupationId]);
 
     useEffect(() => {
         let timer = null;
@@ -107,11 +107,11 @@ export default function State() {
         return () => {
             clearInterval(timer);
         };
-    }, [modalError]);
+    }, [modalError]);*/
 
-    // State selection handler
-    const selectState = (object, option) => {
-        state.setData(object);
+    // CurrentOccupation selection handler
+    const selectCurrentOccupation = (object, option) => {
+        currentOccupation.setData(object);
 
         if (option === "Editar") {
             compare.setData(object);
@@ -126,8 +126,8 @@ export default function State() {
         setModalInsert(boolean);
 
         if (!boolean) {
-            state.clearError();
-            state.clearData();
+            currentOccupation.clearError();
+            currentOccupation.clearData();
         }
     };
 
@@ -135,8 +135,8 @@ export default function State() {
         setModalEdit(boolean);
 
         if (!boolean) {
-            state.clearError();
-            state.clearData();
+            currentOccupation.clearError();
+            currentOccupation.clearData();
             compare.setData({});
         }
     };
@@ -145,13 +145,13 @@ export default function State() {
         setModalDelete(boolean);
 
         if (!boolean) {
-            state.clearData();
+            currentOccupation.clearData();
         }
     };
 
     const openCloseModalError = (boolean) => {
-        state.clearError();
-        state.clearData();
+        currentOccupation.clearError();
+        currentOccupation.clearData();
 
         setModalInsert(false);
         setModalEdit(false);
@@ -164,51 +164,51 @@ export default function State() {
     };
 
     // CRUD operations
-    const GetState = async () => {
+    const GetCurrentOccupation = async () => {
         setLastRequisition("buscar");
 
-        await connection.endpoint("Estado").get();
+        await connection.endpoint("OcupacaoAtual").get();
         managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
         list.setList(connection.getList());
     };
 
-    const PostState = async () => {
+    const PostCurrentOccupation = async () => {
         setInOperation(true);
         setLastRequisition("cadastrar");
 
-        await connection.endpoint("Estado").post(state.getData());
+        await connection.endpoint("OcupacaoAtual").post(currentOccupation.getData());
         managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
-        state.setError(connection.response.data);
+        //currentOccupation.setError(connection.response.data);
         openCloseModalInsert(!connection.response.status);
         setUpdateData(connection.response.status);
 
         setInOperation(false);
     };
 
-    const PutState = async () => {
+    const PutCurrentOccupation = async () => {
         setInOperation(true);
         setLastRequisition("alterar");
 
-        await connection.endpoint("Estado").put(state.getData());
+        await connection.endpoint("OcupacaoAtual").put(currentOccupation.getData());
         managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
-        state.setError(connection.response.data);
+        //currentOccupation.setError(connection.response.data);
         openCloseModalEdit(!connection.response.status);
         setUpdateData(connection.response.status);
 
         setInOperation(false);
     };
 
-    const DeleteState = async () => {
+    const DeleteCurrentOccupation = async () => {
         setInOperation(true);
         setLastRequisition("excluir");
 
-        await connection.endpoint("Estado").delete(state.getData().id);
+        await connection.endpoint("OcupacaoAtual").delete(currentOccupation.getData().id);
         managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
-        state.setError(connection.response.data);
+        //currentOccupation.setError(connection.response.data);
         setModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);
 
@@ -216,14 +216,14 @@ export default function State() {
     };
 
     // Data for table
-    const dataForTable = list.currentList.map((estado) => {
+    const dataForTable = list.currentList.map((ocupacaoAtual) => {
         return {
-            nomeEstado: estado.nomeEstado,
-            ufEstado: estado.ufEstado,
+            nomeOcupacaoAtual: ocupacaoAtual.nomeOcupacaoAtual,
+            descricaoOcupacaoAtual: ocupacaoAtual.descricaoOcupacaoAtual,
             acoes: (
                 <div className="flex items-center justify-center gap-2 text-gray-700">
-                    <ButtonTable func={() => selectState(estado, "Editar")} text="Editar" />
-                    <ButtonTable func={() => selectState(estado, "Excluir")} text="Excluir" />
+                    <ButtonTable func={() => selectCurrentOccupation(ocupacaoAtual, "Editar")} text="Editar" />
+                    <ButtonTable func={() => selectCurrentOccupation(ocupacaoAtual, "Excluir")} text="Excluir" />
                 </div>
             )
         };
@@ -245,20 +245,20 @@ export default function State() {
                 ))}
             </div>}
             <LayoutPage>
-                <LinkTitle pageName="Estado" />
+                <LinkTitle pageName="Ocupação Atual" />
                 <SearchBar
-                    placeholder="Pesquisar Estado"
+                    placeholder="Pesquisar Ocupação Atual"
                     onSearchChange={(value) => list.handleSearch(value)}
                     onSearchByChange={(value) => list.handleSearchBy(value)}
                     options={[
-                        { label: 'Estado', value: 'nomeEstado' },
-                        { label: 'Sigla', value: 'ufEstado' },
+                        { label: 'Nome', value: 'nomeOcupacaoAtual' },
+                        { label: 'Descrição', value: 'descricaoOcupacaoAtual' },
                     ]}
                     button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
                 />
                 <CustomTable
                     totalColumns={3}
-                    headers={["Estado", "UF", "Ações"]}
+                    headers={["Nome", "Descrição", "Ações"]}
                     data={dataForTable}
                     onPageChange={(page) => list.goToPage(page)}
                     currentPage={list.currentPage}
@@ -269,28 +269,18 @@ export default function State() {
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC] flex flex-col items-center">
                         <div className="flex items-center justify-center">
                             <FilePlus size={32} className="mr-2 text-write font-bold" />
-                            <h3 className="m-0">Cadastrar Estado</h3>
+                            <h3 className="m-0">Cadastrar Ocupação Atual</h3>
                         </div>
                     </ModalHeader>
                     <ModalBody>
                         <div className="form-group">
                             <label className="text-[#444444]">Nome: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} onBlur={() => state.verifyName()} onChange={(e) => state.setStateName(e.target.value)} />
-                            {state.errorStateName.map((error, index) => (
-                                <div key={index} className="flex items-center">
-                                    <span className="text-sm text-red-600">- {error}</span>
-                                </div>
-                            ))}
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} onChange={(e) => currentOccupation.setCurrentOccupationName(e.target.value)} />
                             <br />
-                            <label className="text-[#444444]">Sigla: <span className="text-red-600">*</span></label>
+                            <label className="text-[#444444]">Descrição: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation} onBlur={() => state.verifyUf()} value={state.stateUf} onChange={(e) => state.setStateUf(e.target.value.toUpperCase())} maxLength={2} />
-                            {state.errorStateUf.map((error, index) => (
-                                <div key={index} className="flex items-center">
-                                    <span className="text-sm text-red-600">- {error}</span>
-                                </div>
-                            ))}
+                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation} value={currentOccupation.currentOccupationDescription} onChange={(e) => currentOccupation.setCurrentOccupationDescription(e.target.value)} />
                             <br />
                         </div>
                     </ModalBody>
@@ -298,8 +288,8 @@ export default function State() {
                         <div className="flex justify-center gap-4 ">
                             <CancelButton action={() => openCloseModalInsert(false)} liberate={!inOperation} />
                             <button
-                                className={`btn w-full ${state.dataValid && !inOperation ? 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' : 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5] hover:bg-gray-100'}`}
-                                onClick={() => state.dataValid && !inOperation ? PostState() : null}
+                                className={`btn w-full ${!inOperation ? 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' : 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5] hover:bg-gray-100'}`}
+                                onClick={() => !inOperation ? PostCurrentOccupation() : null}
                                 style={{ width: '120px' }}
                             >
                                 {!inOperation ? 'Cadastrar' : 'Aguarde...'}
@@ -311,37 +301,22 @@ export default function State() {
                     <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC] flex flex-col items-center">
                         <div className="flex items-center justify-center">
                             <Pen size={32} className="mr-2 text-write font-bold" />
-                            <h3 className="m-0">Alterar Estado</h3>
+                            <h3 className="m-0">Alterar Ocupação Atual</h3>
                         </div>
                     </ModalHeader>
                     <ModalBody>
                         <div className="form-group">
                             <label className="text-[#444444]">ID: </label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} readOnly value={state.stateId} />
-                            {state.errorStateId.map((error, index) => (
-                                <div key={index} className="flex items-center">
-                                    <span className="text-sm text-red-600">- {error}</span>
-                                </div>
-                            ))}
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} readOnly value={currentOccupation.currentOccupationId} />
                             <br />
                             <label className="text-[#444444]">Nome: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} onBlur={() => state.verifyName()} value={state.stateName} onChange={(e) => state.setStateName(e.target.value)} />
-                            {state.errorStateName.map((error, index) => (
-                                <div key={index} className="flex items-center">
-                                    <span className="text-sm text-red-600">- {error}</span>
-                                </div>
-                            ))}
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} value={currentOccupation.currentOccupationName} onChange={(e) => currentOccupation.setCurrentOccupationName(e.target.value)} />
                             <br />
-                            <label className="text-[#444444]">Sigla: <span className="text-red-600">*</span></label>
+                            <label className="text-[#444444]">Descrição: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation} onBlur={() => state.verifyUf()} value={state.stateUf} onChange={(e) => state.setStateUf(e.target.value.toUpperCase())} maxLength={2} />
-                            {state.errorStateUf.map((error, index) => (
-                                <div key={index} className="flex items-center">
-                                    <span className="text-sm text-red-600">- {error}</span>
-                                </div>
-                            ))}
+                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation}  value={currentOccupation.currentOccupationDescription} onChange={(e) => currentOccupation.setCurrentOccupationDescription(e.target.value)} />
                             <br />
                         </div>
                     </ModalBody>
@@ -349,8 +324,8 @@ export default function State() {
                         <div className="flex justify-center gap-4 ">
                             <CancelButton action={() => openCloseModalEdit(false)} liberate={!inOperation} />
                             <button
-                                className={`btn w-full ${state.dataValid && !inOperation ? 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' : 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5] hover:bg-gray-100'}`}
-                                onClick={() => state.dataValid && !inOperation ? PutState() : null}
+                                className={`btn w-full ${!inOperation ? 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' : 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5] hover:bg-gray-100'}`}
+                                onClick={() => !inOperation ? PutCurrentOccupation() : null}
                                 style={{ width: '120px' }}
                             >
                                 {!inOperation ? 'Alterar' : 'Aguarde...'}
@@ -362,14 +337,14 @@ export default function State() {
                     <ModalHeader className="text-white text-xl bg-[#ff5c5c] border-[#BCBCBC] flex flex-col items-center justify-center">
                         <div className="flex items-center">
                             <Trash size={32} className="mr-2 text-write font-bold" />
-                            <h3 className="m-0">Excluir Estado</h3>
+                            <h3 className="m-0">Excluir Ocupação Atual</h3>
                         </div>
                     </ModalHeader>
                     <ModalBody className="text-center flex flex-col justify-center">
                         <h3 className="pl-4 text-lg font-thin">
-                            Deseja realmente excluir o
+                            Deseja realmente excluir a
                             <br />
-                            Estado <span className="text-[#ff5c5c] font-bold">{state.stateName}</span>?
+                            Ocupação Atual <span className="text-[#ff5c5c] font-bold">{currentOccupation.currentOccupationName}</span>?
                         </h3>
                     </ModalBody>
                     <ModalFooter className="flex justify-center">
@@ -377,7 +352,7 @@ export default function State() {
                             <CancelButton action={() => openCloseModalDelete(false)} liberate={!inOperation} />
                             <button
                                 className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#f05252] text-white hover:text-white hover:bg-[#BC2D2D]'}`}
-                                onClick={() => inOperation ? null : DeleteState()} disabled={inOperation}
+                                onClick={() => inOperation ? null : DeleteCurrentOccupation()} disabled={inOperation}
                                 style={{ width: '120px' }}
                             >
                                 {inOperation ? 'Aguarde' : 'Excluir'}
@@ -389,12 +364,12 @@ export default function State() {
                     <ModalHeader className="text-white text-xl bg-[#ff5c5c] border-[#BCBCBC] flex flex-col items-center justify-center">
                         <div className="flex items-center">
                             <Warning size={32} className="mr-2 text-write font-bold" />
-                            <h3 className="m-0">Erro ao {lastRequisition} o Estado</h3>
+                            <h3 className="m-0">Erro ao {lastRequisition} a Ocupação Atual</h3>
                         </div>
                     </ModalHeader>
                     <ModalBody className="text-center flex flex-col justify-center items-center">
                         <h3 className="pl-4 text-lg font-thin">
-                            O Estado não existe no banco de dados.
+                            A Ocupação Atual não existe no banco de dados.
                             <br />
                             O sistema irá carregar os dados atualizados após o fechamento da tela.
                             Tempo restante: {timeLeft}s

@@ -26,7 +26,7 @@ namespace SGED.Objects.Models.Entities
 
         public Engenheiro? Engenheiro { get; set; }
 
-        [ForeignKey("idengenheiro")]
-        public int IdEngenheiro { get; set; }
+        [Column("idengenheiro")]
+        public int? IdEngenheiro { get; set; }
     }
 }

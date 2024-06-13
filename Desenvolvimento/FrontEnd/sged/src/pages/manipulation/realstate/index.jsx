@@ -46,6 +46,7 @@ export default function RealState() {
     const listUsage = ListModule();
     const listCurrentOccupation = ListModule();
     const selectBoxPublicPlace = SelectModule();
+    const selectBoxCitizen = SelectModule();
     const selectBoxOwner = SelectModule();
     const selectBoxTaxpayer = SelectModule();
     const selectBoxTopography = SelectModule();

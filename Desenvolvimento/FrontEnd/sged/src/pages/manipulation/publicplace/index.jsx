@@ -321,6 +321,10 @@ export default function PublicPlace() {
                                 {publicplace.errorPublicPlaceCep}
                             </div>
                             <br />
+                            <label className="text-[#444444]">Rua: </label>
+                            <br />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => publicplace.setPublicPlaceStreet(e.target.value)} value={publicplace.publicPlaceStreet} />
+                            <br />
                             <label className="text-[#444444]">Número Inicial: </label>
                             <input
                                 type="number"
@@ -420,6 +424,9 @@ export default function PublicPlace() {
                             <div className="text-sm text-red-600">
                                 {publicplace.errorPublicPlaceCep}
                             </div>
+                            <br />
+                            <label className="text-[#444444]">Rua:</label>
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onKeyDown={control.handleKeyDown} onChange={(e) => publicplace.publicPlaceStreet(e.target.value)} value={publicplace.publicPlaceStreet} />
                             <br />
                             <label className="text-[#444444]">Número Inicial:</label>
                             <input

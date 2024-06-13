@@ -23,7 +23,7 @@ namespace SGED.Objects.DTO.Entities
 
         [Required(ErrorMessage = "O telefone é requerido!")]
         [MinLength(15)]
-        [MaxLength(15)]
+        [MaxLength(20)]
         public string TelefonePessoa { get; set; }
 
         [Required(ErrorMessage = "O CPF ou CNPJ é requerido!")]

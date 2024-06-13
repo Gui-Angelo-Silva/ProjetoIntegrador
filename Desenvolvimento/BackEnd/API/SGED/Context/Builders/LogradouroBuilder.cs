@@ -52,7 +52,11 @@ namespace SGED.Context.Builders
                 new Logradouro { Id = 17, Cep = "15704-096", RuaLogradouro = "Rua 10", NumeroInicial = "", NumeroFinal = "", IdBairro = 6, IdTipoLogradouro = 13 },
                 new Logradouro { Id = 18, Cep = "15704-098", RuaLogradouro = "Rua 10", NumeroInicial = "1690", NumeroFinal = "1998", IdBairro = 7, IdTipoLogradouro = 129 },
                 new Logradouro { Id = 19, Cep = "15704-100", RuaLogradouro = "Rua 10", NumeroInicial = "1628 ", NumeroFinal = "1688", IdBairro = 7, IdTipoLogradouro = 13 },
-                new Logradouro { Id = 20, Cep = "15704-130", RuaLogradouro = "Rua 10", NumeroInicial = "", NumeroFinal = "", IdBairro = 8, IdTipoLogradouro = 129 }
+                new Logradouro { Id = 20, Cep = "15704-130", RuaLogradouro = "Rua 10", NumeroInicial = "", NumeroFinal = "", IdBairro = 8, IdTipoLogradouro = 129 },
+                new Logradouro { Id = 21, Cep = "15704-200", RuaLogradouro = "Rua da Saudade", NumeroInicial = "1100", NumeroFinal = "2980", IdBairro = 36, IdTipoLogradouro = 129 },
+                new Logradouro { Id = 22, Cep = "15707-003", RuaLogradouro = "Rua José Bonifácio de Andrade Silva", NumeroInicial = "22", NumeroFinal = "40", IdBairro = 76, IdTipoLogradouro = 129 },
+                new Logradouro { Id = 23, Cep = "15710-000", RuaLogradouro = "Rua Francisco Fontes Parra", NumeroInicial = "1200", NumeroFinal = "2650", IdBairro = 77, IdTipoLogradouro = 129 },
+                new Logradouro { Id = 24, Cep = "15710-000", RuaLogradouro = "Rua Minas Gerais", NumeroInicial = "1000", NumeroFinal = "2750", IdBairro = 78, IdTipoLogradouro = 129 }
             );
         }
     }

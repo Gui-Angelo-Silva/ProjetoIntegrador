@@ -96,7 +96,10 @@ namespace SGED.Context.Builders
                 new Bairro { Id = 72, NomeBairro = "Vila São Vicente de Paulo", IdCidade = 2 },
                 new Bairro { Id = 73, NomeBairro = "Vila Tupi", IdCidade = 2 },
                 new Bairro { Id = 74, NomeBairro = "Vila Urano", IdCidade = 2 },
-                new Bairro { Id = 75, NomeBairro = "Vila Vargas", IdCidade = 2 }
+                new Bairro { Id = 75, NomeBairro = "Vila Vargas", IdCidade = 2 },
+                new Bairro { Id = 76, NomeBairro = "Córrego do Açude", IdCidade = 2 },
+                new Bairro { Id = 77, NomeBairro = "Residencial São Lucas", IdCidade = 2 },
+                new Bairro { Id = 78, NomeBairro = "Centro", IdCidade = 8 }
             );
         }
     }

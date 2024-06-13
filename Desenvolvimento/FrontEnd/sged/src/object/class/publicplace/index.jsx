@@ -8,9 +8,11 @@ function PublicPlaceClass() {
     const [publicPlaceCep, setPublicPlaceCep] = useState("");
     const [publicPlaceInitialNumber, setPublicPlaceInitialNumber] = useState("");
     const [publicPlaceFinalNumber, setPublicPlaceFinalNumber] = useState("");
+    const [publicPlaceStreet, setPublicPlaceStreet] = useState('')
     const [idNeighborhood, setIdNeighborhood] = useState(0);
     const [idTypePublicPlace, setIdTypePublicPlace] = useState(0);
 
+    const [errorPublicPlaceStreet, setErrorPublicPlaceStreet] = useState("");
     const [errorPublicPlaceCep, setErrorPublicPlaceCep] = useState("");
     const [errorPublicPlaceInitialNumber, setErrorPublicPlaceInitialNumber] = useState("");
     const [errorPublicPlaceFinalNumber, setErrorPublicPlaceFinalNumber] = useState("");
@@ -29,6 +31,7 @@ function PublicPlaceClass() {
         return {
             id: publicPlaceId,
             cep: publicPlaceCep,
+            ruaLogradouro: publicPlaceStreet,
             numeroInicial: publicPlaceInitialNumber,
             numeroFinal: publicPlaceFinalNumber,
             idBairro: idNeighborhood,
@@ -39,6 +42,7 @@ function PublicPlaceClass() {
     function setData(object) {
         setPublicPlaceId(object.id);
         setPublicPlaceCep(object.cep);
+        setPublicPlaceStreet(object.ruaLogradouro);
         setPublicPlaceInitialNumber(object.numeroInicial);
         setPublicPlaceFinalNumber(object.numeroFinal);
         setIdNeighborhood(object.idBairro);
@@ -48,6 +52,7 @@ function PublicPlaceClass() {
     function clearData() {
         setPublicPlaceId(0);
         setPublicPlaceCep('');
+        setPublicPlaceStreet('');
         setPublicPlaceInitialNumber('');
         setPublicPlaceFinalNumber('');
         setIdNeighborhood(0);
@@ -56,6 +61,7 @@ function PublicPlaceClass() {
 
     function clearError() {
         setErrorPublicPlaceCep('');
+        setErrorPublicPlaceStreet('');
         setErrorPublicPlaceInitialNumber('');
         setErrorPublicPlaceFinalNumber('');
         setErrorIdNeighborhood('');
@@ -188,6 +194,8 @@ function PublicPlaceClass() {
         publicPlaceId,
         setPublicPlaceId,
         publicPlaceCep,
+        publicPlaceStreet,
+        setPublicPlaceStreet,
         setPublicPlaceCep,
         publicPlaceInitialNumber,
         setPublicPlaceInitialNumber,

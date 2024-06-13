@@ -601,7 +601,7 @@ export default function RealState() {
                             <br />
                             <label className="text-[#444444]">Valor Venal: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => realstate.setRealStateSalesValue(e.target.value)} value={realstate.realStateSalesValuer} />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => realstate.setRealStateSalesValue(e.target.value)} value={realstate.realStateSalesValue} />
                             <br />
                             <label className="text-[#444444]">Valor de Mercado: <span className="text-red-600">*</span></label>
                             <br />

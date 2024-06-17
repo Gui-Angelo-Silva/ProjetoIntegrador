@@ -13,7 +13,11 @@ import ImgAuditoria from "../../assets/card/ImgAuditoriaAtualizada.png";
 import ImgTipoProcesso from "../../assets/card/ImgTipoProcessoAtualizada.png";
 import ImgEtapa from "../../assets/card/ImgEtapaAtualizada.png";
 import ImgTipoDocumento from "../../assets/card/ImgTipoDocumentoAtualizada.png";
-import ImgTipoDocumentoEtapa from "../../assets/card/ImgTipoDocumentoEtapa.png";
+import ImgTipoDocumentoEtapa from "../../assets/card/ImgTipoDocumentoEtapa.png";    
+import ImgTipoInfraestrutura from "../../assets/card/ImgTipoInfraestrutra.png";
+import ImgInfraestrutura from "../../assets/card/ImgInfraestrutura.png";
+import ImgOcupacaoAtual from "../../assets/card/ImgOcupacaoAtual.png";
+import ImgTopografia from "../../assets/card/ImgTopografia.png";
 
 import { useServer } from "../../routes/serverRoute";
 
@@ -70,14 +74,14 @@ function Cards() {
         "Dados Adicionais": [
             {
                 onClick: () => addSegment("tipo-infraestrutura"),
-                image: ImgTipoUsuario,
+                image: ImgTipoInfraestrutura,
                 tooltip: "Abrir a Página de Controle de Tipo Infraestrutura",
                 title: "Tipo Infraest.",
                 module: "Dados Adicionais"
             },
             {
                 onClick: () => addSegment("infraestrutura"),
-                image: ImgUsuario,
+                image: ImgInfraestrutura,
                 tooltip: "Abrir a Página de Controle de Infraestrutura",
                 title: "Infraestrutura",
                 module: "Dados Adicionais"
@@ -91,14 +95,14 @@ function Cards() {
             },
             {
                 onClick: () => addSegment("ocupacao-atual"),
-                image: ImgEngenheiro,
+                image: ImgOcupacaoAtual,
                 tooltip: "Abrir a Página de Controle de Ocupação Atual",
                 title: "Ocupação Atual",
                 module: "Dados Adicionais"
             },
             {
                 onClick: () => addSegment("topografia"),
-                image: ImgFiscal,
+                image: ImgTopografia,
                 tooltip: "Abrir a Página de Controle de Topografia",
                 title: "Topografia",
                 module: "Dados Adicionais"

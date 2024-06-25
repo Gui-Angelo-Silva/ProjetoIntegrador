@@ -20,6 +20,7 @@ import { X } from '@phosphor-icons/react';
 import { useEffect, useState } from "react";
 import { useServer } from '../routes/serverRoute';
 import SessionService from '../object/service/session';
+import SettingsIcon from '@mui/icons-material/Settings';
 import UserClass from '../object/class/user';
 import LogoJales from '../assets/pages/LogoJales.png';
 
@@ -119,17 +120,23 @@ export default function NavBar() {
           <X size={24} />
         </IconButton>
       </Box>
-      <List>
-        <ListItem button onClick={() => server.clearSegment("perfil")}>
+      <List className='px-3'>
+        <ListItem className='cursor-pointer hover:bg-gray-200 hover:rounded-md'  onClick={() => server.clearSegment("perfil")}>
           <ListItemIcon>
-            <PersonIcon style={{ color: '#2D636B' }} />
+            <PersonIcon className='text-gray-600' />
           </ListItemIcon>
           <ListItemText primary={<Typography style={{ color: '#636262' }}>Perfil</Typography>} />
         </ListItem>
-        <Box sx={{ borderBottom: '1px solid #2D636B', margin: '8px 16px' }}></Box>
-        <ListItem button onClick={encerateSession}>
+        <ListItem className='cursor-pointer hover:bg-gray-200 hover:rounded-md'  onClick={() => server.clearSegment("configuracao")}>
           <ListItemIcon>
-            <LogoutIcon style={{ color: '#2D636B' }} />
+            <SettingsIcon className='text-gray-600' />
+          </ListItemIcon>
+          <ListItemText primary={<Typography style={{ color: '#636262' }}>Configurações</Typography>} />
+        </ListItem>
+        <Box sx={{ borderBottom: '1px solid #2D636B', margin: '8px 16px' }}></Box>
+        <ListItem className='cursor-pointer hover:bg-gray-200 hover:rounded-md' onClick={encerateSession}>
+          <ListItemIcon>
+            <LogoutIcon className='text-gray-600' />
           </ListItemIcon>
           <ListItemText primary={<Typography style={{ color: '#636262' }}>Sair</Typography>} />
         </ListItem>

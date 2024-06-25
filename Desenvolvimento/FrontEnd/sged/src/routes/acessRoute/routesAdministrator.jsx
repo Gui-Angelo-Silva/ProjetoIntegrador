@@ -24,6 +24,7 @@ import Topography from '../../pages/manipulation/topography';
 import TypeInfrastructure from '../../pages/manipulation/typeinfrastructure';
 import Infrastructure from '../../pages/manipulation/infrastructure';
 import Installation from '../../pages/manipulation/installation';
+import Setting from '../../pages/account/setting';
 
 export default function RouteA() {
     return (
@@ -52,6 +53,7 @@ export default function RouteA() {
             <Route path="/cadastros/tipo-infraestrutura" element={<TypeInfrastructure />}></Route>
             <Route path="/cadastros/infraestrutura" element={<Infrastructure />}></Route>
             <Route path="/cadastros/instalacao" element={<Installation />}></Route>
+            <Route path="/configuracao" element={<Setting />}></Route>
 
             <Route path="/documentos" element={<Document />}></Route>
             <Route path="/teste" element={<Test />}></Route>

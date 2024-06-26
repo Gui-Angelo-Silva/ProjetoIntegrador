@@ -47,9 +47,9 @@ const Setting = () => {
           </div>
         </div>
         <div className='flex w-full justify-end pb-3'>
-          <button className='w-[132px] h-[53px] rounded-lg bg-[#2D636B] text-white hover:scale-105 transition hover:transition-colors hover:bg-[#005A66]'>
+          {/* <button className='w-[132px] h-[53px] rounded-lg bg-[#2D636B] text-white hover:scale-105 transition hover:transition-colors hover:bg-[#005A66]'>
             Salvar
-          </button>
+          </button> */}
         </div>
       </div>
     </LayoutPage>

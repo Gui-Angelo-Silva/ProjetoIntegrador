@@ -9,17 +9,25 @@ namespace SGED.Context.Builders
         public static void Build(ModelBuilder modelBuilder)
         {
             // Builder
-            modelBuilder.Entity<TipoDocumentoEtapa>().HasKey(b => b.Id);
-            modelBuilder.Entity<TipoDocumentoEtapa>().Property(b => b.Posicao).IsRequired();
-            modelBuilder.Entity<TipoDocumentoEtapa>().Property(b => b.Status).IsRequired();
-            modelBuilder.Entity<TipoDocumentoEtapa>().HasOne(b => b.TipoDocumento).WithMany().HasForeignKey(b => b.IdTipoDocumento);
-            modelBuilder.Entity<TipoDocumentoEtapa>().HasOne(b => b.Etapa).WithMany().HasForeignKey(b => b.IdEtapa);
+            modelBuilder.Entity<TipoDocumentoEtapa>().HasKey(tde => tde.Id);
+            modelBuilder.Entity<TipoDocumentoEtapa>().Property(tde => tde.Posicao).IsRequired();
+            modelBuilder.Entity<TipoDocumentoEtapa>().Property(tde => tde.Status).IsRequired();
+            modelBuilder.Entity<TipoDocumentoEtapa>().Property(tde => tde.IdTipoDocumento).IsRequired();
+            modelBuilder.Entity<TipoDocumentoEtapa>().Property(tde => tde.IdEtapa).IsRequired();
 
-            // Relacionamento: Logradouro -> Imóvel
-            modelBuilder.Entity<Etapa>().HasMany(p => p.TipoDocumentoEtapas).WithOne(b => b.Etapa).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            // Relacionamento: TipoDocumento -> TipoDocumentoEtapa
+            modelBuilder.Entity<TipoDocumentoEtapa>()
+                .HasOne(tde => tde.TipoDocumento)
+                .WithMany(td => td.TipoDocumentoEtapas)
+                .HasForeignKey(tde => tde.IdTipoDocumento)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // Relacionamento: Munícipe -> Imóvel
-            modelBuilder.Entity<TipoDocumento>().HasMany(p => p.TipoDocumentoEtapas).WithOne(b => b.TipoDocumento).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            // Relacionamento: Etapa -> TipoDocumentoEtapa
+            modelBuilder.Entity<TipoDocumentoEtapa>()
+                .HasOne(tde => tde.Etapa)
+                .WithMany(e => e.TipoDocumentoEtapas)
+                .HasForeignKey(tde => tde.IdEtapa)
+                .OnDelete(DeleteBehavior.Cascade);
 
 
             // Inserções

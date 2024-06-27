@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Jose;
 using Newtonsoft.Json;
-using SGED.Objects.Utilities;
 using System.Text;
+using SGED.Objects.Server;
 
 namespace SGED.Objects.Models.Entities
 {

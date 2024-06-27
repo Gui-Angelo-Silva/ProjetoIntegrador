@@ -13,7 +13,11 @@ import ImgAuditoria from "../../assets/card/ImgAuditoriaAtualizada.png";
 import ImgTipoProcesso from "../../assets/card/ImgTipoProcessoAtualizada.png";
 import ImgEtapa from "../../assets/card/ImgEtapaAtualizada.png";
 import ImgTipoDocumento from "../../assets/card/ImgTipoDocumentoAtualizada.png";
-import ImgTipoDocumentoEtapa from "../../assets/card/ImgTipoDocumentoEtapa.png";
+import ImgTipoDocumentoEtapa from "../../assets/card/ImgTipoDocumentoEtapa.png";    
+import ImgTipoInfraestrutura from "../../assets/card/ImgTipoInfraestrutra.png";
+import ImgInfraestrutura from "../../assets/card/ImgInfraestrutura.png";
+import ImgOcupacaoAtual from "../../assets/card/ImgOcupacaoAtual.png";
+import ImgTopografia from "../../assets/card/ImgTopografia.png";
 
 import { useServer } from "../../routes/serverRoute";
 
@@ -22,93 +26,138 @@ function Cards() {
     const { addSegment, inDevelopment } = useServer();
 
     const dataCategory = {
-        "Imóvel": [
+        "Endereço e Imóvel": [
             {
                 onClick: () => addSegment("estado"),
                 image: ImgEstado,
                 tooltip: "Abrir a Página de Controle de Estado",
                 title: "Estado",
-                module: "Imovel"
+                module: "Endereço e Imóvel"
             },
             {
                 onClick: () => addSegment("cidade"),
                 image: ImgCidade,
                 tooltip: "Abrir a Página de Controle de Cidade",
                 title: "Cidade",
-                module: "Imovel"
+                module: "Endereço e Imóvel"
             },
             {
                 onClick: () => addSegment("bairro"),
                 image: ImgBairro,
                 tooltip: "Abrir a Página de Controle de Bairro",
                 title: "Bairro",
-                module: "Imovel"
+                module: "Endereço e Imóvel"
             },
             {
                 onClick: () => addSegment("tipo-logradouro"),
                 image: ImgTipoLogradouro,
                 tooltip: "Abrir a Página de Controle de Tipo Logradouro",
                 title: "Tipo Logradouro",
-                module: "Imovel"
+                module: "Endereço e Imóvel"
             },
             {
                 onClick: () => addSegment("logradouro"),
                 image: ImgLogradouro,
                 tooltip: "Abrir a Página de Controle de Logradouro",
                 title: "Logradouro",
-                module: "Imovel"
+                module: "Endereço e Imóvel"
             },
             {
                 onClick: () => addSegment("imovel"),
                 image: ImgImovel,
                 tooltip: "Abrir a Página de Controle de Imóvel",
                 title: "Imóvel",
-                module: "Imovel"
+                module: "Endereço e Imóvel"
             }
         ],
 
-        "Usuário": [
+        "Dados Adicionais": [
+            {
+                onClick: () => addSegment("tipo-infraestrutura"),
+                image: ImgTipoInfraestrutura,
+                tooltip: "Abrir a Página de Controle de Tipo Infraestrutura",
+                title: "Tipo Infraest.",
+                module: "Dados Adicionais"
+            },
+            {
+                onClick: () => addSegment("infraestrutura"),
+                image: ImgInfraestrutura,
+                tooltip: "Abrir a Página de Controle de Infraestrutura",
+                title: "Infraestrutura",
+                module: "Dados Adicionais"
+            },
+            {
+                onClick: () => addSegment("uso"),
+                image: ImgMunicipe,
+                tooltip: "Abrir a Página de Controle de Uso",
+                title: "Uso",
+                module: "Dados Adicionais"
+            },
+            {
+                onClick: () => addSegment("ocupacao-atual"),
+                image: ImgOcupacaoAtual,
+                tooltip: "Abrir a Página de Controle de Ocupação Atual",
+                title: "Ocupação Atual",
+                module: "Dados Adicionais"
+            },
+            {
+                onClick: () => addSegment("topografia"),
+                image: ImgTopografia,
+                tooltip: "Abrir a Página de Controle de Topografia",
+                title: "Topografia",
+                module: "Dados Adicionais"
+            },
+            {
+                onClick: () => addSegment("instalacao"),
+                image: ImgAuditoria,
+                tooltip: "Abrir a Página de Controle de Instalação",
+                title: "Instalação",
+                module: "Dados Adicionais"
+            },
+        ],
+
+        "Usuários e Pessoas": [
             {
                 onClick: () => addSegment("tipo-usuario"),
                 image: ImgTipoUsuario,
                 tooltip: "Abrir a Página de Controle de Tipo Usuário",
                 title: "Tipo Usuário",
-                module: "Usuario"
+                module: "Usuários e Pessoas"
             },
             {
                 onClick: () => addSegment("usuario"),
                 image: ImgUsuario,
                 tooltip: "Abrir a Página de Controle de Usuário",
                 title: "Usuário",
-                module: "Usuario"
+                module: "Usuários e Pessoas"
             },
             {
                 onClick: () => addSegment("municipe"),
                 image: ImgMunicipe,
                 tooltip: "Abrir a Página de Controle de Munícipe",
                 title: "Munícipe",
-                module: "Usuario"
+                module: "Usuários e Pessoas"
             },
             {
                 onClick: () => addSegment("engenheiro"),
                 image: ImgEngenheiro,
                 tooltip: "Abrir a Página de Controle de Engenheiro",
                 title: "Engenheiro",
-                module: "Usuario"
+                module: "Usuários e Pessoas"
             },
             {
                 onClick: () => addSegment("fiscal"),
                 image: ImgFiscal,
                 tooltip: "Abrir a Página de Controle de Fiscal",
                 title: "Fiscal",
-                module: "Usuario"
+                module: "Usuários e Pessoas"
             },
             {
                 onClick: () => inDevelopment("Controle de Auditoria"),
                 image: ImgAuditoria,
                 tooltip: "Abrir a Página de Controle de Auditoria",
                 title: "Auditoria",
-                module: "Usuario"
+                module: "Usuários e Pessoas"
             },
         ],
         

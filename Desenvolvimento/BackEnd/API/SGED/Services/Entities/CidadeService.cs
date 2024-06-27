@@ -23,6 +23,12 @@ public class CidadeService : ICidadeService
         return _mapper.Map<IEnumerable<CidadeDTO>>(cidades);
     }
 
+    public async Task<IEnumerable<CidadeDTO>> GetByState(int idEstado)
+    {
+        var cidades = await _cidadeRepository.GetByState(idEstado);
+        return _mapper.Map<IEnumerable<CidadeDTO>>(cidades);
+    }
+
     public async Task<CidadeDTO> GetById(int id)
     {
         var cidade = await _cidadeRepository.GetById(id);

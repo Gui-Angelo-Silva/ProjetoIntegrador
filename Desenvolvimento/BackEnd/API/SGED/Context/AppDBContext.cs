@@ -23,6 +23,12 @@ public class AppDBContext : DbContext
     public DbSet<Bairro> Bairro { get; set; }
     public DbSet<TipoLogradouro> TipoLogradouro { get; set; }
     public DbSet<Logradouro> Logradouro { get; set; }
+    public DbSet<Topografia> Topografia { get; set; }
+    public DbSet<Uso> Uso { get; set; }
+    public DbSet<OcupacaoAtual> OcupacaoAtual { get; set; }
+    public DbSet<TipoInfraestrutura> TipoInfraestrutura { get; set; }
+    public DbSet<Infraestrutura> Infraestrutura { get; set; }
+    public DbSet<Instalacao> Instalacao { get; set; }
     public DbSet<Imovel> Imovel { get; set; }
 
     // Conjunto: Processo
@@ -50,6 +56,12 @@ public class AppDBContext : DbContext
         BairroBuilder.Build(modelBuilder);
         TipoLogradouroBuilder.Build(modelBuilder);
         LogradouroBuilder.Build(modelBuilder);
+        TopografiaBuilder.Build(modelBuilder);
+        UsoBuilder.Build(modelBuilder);
+        OcupacaoAtualBuilder.Build(modelBuilder);
+        TipoInfraestruturaBuilder.Build(modelBuilder);
+        InfraestruturaBuilder.Build(modelBuilder);
+        InstalacaoBuilder.Build(modelBuilder);
         ImovelBuilder.Build(modelBuilder);
 
         // Builders: Conjunto Processo

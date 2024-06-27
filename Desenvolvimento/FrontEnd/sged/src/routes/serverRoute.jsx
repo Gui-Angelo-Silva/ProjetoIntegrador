@@ -52,6 +52,11 @@ export const ServerProvider = ({ children }) => {
         navigate(newPath);
     }, []);
 
+    const sendDataForSegment = useCallback((route, data) => {
+        const newPath = buildPath(route, null);
+        navigate(newPath, { state: data });
+    }, []);
+
     const clearSegment = useCallback((route) => {
         const newPath = buildPath(route, null);
         navigate(newPath);
@@ -147,7 +152,7 @@ export const ServerProvider = ({ children }) => {
     }, [montage.componentMontage]);
 
     return (
-        <ServerContext.Provider value={{ inDevelopment, addSegment, clearSegment, removeSegment }}>
+        <ServerContext.Provider value={{ inDevelopment, addSegment, sendDataForSegment, clearSegment, removeSegment }}>
             {liberateNavigate && children}
         </ServerContext.Provider>
     );

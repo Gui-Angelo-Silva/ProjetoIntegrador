@@ -1,20 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function StateClass() {
   const [stateName, setStateName] = useState('');
   const [stateUf, setStateUf] = useState('');
   const [stateId, setStateId] = useState(0);
 
-  const [errorStateName, setErrorStateName] = useState('');
-  const [errorStateUf, setErrorStateUf] = useState('');
+  const [errorStateId, setErrorStateId] = useState([]);
+  const [errorStateName, setErrorStateName] = useState([]);
+  const [errorStateUf, setErrorStateUf] = useState([]);
+  const [dataValid, setDataValid] = useState(false);
 
-  function propertyName() {
-    return "Estado " + stateName;
-  }
+  useEffect(() => {
+    if (stateName === '' || stateUf === '') {
+      setDataValid(false);
+    } else {
+      const idValid = errorStateId.length === 0;
+      const nameValid = errorStateName.length === 0;
+      const ufValid = errorStateUf.length === 0;
 
-  function gender() {
-    return "o";
-  }
+      setDataValid(idValid && nameValid && ufValid);
+    }
+  }, [errorStateId, errorStateName, errorStateUf]);
 
   function getData() {
     return {
@@ -30,55 +36,62 @@ function StateClass() {
     setStateId(object.id);
   }
 
+  function setError(object) {
+    if (object && object.errorId) {
+      setErrorStateId(prevErrors => [...prevErrors, object.errorId]);
+    }
+
+    if (object && object.errorNomeEstado) {
+      setErrorStateName(prevErrors => [...prevErrors, object.errorNomeEstado]);
+    }
+
+    if (object && object.errorUfEstado) {
+      setErrorStateUf(prevErrors => [...prevErrors, object.errorUfEstado]);
+    }
+  }
+
   function clearData() {
+    setStateId(0);
     setStateName('');
     setStateUf('');
-    setStateId(0);
+
+    setDataValid(false);
+    clearError();
   }
 
   function clearError() {
-    setErrorStateName('');
-    setErrorStateUf('');
+    setErrorStateId([]);
+    setErrorStateName([]);
+    setErrorStateUf([]);
   }
 
-  function verifyData() {
-    clearError();
-    let status = true;
-
-    let name = '';
-    let uf = '';
-
-    if (stateName) {
-      if (stateName.length < 3) {
-        name = 'O nome precisa ter no mínimo 3 letras!';
-        status = false;
-      }
-    } else {
-      name = 'O nome é requerido!';
-      status = false;
+  function verifyName() {
+    const errors = [];
+    if (stateName === '') {
+      errors.push('Informe o nome!');
+    } else if (stateName.length < 3) {
+      errors.push('O nome precisa ter no mínimo 3 letras!');
     }
 
-    if (stateUf) {
-      if (stateUf.length < 2) {
-        uf = 'A sigla precisa ter 2 letras!';
-        status = false;
-      }
-    } else {
-      uf = 'A sigla é requerida!';
-      status = false;
-    }
-
-    setErrorStateName(name);
-    setErrorStateUf(uf);
-
-    return status;
+    setErrorStateName(errors);
+    return errors.length === 0;
   }
 
-  function verifyUf(uf) {
-    const regex = /^[a-zA-Z]*$/;
-    if (regex.test(uf) || uf === '') {
-      setStateUf(uf);
+  function verifyUf() {
+    const errors = [];
+    if (stateUf === '') {
+      errors.push('Informe a sigla!');
+    } else {
+      if (stateUf.length !== 2) {
+        errors.push('A sigla precisa ter 2 letras!');
+      }
+      if (stateUf !== stateUf.toUpperCase()) {
+        errors.push('A sigla deve estar em letras maiúsculas!');
+      }
     }
+
+    setErrorStateUf(errors);
+    return errors.length === 0;
   }
 
   return {
@@ -90,19 +103,19 @@ function StateClass() {
     stateId,
 
     // Erros
+    errorStateId,
     errorStateName,
     errorStateUf,
+    dataValid,
+    setDataValid,
 
-    // Funções Essencias
-    propertyName,
-    gender,
+    // Funções Essenciais
     getData,
     setData,
+    setError,
     clearData,
     clearError,
-    verifyData,
-
-    // Função de Controle
+    verifyName,
     verifyUf
   };
 }

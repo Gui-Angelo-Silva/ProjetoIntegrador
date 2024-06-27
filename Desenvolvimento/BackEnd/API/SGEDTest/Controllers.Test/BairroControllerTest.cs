@@ -10,14 +10,16 @@ namespace SGEDTest.Controllers.Test
 	[TestFixture]
 	public class BairroControllerTest
 	{
-		private Mock<IBairroService> _bairroServiceMock;
+        private Mock<ICidadeService> _cidadeServiceMock;
+        private Mock<IBairroService> _bairroServiceMock;
 		private BairroController _bairroController;
 
 		[SetUp]
 		public void Setup()
 		{
-			_bairroServiceMock = new Mock<IBairroService>();
-			_bairroController = new BairroController(_bairroServiceMock.Object);
+            _cidadeServiceMock = new Mock<ICidadeService>();
+            _bairroServiceMock = new Mock<IBairroService>();
+			_bairroController = new BairroController(_cidadeServiceMock.Object, _bairroServiceMock.Object);
 		}
 
 		[Test]

@@ -33,5 +33,10 @@ namespace SGED.Objects.DTO.Entities
         [MinLength(12)]
         [MaxLength(15)]
         public string RgIePessoa { get; set; }
+
+
+        public bool Email() => IPessoaExtensions.VerificarEmail(this.EmailPessoa);
+        public int CpfCnpj() => IPessoaExtensions.CpfCnpj(this);
+        public int RgIe() => IPessoaExtensions.RgIe(this);
     }
 }

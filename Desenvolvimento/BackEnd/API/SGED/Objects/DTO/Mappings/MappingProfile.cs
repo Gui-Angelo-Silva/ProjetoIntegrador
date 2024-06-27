@@ -49,6 +49,27 @@ namespace SGED.Objects.DTO.Mappings
             CreateMap<Imovel, ImovelDTO>().ReverseMap();
 
 
+            // Objetos de Alimentação do Imóvel:
+
+            CreateMap<TopografiaDTO, Topografia>();
+            CreateMap<Topografia, TopografiaDTO>().ReverseMap();
+
+            CreateMap<UsoDTO, Uso>();
+            CreateMap<Uso, UsoDTO>().ReverseMap();
+
+            CreateMap<OcupacaoAtualDTO, OcupacaoAtual>();
+            CreateMap<OcupacaoAtual, OcupacaoAtualDTO>().ReverseMap();
+
+            CreateMap<TipoInfraestruturaDTO, TipoInfraestrutura>();
+            CreateMap<TipoInfraestrutura, TipoInfraestruturaDTO>().ReverseMap();
+
+            CreateMap<InfraestruturaDTO, Infraestrutura>();
+            CreateMap<Infraestrutura, InfraestruturaDTO>().ReverseMap();
+
+            CreateMap<InstalacaoDTO, Instalacao>();
+            CreateMap<Instalacao, InstalacaoDTO>().ReverseMap();
+
+
             // Objetos de Processo:
 
             CreateMap<TipoProcessoDTO, TipoProcesso>();

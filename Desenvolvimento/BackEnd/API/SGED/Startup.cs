@@ -13,6 +13,7 @@ using SGED.Services.Server.Tasks;
 using SGED.Objects.Utilities;
 using SGED.Services.Server.Middleware;
 using SGED.Services.Server.Attributes;
+using SGED.Objects.Server;
 
 namespace SGED
 {
@@ -105,7 +106,7 @@ namespace SGED
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             // Injeção de dependências
-            
+
             // Conjunto: Pessoa
 
             // Dependência: Municipe
@@ -120,7 +121,7 @@ namespace SGED
             services.AddScoped<IEngenheiroRepository, EngenheiroRepository>();
             services.AddScoped<IEngenheiroService, EngenheiroService>();
 
-            // Dependência: TipoUsuário
+            // Dependência: Tipo Usuário
             services.AddScoped<ITipoUsuarioRepository, TipoUsuarioRepository>();
             services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
 
@@ -160,6 +161,33 @@ namespace SGED
             services.AddScoped<IImovelService, ImovelService>();
 
 
+            // Conjunto: Aliemntação do Imóvel
+
+            // Dependência: Topografia
+            services.AddScoped<ITopografiaRepository, TopografiaRepository>();
+            services.AddScoped<ITopografiaService, TopografiaService>();
+
+            // Dependência: Tipo Uso
+            services.AddScoped<IUsoRepository, UsoRepository>();
+            services.AddScoped<IUsoService, UsoService>();
+
+            // Dependência: Ocupação Atual
+            services.AddScoped<IOcupacaoAtualRepository, OcupacaoAtualRepository>();
+            services.AddScoped<IOcupacaoAtualService, OcupacaoAtualService>();
+
+            // Dependência: Tipo Infraestrutura
+            services.AddScoped<ITipoInfraestruturaRepository, TipoInfraestruturaRepository>();
+            services.AddScoped<ITipoInfraestruturaService, TipoInfraestruturaService>();
+
+            // Dependência: Infraestrutura
+            services.AddScoped<IInfraestruturaRepository, InfraestruturaRepository>();
+            services.AddScoped<IInfraestruturaService, InfraestruturaService>();
+
+            // Dependência: Instalaçao
+            services.AddScoped<IInstalacaoRepository, InstalacaoRepository>();
+            services.AddScoped<IInstalacaoService, InstalacaoService>();
+
+
             // Conjunto: Processo
 
             // Dependência: TipoProcesso
@@ -170,11 +198,11 @@ namespace SGED
             services.AddScoped<IEtapaRepository, EtapaRepository>();
             services.AddScoped<IEtapaService, EtapaService>();
 
-            // Dependência: TipoDocumento
+            // Dependência: Tipo Documento
             services.AddScoped<ITipoDocumentoRepository, TipoDocumentoRepository>();
             services.AddScoped<ITipoDocumentoService, TipoDocumentoService>();
 
-            // Dependência: TipoDocumentoEtapa
+            // Dependência: Tipo Documento Etapa
             services.AddScoped<ITipoDocumentoEtapaRepository, TipoDocumentoEtapaRepository>();
             services.AddScoped<ITipoDocumentoEtapaService, TipoDocumentoEtapaService>();
 
@@ -237,7 +265,7 @@ namespace SGED
 
                 await next(context);
             });*/
-            
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

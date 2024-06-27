@@ -22,7 +22,7 @@ public class TipoProcessoRepository : ITipoProcessoRepository
 
     public async Task<TipoProcesso> GetById(int id)
     {
-        return await _dbContext.TipoProcesso.AsNoTracking().FirstOrDefaultAsync(objeto => objeto.Id == id);
+        return await _dbContext.TipoProcesso.AsNoTracking().FirstOrDefaultAsync(tp => tp.Id == id);
     }
 
     public async Task<TipoProcesso> Create(TipoProcesso tipoProcesso)
@@ -39,7 +39,7 @@ public class TipoProcessoRepository : ITipoProcessoRepository
         return tipoProcesso;
     }
 
-    public async Task<TipoProcesso> Delete(int id)
+    public async Task<TipoProcesso> Remove(int id)
     {
         var tipoProcesso = await GetById(id);
         if (tipoProcesso != null)

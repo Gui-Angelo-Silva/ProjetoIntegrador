@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Newtonsoft.Json;
-using SGED.Objects.Utilities;
+using SGED.Objects.Server;
 
 namespace SGED.Objects.DTO.Entities
 {

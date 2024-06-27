@@ -3,6 +3,7 @@ using SGED.Context;
 using SGED.Objects.Utilities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
+using SGED.Objects.Utilities.StatusState;
 
 namespace SGED.Repositories.Entities
 {
@@ -19,12 +20,12 @@ namespace SGED.Repositories.Entities
 
 		public async Task<IEnumerable<Etapa>> GetAll()
 		{
-			return await _dbContext.Etapa.Include(objeto => objeto.TipoProcesso).AsNoTracking().ToListAsync();
+			return await _dbContext.Etapa.AsNoTracking().ToListAsync();
 		}
 
 		public async Task<Etapa> GetById(int id)
 		{
-			return await _dbContext.Etapa.Include(objeto => objeto.TipoProcesso).AsNoTracking().FirstOrDefaultAsync(objeto => objeto.Id == id);
+			return await _dbContext.Etapa.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
 		}
 
 		public async Task<Etapa> Create(Etapa etapa)
@@ -52,7 +53,7 @@ namespace SGED.Repositories.Entities
 
 		public async Task<IEnumerable<Etapa>> GetStagesRelatedToTypeProcess(int idTipoProcesso)
 		{
-			return await _dbContext.Etapa.Where(objeto => objeto.IdTipoProcesso == idTipoProcesso).AsNoTracking().ToListAsync();
+			return await _dbContext.Etapa.Where(e => e.IdTipoProcesso == idTipoProcesso).AsNoTracking().ToListAsync();
 		}
 
 	}

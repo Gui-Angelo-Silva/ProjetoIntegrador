@@ -9,10 +9,10 @@ namespace SGED.Context.Builders
         {
             // Builder
             // Builder: TipoDocumento
-            modelBuilder.Entity<TipoDocumento>().HasKey(b => b.Id);
-            modelBuilder.Entity<TipoDocumento>().Property(b => b.NomeTipoDocumento).HasMaxLength(30).IsRequired();
-            modelBuilder.Entity<TipoDocumento>().Property(b => b.DescricaoTipoDocumento).HasMaxLength(450).IsRequired();
-            modelBuilder.Entity<TipoDocumento>().Property(b => b.Status).IsRequired();
+            modelBuilder.Entity<TipoDocumento>().HasKey(td => td.Id);
+            modelBuilder.Entity<TipoDocumento>().Property(td => td.NomeTipoDocumento).HasMaxLength(30).IsRequired();
+            modelBuilder.Entity<TipoDocumento>().Property(td => td.DescricaoTipoDocumento).HasMaxLength(450).IsRequired();
+            modelBuilder.Entity<TipoDocumento>().Property(td => td.Status).IsRequired();
 
 
             // Inserções

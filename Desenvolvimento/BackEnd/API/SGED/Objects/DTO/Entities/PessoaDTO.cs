@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SGED.Objects.Utilities;
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 namespace SGED.Objects.DTO.Entities
@@ -56,9 +57,8 @@ namespace SGED.Objects.DTO.Entities
             {
                 if (cpfCnpj[3] == '.' || cpfCnpj[7] == '.' || cpfCnpj[11] == '-')
                 {
-                    cpfCnpj = cpfCnpj.Trim();
-                    cpfCnpj = cpfCnpj.Replace(".", "").Replace("-", "");
-                    if (!Regex.IsMatch(cpfCnpj, @"^\d+$")) return -1;
+                    cpfCnpj.ExtractNumbers();
+                    if (!cpfCnpj.IsNumbers()) return -1;
 
                     var statusIdentity = VerificaIdentico(cpfCnpj);
 
@@ -70,9 +70,8 @@ namespace SGED.Objects.DTO.Entities
             {
                 if (cpfCnpj[2] == '.' || cpfCnpj[6] == '.' || cpfCnpj[10] == '/' || cpfCnpj[15] == '-')
                 {
-                    cpfCnpj = cpfCnpj.Trim();
-                    cpfCnpj = cpfCnpj.Replace(".", "").Replace("/", "").Replace("-", "");
-                    if (!Regex.IsMatch(cpfCnpj, @"^\d+$")) return -2;
+                    cpfCnpj.ExtractNumbers();
+                    if (!cpfCnpj.IsNumbers()) return -2;
 
                     var statusIdentity = VerificaIdentico(cpfCnpj);
 
@@ -155,9 +154,8 @@ namespace SGED.Objects.DTO.Entities
             {
                 if (rgIe[2] == '.' || rgIe[6] == '.' || rgIe[10] == '-')
                 {
-                    rgIe = rgIe.Trim();
-                    rgIe = rgIe.Replace(".", "").Replace("-", "");
-                    if (!Regex.IsMatch(rgIe, @"^\d+$")) return -1;
+                    rgIe.ExtractNumbers();
+                    if (!rgIe.IsNumbers()) return -1;
 
                     var statusIdentity = VerificaIdentico(rgIe);
 
@@ -169,9 +167,8 @@ namespace SGED.Objects.DTO.Entities
             {
                 if (rgIe[3] == '.' || rgIe[7] == '.' || rgIe[11] == '.')
                 {
-                    rgIe = rgIe.Trim();
-                    rgIe = rgIe.Replace(".", "");
-                    if (!Regex.IsMatch(rgIe, @"^\d+$")) return -2;
+                    rgIe.ExtractNumbers();
+                    if (!rgIe.IsNumbers()) return -2;
 
                     var statusIdentity = VerificaIdentico(rgIe);
 
@@ -203,7 +200,7 @@ namespace SGED.Objects.DTO.Entities
 
         public virtual bool VerificarIe(string ie)
         {
-            string strBase2 = ie.Substring(1, 8);
+            /*string strBase2 = ie.Substring(1, 8);
             int intSoma = 0;
             int intPeso = 1;
 
@@ -229,7 +226,9 @@ namespace SGED.Objects.DTO.Entities
             string strDigito1 = intResto.ToString().Substring(intResto.ToString().Length - 1);
             strBase2 = ie.Substring(0, 8) + strDigito1 + ie.Substring(9, 3);
 
-            return strBase2 == ie;
+            return strBase2 == ie;*/
+
+            return true;
         }
     }
 }

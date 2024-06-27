@@ -10,6 +10,6 @@ namespace SGED.Repositories.Interfaces
 		Task<TipoProcesso> GetById(int id);
 		Task<TipoProcesso> Create(TipoProcesso TipoProcesso);
 		Task<TipoProcesso> Update(TipoProcesso tipoProcesso);
-		Task<TipoProcesso> Delete(int id);
+		Task<TipoProcesso> Remove(int id);
 	}
 }

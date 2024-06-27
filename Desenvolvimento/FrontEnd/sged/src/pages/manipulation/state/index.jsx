@@ -1,68 +1,143 @@
+// React and Reactstrap imports
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Trash } from "@phosphor-icons/react";
-import LinkTitle from "../../../components/Title/LinkTitle";
+//import { motion } from "framer-motion";
 
+// Icon imports
+import { FilePlus, Pen, Trash, Warning } from "@phosphor-icons/react";
+
+// Component imports
+import LinkTitle from "../../../components/Title/LinkTitle";
+import SearchBar from "../../../components/Search/SearchBar";
+import RegistrationButton from "../../../components/Button/RegistrationButton";
+import CancelButton from "../../../components/Button/CancelButton";
+import CustomTable from "../../../components/Table/Table";
+import LayoutPage from "../../../components/Layout/LayoutPage";
+import ButtonTable from "../../../components/Table/ButtonTable";
+import PopUpManager from "../../../components/PopUpManager";
+import PopUp from "../../../components/PopUp";
+
+// Module and service imports
 import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
 import StateClass from '../../../object/class/state';
-import Search from "../../../assets/pages/SearchImg";
-import ModalDelete from "../../../components/Modal/ModalDelete";
-import CustomTable from "../../../components/Table/Table";
-import RegistrationButton from "../../../components/Button/RegistrationButton";
-import CancelButton from "../../../components/Button/CancelButton";
-import CustomModalFooter from "../../../components/Modal/CustomModalFooter";
-import LayoutPage from "../../../components/Layout/LayoutPage";
-import ButtonTable from "../../../components/Table/ButtonTable";
-import SearchBar from "../../../components/Search/SearchBar";
+import ActionManager from '../../../object/modules/action';
+import CompareModule from '../../../object/modules/compare';
 
 export default function State() {
 
-    const { componentMounted } = useMontage();
-
+    // Marking the assembled component
+    const montage = useMontage();
+    
     useEffect(() => {
-        componentMounted();
+        montage.componentMounted();
     }, []);
 
-    const connection = new ConnectionService(); connection.enablePopUp().enableGetPopUp();
+    // State and service initialization
+    const connection = new ConnectionService();
+    const managerPopUp = PopUpManager();
     const list = ListModule();
     const state = StateClass();
+    const action = ActionManager();
+    const compare = CompareModule();
 
+    // State hooks
     const [modalInsert, setModalInsert] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
     const [updateData, setUpdateData] = useState(true);
     const [inOperation, setInOperation] = useState(false);
-    const [open, setOpen] = useState(false);
+    const [lastRequisition, setLastRequisition] = useState('');
+    const [modalError, setModalError] = useState(false);
+    const [timeLeft, setTimeLeft] = useState(0);
 
-    const SelectState = (object, option) => {
+    // useEffect hooks
+    useEffect(() => {
+        if (updateData) {
+            setUpdateData(false);
+            GetState();
+
+            openCloseModalInsert(false);
+            openCloseModalEdit(false);
+            openCloseModalDelete(false);
+        }
+
+        list.searchBy ? null : list.setSearchBy('nomeEstado');
+    }, [updateData]);
+
+    useEffect(() => {
+        action.setStatus(state.dataValid ? 1 : 0);
+    }, [state.dataValid]);
+
+    useEffect(() => {
+        if (modalEdit && state.dataValid) {
+            state.setDataValid(!compare.compareObjects(state.getData()));
+        }
+    }, [state.stateName, state.stateUf, state.dataValid]);
+
+    useEffect(() => {
+        if (state.errorStateId.length !== 0) {
+            openCloseModalError(true);
+        }
+    }, [state.errorStateId]);
+
+    useEffect(() => {
+        let timer = null;
+
+        if (modalError) {
+            if (timer) {
+                clearInterval(timer);
+            }
+
+            let startTime = Date.now();
+            timer = setInterval(() => {
+                let elapsedTime = Date.now() - startTime;
+                let remainingTime = Math.max(0, 20 - Math.floor(elapsedTime / 1000));
+
+                setTimeLeft(remainingTime);
+
+                if (remainingTime === 0) {
+                    openCloseModalError(false);
+                }
+            }, 1000);
+        }
+
+        return () => {
+            clearInterval(timer);
+        };
+    }, [modalError]);
+
+    // State selection handler
+    const selectState = (object, option) => {
         state.setData(object);
 
         if (option === "Editar") {
+            compare.setData(object);
             openCloseModalEdit(true);
-        }
-        else {
-            setOpen(true);
+        } else {
+            setModalDelete(true);
         }
     };
 
+    // Modal handlers
     const openCloseModalInsert = (boolean) => {
         setModalInsert(boolean);
-        state.clearError();
 
         if (!boolean) {
+            state.clearError();
             state.clearData();
         }
     };
 
     const openCloseModalEdit = (boolean) => {
         setModalEdit(boolean);
-        state.clearError();
 
         if (!boolean) {
+            state.clearError();
             state.clearData();
+            compare.setData({});
         }
     };
 
@@ -74,175 +149,271 @@ export default function State() {
         }
     };
 
+    const openCloseModalError = (boolean) => {
+        state.clearError();
+        state.clearData();
+
+        setModalInsert(false);
+        setModalEdit(false);
+        setModalDelete(false);
+        setModalError(boolean);
+
+        if (!boolean) {
+            setUpdateData(true);
+        }
+    };
+
+    // CRUD operations
     const GetState = async () => {
+        setLastRequisition("buscar");
+
         await connection.endpoint("Estado").get();
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
+
         list.setList(connection.getList());
     };
 
     const PostState = async () => {
         setInOperation(true);
+        setLastRequisition("cadastrar");
 
-        if (state.verifyData()) {
-            await connection.endpoint("Estado").post(state.getData());
+        await connection.endpoint("Estado").post(state.getData());
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
-            openCloseModalInsert(!connection.response.status);
-            setUpdateData(connection.response.status);
-        } else {
-            console.log('Dados inválidos!');
-        }
+        state.setError(connection.response.data);
+        openCloseModalInsert(!connection.response.status);
+        setUpdateData(connection.response.status);
 
         setInOperation(false);
     };
 
     const PutState = async () => {
         setInOperation(true);
+        setLastRequisition("alterar");
 
-        if (state.verifyData()) {
-            await connection.endpoint("Estado").put(state.getData());
+        await connection.endpoint("Estado").put(state.getData());
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
-            openCloseModalEdit(!connection.response.status);
-            setUpdateData(connection.response.status);
-        } else {
-            console.log('Dados inválidos!');
-        }
+        state.setError(connection.response.data);
+        openCloseModalEdit(!connection.response.status);
+        setUpdateData(connection.response.status);
 
         setInOperation(false);
     };
 
     const DeleteState = async () => {
         setInOperation(true);
+        setLastRequisition("excluir");
 
         await connection.endpoint("Estado").delete(state.getData().id);
+        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
-        setOpen(!connection.response.status);
+        state.setError(connection.response.data);
+        setModalDelete(!connection.response.status);
         setUpdateData(connection.response.status);
 
         setInOperation(false);
     };
 
-    useEffect(() => {
-        if (updateData) {
-            GetState();
-            setUpdateData(false);
-        }
-
-        list.searchBy ? null : list.setSearchBy('nomeEstado');
-    }, [updateData]);
-
+    // Data for table
     const dataForTable = list.currentList.map((estado) => {
         return {
             nomeEstado: estado.nomeEstado,
             ufEstado: estado.ufEstado,
             acoes: (
-                <div className="flex items-center justify-center gap-2 text-gray-700 ">
-                    <ButtonTable func={() => SelectState(estado, "Editar")} text="Editar" />
-                    <ButtonTable func={() => SelectState(estado, "Excluir")} text="Excluir" />
+                <div className="flex items-center justify-center gap-2 text-gray-700">
+                    <ButtonTable func={() => selectState(estado, "Editar")} text="Editar" />
+                    <ButtonTable func={() => selectState(estado, "Excluir")} text="Excluir" />
                 </div>
             )
         };
     });
 
     return (
-        <LayoutPage>
-            <LinkTitle pageName="Estado" />
-            <SearchBar
-                placeholder="Pesquisar Estado"
-                onSearchChange={(value) => list.handleSearch(value)}
-                onSearchByChange={(value) => list.handleSearchBy(value)}
-                options={[
-                    { label: 'Estado', value: 'nomeEstado' },
-                    { label: 'Sigla', value: 'ufEstado' },
-                ]}
-                button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
-            />
-            <CustomTable
-                totalColumns={3}
-                headers={["Estado", "UF", "Ações"]}
-                data={dataForTable}
-                onPageChange={(page) => list.goToPage(page)}
-                currentPage={list.currentPage}
-                totalPages={list.totalPages}
-            />
-
-            <Modal isOpen={modalInsert} >
-                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE]">Cadastrar Estado</ModalHeader>
-                <ModalBody>
-                    <div className="form-group">
-                        <label className="text-[#444444]">Nome: </label>
-                        <br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => state.setStateName(e.target.value)} />
-                        <div className="text-sm text-red-600">
-                            {state.errorStateName}
-                        </div>
-                        <br />
-                        <label className="text-[#444444]">Sigla:</label>
-                        <br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" onChange={(e) => state.verifyUf(e.target.value.toUpperCase())} value={state.stateUf} maxLength={2} />
-                        <div className="text-sm text-red-600">
-                            {state.errorStateUf}
-                        </div>
-                        <br />
-                    </div>
-                </ModalBody>
-                <CustomModalFooter
-                    cancelAction={() => openCloseModalInsert(false)}
-                    confirmAction={PostState}
-                    confirmType="cadastrar"
-                    inOperation={inOperation}
-                    confirmText="Cadastrar"
+        <>
+            {<div>
+                {managerPopUp.popups.map(popup => (
+                    <PopUp
+                        key={popup.id}
+                        action={popup.action}
+                        status={popup.status}
+                        message={popup.message}
+                        onClose={managerPopUp.removePopUp}
+                        code={popup.code}
+                        index={popup.index}
+                    />
+                ))}
+            </div>}
+            <LayoutPage>
+                <LinkTitle pageName="Estado" />
+                <SearchBar
+                    placeholder="Pesquisar Estado"
+                    onSearchChange={(value) => list.handleSearch(value)}
+                    onSearchByChange={(value) => list.handleSearchBy(value)}
+                    options={[
+                        { label: 'Estado', value: 'nomeEstado' },
+                        { label: 'Sigla', value: 'ufEstado' },
+                    ]}
+                    button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
                 />
-            </Modal>
-            <Modal isOpen={modalEdit}>
-                <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC]">Editar Estado</ModalHeader>
-                <ModalBody>
-                    <div className="form-group">
-                        <label className="text-[#444444]">ID: </label><br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" readOnly value={state.stateId} /> <br />
-                        <label className="text-[#444444]">Nome:</label>
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="nomeEstado" onChange={(e) => state.setStateName(e.target.value)} value={state.stateName} />
-                        <div className="text-sm text-red-600">
-                            {state.errorStateName}
+                <CustomTable
+                    totalColumns={3}
+                    headers={["Estado", "UF", "Ações"]}
+                    data={dataForTable}
+                    onPageChange={(page) => list.goToPage(page)}
+                    currentPage={list.currentPage}
+                    totalPages={list.totalPages}
+                />
+
+                <Modal isOpen={modalInsert}>
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC] flex flex-col items-center">
+                        <div className="flex items-center justify-center">
+                            <FilePlus size={32} className="mr-2 text-write font-bold" />
+                            <h3 className="m-0">Cadastrar Estado</h3>
                         </div>
-                        <br />
-                        <label className="text-[#444444]">Sigla:</label>
-                        <br />
-                        <input type="text" className="form-control rounded-md border-[#BCBCBC]" name="ufEstado" onChange={(e) => state.verifyUf(e.target.value.toUpperCase())} value={state.stateUf} maxLength={2} />
-                        <div className="text-sm text-red-600">
-                            {state.errorStateUf}
+                    </ModalHeader>
+                    <ModalBody>
+                        <div className="form-group">
+                            <label className="text-[#444444]">Nome: <span className="text-red-600">*</span></label>
+                            <br />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} onBlur={() => state.verifyName()} onChange={(e) => state.setStateName(e.target.value)} />
+                            {state.errorStateName.map((error, index) => (
+                                <div key={index} className="flex items-center">
+                                    <span className="text-sm text-red-600">- {error}</span>
+                                </div>
+                            ))}
+                            <br />
+                            <label className="text-[#444444]">Sigla: <span className="text-red-600">*</span></label>
+                            <br />
+                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation} onBlur={() => state.verifyUf()} value={state.stateUf} onChange={(e) => state.setStateUf(e.target.value.toUpperCase())} maxLength={2} />
+                            {state.errorStateUf.map((error, index) => (
+                                <div key={index} className="flex items-center">
+                                    <span className="text-sm text-red-600">- {error}</span>
+                                </div>
+                            ))}
+                            <br />
                         </div>
-                        <br />
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <div className="flex gap-4">
-                        <CancelButton action={() => openCloseModalEdit(false)} />
-                        <button className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]'}`} style={{ width: '100px', height: '40px' }} onClick={() => inOperation ? null : PutState()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Atualizar'} </button>{"  "}
-                    </div>
-                </ModalFooter>
-            </Modal>
-            <ModalDelete open={open} onClose={() => setOpen(false)}>
-                <div className="text-center w-56">
-                    <Trash size={56} className="mx-auto text-red-500" />
-                    <div className="mx-auto my-4 w-48">
-                        <h3 className="text-lg font-black text-gray-800">Confirma a exclusão?</h3>
-                        <p className="text-sm text-gray-500">
-                            Você realmente deseja excluir o estado de
-                            <span className="pl-1 text-[#BC2D2D]">
-                                {state.stateName}
-                            </span>
-                        </p>
-                    </div>
-                    <div className="flex gap-4">
-                        <button
-                            className="btn btn-light w-full"
-                            onClick={() => setOpen(false)}
-                        >
-                            Cancelar
-                        </button>
-                        <button className={`btn w-full h-[40px] ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#f05252] text-white hover:text-white hover:bg-[#BC2D2D]'}`} onClick={() => inOperation ? null : DeleteState()} disabled={inOperation} > {inOperation ? 'Aguarde' : 'Excluir'} </button>{"  "}
-                    </div>
-                </div>
-            </ModalDelete>
-        </LayoutPage>
+                    </ModalBody>
+                    <ModalFooter>
+                        <div className="flex justify-center gap-4 ">
+                            <CancelButton action={() => openCloseModalInsert(false)} liberate={!inOperation} />
+                            <button
+                                className={`btn w-full ${state.dataValid && !inOperation ? 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' : 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5] hover:bg-gray-100'}`}
+                                onClick={() => state.dataValid && !inOperation ? PostState() : null}
+                                style={{ width: '120px' }}
+                            >
+                                {!inOperation ? 'Cadastrar' : 'Aguarde...'}
+                            </button>
+                        </div>
+                    </ModalFooter>
+                </Modal>
+                <Modal isOpen={modalEdit} >
+                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC] flex flex-col items-center">
+                        <div className="flex items-center justify-center">
+                            <Pen size={32} className="mr-2 text-write font-bold" />
+                            <h3 className="m-0">Alterar Estado</h3>
+                        </div>
+                    </ModalHeader>
+                    <ModalBody>
+                        <div className="form-group">
+                            <label className="text-[#444444]">ID: </label>
+                            <br />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} readOnly value={state.stateId} />
+                            {state.errorStateId.map((error, index) => (
+                                <div key={index} className="flex items-center">
+                                    <span className="text-sm text-red-600">- {error}</span>
+                                </div>
+                            ))}
+                            <br />
+                            <label className="text-[#444444]">Nome: <span className="text-red-600">*</span></label>
+                            <br />
+                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} onBlur={() => state.verifyName()} value={state.stateName} onChange={(e) => state.setStateName(e.target.value)} />
+                            {state.errorStateName.map((error, index) => (
+                                <div key={index} className="flex items-center">
+                                    <span className="text-sm text-red-600">- {error}</span>
+                                </div>
+                            ))}
+                            <br />
+                            <label className="text-[#444444]">Sigla: <span className="text-red-600">*</span></label>
+                            <br />
+                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation} onBlur={() => state.verifyUf()} value={state.stateUf} onChange={(e) => state.setStateUf(e.target.value.toUpperCase())} maxLength={2} />
+                            {state.errorStateUf.map((error, index) => (
+                                <div key={index} className="flex items-center">
+                                    <span className="text-sm text-red-600">- {error}</span>
+                                </div>
+                            ))}
+                            <br />
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <div className="flex justify-center gap-4 ">
+                            <CancelButton action={() => openCloseModalEdit(false)} liberate={!inOperation} />
+                            <button
+                                className={`btn w-full ${state.dataValid && !inOperation ? 'bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]' : 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5] hover:bg-gray-100'}`}
+                                onClick={() => state.dataValid && !inOperation ? PutState() : null}
+                                style={{ width: '120px' }}
+                            >
+                                {!inOperation ? 'Alterar' : 'Aguarde...'}
+                            </button>
+                        </div>
+                    </ModalFooter>
+                </Modal>
+                <Modal isOpen={modalDelete} className="max-w-md">
+                    <ModalHeader className="text-white text-xl bg-[#ff5c5c] border-[#BCBCBC] flex flex-col items-center justify-center">
+                        <div className="flex items-center">
+                            <Trash size={32} className="mr-2 text-write font-bold" />
+                            <h3 className="m-0">Excluir Estado</h3>
+                        </div>
+                    </ModalHeader>
+                    <ModalBody className="text-center flex flex-col justify-center">
+                        <h3 className="pl-4 text-lg font-thin">
+                            Deseja realmente excluir o
+                            <br />
+                            Estado <span className="text-[#ff5c5c] font-bold">{state.stateName}</span>?
+                        </h3>
+                    </ModalBody>
+                    <ModalFooter className="flex justify-center">
+                        <div className="mt-4 flex gap-3">
+                            <CancelButton action={() => openCloseModalDelete(false)} liberate={!inOperation} />
+                            <button
+                                className={`btn ${inOperation ? 'border-[#E0E0E0] text-[#A7A6A5] hover:text-[#A7A6A5]' : 'bg-[#f05252] text-white hover:text-white hover:bg-[#BC2D2D]'}`}
+                                onClick={() => inOperation ? null : DeleteState()} disabled={inOperation}
+                                style={{ width: '120px' }}
+                            >
+                                {inOperation ? 'Aguarde' : 'Excluir'}
+                            </button>
+                        </div>
+                    </ModalFooter>
+                </Modal>
+                <Modal isOpen={modalError} className="max-w-lg">
+                    <ModalHeader className="text-white text-xl bg-[#ff5c5c] border-[#BCBCBC] flex flex-col items-center justify-center">
+                        <div className="flex items-center">
+                            <Warning size={32} className="mr-2 text-write font-bold" />
+                            <h3 className="m-0">Erro ao {lastRequisition} o Estado</h3>
+                        </div>
+                    </ModalHeader>
+                    <ModalBody className="text-center flex flex-col justify-center items-center">
+                        <h3 className="pl-4 text-lg font-thin">
+                            O Estado não existe no banco de dados.
+                            <br />
+                            O sistema irá carregar os dados atualizados após o fechamento da tela.
+                            Tempo restante: {timeLeft}s
+                        </h3>
+                    </ModalBody>
+                    <ModalFooter className="flex justify-center">
+                        <div className="mt-4 flex gap-3">
+                            <button
+                                className="btn btn-light"
+                                style={{ width: '120px' }}
+                                onClick={() => openCloseModalError(false)}
+                            >
+                                Fechar
+                            </button>
+                        </div>
+                    </ModalFooter>
+                </Modal>
+
+            </LayoutPage>
+        </>
     );
 }

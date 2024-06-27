@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -17,25 +17,23 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { X } from '@phosphor-icons/react';
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import { useServer } from '../routes/serverRoute';
 import SessionService from '../object/service/session';
 import SettingsIcon from '@mui/icons-material/Settings';
 import UserClass from '../object/class/user';
 import LogoJales from '../assets/pages/LogoJales.png';
+import { ThemeContext } from '../assets/provider/ThemeContext'; 
 
 export default function NavBar() {
-  const [darkMode, setDarkMode] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
 
   const session = SessionService();
   const server = useServer();
   const user = UserClass();
   let getUser = true;
+
+  const { toggleDarkMode, darkMode } = useContext(ThemeContext); // Utilizando o contexto
 
   const encerateSession = () => {
     session.closeSession();
@@ -221,7 +219,6 @@ export default function NavBar() {
               aria-controls="primary-search-account-menu-mobile"
               aria-haspopup="true"
               color="inherit"
-              onClick={toggleDrawer(true)} // Adicionando a função aqui
             >
               <MoreIcon />
             </IconButton>

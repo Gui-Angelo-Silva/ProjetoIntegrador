@@ -12,8 +12,8 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240613162733_Database")]
-    partial class Database
+    [Migration("20240705132912_dbAtualizado")]
+    partial class dbAtualizado
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -604,6 +604,50 @@ namespace SGED.Migrations
                             Id = 10,
                             IdEstado = 1,
                             NomeCidade = "Urânia"
+                        });
+                });
+
+            modelBuilder.Entity("SGED.Objects.Models.Entities.Configuracao", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("idconfiguracao");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("descricaoconfiguracao");
+
+                    b.Property<string>("TipoConfiguracao")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("tipoconfiguracao");
+
+                    b.Property<bool>("Valor")
+                        .HasColumnType("boolean")
+                        .HasColumnName("valorconfiguracao");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("configuracao");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Descricao = "Ativar alerta de dados obtidos.",
+                            TipoConfiguracao = "Notificacao",
+                            Valor = true
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Descricao = "Mensagem de tarefas pendentes.",
+                            TipoConfiguracao = "Notificacao",
+                            Valor = true
                         });
                 });
 

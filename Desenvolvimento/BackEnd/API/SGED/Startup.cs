@@ -107,6 +107,11 @@ namespace SGED
 
             // Injeção de dependências
 
+            // Dependência: Configuração
+
+            services.AddScoped<IConfiguracaoRepository, ConfiguracaoRepository>();
+            services.AddScoped<IConfiguracaoService, ConfiguracaoService>();
+
             // Conjunto: Pessoa
 
             // Dependência: Municipe

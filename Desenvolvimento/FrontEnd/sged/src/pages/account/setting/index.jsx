@@ -1,25 +1,59 @@
 import React, { useEffect, useState } from 'react';
 import LayoutPage from '../../../components/Layout/LayoutPage';
 import Title from '../../../components/Title/Title';
-import { useMontage } from '../../../object/modules/montage';
 import Switch from '../../../components/Switch/Switch';
+import ConfigurationClass from '../../../object/class/configuration';
+import ConnectionService from '../../../object/service/connection';
+import { useMontage } from '../../../object/modules/montage';
 
 const Setting = () => {
   const { componentMounted } = useMontage();
+
+  useEffect(() => {
+    componentMounted();
+  }, [])
+
+  const connection = new ConnectionService();
+  const setting = ConfigurationClass();
+
   const [switchStates, setSwitchStates] = useState({
     taskMessages: false,
     dataAlerts: false,
   });
 
   useEffect(() => {
-    componentMounted();
-  }, [componentMounted]);
+    async function fetchData() {
+      try {
+        const response = await connection.endpoint("Configuracao").get();
+        const configurations = response; 
+        if (configurations) {
+          setting.setData(configurations); 
+          setSwitchStates({
+            taskMessages: configurations.taskMessages,
+            dataAlerts: configurations.dataAlerts,
+          });
+        }
+      } catch (error) {
+        console.error('Erro ao buscar configurações:', error);
+      }
+    }
 
-  const handleSwitchChange = (switchName) => {
-    setSwitchStates((prevState) => ({
-      ...prevState,
-      [switchName]: !prevState[switchName],
-    }));
+    fetchData();
+  }, [setting, connection]); 
+
+  const handleSwitchChange = async (switchName) => {
+    try {
+      let updatedConfigurations = { ...setting.getData() };
+      updatedConfigurations[switchName] = !switchStates[switchName];
+      await connection.endpoint("Configuracao").action("activate").put(updatedConfigurations.id); 
+      setting.setData(updatedConfigurations);
+      setSwitchStates((prevState) => ({
+        ...prevState,
+        [switchName]: !prevState[switchName],
+      }));
+    } catch (error) {
+      console.error(`Erro ao atualizar a configuração ${switchName}:`, error);
+    }
   };
 
   return (
@@ -45,11 +79,6 @@ const Setting = () => {
             />
             <h2 className="text-lg text-[#636262]">Alerta de Dados Obtidos</h2>
           </div>
-        </div>
-        <div className='flex w-full justify-end pb-3'>
-          {/* <button className='w-[132px] h-[53px] rounded-lg bg-[#2D636B] text-white hover:scale-105 transition hover:transition-colors hover:bg-[#005A66]'>
-            Salvar
-          </button> */}
         </div>
       </div>
     </LayoutPage>

@@ -66,12 +66,12 @@ namespace SGED.Controllers
 			}
 		}
 
-		[HttpPut("activate/{id}")]
+		[HttpPut("{id:int}/Ativar")]
 		public async Task<ActionResult> Activate(int id)
 		{
 			try
 			{
-				var configuracaoDTO = await _configuracaoService.Activate(id);
+				var configuracaoDTO = await _configuracaoService.GetById(id);
 				if (configuracaoDTO is null)
 				{
 					_response.SetNotFound();
@@ -79,11 +79,22 @@ namespace SGED.Controllers
 					_response.Data = configuracaoDTO;
 					return NotFound(_response);
 				}
+				else if (configuracaoDTO.Valor == true)
+				{
+					_response.SetSuccess();
+					_response.Message = "Esta configuração já está ativada!";
+					_response.Data = configuracaoDTO;
+					return Ok(_response);
+				}
+				else
+				{
+					var ativar = await _configuracaoService.Activate(configuracaoDTO.Id);
+					_response.SetSuccess();
+					_response.Message = "Configuração ativada com sucesso.";
+					_response.Data = ativar;
+					return Ok(_response);
+				}
 
-				_response.SetSuccess();
-				_response.Message = "Configuração ativada com sucesso.";
-				_response.Data = configuracaoDTO;
-				return Ok(_response);
 			}
 			catch (Exception ex)
 			{
@@ -94,12 +105,12 @@ namespace SGED.Controllers
 			}
 		}
 
-		[HttpPut("disable/{id}")]
+		[HttpPut("{id:int}/Desativar")]
 		public async Task<ActionResult> Disable(int id)
 		{
 			try
 			{
-				var configuracaoDTO = await _configuracaoService.Disable(id);
+				var configuracaoDTO = await _configuracaoService.GetById(id);
 				if (configuracaoDTO is null)
 				{
 					_response.SetNotFound();
@@ -107,11 +118,21 @@ namespace SGED.Controllers
 					_response.Data = configuracaoDTO;
 					return NotFound(_response);
 				}
-
-				_response.SetSuccess();
-				_response.Message = "Configuração desativada com sucesso.";
-				_response.Data = configuracaoDTO;
-				return Ok(_response);
+				else if (configuracaoDTO.Valor == false)
+				{
+					_response.SetSuccess();
+					_response.Message = "Esta configuração já está desativada!";
+					_response.Data = configuracaoDTO;
+					return Ok(_response);
+				}
+				else
+				{
+					var ativar = await _configuracaoService.Disable(configuracaoDTO.Id);
+					_response.SetSuccess();
+					_response.Message = "Configuração desativada com sucesso.";
+					_response.Data = ativar;
+					return Ok(_response);
+				}
 			}
 			catch (Exception ex)
 			{

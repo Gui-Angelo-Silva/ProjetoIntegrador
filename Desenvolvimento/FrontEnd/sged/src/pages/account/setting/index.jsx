@@ -15,46 +15,75 @@ const Setting = () => {
 
   const connection = new ConnectionService();
   const setting = ConfigurationClass();
+  const [inOperation, setInOperation] = useState(false);
+  const [updateData, setUpdateData] = useState(false);
 
   const [switchStates, setSwitchStates] = useState({
     taskMessages: false,
     dataAlerts: false,
   });
 
+  const EnableSetting = async (id) => {
+    setInOperation(true);
+
+    await connection.endpoint("Configuracao").data(id).action("Ativar").put(id);
+    setUpdateData(connection.response.status);
+
+    setInOperation(false);
+  }
+
+  const DisableSetting = async (id) => {
+    setInOperation(true);
+
+    await connection.endpoint("Configuracao").data(id).action("Desativar").put(id);
+    setUpdateData(connection.response.status);
+
+    setInOperation(false);
+  }
+
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     try {
+  //       const response = await connection.endpoint("Configuracao").get();
+  //       const configurations = response;
+  //       if (configurations) {
+  //         setting.setData(configurations);
+  //         setSwitchStates({
+  //           taskMessages: configurations.taskMessages,
+  //           dataAlerts: configurations.dataAlerts,
+  //         });
+  //       }
+  //     } catch (error) {
+  //       console.error('Erro ao buscar configurações:', error);
+  //     }
+  //   }
+
+  //   fetchData();
+  // }, [setting, connection]);
+
+  // const handleSwitchChange = async (switchName) => {
+  //   try {
+  //     let updatedConfigurations = { ...setting.getData() };
+  //     updatedConfigurations[switchName] = !switchStates[switchName];
+  //     await connection.endpoint("Configuracao").action("activate").put(updatedConfigurations.id);
+  //     setting.setData(updatedConfigurations);
+  //     setSwitchStates((prevState) => ({
+  //       ...prevState,
+  //       [switchName]: !prevState[switchName],
+  //     }));
+  //   } catch (error) {
+  //     console.error(`Erro ao atualizar a configuração ${switchName}:`, error);
+  //   }
+  // };
+
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await connection.endpoint("Configuracao").get();
-        const configurations = response; 
-        if (configurations) {
-          setting.setData(configurations); 
-          setSwitchStates({
-            taskMessages: configurations.taskMessages,
-            dataAlerts: configurations.dataAlerts,
-          });
-        }
-      } catch (error) {
-        console.error('Erro ao buscar configurações:', error);
-      }
-    }
+    if (updateData) {
+      EnableSetting();
+      DisableSetting();
 
-    fetchData();
-  }, [setting, connection]); 
-
-  const handleSwitchChange = async (switchName) => {
-    try {
-      let updatedConfigurations = { ...setting.getData() };
-      updatedConfigurations[switchName] = !switchStates[switchName];
-      await connection.endpoint("Configuracao").action("activate").put(updatedConfigurations.id); 
-      setting.setData(updatedConfigurations);
-      setSwitchStates((prevState) => ({
-        ...prevState,
-        [switchName]: !prevState[switchName],
-      }));
-    } catch (error) {
-      console.error(`Erro ao atualizar a configuração ${switchName}:`, error);
+      setUpdateData(false);
     }
-  };
+  }, [updateData]);
 
   return (
     <LayoutPage>

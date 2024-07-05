@@ -19,6 +19,11 @@ namespace SGED.Repositories.Entities
 			return await _dbContext.Set<Configuracao>().ToListAsync();
 		}
 
+		public async Task<Configuracao> GetById(int id)
+		{
+			return await _dbContext.Configuracao.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+		}
+
 		public async Task<Configuracao> Activate(int id)
 		{
 			var config = await _dbContext.Set<Configuracao>().FindAsync(id);

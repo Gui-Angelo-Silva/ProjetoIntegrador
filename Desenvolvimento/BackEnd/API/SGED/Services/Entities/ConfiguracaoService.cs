@@ -22,10 +22,16 @@ namespace SGED.Services.Entities
 			return _mapper.Map<IEnumerable<ConfiguracaoDTO>>(configuracoes);
 		}
 
+		public async Task<ConfiguracaoDTO> GetById(int id)
+		{
+			var configuracao = await _configuracaoRepository.GetById(id);
+			return _mapper.Map<ConfiguracaoDTO>(configuracao);	
+		}
+
 		public async Task<ConfiguracaoDTO> Activate(int id)
 		{
-			var configuracoes = await _configuracaoRepository.Activate(id);
-			return _mapper.Map<ConfiguracaoDTO>(configuracoes);
+			var configuracao = await _configuracaoRepository.Activate(id);
+			return _mapper.Map<ConfiguracaoDTO>(configuracao);
 		}
 
 		public async Task<ConfiguracaoDTO> Disable(int id)

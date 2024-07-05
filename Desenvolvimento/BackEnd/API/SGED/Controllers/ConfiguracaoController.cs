@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SGED.Objects.Utilities;
+using SGED.Services.Entities;
 using SGED.Services.Interfaces;
 
 namespace SGED.Controllers
@@ -37,7 +38,35 @@ namespace SGED.Controllers
 			}
 		}
 
-		[HttpPut()]
+		[HttpGet("{id:int}", Name = "GetConfiguracao")]
+		public async Task<ActionResult> GetById(int id)
+		{
+			try
+			{
+				var configuracaoDTO = await _configuracaoService.GetById(id);
+				if (configuracaoDTO is null)
+				{
+					_response.SetNotFound();
+					_response.Message = "Configuração não encontrado!";
+					_response.Data = configuracaoDTO;
+					return NotFound(_response);
+				};
+
+				_response.SetSuccess();
+				_response.Message = "Configuração " + configuracaoDTO.Descricao + " obtido com sucesso.";
+				_response.Data = configuracaoDTO;
+				return Ok(_response);
+			}
+			catch (Exception ex)
+			{
+				_response.SetError();
+				_response.Message = "Não foi possível adquirir o Configuração informado!";
+				_response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+				return StatusCode(StatusCodes.Status500InternalServerError, _response);
+			}
+		}
+
+		[HttpPut("activate/{id}")]
 		public async Task<ActionResult> Activate(int id)
 		{
 			try
@@ -65,7 +94,7 @@ namespace SGED.Controllers
 			}
 		}
 
-		[HttpPut()]
+		[HttpPut("disable/{id}")]
 		public async Task<ActionResult> Disable(int id)
 		{
 			try

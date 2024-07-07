@@ -9,7 +9,7 @@ import { FilePlus, Pen, Trash, Warning } from "@phosphor-icons/react";
 
 // Component imports
 import LinkTitle from "../../../components/Title/LinkTitle";
-import SearchBar from "../../../components/Search/SearchBar";
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
 import CancelButton from "../../../components/Button/CancelButton";
 import CustomTable from "../../../components/Table/Table";
@@ -30,7 +30,7 @@ export default function State() {
 
     // Marking the assembled component
     const montage = useMontage();
-    
+
     useEffect(() => {
         montage.componentMounted();
     }, []);
@@ -231,6 +231,7 @@ export default function State() {
 
     return (
         <>
+            {/* POP-UP's */}
             {<div>
                 {managerPopUp.popups.map(popup => (
                     <PopUp
@@ -244,18 +245,17 @@ export default function State() {
                     />
                 ))}
             </div>}
+
             <LayoutPage>
                 <LinkTitle pageName="Estado" />
-                <SearchBar
-                    placeholder="Pesquisar Estado"
-                    onSearchChange={(value) => list.handleSearch(value)}
-                    onSearchByChange={(value) => list.handleSearchBy(value)}
-                    options={[
-                        { label: 'Estado', value: 'nomeEstado' },
-                        { label: 'Sigla', value: 'ufEstado' },
-                    ]}
-                    button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
-                />
+                    <MultiSearchBar
+                        maxSearchBars={2}
+                        searchOptions={[
+                            { label: 'Estado', value: 'nomeEstado' },
+                            { label: 'Sigla', value: 'ufEstado' },
+                        ]}
+                        button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
+                    />
                 <CustomTable
                     totalColumns={3}
                     headers={["Estado", "UF", "Ações"]}
@@ -266,7 +266,7 @@ export default function State() {
                 />
 
                 <Modal isOpen={modalInsert}>
-                    <ModalHeader className="justify-center text-white text-xl bg-[#58AFAE] border-[#BCBCBC] flex flex-col items-center">
+                    <ModalHeader className="justify-center text-white text-xl bg-[#fff] border-[#BCBCBC] flex flex-col items-center">
                         <div className="flex items-center justify-center">
                             <FilePlus size={32} className="mr-2 text-write font-bold" />
                             <h3 className="m-0">Cadastrar Estado</h3>

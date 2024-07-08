@@ -20,14 +20,20 @@ const Setting = () => {
   const [settings, setSettings] = useState([]);
   const [switchStates, setSwitchStates] = useState({});
 
+  const tipoConfiguracaoMap = {
+    1: "Notificações",
+    2: "Exibição",
+    3: "Preferências"
+  };
+
   const GetSettings = async () => {
     setInOperation(true);
     await connection.endpoint("Configuracao").get();
-    const fetchedSettings = connection.getList()  // Aqui estamos assumindo que a lista está em 'data'
+    const fetchedSettings = connection.getList();
     setSettings(fetchedSettings);
 
     const initialSwitchStates = fetchedSettings.reduce((acc, setting) => {
-      acc[setting.id] = setting.valor; 
+      acc[setting.id] = setting.valor;
       return acc;
     }, {});
     setSwitchStates(initialSwitchStates);
@@ -79,6 +85,13 @@ const Setting = () => {
     }
   }, [updateData]);
 
+  const groupedSettings = settings.reduce((acc, setting) => {
+    const tipo = setting.tipoConfiguracao;
+    if (!acc[tipo]) acc[tipo] = [];
+    acc[tipo].push(setting);
+    return acc;
+  }, {});
+
   return (
     <LayoutPage>
       <Title title="Configurações" />
@@ -86,18 +99,22 @@ const Setting = () => {
         <div className="bg-[#59C3D3]/25 px-3 py-[11px] rounded-lg">
           <h1 className="text-[#2D636B] text-xl">Geral</h1>
         </div>
-        <div className="flex flex-col mt-6 px-3 gap-y-3 mb-6 flex-grow">
-          <h1 className="text-[#2D636B] text-xl">Notificações</h1>
-          {settings.map((setting) => (
-            <div className="flex w-full items-center gap-2" key={setting.id}>
-              <Switch
-                checked={switchStates[setting.id]}
-                onChange={() => handleSwitchChange(setting.id)}
-              />
-              <h2 className="text-lg text-[#636262]">{setting.descricao}</h2>
+        {Object.keys(groupedSettings).map(tipo => (
+          <div key={tipo}>
+            <div className="flex flex-col mt-6 px-3 gap-y-3 flex-grow">
+              <h1 className="text-[#2D636B] text-xl">{tipoConfiguracaoMap[tipo]}</h1>
+              {groupedSettings[tipo].map(setting => (
+                <div className="flex w-full items-center gap-2" key={setting.id}>
+                  <Switch
+                    checked={switchStates[setting.id]}
+                    onChange={() => handleSwitchChange(setting.id)}
+                  />
+                  <h2 className="text-lg text-[#636262]">{setting.descricao}</h2>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </LayoutPage>
   );

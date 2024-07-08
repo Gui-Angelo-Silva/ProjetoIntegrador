@@ -2,85 +2,79 @@ import React, { useEffect, useState } from 'react';
 import LayoutPage from '../../../components/Layout/LayoutPage';
 import Title from '../../../components/Title/Title';
 import Switch from '../../../components/Switch/Switch';
-import ConfigurationClass from '../../../object/class/configuration';
 import ConnectionService from '../../../object/service/connection';
 import { useMontage } from '../../../object/modules/montage';
+import ListModule from '../../../object/modules/list';
 
 const Setting = () => {
   const { componentMounted } = useMontage();
 
   useEffect(() => {
     componentMounted();
-  }, [])
+  }, []);
 
   const connection = new ConnectionService();
-  const setting = ConfigurationClass();
+  const list = ListModule();
   const [inOperation, setInOperation] = useState(false);
   const [updateData, setUpdateData] = useState(false);
+  const [settings, setSettings] = useState([]);
+  const [switchStates, setSwitchStates] = useState({});
 
-  const [switchStates, setSwitchStates] = useState({
-    taskMessages: false,
-    dataAlerts: false,
-  });
+  const GetSettings = async () => {
+    setInOperation(true);
+    await connection.endpoint("Configuracao").get();
+    const fetchedSettings = connection.getList()  // Aqui estamos assumindo que a lista está em 'data'
+    setSettings(fetchedSettings);
+
+    const initialSwitchStates = fetchedSettings.reduce((acc, setting) => {
+      acc[setting.id] = setting.valor; 
+      return acc;
+    }, {});
+    setSwitchStates(initialSwitchStates);
+    setInOperation(false);
+  };
 
   const EnableSetting = async (id) => {
     setInOperation(true);
-
     await connection.endpoint("Configuracao").data(id).action("Ativar").put(id);
-    setUpdateData(connection.response.status);
-
+    if (connection.response.status === 200) {
+      setUpdateData(true);
+    }
     setInOperation(false);
-  }
+  };
 
   const DisableSetting = async (id) => {
     setInOperation(true);
-
     await connection.endpoint("Configuracao").data(id).action("Desativar").put(id);
-    setUpdateData(connection.response.status);
-
+    if (connection.response.status === 200) {
+      setUpdateData(true);
+    }
     setInOperation(false);
-  }
+  };
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     try {
-  //       const response = await connection.endpoint("Configuracao").get();
-  //       const configurations = response;
-  //       if (configurations) {
-  //         setting.setData(configurations);
-  //         setSwitchStates({
-  //           taskMessages: configurations.taskMessages,
-  //           dataAlerts: configurations.dataAlerts,
-  //         });
-  //       }
-  //     } catch (error) {
-  //       console.error('Erro ao buscar configurações:', error);
-  //     }
-  //   }
+  const handleSwitchChange = async (id) => {
+    if (inOperation) return;
 
-  //   fetchData();
-  // }, [setting, connection]);
+    const newSwitchStates = { ...switchStates, [id]: !switchStates[id] };
+    setSwitchStates(newSwitchStates);
 
-  // const handleSwitchChange = async (switchName) => {
-  //   try {
-  //     let updatedConfigurations = { ...setting.getData() };
-  //     updatedConfigurations[switchName] = !switchStates[switchName];
-  //     await connection.endpoint("Configuracao").action("activate").put(updatedConfigurations.id);
-  //     setting.setData(updatedConfigurations);
-  //     setSwitchStates((prevState) => ({
-  //       ...prevState,
-  //       [switchName]: !prevState[switchName],
-  //     }));
-  //   } catch (error) {
-  //     console.error(`Erro ao atualizar a configuração ${switchName}:`, error);
-  //   }
-  // };
+    const setting = settings.find(s => s.id === id);
+    if (newSwitchStates[id]) {
+      await EnableSetting(id); // Ativar configuração
+    } else {
+      await DisableSetting(id); // Desativar configuração
+    }
+
+    setUpdateData(true);
+  };
+
+  useEffect(() => {
+    GetSettings();
+  }, []);
 
   useEffect(() => {
     if (updateData) {
-      EnableSetting();
-      DisableSetting();
-
+      GetSettings();
       setUpdateData(false);
     }
   }, [updateData]);
@@ -94,20 +88,15 @@ const Setting = () => {
         </div>
         <div className="flex flex-col mt-6 px-3 gap-y-3 mb-6 flex-grow">
           <h1 className="text-[#2D636B] text-xl">Notificações</h1>
-          <div className="flex w-full items-center gap-2">
-            <Switch
-              checked={switchStates.taskMessages}
-              onChange={() => handleSwitchChange('taskMessages')}
-            />
-            <h2 className="text-lg text-[#636262]">Mensagens de Tarefas Pendentes</h2>
-          </div>
-          <div className="flex w-full items-center gap-2">
-            <Switch
-              checked={switchStates.dataAlerts}
-              onChange={() => handleSwitchChange('dataAlerts')}
-            />
-            <h2 className="text-lg text-[#636262]">Alerta de Dados Obtidos</h2>
-          </div>
+          {settings.map((setting) => (
+            <div className="flex w-full items-center gap-2" key={setting.id}>
+              <Switch
+                checked={switchStates[setting.id]}
+                onChange={() => handleSwitchChange(setting.id)}
+              />
+              <h2 className="text-lg text-[#636262]">{setting.descricao}</h2>
+            </div>
+          ))}
         </div>
       </div>
     </LayoutPage>

@@ -604,6 +604,50 @@ namespace SGED.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SGED.Objects.Models.Entities.Configuracao", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("idconfiguracao");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("descricaoconfiguracao");
+
+                    b.Property<string>("TipoConfiguracao")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("tipoconfiguracao");
+
+                    b.Property<bool>("Valor")
+                        .HasColumnType("boolean")
+                        .HasColumnName("valorconfiguracao");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("configuracao");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Descricao = "Ativar alerta de dados obtidos.",
+                            TipoConfiguracao = "Notificacao",
+                            Valor = true
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Descricao = "Mensagem de tarefas pendentes.",
+                            TipoConfiguracao = "Notificacao",
+                            Valor = true
+                        });
+                });
+
             modelBuilder.Entity("SGED.Objects.Models.Entities.Engenheiro", b =>
                 {
                     b.Property<int>("Id")

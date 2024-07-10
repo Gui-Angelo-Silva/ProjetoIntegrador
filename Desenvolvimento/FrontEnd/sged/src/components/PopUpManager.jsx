@@ -1,11 +1,39 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
+import ConnectionService from '../object/service/connection';
 
 const PopUpManager = () => {
     const [codePopUp, setCodePopUp] = useState(0);
     const [popups, setPopups] = useState([]);
     const initialBottomPosition = 20;
+    const connection = new ConnectionService();
+    const [updateData, setUpdateData] = useState(false);
+    const [settings, setSettings] = useState([]);
+    const [isConfigVisible, setIsConfigVisible] = useState(true);
+
+    const GetSettings = async () => {
+        await connection.endpoint("Configuracao").get();
+        const fetchedSettings = connection.getList();
+        setSettings(fetchedSettings);
+    };
+
+    useEffect(() => {
+        GetSettings();
+    }, [updateData]);
+
+    useEffect(() => {
+        const checkConfigStatus = () => {
+            const config = settings.find(setting => setting.id === 1);
+            return config ? config.valor === true : false;
+        }
+        if (settings.length > 0) {
+            const isConfigActive = checkConfigStatus();
+            setIsConfigVisible(isConfigActive);
+        }
+    }, [settings]);
 
     const addPopUp = (action, status, message) => {
+        if(!isConfigVisible && action === "get") return null;
+
         const id = Date.now();
         const newPopup = { id, action, status, message, bottomPosition: `${initialBottomPosition}px`, code: codePopUp };
         setPopups(prevPopups => {

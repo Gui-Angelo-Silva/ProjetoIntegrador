@@ -9,6 +9,8 @@ public class AppDBContext : DbContext
 
     // Mapeamento Relacional dos Objetos no Bando de Dados
 
+    public DbSet<Configuracao> Configuracao { get; set; }  
+
     // Conjunto: Pessoa
     public DbSet<Municipe> Municipe { get; set; }
     public DbSet<Engenheiro> Engenheiro { get; set; }
@@ -41,6 +43,8 @@ public class AppDBContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        ConfiguracaoBuilder.Build(modelBuilder);
 
         // Builders: Conjunto Pessoa
         MunicipeBuilder.Build(modelBuilder);

@@ -8,11 +8,26 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class Database : Migration
+    public partial class dbAtualizado : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "configuracao",
+                columns: table => new
+                {
+                    idconfiguracao = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    valorconfiguracao = table.Column<bool>(type: "boolean", nullable: false),
+                    descricaoconfiguracao = table.Column<string>(type: "text", nullable: false),
+                    tipoconfiguracao = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_configuracao", x => x.idconfiguracao);
+                });
+
             migrationBuilder.CreateTable(
                 name: "engenheiro",
                 columns: table => new
@@ -486,6 +501,15 @@ namespace SGED.Migrations
                         principalTable: "infraestrutura",
                         principalColumn: "idinfraestrutura",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "configuracao",
+                columns: new[] { "idconfiguracao", "descricaoconfiguracao", "tipoconfiguracao", "valorconfiguracao" },
+                values: new object[,]
+                {
+                    { 1, "Ativar alerta de dados obtidos.", "Notificacao", true },
+                    { 2, "Mensagem de tarefas pendentes.", "Notificacao", true }
                 });
 
             migrationBuilder.InsertData(
@@ -1033,6 +1057,9 @@ namespace SGED.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "configuracao");
+
             migrationBuilder.DropTable(
                 name: "fiscal");
 

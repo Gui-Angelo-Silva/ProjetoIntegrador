@@ -92,6 +92,11 @@ namespace SGED.Objects.DTO.Mappings
 
             CreateMap<SessaoDTO, Sessao>();
             CreateMap<Sessao, SessaoDTO>().ReverseMap();
+
+            // Objetos da Configuração
+
+            CreateMap<ConfiguracaoDTO, Configuracao>();
+            CreateMap<Configuracao, ConfiguracaoDTO>().ReverseMap();
         }
     }
 }

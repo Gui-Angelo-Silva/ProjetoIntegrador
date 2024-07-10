@@ -168,7 +168,7 @@ export default function State() {
         setLastRequisition("buscar");
 
         await connection.endpoint("Estado").get();
-        managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
+        managerPopUp.addPopUp(connection.typeMethod /*Se foi GET, POST....*/, connection.messageRequest.type /*Status da requisição, se bem sucedido*/, connection.messageRequest.content /*A mensagem*/);
 
         list.setList(connection.getList());
     };

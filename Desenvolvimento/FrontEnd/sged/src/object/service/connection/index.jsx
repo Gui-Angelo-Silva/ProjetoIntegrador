@@ -185,5 +185,4 @@ export default class ConnectionService {
             this.response.data
             : null;
     }
-    
 }

@@ -63,8 +63,6 @@ export default function State() {
             openCloseModalEdit(false);
             openCloseModalDelete(false);
         }
-
-        list.searchBy ? null : list.setSearchBy('nomeEstado');
     }, [updateData]);
 
     useEffect(() => {
@@ -248,14 +246,15 @@ export default function State() {
 
             <LayoutPage>
                 <LinkTitle pageName="Estado" />
-                    <MultiSearchBar
-                        maxSearchBars={2}
-                        searchOptions={[
-                            { label: 'Estado', value: 'nomeEstado' },
-                            { label: 'Sigla', value: 'ufEstado' },
-                        ]}
-                        button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
-                    />
+                <MultiSearchBar
+                    maxSearchBars={2}
+                    searchOptions={[
+                        { label: 'Estado', value: 'nomeEstado' },
+                        { label: 'Sigla', value: 'ufEstado' },
+                    ]}
+                    setSearchDictionary={list.setSearchDictionary}
+                    button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
+                />
                 <CustomTable
                     totalColumns={3}
                     headers={["Estado", "UF", "Ações"]}

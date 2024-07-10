@@ -1,59 +1,59 @@
 import { useState, useEffect } from 'react';
 
 function ListModule() {
-
     const [list, setList] = useState([]);
     const [listToRender, setListToRender] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [searchBy, setSearchBy] = useState('');
+    const [searchDictionary, setSearchDictionary] = useState({});
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
     const handleSearch = (searchTerm) => {
-        setSearchTerm(searchTerm);
+        setSearchDictionary({ ...searchDictionary, searchTerm });
     };
 
     const handleSearchBy = (value) => {
-        setSearchBy(value);
+        setSearchDictionary({ ...searchDictionary, searchBy: value });
     };
 
     const filterList = () => {
-        if (searchTerm === '') {
-            setListToRender(list);
+        const isEmptySearch = Object.values(searchDictionary).every(val => val === '');
+        if (isEmptySearch) {
+            setListToRender(list); // Define a lista original se não houver termos de pesquisa
         } else {
-            const searchTermNormalized = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-            const filtered = list.filter((object) => {
-                const objectNameNormalized = object[searchBy].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                return objectNameNormalized.toLowerCase().includes(searchTermNormalized.toLowerCase());
+            const filtered = list.filter(object => {
+                return Object.entries(searchDictionary).every(([key, term]) => {
+                    if (term === '') return true; // Retorna verdadeiro se o termo de pesquisa estiver vazio
+                    const termNormalized = term.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // Normaliza e remove acentos do termo de pesquisa
+                    const objectValue = object[key]?.toString(); // Obtém o valor do objeto para a chave correspondente
+                    if (!objectValue) return false; // Retorna falso se o valor do objeto não existir
+                    const objectValueNormalized = objectValue.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // Normaliza e remove acentos do valor do objeto
+                    return objectValueNormalized.toLowerCase().includes(termNormalized.toLowerCase()); // Retorna verdadeiro se o valor do objeto contiver o termo de pesquisa (ignorando maiúsculas e minúsculas)
+                });
             });
-            setListToRender(filtered);
+            setListToRender(filtered); // Define a lista filtrada conforme os termos de pesquisa no searchDictionary
         }
     };
 
     useEffect(() => {
         filterList();
-    }, [searchTerm, searchBy, list]);
+    }, [searchDictionary, list]);
 
     useEffect(() => {
-        if (list.length >= 0 && currentPage === 0) {
+        if (list.length > 0 && currentPage === 0) {
             setCurrentPage(1);
         }
     }, [list]);
 
-    const [currentPage, setCurrentPage] = useState(0);
-    let itemsPerPage = 10;
-    let totalItems = listToRender.length;
-    let totalPages = Math.ceil(totalItems / itemsPerPage);
-
-    // Função para pegar uma parte específica da lista
     const getCurrentPageItems = (page) => {
         const startIndex = (page - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         return listToRender.slice(startIndex, endIndex);
     };
 
-    // Renderiza a lista atual com base na página atual
+    let totalItems = listToRender.length;
+    let totalPages = Math.ceil(totalItems / itemsPerPage);
     let currentList = getCurrentPageItems(currentPage);
 
-    // Funções para navegar entre as páginas
     const goToPage = (page) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
@@ -67,20 +67,14 @@ function ListModule() {
     }, [currentPage, listToRender]);
 
     return {
-        // Atributos
         list,
         setList,
         listToRender,
         setListToRender,
-        searchTerm,
-        setSearchTerm,
-        searchBy,
-        setSearchBy,
+        setSearchDictionary,
         currentPage,
         totalPages,
         currentList,
-
-        // Funções
         handleSearch,
         handleSearchBy,
         goToPage

@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import SearchBar from './SearchBar';
-import { X } from "@phosphor-icons/react";
 
-const MultiSearchBar = ({ maxSearchBars, searchOptions, button }) => {
+const MultiSearchBar = ({ maxSearchBars, searchOptions, setSearchDictionary, button }) => {
     const [searchBars, setSearchBars] = useState([{ id: 1, selectedOption: searchOptions[0].value }]);
     const [maxOptionWidth, setMaxOptionWidth] = useState(0);
     const [multiSearchBarWidth, setMultiSearchBarWidth] = useState('auto');
@@ -51,15 +50,41 @@ const MultiSearchBar = ({ maxSearchBars, searchOptions, button }) => {
 
     const removeSearchBar = (id) => {
         setSearchBars(searchBars.filter((bar) => bar.id !== id));
+
+        // Remove o atributo do dicionário quando o campo é removido
+        const attributeToRemove = searchBars.find(bar => bar.id === id)?.selectedOption;
+        if (attributeToRemove) {
+            setSearchDictionary(prevDict => {
+                const updatedDict = { ...prevDict };
+                delete updatedDict[attributeToRemove];
+                return updatedDict;
+            });
+        }
     };
 
     const handleSearchChange = (id, value) => {
-        console.log(`Search ${id}:`, value);
+        setSearchDictionary(prevDict => ({
+            ...prevDict,
+            [searchBars.find(bar => bar.id === id)?.selectedOption]: value,
+        }));
     };
 
-    const handleSearchByChange = (id, value) => {
-        setSearchBars(searchBars.map((bar) => bar.id === id ? { ...bar, selectedOption: value } : bar));
-        console.log(`Search By ${id}:`, value);
+    const handleSearchByChange = (id, newSelectedOption) => {
+        const oldSelectedOption = searchBars.find(bar => bar.id === id)?.selectedOption;
+
+        setSearchBars(searchBars.map((bar) => bar.id === id ? { ...bar, selectedOption: newSelectedOption } : bar));
+
+        // Atualiza o dicionário ao trocar o atributo
+        setSearchDictionary(prevDict => {
+            const updatedDict = { ...prevDict };
+            if (oldSelectedOption) {
+                updatedDict[newSelectedOption] = updatedDict[oldSelectedOption] || '';
+                delete updatedDict[oldSelectedOption];
+            } else {
+                updatedDict[newSelectedOption] = '';
+            }
+            return updatedDict;
+        });
     };
 
     const getAvailableOptions = (currentId) => {

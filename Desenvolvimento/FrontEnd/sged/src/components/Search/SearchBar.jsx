@@ -37,6 +37,11 @@ const SearchBar = ({ placeholder, options, onSearchChange, onSearchByChange, but
         onSearchByChange(value);
     };
 
+    useEffect(() => {
+        // Atualiza o valor do atributo no dicionário de pesquisa ao mudar searchTerm
+        onSearchChange(searchTerm);
+    }, [searchTerm]);
+
     return (
         <div className="flex items-center">
             <div className="flex justify-center items-center mx-auto w-[500px]">
@@ -50,6 +55,7 @@ const SearchBar = ({ placeholder, options, onSearchChange, onSearchByChange, but
                         className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm"
                         placeholder={placeholder}
                         required
+                        value={searchTerm}
                         onChange={(e) => handleSearch(e.target.value)}
                     />
                     <select

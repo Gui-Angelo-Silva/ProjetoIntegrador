@@ -109,7 +109,7 @@ const MultiSearchBar = ({ maxSearchBars, searchOptions, setSearchDictionary, but
                 {searchBars.map((bar, index) => (
                     <div key={bar.id} className="flex items-center">
                         <SearchBar
-                            placeholder="Pesquisar Estado"
+                            placeholder="Pesquisar..."
                             options={getAvailableOptions(bar.id)}
                             onSearchChange={(value) => handleSearchChange(bar.id, value)}
                             onSearchByChange={(value) => handleSearchByChange(bar.id, value)}

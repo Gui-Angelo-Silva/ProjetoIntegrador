@@ -81,15 +81,17 @@ const SearchBar = ({ placeholder, options, onSearchChange, onSearchByChange, but
                     onMouseEnter={() => setIsButtonHovered(true)}
                     onMouseLeave={() => setIsButtonHovered(false)}
                 >
-                    <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center cursor-pointer
+                    {button && (
+                        <div
+                            className={`w-10 h-10 rounded-full flex items-center justify-center cursor-pointer
                             ${isCloseButtonHovered ? 'bg-red-500 text-white' : 'bg-white border'}`}
-                        onClick={button}
-                        onMouseEnter={() => setIsCloseButtonHovered(true)}
-                        onMouseLeave={() => setIsCloseButtonHovered(false)}
-                    >
-                        <X size={20} />
-                    </div>
+                            onClick={button}
+                            onMouseEnter={() => setIsCloseButtonHovered(true)}
+                            onMouseLeave={() => setIsCloseButtonHovered(false)}
+                        >
+                            <X size={20} />
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

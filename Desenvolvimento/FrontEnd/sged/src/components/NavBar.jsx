@@ -218,6 +218,7 @@ export default function NavBar() {
               aria-label="show more"
               aria-controls="primary-search-account-menu-mobile"
               aria-haspopup="true"
+              onClick={toggleDrawer(true)} // Adicionando a função aqui
               color="inherit"
             >
               <MoreIcon />

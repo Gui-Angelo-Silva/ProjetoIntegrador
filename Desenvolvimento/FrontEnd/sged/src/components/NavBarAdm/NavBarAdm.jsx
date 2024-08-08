@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import IconNotification from "../../../../assets/user/Notification"
-import SessionService from '../../../../object/service/session';
-import UserClass from '../../../../object/class/user';
+import IconNotification from "../../assets/user/Notification"
+import SessionService from "../../object/service/session";
+import UserClass from '../../object/class/user';
 
 export default function NavBarAdm() {
 
@@ -40,7 +40,7 @@ export default function NavBarAdm() {
     }, []);
 
     return (
-        <div className="sm:ml-[200px] md:ml-[250px] ml:w-[260px] fixed top-0 left-0 right-0 bg-[#2D636B] z-50">
+        <div className="fixed top-0 left-0 right-0 bg-[#2D636B] z-50">
             <div className="flex h-[65px] items-center px-4 sm:px-6 lg:px-8 gap-2.5">
                 <div className="flex justify-end w-full text-white text-lg ">
                     {user.personName}

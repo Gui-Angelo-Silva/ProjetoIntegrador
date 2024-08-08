@@ -5,6 +5,7 @@ import Switch from '../../../components/Switch/Switch';
 import ConnectionService from '../../../object/service/connection';
 import { useMontage } from '../../../object/modules/montage';
 import ListModule from '../../../object/modules/list';
+import Cookies from 'js-cookie';
 
 const Setting = () => {
   const { componentMounted } = useMontage();
@@ -19,6 +20,7 @@ const Setting = () => {
   const [updateData, setUpdateData] = useState(false);
   const [settings, setSettings] = useState([]);
   const [switchStates, setSwitchStates] = useState({});
+  const [configId1Active, setConfigId1Active] = useState(false);
 
   const tipoConfiguracaoMap = {
     1: "Notificações",
@@ -37,6 +39,13 @@ const Setting = () => {
       return acc;
     }, {});
     setSwitchStates(initialSwitchStates);
+
+    const config1 = fetchedSettings.find(setting => setting.id === 1);
+    if (config1) {
+      setConfigId1Active(config1.valor);
+      Cookies.set('configId1Active', config1.valor); // Para salvar o status no cookie
+    }
+
     setInOperation(false);
   };
 
@@ -67,8 +76,14 @@ const Setting = () => {
     const setting = settings.find(s => s.id === id);
     if (newSwitchStates[id]) {
       await EnableSetting(id); // Ativar configuração
+      if (id === 1) {
+        Cookies.set('configId1Active', true); // Salva o status de ativo no cookie
+      }
     } else {
       await DisableSetting(id); // Desativar configuração
+      if (id === 1) {
+        Cookies.set('configId1Active', false); // Salva o status de desativado no cookie
+      }
     }
 
     setUpdateData(true);
@@ -115,6 +130,9 @@ const Setting = () => {
             </div>
           </div>
         ))}
+        {/* <div className="mt-4">
+          <h2 className="text-lg text-[#636262]">Configuração ID 1 está {configId1Active ? 'ativa' : 'inativa'}</h2>
+        </div> */}
       </div>
     </LayoutPage>
   );

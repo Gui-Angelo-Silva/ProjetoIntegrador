@@ -1,25 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { X } from '@phosphor-icons/react';
-import ConnectionService from '../object/service/connection';
+import Cookies from 'js-cookie';
 
 const PopUp = ({ action, status, message, onClose, code, index }) => {
     const nodeRef = useRef(null);
-    const connection = new ConnectionService();
-    const [updateData, setUpdateData] = useState(false);
-    const [settings, setSettings] = useState([]);
     const [isConfigVisible, setIsConfigVisible] = useState(true);
     const [visible, setVisible] = useState(true);
     const [timer, setTimer] = useState(7); // Inicializa o timer com 7 segundos
 
     const initialBottomPosition = 100;
     const bottomPosition = `${initialBottomPosition + (index * 100)}px`;
-
-    const GetSettings = async () => {
-        await connection.endpoint("Configuracao").get();
-        const fetchedSettings = connection.getList();
-        setSettings(fetchedSettings);
-    };
 
     useEffect(() => {
         const timerId = setInterval(() => {
@@ -37,21 +28,12 @@ const PopUp = ({ action, status, message, onClose, code, index }) => {
     }, [timer, onClose, code]);
 
     useEffect(() => {
-        GetSettings();
-    }, [updateData]);
-
-    useEffect(() => {
         const checkConfigStatus = () => {
-            const config = settings.find(setting => setting.id === 1);
-            return config ? config.valor === true : false;
+            const configStatus = Cookies.get('configId1Active');
+            return configStatus === 'true';
         };
-
-        if (settings.length > 0) {
-            const isConfigActive = checkConfigStatus();
-            setIsConfigVisible(isConfigActive);
-            console.log("Configuração com id = 1 está ativa:", isConfigActive);
-        }
-    }, [settings]);
+        setIsConfigVisible(checkConfigStatus());
+    }, []);
 
     const getStyles = () => {
         switch (status) {

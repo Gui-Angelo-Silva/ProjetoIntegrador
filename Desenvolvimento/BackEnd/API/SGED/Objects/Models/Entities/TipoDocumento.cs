@@ -21,5 +21,7 @@ namespace SGED.Objects.Models.Entities
         public StatusEnum Status { get; set; }
 
         public ICollection<TipoDocumentoEtapa>? TipoDocumentoEtapas { get; set; }
-    }
+
+		public ICollection<DocumentoProcesso>? DocumentosProcesso { get; set; }
+	}
 }

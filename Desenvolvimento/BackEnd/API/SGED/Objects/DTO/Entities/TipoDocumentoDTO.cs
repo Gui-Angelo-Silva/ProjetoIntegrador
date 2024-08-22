@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using SGED.Objects.Enums;
 using SGED.Objects.Interfaces;
 using SGED.Objects.Utilities;
@@ -22,8 +23,11 @@ namespace SGED.Objects.DTO.Entities
 		[Required(ErrorMessage = "O status é requerido!")]
         public StatusEnum Status { get; set; }
 
+		[JsonIgnore]
+		public ICollection<DocumentoProcessoDTO>? DocumentosProcessoDTO { get; set; }
 
-        public void Enable() => Status = StatusEnumExtensions.Enable();
+
+		public void Enable() => Status = StatusEnumExtensions.Enable();
         public void Pending() => Status = StatusEnumExtensions.Pending();
         public void Wait() => Status = StatusEnumExtensions.Wait();
         public void Block() => Status = StatusEnumExtensions.Block();

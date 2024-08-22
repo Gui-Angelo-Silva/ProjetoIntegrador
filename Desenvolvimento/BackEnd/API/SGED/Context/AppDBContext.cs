@@ -38,7 +38,7 @@ public class AppDBContext : DbContext
 	public DbSet<Etapa> Etapa { get; set; }
 	public DbSet<TipoDocumento> TipoDocumento { get; set; }
 	public DbSet<TipoDocumentoEtapa> TipoDocumentoEtapa { get; set; }
-	public DbSet<DocumentoProcesso> DocumentoProcessos { get; set; }
+	public DbSet<DocumentoProcesso> DocumentoProcesso { get; set; }
 
 	// Fluent API
 	protected override void OnModelCreating(ModelBuilder modelBuilder)

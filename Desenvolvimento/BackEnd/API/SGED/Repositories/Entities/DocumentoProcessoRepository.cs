@@ -51,22 +51,9 @@ public class DocumentoProcessoRepository : IDocumentoProcessoRepository
 		return DocumentoProcesso;
 	}
 
-	public async Task<IEnumerable<DocumentoProcesso>> GetTypeDocumentStagesRelatedToStage(int IdEtapa)
+	public async Task<IEnumerable<DocumentoProcesso>> GetDocumentProcessRelatedToTypeDocument(int IdTipoDocumento)
 	{
-		return await _dbContext.DocumentoProcesso.Where(tde => tde.IdEtapa == IdEtapa).AsNoTracking().ToListAsync();
-	}
-
-	public async Task<IEnumerable<TipoDocumento>> GetTypeDocumentsRelatedToStage(int IdEtapa)
-	{
-		var tipoDocumentoIdsRelacionados = await _dbContext.DocumentoProcesso.Where(tde => tde.IdEtapa == IdEtapa).AsNoTracking().Select(tde => tde.IdTipoDocumento).ToListAsync();
-		return await _dbContext.TipoDocumento.Where(td => tipoDocumentoIdsRelacionados.Contains(td.Id)).AsNoTracking().ToListAsync();
-	}
-
-
-	public async Task<IEnumerable<TipoDocumento>> GetTypeDocumentsNoRelatedToStage(int IdEtapa)
-	{
-		var tipoDocumentoIdsRelacionados = await _dbContext.DocumentoProcesso.Where(tde => tde.IdEtapa == IdEtapa).AsNoTracking().Select(tde => tde.IdTipoDocumento).ToListAsync();
-		return await _dbContext.TipoDocumento.Where(td => !tipoDocumentoIdsRelacionados.Contains(td.Id)).AsNoTracking().ToListAsync();
+		return await _dbContext.DocumentoProcesso.Where(tde => tde.IdTipoDocumento == IdTipoDocumento).AsNoTracking().ToListAsync();
 	}
 
 

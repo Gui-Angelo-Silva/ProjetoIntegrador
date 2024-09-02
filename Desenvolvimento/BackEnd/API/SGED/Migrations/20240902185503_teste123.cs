@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class dbAtualizado : Migration
+    public partial class teste123 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -503,6 +503,78 @@ namespace SGED.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "processo",
+                columns: table => new
+                {
+                    idprocesso = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    statusprocesso = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    dataaprovacao = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    situacaoproceso = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    IdImovel = table.Column<int>(type: "integer", nullable: false),
+                    IdTipoProcesso = table.Column<int>(type: "integer", nullable: false),
+                    IdEngenheiro = table.Column<int>(type: "integer", nullable: false),
+                    IdFiscal = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_processo", x => x.idprocesso);
+                    table.ForeignKey(
+                        name: "FK_processo_engenheiro_IdEngenheiro",
+                        column: x => x.IdEngenheiro,
+                        principalTable: "engenheiro",
+                        principalColumn: "idengenheiro",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_processo_fiscal_IdFiscal",
+                        column: x => x.IdFiscal,
+                        principalTable: "fiscal",
+                        principalColumn: "idfiscal",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_processo_imovel_IdImovel",
+                        column: x => x.IdImovel,
+                        principalTable: "imovel",
+                        principalColumn: "idimovel",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_processo_tipoprocesso_IdTipoProcesso",
+                        column: x => x.IdTipoProcesso,
+                        principalTable: "tipoprocesso",
+                        principalColumn: "idtipoprocesso",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "documentoprocesso",
+                columns: table => new
+                {
+                    iddocumentoprocesso = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    descricaodocumentoprocesso = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    observacaodocumentoprocesso = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    situacaodocumentoprocesso = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    documentodocumentoprocesso = table.Column<byte[]>(type: "bytea", nullable: false),
+                    idtipodocumento = table.Column<int>(type: "integer", nullable: false),
+                    ProcessoId = table.Column<int>(type: "integer", nullable: true),
+                    TipoDocumentoId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_documentoprocesso", x => x.iddocumentoprocesso);
+                    table.ForeignKey(
+                        name: "FK_documentoprocesso_processo_ProcessoId",
+                        column: x => x.ProcessoId,
+                        principalTable: "processo",
+                        principalColumn: "idprocesso");
+                    table.ForeignKey(
+                        name: "FK_documentoprocesso_tipodocumento_TipoDocumentoId",
+                        column: x => x.TipoDocumentoId,
+                        principalTable: "tipodocumento",
+                        principalColumn: "idTipoDocumento");
+                });
+
             migrationBuilder.InsertData(
                 table: "configuracao",
                 columns: new[] { "idconfiguracao", "descricaoconfiguracao", "tipoconfiguracao", "valorconfiguracao" },
@@ -969,6 +1041,16 @@ namespace SGED.Migrations
                 column: "IdEstado");
 
             migrationBuilder.CreateIndex(
+                name: "IX_documentoprocesso_ProcessoId",
+                table: "documentoprocesso",
+                column: "ProcessoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_documentoprocesso_TipoDocumentoId",
+                table: "documentoprocesso",
+                column: "TipoDocumentoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_etapa_IdTipoProcesso",
                 table: "etapa",
                 column: "IdTipoProcesso");
@@ -1034,6 +1116,26 @@ namespace SGED.Migrations
                 column: "IdTipoLogradouro");
 
             migrationBuilder.CreateIndex(
+                name: "IX_processo_IdEngenheiro",
+                table: "processo",
+                column: "IdEngenheiro");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_processo_IdFiscal",
+                table: "processo",
+                column: "IdFiscal");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_processo_IdImovel",
+                table: "processo",
+                column: "IdImovel");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_processo_IdTipoProcesso",
+                table: "processo",
+                column: "IdTipoProcesso");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_sessao_IdUsuario",
                 table: "sessao",
                 column: "IdUsuario");
@@ -1061,7 +1163,7 @@ namespace SGED.Migrations
                 name: "configuracao");
 
             migrationBuilder.DropTable(
-                name: "fiscal");
+                name: "documentoprocesso");
 
             migrationBuilder.DropTable(
                 name: "instalacao");
@@ -1073,10 +1175,7 @@ namespace SGED.Migrations
                 name: "tipodocumentoetapa");
 
             migrationBuilder.DropTable(
-                name: "engenheiro");
-
-            migrationBuilder.DropTable(
-                name: "imovel");
+                name: "processo");
 
             migrationBuilder.DropTable(
                 name: "infraestrutura");
@@ -1089,6 +1188,24 @@ namespace SGED.Migrations
 
             migrationBuilder.DropTable(
                 name: "tipodocumento");
+
+            migrationBuilder.DropTable(
+                name: "engenheiro");
+
+            migrationBuilder.DropTable(
+                name: "fiscal");
+
+            migrationBuilder.DropTable(
+                name: "imovel");
+
+            migrationBuilder.DropTable(
+                name: "tipoinfraestrutura");
+
+            migrationBuilder.DropTable(
+                name: "tipousuario");
+
+            migrationBuilder.DropTable(
+                name: "tipoprocesso");
 
             migrationBuilder.DropTable(
                 name: "logradouro");
@@ -1104,15 +1221,6 @@ namespace SGED.Migrations
 
             migrationBuilder.DropTable(
                 name: "topografia");
-
-            migrationBuilder.DropTable(
-                name: "tipoinfraestrutura");
-
-            migrationBuilder.DropTable(
-                name: "tipousuario");
-
-            migrationBuilder.DropTable(
-                name: "tipoprocesso");
 
             migrationBuilder.DropTable(
                 name: "bairro");

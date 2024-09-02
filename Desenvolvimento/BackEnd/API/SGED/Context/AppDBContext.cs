@@ -38,6 +38,7 @@ public class AppDBContext : DbContext
 	public DbSet<Etapa> Etapa { get; set; }
 	public DbSet<TipoDocumento> TipoDocumento { get; set; }
 	public DbSet<TipoDocumentoEtapa> TipoDocumentoEtapa { get; set; }
+	public DbSet<Processo> Processo { get; set; }
 	public DbSet<DocumentoProcesso> DocumentoProcesso { get; set; }
 
 	// Fluent API
@@ -74,6 +75,7 @@ public class AppDBContext : DbContext
 		EtapaBuilder.Build(modelBuilder);
 		TipoDocumentoBuilder.Build(modelBuilder);
 		TipoDocumentoEtapaBuilder.Build(modelBuilder);
+		ProcessoBuilder.Build(modelBuilder);
 		DocumentoProcessoBuilder.Build(modelBuilder);
 	}
 }

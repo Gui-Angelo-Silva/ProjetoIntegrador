@@ -29,5 +29,7 @@ namespace SGED.Objects.Models.Entities
 
         [Column("rgiepessoa")]
         public string RgIePessoa { get; set; }
+
+        public ICollection<Processo>? Processos { get; set; }
     }
 }

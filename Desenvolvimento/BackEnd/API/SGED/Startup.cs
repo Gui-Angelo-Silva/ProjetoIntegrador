@@ -207,6 +207,10 @@ namespace SGED
             services.AddScoped<ITipoDocumentoRepository, TipoDocumentoRepository>();
             services.AddScoped<ITipoDocumentoService, TipoDocumentoService>();
 
+            // Dependência: Processo
+            services.AddScoped<IProcessoRepository, ProcessoRepository>();
+            services.AddScoped<IProcessoService, ProcessoService>();
+
             // Dependência: Tipo Documento Etapa
             services.AddScoped<ITipoDocumentoEtapaRepository, TipoDocumentoEtapaRepository>();
             services.AddScoped<ITipoDocumentoEtapaService, TipoDocumentoEtapaService>();

@@ -668,6 +668,9 @@ namespace SGED.Migrations
                         .HasColumnType("bytea")
                         .HasColumnName("documentodocumentoprocesso");
 
+                    b.Property<int>("IdProcesso")
+                        .HasColumnType("integer");
+
                     b.Property<int>("IdTipoDocumento")
                         .HasColumnType("integer")
                         .HasColumnName("idtipodocumento");
@@ -678,23 +681,17 @@ namespace SGED.Migrations
                         .HasColumnType("character varying(300)")
                         .HasColumnName("observacaodocumentoprocesso");
 
-                    b.Property<int?>("ProcessoId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Situacao")
                         .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("character varying(300)")
                         .HasColumnName("situacaodocumentoprocesso");
 
-                    b.Property<int?>("TipoDocumentoId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ProcessoId");
+                    b.HasIndex("IdProcesso");
 
-                    b.HasIndex("TipoDocumentoId");
+                    b.HasIndex("IdTipoDocumento");
 
                     b.ToTable("documentoprocesso");
                 });
@@ -3312,13 +3309,21 @@ namespace SGED.Migrations
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.DocumentoProcesso", b =>
                 {
-                    b.HasOne("SGED.Objects.Models.Entities.Processo", null)
+                    b.HasOne("SGED.Objects.Models.Entities.Processo", "Processo")
                         .WithMany("DocumentosProcesso")
-                        .HasForeignKey("ProcessoId");
+                        .HasForeignKey("IdProcesso")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("SGED.Objects.Models.Entities.TipoDocumento", null)
+                    b.HasOne("SGED.Objects.Models.Entities.TipoDocumento", "TipoDocumento")
                         .WithMany("DocumentosProcesso")
-                        .HasForeignKey("TipoDocumentoId");
+                        .HasForeignKey("IdTipoDocumento")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Processo");
+
+                    b.Navigation("TipoDocumento");
                 });
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.Etapa", b =>

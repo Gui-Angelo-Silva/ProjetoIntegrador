@@ -33,7 +33,6 @@ namespace SGED.Objects.Models.Entities
         public TipoProcesso? TipoProcesso { get; set; }
         public Engenheiro? Engenheiro { get; set; }
         public Fiscal? Fiscal { get; set; }
-
         public ICollection<DocumentoProcesso>? DocumentosProcesso { get; set; }
     }
 }

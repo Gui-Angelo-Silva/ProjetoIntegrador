@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SGED.Migrations
 {
     /// <inheritdoc />
-    public partial class teste123 : Migration
+    public partial class Teste : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -557,22 +557,23 @@ namespace SGED.Migrations
                     situacaodocumentoprocesso = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
                     documentodocumentoprocesso = table.Column<byte[]>(type: "bytea", nullable: false),
                     idtipodocumento = table.Column<int>(type: "integer", nullable: false),
-                    ProcessoId = table.Column<int>(type: "integer", nullable: true),
-                    TipoDocumentoId = table.Column<int>(type: "integer", nullable: true)
+                    IdProcesso = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_documentoprocesso", x => x.iddocumentoprocesso);
                     table.ForeignKey(
-                        name: "FK_documentoprocesso_processo_ProcessoId",
-                        column: x => x.ProcessoId,
+                        name: "FK_documentoprocesso_processo_IdProcesso",
+                        column: x => x.IdProcesso,
                         principalTable: "processo",
-                        principalColumn: "idprocesso");
+                        principalColumn: "idprocesso",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_documentoprocesso_tipodocumento_TipoDocumentoId",
-                        column: x => x.TipoDocumentoId,
+                        name: "FK_documentoprocesso_tipodocumento_idtipodocumento",
+                        column: x => x.idtipodocumento,
                         principalTable: "tipodocumento",
-                        principalColumn: "idTipoDocumento");
+                        principalColumn: "idTipoDocumento",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -1041,14 +1042,14 @@ namespace SGED.Migrations
                 column: "IdEstado");
 
             migrationBuilder.CreateIndex(
-                name: "IX_documentoprocesso_ProcessoId",
+                name: "IX_documentoprocesso_IdProcesso",
                 table: "documentoprocesso",
-                column: "ProcessoId");
+                column: "IdProcesso");
 
             migrationBuilder.CreateIndex(
-                name: "IX_documentoprocesso_TipoDocumentoId",
+                name: "IX_documentoprocesso_idtipodocumento",
                 table: "documentoprocesso",
-                column: "TipoDocumentoId");
+                column: "idtipodocumento");
 
             migrationBuilder.CreateIndex(
                 name: "IX_etapa_IdTipoProcesso",

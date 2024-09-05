@@ -15,6 +15,19 @@ namespace SGED.Context.Builders
             modelBuilder.Entity<DocumentoProcesso>().Property(td => td.Situacao).HasMaxLength(300).IsRequired();
 			modelBuilder.Entity<DocumentoProcesso>().Property(td => td.Documento).IsRequired();
 
+			// Relacionamento: Imovel -> DocumentoProcesso
+			modelBuilder.Entity<DocumentoProcesso>()
+				.HasOne(c => c.Processo)
+				.WithMany(e => e.DocumentosProcesso)
+				.HasForeignKey(c => c.IdProcesso)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			// Relacionamento: TipoProcesso -> DocumentoProcesso
+			modelBuilder.Entity<DocumentoProcesso>()
+				.HasOne(c => c.TipoDocumento)
+				.WithMany(e => e.DocumentosProcesso)
+				.HasForeignKey(c => c.IdTipoDocumento)
+				.OnDelete(DeleteBehavior.Cascade);
 
 			// Inserções
 		}

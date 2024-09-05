@@ -20,6 +20,8 @@ namespace SGED.Objects.Models.Entities
         [Column("statustipoprocesso")]
         public StatusEnum Status { get; set; }
 
+
+        public ICollection<Processo>? Processos { get; set; }
         public ICollection<Etapa>? Etapas { get; set; }
     }
 }

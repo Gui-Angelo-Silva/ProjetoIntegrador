@@ -14,6 +14,7 @@ using SGED.Objects.Utilities;
 using SGED.Services.Server.Middleware;
 using SGED.Services.Server.Attributes;
 using SGED.Objects.Server;
+using SGED.Objects.Models.Entities;
 
 namespace SGED
 {
@@ -207,15 +208,22 @@ namespace SGED
             services.AddScoped<ITipoDocumentoRepository, TipoDocumentoRepository>();
             services.AddScoped<ITipoDocumentoService, TipoDocumentoService>();
 
+            // Dependência: Processo
+            services.AddScoped<IProcessoRepository, ProcessoRepository>();
+            services.AddScoped<IProcessoService, ProcessoService>();
+
             // Dependência: Tipo Documento Etapa
             services.AddScoped<ITipoDocumentoEtapaRepository, TipoDocumentoEtapaRepository>();
             services.AddScoped<ITipoDocumentoEtapaService, TipoDocumentoEtapaService>();
 
+			// Dependência: Documento Processo
+			services.AddScoped<IDocumentoProcessoRepository, DocumentoProcessoRepository>();
+			services.AddScoped<IDocumentoProcessoService, DocumentoProcessoService>();
 
-            // Conjunto: Servidor
+			// Conjunto: Servidor
 
-            // Task: Fechar Sessão
-            services.AddHostedService<SessionCleanupService>();
+			// Task: Fechar Sessão
+			services.AddHostedService<SessionCleanupService>();
 
             // Task: Remover Sessões
             services.AddHostedService<RemoveSessionService>();

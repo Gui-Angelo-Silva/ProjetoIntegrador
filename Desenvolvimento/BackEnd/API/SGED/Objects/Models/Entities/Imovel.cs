@@ -66,6 +66,8 @@ namespace SGED.Objects.Models.Entities
         [ForeignKey("idocupacaoatual")]
         public int IdOcupacaoAtual { get; set; }
 
+
+        public ICollection<Processo>? Processos { get; set; }
         public ICollection<Instalacao>? Instalacoes { get; set; }
     }
 }

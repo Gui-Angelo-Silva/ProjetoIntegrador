@@ -650,48 +650,61 @@ namespace SGED.Migrations
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.DocumentoProcesso", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("iddocumentoprocesso");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Descricao")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("character varying(300)")
-                        .HasColumnName("descricaodocumentoprocesso");
-
-                    b.Property<byte[]>("Documento")
+                    b.Property<byte[]>("ArquivoDocumento")
                         .IsRequired()
                         .HasColumnType("bytea")
-                        .HasColumnName("documentodocumentoprocesso");
+                        .HasColumnName("arquivodocumento");
 
-                    b.Property<int>("IdProcesso")
+                    b.Property<string>("DescricaoDocumento")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("descricaodocumento");
+
+                    b.Property<int?>("IdAprovador")
+                        .HasColumnType("integer")
+                        .HasColumnName("idaprovador");
+
+                    b.Property<Guid>("IdProcesso")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("IdResponsavel")
                         .HasColumnType("integer");
 
-                    b.Property<int>("IdTipoDocumento")
+                    b.Property<int>("IdTipoDocumentoEtapa")
                         .HasColumnType("integer")
-                        .HasColumnName("idtipodocumento");
+                        .HasColumnName("idtipodocumentoetapa");
 
-                    b.Property<string>("Observacao")
+                    b.Property<string>("IdentificacaoDocumento")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("identificacaodocumento");
+
+                    b.Property<string>("ObservacaoDocumento")
                         .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("character varying(300)")
-                        .HasColumnName("observacaodocumentoprocesso");
+                        .HasColumnName("observacaodocumento");
 
-                    b.Property<string>("Situacao")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("character varying(300)")
-                        .HasColumnName("situacaodocumentoprocesso");
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("statusdocumentoprocesso");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IdAprovador");
+
                     b.HasIndex("IdProcesso");
 
-                    b.HasIndex("IdTipoDocumento");
+                    b.HasIndex("IdResponsavel");
+
+                    b.HasIndex("IdTipoDocumentoEtapa");
 
                     b.ToTable("documentoprocesso");
                 });
@@ -1683,18 +1696,25 @@ namespace SGED.Migrations
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.Processo", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("idprocesso");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("DataAprovacao")
                         .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)")
                         .HasColumnName("dataaprovacao");
+
+                    b.Property<string>("DescricaoProcesso")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("descricaoprocesso");
+
+                    b.Property<int>("IdAprovador")
+                        .HasColumnType("integer");
 
                     b.Property<int>("IdEngenheiro")
                         .HasColumnType("integer");
@@ -1705,19 +1725,29 @@ namespace SGED.Migrations
                     b.Property<int>("IdImovel")
                         .HasColumnType("integer");
 
+                    b.Property<int>("IdResponsavel")
+                        .HasColumnType("integer");
+
                     b.Property<int>("IdTipoProcesso")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("IdentificacaoProcesso")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("identificacaoprocesso");
+
+                    b.Property<int?>("ResponsavelId")
                         .HasColumnType("integer");
 
                     b.Property<string>("SituacaoProcesso")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
                         .HasColumnName("situacaoproceso");
 
-                    b.Property<string>("StatusProcesso")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)")
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
                         .HasColumnName("statusprocesso");
 
                     b.HasKey("Id");
@@ -1728,7 +1758,11 @@ namespace SGED.Migrations
 
                     b.HasIndex("IdImovel");
 
+                    b.HasIndex("IdResponsavel");
+
                     b.HasIndex("IdTipoProcesso");
+
+                    b.HasIndex("ResponsavelId");
 
                     b.ToTable("processo");
                 });
@@ -3309,21 +3343,36 @@ namespace SGED.Migrations
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.DocumentoProcesso", b =>
                 {
+                    b.HasOne("SGED.Objects.Models.Entities.Usuario", "Aprovador")
+                        .WithMany("DocumentosAprovados")
+                        .HasForeignKey("IdAprovador")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("SGED.Objects.Models.Entities.Processo", "Processo")
                         .WithMany("DocumentosProcesso")
                         .HasForeignKey("IdProcesso")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SGED.Objects.Models.Entities.TipoDocumento", "TipoDocumento")
-                        .WithMany("DocumentosProcesso")
-                        .HasForeignKey("IdTipoDocumento")
+                    b.HasOne("SGED.Objects.Models.Entities.Usuario", "Responsavel")
+                        .WithMany("DocumentosAdicionados")
+                        .HasForeignKey("IdResponsavel")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SGED.Objects.Models.Entities.TipoDocumentoEtapa", "TipoDocumentoEtapa")
+                        .WithMany("DocumentosProcesso")
+                        .HasForeignKey("IdTipoDocumentoEtapa")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Aprovador");
+
                     b.Navigation("Processo");
 
-                    b.Navigation("TipoDocumento");
+                    b.Navigation("Responsavel");
+
+                    b.Navigation("TipoDocumentoEtapa");
                 });
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.Etapa", b =>
@@ -3448,14 +3497,12 @@ namespace SGED.Migrations
                     b.HasOne("SGED.Objects.Models.Entities.Engenheiro", "Engenheiro")
                         .WithMany("Processos")
                         .HasForeignKey("IdEngenheiro")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("SGED.Objects.Models.Entities.Fiscal", "Fiscal")
                         .WithMany("Processos")
                         .HasForeignKey("IdFiscal")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("SGED.Objects.Models.Entities.Imovel", "Imovel")
                         .WithMany("Processos")
@@ -3463,17 +3510,30 @@ namespace SGED.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SGED.Objects.Models.Entities.Usuario", "Aprovador")
+                        .WithMany("ProcessosAprovados")
+                        .HasForeignKey("IdResponsavel")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("SGED.Objects.Models.Entities.TipoProcesso", "TipoProcesso")
                         .WithMany("Processos")
                         .HasForeignKey("IdTipoProcesso")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SGED.Objects.Models.Entities.Usuario", "Responsavel")
+                        .WithMany("ProcessosAdicionados")
+                        .HasForeignKey("ResponsavelId");
+
+                    b.Navigation("Aprovador");
+
                     b.Navigation("Engenheiro");
 
                     b.Navigation("Fiscal");
 
                     b.Navigation("Imovel");
+
+                    b.Navigation("Responsavel");
 
                     b.Navigation("TipoProcesso");
                 });
@@ -3587,9 +3647,12 @@ namespace SGED.Migrations
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.TipoDocumento", b =>
                 {
-                    b.Navigation("DocumentosProcesso");
-
                     b.Navigation("TipoDocumentoEtapas");
+                });
+
+            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoDocumentoEtapa", b =>
+                {
+                    b.Navigation("DocumentosProcesso");
                 });
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.TipoInfraestrutura", b =>
@@ -3626,6 +3689,14 @@ namespace SGED.Migrations
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.Usuario", b =>
                 {
+                    b.Navigation("DocumentosAdicionados");
+
+                    b.Navigation("DocumentosAprovados");
+
+                    b.Navigation("ProcessosAdicionados");
+
+                    b.Navigation("ProcessosAprovados");
+
                     b.Navigation("Sessoes");
                 });
 #pragma warning restore 612, 618

@@ -22,7 +22,7 @@ public class ProcessoRepository : IProcessoRepository
         return await _dbContext.Processo.AsNoTracking().ToListAsync();
     }
 
-    public async Task<Processo> GetById(int id)
+    public async Task<Processo> GetById(Guid id)
     {
         return await _dbContext.Processo.AsNoTracking().FirstOrDefaultAsync(b => b.Id == id);
     }
@@ -41,7 +41,7 @@ public class ProcessoRepository : IProcessoRepository
         return Processo;
     }
 
-    public async Task<Processo> Delete(int id)
+    public async Task<Processo> Delete(Guid id)
     {
         var Processo = await GetById(id);
         _dbContext.Processo.Remove(Processo);

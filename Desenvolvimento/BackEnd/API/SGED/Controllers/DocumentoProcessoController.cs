@@ -49,7 +49,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("GetByProcess/{id:int}", Name = "GetByProcess")]
-        public async Task<ActionResult<DocumentoProcessoDTO>> GetByProcess(int idProcesso)
+        public async Task<ActionResult<DocumentoProcessoDTO>> GetByProcess(Guid idProcesso)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetProcessDocument")]
-        public async Task<ActionResult<DocumentoProcessoDTO>> GetById(int id)
+        public async Task<ActionResult<DocumentoProcessoDTO>> GetById(Guid id)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace SGED.Controllers
                 };
 
                 _response.SetSuccess();
-                _response.Message = "Documento de Processo " + documentoProcessoDTO.NomeDocumentoProcesso + " obtido com sucesso.";
+                _response.Message = "Documento de Processo " + documentoProcessoDTO.IdentificacaoDocumento + " obtido com sucesso.";
                 _response.Data = documentoProcessoDTO;
                 return Ok(_response);
             }
@@ -110,7 +110,6 @@ namespace SGED.Controllers
                 _response.Data = documentoProcessoDTO;
                 return BadRequest(_response);
             }
-            documentoProcessoDTO.Id = 0;
 
             try
             {
@@ -126,15 +125,15 @@ namespace SGED.Controllers
                 if (await DocumentoProcessoExists(documentoProcessoDTO))
                 {
                     _response.SetConflict();
-                    _response.Message = "Já existe a DocumentoProcesso " + documentoProcessoDTO.NomeDocumentoProcesso + " relacionada ao Processo " + processoDTO.NomeProcesso + "!";
-                    _response.Data = new { errorNomeDocumentoProcesso = "Já existe a DocumentoProcesso " + documentoProcessoDTO.NomeDocumentoProcesso + " relacionada ao Processo " + processoDTO.NomeProcesso + "!" };
+                    _response.Message = "Já existe a DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " relacionada ao Processo " + processoDTO.IdentificacaoProcesso + "!";
+                    _response.Data = new { errorIdentificacaoDocumento = "Já existe a DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " relacionada ao Processo " + processoDTO.IdentificacaoProcesso + "!" };
                     return BadRequest(_response);
                 }
 
                 await _documentoProcessoService.Create(documentoProcessoDTO);
 
                 _response.SetSuccess();
-                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.NomeDocumentoProcesso + " cadastrada com sucesso.";
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " cadastrada com sucesso.";
                 _response.Data = documentoProcessoDTO;
                 return Ok(_response);
             }
@@ -181,15 +180,15 @@ namespace SGED.Controllers
                 if (await DocumentoProcessoExists(documentoProcessoDTO))
                 {
                     _response.SetConflict();
-                    _response.Message = "Já existe a DocumentoProcesso " + documentoProcessoDTO.NomeDocumentoProcesso + " relacionada ao Processo " + processoDTO.NomeProcesso + "!";
-                    _response.Data = new { errorNomeDocumentoProcesso = "Já existe a DocumentoProcesso " + documentoProcessoDTO.NomeDocumentoProcesso + " relacionada ao Processo " + processoDTO.NomeProcesso + "!" };
+                    _response.Message = "Já existe a DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " relacionada ao Processo " + processoDTO.IdentificacaoProcesso + "!";
+                    _response.Data = new { errorIdentificacaoDocumento = "Já existe a DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " relacionada ao Processo " + processoDTO.IdentificacaoProcesso + "!" };
                     return BadRequest(_response);
                 }
 
                 await _documentoProcessoService.Update(documentoProcessoDTO);
 
                 _response.SetSuccess();
-                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.NomeDocumentoProcesso + " alterada com sucesso.";
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " alterada com sucesso.";
                 _response.Data = documentoProcessoDTO;
                 return Ok(_response);
             }
@@ -203,7 +202,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult<DocumentoProcessoDTO>> Delete(int id)
+        public async Task<ActionResult<DocumentoProcessoDTO>> Delete(Guid id)
         {
             try
             {
@@ -219,7 +218,7 @@ namespace SGED.Controllers
                 await _documentoProcessoService.Remove(id);
 
                 _response.SetSuccess();
-                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.NomeDocumentoProcesso + " excluída com sucesso.";
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " excluída com sucesso.";
                 _response.Data = documentoProcessoDTO;
                 return Ok(_response);
             }
@@ -234,8 +233,8 @@ namespace SGED.Controllers
 
         private async Task<bool> DocumentoProcessoExists(DocumentoProcessoDTO documentoProcessoDTO)
         {
-            var documentoProcessosDTO = await _documentoProcessoService.GetByState(documentoProcessoDTO.IdProcesso);
-            return documentoProcessosDTO.FirstOrDefault(c => c.Id != documentoProcessoDTO.Id && Operator.CompareString(c.NomeDocumentoProcesso, documentoProcessoDTO.NomeDocumentoProcesso)) is not null;
+            var documentoProcessosDTO = await _documentoProcessoService.GetByProcess(documentoProcessoDTO.IdProcesso);
+            return documentoProcessosDTO.FirstOrDefault(c => c.Id != documentoProcessoDTO.Id && Operator.CompareString(c.IdentificacaoDocumento, documentoProcessoDTO.IdentificacaoDocumento)) is not null;
         }
     }
 }

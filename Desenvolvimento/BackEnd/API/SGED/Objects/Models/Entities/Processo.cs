@@ -50,7 +50,6 @@ namespace SGED.Objects.Models.Entities
         public Fiscal? Fiscal { get; set; }
         public Usuario? Responsavel { get; set; }
         public Usuario? Aprovador { get; set; }
-
         public ICollection<DocumentoProcesso>? DocumentosProcesso { get; set; }
 
     }

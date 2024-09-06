@@ -26,7 +26,7 @@ namespace SGED.Objects.Models.Entities
         public StatusProcessModel Status { get; set; }
 
         [ForeignKey("idprocesso")]
-        public int IdProcesso { get; set; }
+        public Guid IdProcesso { get; set; }
 
         [Column("idtipodocumentoetapa")]
         public int IdTipoDocumentoEtapa { get; set; }

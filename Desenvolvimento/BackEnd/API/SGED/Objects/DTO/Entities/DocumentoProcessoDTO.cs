@@ -9,26 +9,25 @@ namespace SGED.Objects.DTO.Entities
 {
 	public class DocumentoProcessoDTO
 	{
-		public int Id { get; set; }
+		public Guid Id { get; set; }
 
         [Required(ErrorMessage = "A descrição é requerida!")]
-        public string Identificacao { get; set; }
+        [MaxLength(50)]
+        public string IdentificacaoDocumento { get; set; }
 
-        [Required(ErrorMessage = "A descrição é requerida!")]
-		public string Descricao { get; set; }
+        [MaxLength(300)]
+        public string DescricaoDocumento { get; set; }
 
-		[Required(ErrorMessage = "A observação é requerida!")]
-		[MaxLength(70)]
-		public string Observacao { get; set; }
+		[MaxLength(300)]
+		public string ObservacaoDocumento { get; set; }
 
-		[Required(ErrorMessage = "O documento é requerido!")]
-		public byte[] Documento { get; set; }
+		public byte[] DocumentoDocumento { get; set; }
 
         [Required(ErrorMessage = "O status é requerido!")]
         public StatusProcessModel Status { get; set; }
 
-        [Required(ErrorMessage = "O documento é requerido!")]
-        public int IdProcesso { get; set; }
+        [Required(ErrorMessage = "O processo é requerido!")]
+        public Guid IdProcesso { get; set; }
 
         [Required(ErrorMessage = "O documento etapa é requerido!")]
         public int IdTipoDocumentoEtapa { get; set; }
@@ -39,17 +38,21 @@ namespace SGED.Objects.DTO.Entities
         public int IdAprovador { get; set; }
 
 
+        [JsonIgnore]
         public ProcessoDTO? ProcessoDTO { get; set; }
+        [JsonIgnore]
         public TipoDocumentoEtapaDTO? TipoDocumentoEtapaDTO { get; set; }
+        [JsonIgnore]
         public UsuarioDTO? ResponsavelDTO { get; set; }
+        [JsonIgnore]
         public UsuarioDTO? AprovadorDTO { get; set; }
 
 
         public void AssignDefaultState() => Status = StatusProcessModelExtensions.AssignDefaultState();
         public void PutOnPending() => Status = StatusProcessModelExtensions.PutOnPending();
         public void MarkAsAttached() => Status = StatusProcessModelExtensions.MarkAsAttached();
-        public void MoveToAnalysis() => Status = StatusProcessModelExtensions.MoveToAnalysis();
         public void Approve() => Status = StatusProcessModelExtensions.Approve();
+        public void Disapprove() => Status = StatusProcessModelExtensions.Disapprove();
 
     }
 

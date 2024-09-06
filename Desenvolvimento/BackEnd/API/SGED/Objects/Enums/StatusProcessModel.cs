@@ -7,6 +7,7 @@
         Attached = 2,
         InAnalysis = 3,
         Approved = 4,
+        Disapproved = 5,
     }
 
     public static class StatusProcessModelExtensions
@@ -16,5 +17,6 @@
         public static StatusProcessModel MarkAsAttached() => StatusProcessModel.Attached;
         public static StatusProcessModel MoveToAnalysis() => StatusProcessModel.InAnalysis;
         public static StatusProcessModel Approve() => StatusProcessModel.Approved;
+        public static StatusProcessModel Disapprove() => StatusProcessModel.Disapproved;
     }
 }

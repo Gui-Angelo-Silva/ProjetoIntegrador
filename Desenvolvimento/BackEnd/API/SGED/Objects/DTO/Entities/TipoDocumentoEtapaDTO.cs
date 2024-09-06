@@ -14,7 +14,7 @@ namespace SGED.Objects.DTO.Entities
 		public int Posicao { get; set; }
 
 		[Required(ErrorMessage = "O status é requerido!")]
-        public StatusEnum Status { get; set; }
+        public StatusProcessConfiguration Status { get; set; }
 
         [JsonIgnore]
 		public TipoDocumentoDTO? TipoDocumentoDTO { get; set; }
@@ -29,11 +29,11 @@ namespace SGED.Objects.DTO.Entities
 		public int IdEtapa { get; set; }
 
 
-        public void Enable() => Status = StatusEnumExtensions.Enable();
-        public void Pending() => Status = StatusEnumExtensions.Pending();
-        public void Wait() => Status = StatusEnumExtensions.Wait();
-        public void Block() => Status = StatusEnumExtensions.Block();
-        public void Disable() => Status = StatusEnumExtensions.Disable();
+        public void Enable() => Status = StatusProcessConfigurationExtensions.Enable();
+        public void Pending() => Status = StatusProcessConfigurationExtensions.Pending();
+        public void Wait() => Status = StatusProcessConfigurationExtensions.Wait();
+        public void Block() => Status = StatusProcessConfigurationExtensions.Block();
+        public void Disable() => Status = StatusProcessConfigurationExtensions.Disable();
 
         public string GetState() => IStatusStateExtensions.GetState(this.Status);
         public bool CanEdit() => IStatusStateExtensions.CanEdit(this.Status);

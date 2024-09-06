@@ -13,37 +13,37 @@ namespace SGED.Objects.Interfaces
 
     public static class IStatusStateExtensions
     {
-        private static IStatusState CreateState(StatusEnum status)
+        private static IStatusState CreateState(StatusProcessConfiguration status)
         {
             return status switch
             {
-                StatusEnum.Habilitado => new HabilitadoState(),
-                StatusEnum.EmEspera => new EmEsperaState(),
-                StatusEnum.Bloqueado => new BloqueadoState(),
-                StatusEnum.Desativado => new DesativadoState(),
+                StatusProcessConfiguration.Habilitado => new HabilitadoState(),
+                StatusProcessConfiguration.EmEspera => new EmEsperaState(),
+                StatusProcessConfiguration.Bloqueado => new BloqueadoState(),
+                StatusProcessConfiguration.Desativado => new DesativadoState(),
                 _ => new HabilitadoState()
             };
         }
 
-        public static string GetState(StatusEnum status)
+        public static string GetState(StatusProcessConfiguration status)
         {
             IStatusState statusState = CreateState(status);
             return statusState.State;
         }
 
-        public static bool CanEdit(StatusEnum status)
+        public static bool CanEdit(StatusProcessConfiguration status)
         {
             IStatusState statusState = CreateState(status);
             return statusState.CanEdit();
         }
 
-        public static bool CanRelate(StatusEnum status)
+        public static bool CanRelate(StatusProcessConfiguration status)
         {
             IStatusState statusState = CreateState(status);
             return statusState.CanRelate();
         }
 
-        public static bool CanRemove(StatusEnum status)
+        public static bool CanRemove(StatusProcessConfiguration status)
         {
             IStatusState statusState = CreateState(status);
             return statusState.CanToRemove();

@@ -446,7 +446,7 @@ namespace SGED.Controllers
                     _response.Data = new { errorId = "Relacionamento entre Etapa e Tipo de Documento não encontrado!" };
                     return NotFound(_response);
                 }
-                else if (tipoDocumentoEtapaDTO.Status == StatusEnum.Habilitado)
+                else if (tipoDocumentoEtapaDTO.Status == StatusProcessConfiguration.Habilitado)
                 {
                     _response.SetSuccess();
                     _response.Message = "O relacionamento entre Etapa e Tipo de Documento já está " + tipoDocumentoEtapaDTO.GetState().ToLower() + ".";
@@ -486,7 +486,7 @@ namespace SGED.Controllers
                     _response.Data = new { errorId = "Relacionamento entre Etapa e Tipo de Documento não encontrado!" };
                     return NotFound(_response);
                 }
-                else if (tipoDocumentoEtapaDTO.Status == StatusEnum.Desativado)
+                else if (tipoDocumentoEtapaDTO.Status == StatusProcessConfiguration.Desativado)
                 {
                     _response.SetSuccess();
                     _response.Message = "O relacionamento entre Etapa e Tipo de Documento já está " + tipoDocumentoEtapaDTO.GetState().ToLower() + ".";

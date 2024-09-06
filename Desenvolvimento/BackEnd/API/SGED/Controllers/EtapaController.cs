@@ -338,7 +338,7 @@ namespace SGED.Controllers
                     _response.Data = new { errorId = "Etapa não encontrada!" };
                     return NotFound(_response);
                 }
-                else if (etapaDTO.Status == StatusEnum.Habilitado)
+                else if (etapaDTO.Status == StatusProcessConfiguration.Habilitado)
                 {
                     _response.SetSuccess();
                     _response.Message = "A Etapa já está " + etapaDTO.GetState().ToLower() + ".";
@@ -378,7 +378,7 @@ namespace SGED.Controllers
                     _response.Data = new { errorId = "Etapa não encontrada!" };
                     return NotFound(_response);
                 }
-                else if (etapaDTO.Status == StatusEnum.Habilitado)
+                else if (etapaDTO.Status == StatusProcessConfiguration.Habilitado)
                 {
                     _response.SetSuccess();
                     _response.Message = "A Etapa já está " + etapaDTO.GetState().ToLower() + ".";

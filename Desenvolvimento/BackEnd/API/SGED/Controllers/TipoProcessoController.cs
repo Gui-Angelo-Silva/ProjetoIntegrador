@@ -185,7 +185,7 @@ namespace SGED.Controllers
                     _response.Data = new { errorId = "Tipo de Processo não encontrado!" };
                     return NotFound(_response);
                 }
-                else if (tipoProcessoDTO.Status == StatusEnum.Habilitado)
+                else if (tipoProcessoDTO.Status == StatusProcessConfiguration.Habilitado)
                 {
                     _response.SetSuccess();
                     _response.Message = "O Tipo de Processo já está " + tipoProcessoDTO.GetState().ToLower() + ".";
@@ -225,7 +225,7 @@ namespace SGED.Controllers
                     _response.Data = new { errorId = "Tipo de Processo não encontrado!" };
                     return NotFound(_response);
                 }
-                else if (tipoProcessoDTO.Status == StatusEnum.Habilitado)
+                else if (tipoProcessoDTO.Status == StatusProcessConfiguration.Habilitado)
                 {
                     _response.SetSuccess();
                     _response.Message = "O Tipo de Processo já está " + tipoProcessoDTO.GetState().ToLower() + ".";

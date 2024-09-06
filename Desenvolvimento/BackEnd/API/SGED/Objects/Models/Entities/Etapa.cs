@@ -21,7 +21,7 @@ namespace SGED.Objects.Models.Entities
         public int Posicao { get; set; }
 
         [Column("statusetapa")]
-        public StatusEnum Status { get; set; }
+        public StatusProcessConfiguration Status { get; set; }
 
         public TipoProcesso? TipoProcesso { get; set; }
 

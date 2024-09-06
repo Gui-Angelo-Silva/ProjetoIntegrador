@@ -178,7 +178,7 @@ namespace SGED.Controllers
                     _response.Data = new { errorId = "Tipo de Documento não encontrado!" };
                     return NotFound(_response);
                 }
-                else if (tipoDocumentoDTO.Status == StatusEnum.Habilitado)
+                else if (tipoDocumentoDTO.Status == StatusProcessConfiguration.Habilitado)
                 {
                     _response.SetSuccess();
                     _response.Message = "O Tipo de Documento " + tipoDocumentoDTO.NomeTipoDocumento + " já está " + tipoDocumentoDTO.GetState().ToLower() + ".";
@@ -218,7 +218,7 @@ namespace SGED.Controllers
                     _response.Data = new { errorId = "Tipo de Documento não encontrado!" };
                     return NotFound(_response);
                 }
-                else if (tipoDocumentoDTO.Status == StatusEnum.Desativado)
+                else if (tipoDocumentoDTO.Status == StatusProcessConfiguration.Desativado)
                 {
                     _response.SetSuccess();
                     _response.Message = "O Tipo de Documento " + tipoDocumentoDTO.NomeTipoDocumento + " já está " + tipoDocumentoDTO.GetState().ToLower() + ".";

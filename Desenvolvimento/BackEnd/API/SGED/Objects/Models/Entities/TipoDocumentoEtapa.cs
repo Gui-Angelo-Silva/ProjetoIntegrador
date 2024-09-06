@@ -15,7 +15,7 @@ namespace SGED.Objects.Models.Entities
         public int Posicao { get; set; }
 
         [Column("statustipodocumentoetapa")]
-        public StatusEnum Status { get; set; }
+        public StatusProcessConfiguration Status { get; set; }
 
         public TipoDocumento? TipoDocumento { get; set; }
 
@@ -26,5 +26,8 @@ namespace SGED.Objects.Models.Entities
 
         [ForeignKey("idetapa")]
         public int IdEtapa { get; set; }
+
+
+        public ICollection<DocumentoProcesso>? DocumentosProcesso { get; set; }
     }
 }

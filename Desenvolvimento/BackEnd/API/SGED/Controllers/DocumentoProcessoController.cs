@@ -1,223 +1,241 @@
-﻿using SGED.Services.Entities;
-using SGED.Services.Interfaces;
+﻿using SGED.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
-using SGED.Objects.Models.Entities;
-using System.Collections;
-using SGED.Objects.Enums;
+using System.Xml.Linq;
 
 namespace SGED.Controllers
 {
-	[Route("api/[controller]")]
-	[ApiController]
-	public class DocumentoProcessoController : Controller
-	{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class DocumentoProcessoController : Controller
+    {
+        private readonly IProcessoService _processoService;
+        private readonly IDocumentoProcessoService _documentoProcessoService;
+        private readonly Response _response;
 
-		private readonly IDocumentoProcessoService _documentoProcessoService;
-		private readonly ITipoDocumentoService _tipoDocumentoService;
-		private readonly Response _response;
+        public DocumentoProcessoController(IProcessoService processoService, IDocumentoProcessoService documentoProcessoService)
+        {
+            _processoService = processoService;
+            _documentoProcessoService = documentoProcessoService;
 
-		public DocumentoProcessoController(IDocumentoProcessoService DocumentoProcessoService, ITipoDocumentoService TipoDocumentoService)
-		{
-			_documentoProcessoService = DocumentoProcessoService;
-			_tipoDocumentoService = TipoDocumentoService;
+            _response = new Response();
+        }
 
-			_response = new Response();
-		}
+        [HttpGet(Name = "GetAllProcessDocuments")]
+        public async Task<ActionResult<IEnumerable<DocumentoProcessoDTO>>> GetAll()
+        {
+            try
+            {
+                var documentoProcessosDTO = await _documentoProcessoService.GetAll();
 
-		[HttpGet()]
-		public async Task<ActionResult<IEnumerable<TipoDocumentoDTO>>> GetAll()
-		{
-			try
-			{
-				var documentoProcessos = await _documentoProcessoService.GetAll();
-				_response.SetSuccess();
-				_response.Message = documentoProcessos.Any() ?
-					"Lista do(s) Documento(s) de Processo(s) obtida com sucesso." :
-					"Nenhum Documento(s) de Processo(s) encontrado!";
-				_response.Data = documentoProcessos;
-				return Ok(_response);
-			}
-			catch (Exception ex)
-			{
-				_response.SetError();
-				_response.Message = "Não foi possível adquirir a lista do(s) Documento(s) de Processo(s)!";
-				_response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
-				return StatusCode(StatusCodes.Status500InternalServerError, _response);
-			}
-		}
+                _response.SetSuccess();
+                _response.Message = documentoProcessosDTO.Any() ?
+                    "Lista do(s) Documento(s) de Processo(s) obtida com sucesso." :
+                    "Nenhum Documento de Processo encontrado.";
+                _response.Data = documentoProcessosDTO;
 
-		[HttpGet("{id:int}", Name = "GetDocumentoProcesso")]
-		public async Task<ActionResult<TipoDocumentoDTO>> Get(int id)
-		{
-			try
-			{
-				var documentoProcessoDTO = await _documentoProcessoService.GetById(id);
-				if (documentoProcessoDTO is null)
-				{
-					_response.SetNotFound();
-					_response.Message = "Documento de Processo não encontrado!";
-					_response.Data = documentoProcessoDTO;
-					return NotFound(_response);
-				};
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista do(s) Documento(s) de Processo(s)!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
 
-				_response.SetSuccess();
-				_response.Message = "Documento de Processo obtido com sucesso.";
-				_response.Data = documentoProcessoDTO;
-				return Ok(_response);
-			}
-			catch (Exception ex)
-			{
-				_response.SetError();
-				_response.Message = "Não foi possível adquirir o Documento de Processo informado!";
-				_response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
-				return StatusCode(StatusCodes.Status500InternalServerError, _response);
-			}
-		}
+        [HttpGet("GetByProcess/{id:int}", Name = "GetByProcess")]
+        public async Task<ActionResult<DocumentoProcessoDTO>> GetByProcess(int idProcesso)
+        {
+            try
+            {
+                var documentoProcessosDTO = await _documentoProcessoService.GetByProcess(idProcesso);
 
-		[HttpPost()]
-		public async Task<ActionResult> Post([FromBody] DocumentoProcessoDTO documentoProcessoDTO)
-		{
-			if (documentoProcessoDTO is null)
-			{
-				_response.SetInvalid();
-				_response.Message = "Dado(s) inválido(s)!";
-				_response.Data = documentoProcessoDTO;
-				return BadRequest(_response);
-			}
-			documentoProcessoDTO.Id = 0;
+                _response.SetSuccess();
+                _response.Message = documentoProcessosDTO.Any() ?
+                    "Lista do(s) Documento(s) relacionado(s) ao Processo obtida com sucesso." :
+                    "Nenhum Documento relacionado ao Processo encontrado.";
+                _response.Data = documentoProcessosDTO;
 
-			try
-			{
-				var tipoDocumentoDTO = await _tipoDocumentoService.GetById(documentoProcessoDTO.IdTipoDocumento);
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista do(s) Documento(s) relacionado(s) ao Processo!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
 
-				if (tipoDocumentoDTO is null)
-				{
-					_response.SetNotFound();
-					_response.Message = "O Tipo de Documento informado não existe!";
-					_response.Data = new { errorIdTipoDocumento = "O Tipo de Documento informado não existe!" };
-					return NotFound(_response);
-				}
-				else if (!tipoDocumentoDTO.CanRelate())
-				{
-					_response.SetConflict();
-					_response.Message = "Não é possível relacionamentos o Documento de Processo ao Tipo de Documento " + tipoDocumentoDTO.NomeTipoDocumento + " porque ele está " + tipoDocumentoDTO.GetState().ToLower() + "!";
-					_response.Data = new { errorIdTipoDocumento = "Não é possível relacionamentos o Documento de Processo ao Tipo de Documento " + tipoDocumentoDTO.NomeTipoDocumento + " porque ele está " + tipoDocumentoDTO.GetState().ToLower() + "!" }; ;
-					return BadRequest(_response);
-				}
+        [HttpGet("{id:int}", Name = "GetProcessDocument")]
+        public async Task<ActionResult<DocumentoProcessoDTO>> GetById(int id)
+        {
+            try
+            {
+                var documentoProcessoDTO = await _documentoProcessoService.GetById(id);
+                if (documentoProcessoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "Documento de Processo não encontrada!";
+                    _response.Data = documentoProcessoDTO;
+                    return NotFound(_response);
+                };
 
-				await _documentoProcessoService.Create(documentoProcessoDTO);
+                _response.SetSuccess();
+                _response.Message = "Documento de Processo " + documentoProcessoDTO.NomeDocumentoProcesso + " obtido com sucesso.";
+                _response.Data = documentoProcessoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a DocumentoProcesso informada!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
 
-				_response.SetSuccess();
-				_response.Message = "Documento de Processo cadastrado com sucesso.";
-				_response.Data = documentoProcessoDTO;
-				return Ok(_response);
-			}
-			catch (Exception ex)
-			{
-				_response.SetError();
-				_response.Message = "Não foi possível cadastrar o Documento de Processo!";
-				_response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
-				return StatusCode(StatusCodes.Status500InternalServerError, _response);
-			}
-		}
+        [HttpPost()]
+        public async Task<ActionResult> Post([FromBody] DocumentoProcessoDTO documentoProcessoDTO)
+        {
+            if (documentoProcessoDTO is null)
+            {
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
+                _response.Data = documentoProcessoDTO;
+                return BadRequest(_response);
+            }
+            documentoProcessoDTO.Id = 0;
 
-		[HttpPut()]
-		public async Task<ActionResult> Put([FromBody] DocumentoProcessoDTO documentoProcessoDTO)
-		{
-			if (documentoProcessoDTO is null)
-			{
-				_response.SetInvalid();
-				_response.Message = "Dado(s) inválido(s)!";
-				_response.Data = documentoProcessoDTO;
-				return BadRequest(_response);
-			}
+            try
+            {
+                var processoDTO = await _processoService.GetById(documentoProcessoDTO.IdProcesso);
+                if (processoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "O Processo informado não existe!";
+                    _response.Data = new { errorIdProcesso = "O Processo informado não existe!" };
+                    return NotFound(_response);
+                }
 
-			try
-			{
-				var existingDocumentoProcesso = await _documentoProcessoService.GetById(documentoProcessoDTO.Id);
-				if (existingDocumentoProcesso is null)
-				{
-					_response.SetNotFound();
-					_response.Message = "O Documento de Processo informado não existe!";
-					_response.Data = new { errorId = "O Documento de Processo informado não existe!" };
-					return NotFound(_response);
-				}
+                if (await DocumentoProcessoExists(documentoProcessoDTO))
+                {
+                    _response.SetConflict();
+                    _response.Message = "Já existe a DocumentoProcesso " + documentoProcessoDTO.NomeDocumentoProcesso + " relacionada ao Processo " + processoDTO.NomeProcesso + "!";
+                    _response.Data = new { errorNomeDocumentoProcesso = "Já existe a DocumentoProcesso " + documentoProcessoDTO.NomeDocumentoProcesso + " relacionada ao Processo " + processoDTO.NomeProcesso + "!" };
+                    return BadRequest(_response);
+                }
 
-				var tipoDocumentoDTO = await _tipoDocumentoService.GetById(documentoProcessoDTO.IdTipoDocumento);
+                await _documentoProcessoService.Create(documentoProcessoDTO);
 
-				if (tipoDocumentoDTO is null)
-				{
-					_response.SetNotFound();
-					_response.Message = "O Tipo de Documento informado não existe!";
-					_response.Data = new { errorIdTipoDocumento = "O Tipo de Documento informado não existe!" };
-					return NotFound(_response);
-				}
-				else if (!tipoDocumentoDTO.CanRelate())
-				{
-					_response.SetConflict();
-					_response.Message = "Não é possível relacionamentos o Documento de Processo ao Tipo de Documento " + tipoDocumentoDTO.NomeTipoDocumento + " porque ele está " + tipoDocumentoDTO.GetState().ToLower() + "!";
-					_response.Data = new { errorIdTipoDocumento = "Não é possível relacionamentos o Documento de Processo ao Tipo de Documento " + tipoDocumentoDTO.NomeTipoDocumento + " porque ele está " + tipoDocumentoDTO.GetState().ToLower() + "!" }; ;
-					return BadRequest(_response);
-				}
+                _response.SetSuccess();
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.NomeDocumentoProcesso + " cadastrada com sucesso.";
+                _response.Data = documentoProcessoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível cadastrar a DocumentoProcesso!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
 
-				await _documentoProcessoService.Update(documentoProcessoDTO);
+        [HttpPut()]
+        public async Task<ActionResult> Put([FromBody] DocumentoProcessoDTO documentoProcessoDTO)
+        {
+            if (documentoProcessoDTO is null)
+            {
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
+                _response.Data = documentoProcessoDTO;
+                return BadRequest(_response);
+            }
 
-				_response.SetSuccess();
-				_response.Message = "Documento de Processo alterado com sucesso.";
-				_response.Data = documentoProcessoDTO;
-				return Ok(_response);
-			}
-			catch (Exception ex)
-			{
-				_response.SetError();
-				_response.Message = "Não foi possível alterar o Documento de Processo!";
-				_response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
-				return StatusCode(StatusCodes.Status500InternalServerError, _response);
-			}
-		}
+            try
+            {
+                var existingDocumentoProcessoDTO = await _documentoProcessoService.GetById(documentoProcessoDTO.Id);
+                if (existingDocumentoProcessoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "A DocumentoProcesso informada não existe!";
+                    _response.Data = new { errorId = "A DocumentoProcesso informada não existe!" };
+                    return NotFound(_response);
+                }
 
-		[HttpDelete("{id:int}")]
-		public async Task<ActionResult<DocumentoProcessoDTO>> Delete(int id)
-		{
-			try
-			{
-				var documentoProcessoDTO = await _documentoProcessoService.GetById(id);
-				if (documentoProcessoDTO == null)
-				{
-					_response.SetNotFound();
-					_response.Message = "Documento de Processo não encontrado!";
-					_response.Data = new { errorId = "Documento de Processo não encontrado!" };
-					return NotFound(_response);
-				}
+                var processoDTO = await _processoService.GetById(documentoProcessoDTO.IdProcesso);
+                if (processoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "O Processo informado não existe!";
+                    _response.Data = new { errorIdProcesso = "O Processo informado não existe!" };
+                    return NotFound(_response);
+                }
 
-				var documentosProcesso = await _documentoProcessoService.GetDocumentProcessRelatedToTypeDocument(documentoProcessoDTO.IdTipoDocumento);
+                if (await DocumentoProcessoExists(documentoProcessoDTO))
+                {
+                    _response.SetConflict();
+                    _response.Message = "Já existe a DocumentoProcesso " + documentoProcessoDTO.NomeDocumentoProcesso + " relacionada ao Processo " + processoDTO.NomeProcesso + "!";
+                    _response.Data = new { errorNomeDocumentoProcesso = "Já existe a DocumentoProcesso " + documentoProcessoDTO.NomeDocumentoProcesso + " relacionada ao Processo " + processoDTO.NomeProcesso + "!" };
+                    return BadRequest(_response);
+                }
 
-				if (documentosProcesso.Count() == 1) 
-				{
-					var tipoDocumento = await _tipoDocumentoService.GetById(documentoProcessoDTO.IdTipoDocumento);
-					tipoDocumento.Enable();
+                await _documentoProcessoService.Update(documentoProcessoDTO);
 
-					await _tipoDocumentoService.GetById(documentoProcessoDTO.IdTipoDocumento);
-				}
+                _response.SetSuccess();
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.NomeDocumentoProcesso + " alterada com sucesso.";
+                _response.Data = documentoProcessoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível alterar a DocumentoProcesso!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
 
-				await _documentoProcessoService.Remove(id);
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<DocumentoProcessoDTO>> Delete(int id)
+        {
+            try
+            {
+                var documentoProcessoDTO = await _documentoProcessoService.GetById(id);
+                if (documentoProcessoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "DocumentoProcesso não encontrada!";
+                    _response.Data = new { errorId = "DocumentoProcesso não encontrada!" };
+                    return NotFound(_response);
+                }
 
-				_response.SetSuccess();
-				_response.Message = "Documento de Processo excluído com sucesso.";
-				_response.Data = documentoProcessoDTO;
-				return Ok(_response);
-			}
-			catch (Exception ex)
-			{
-				_response.SetError();
-				_response.Message = "Não foi possível excluir o Documento de Processo!";
-				_response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
-				return StatusCode(StatusCodes.Status500InternalServerError, _response);
-			}
-		}
-	}
+                await _documentoProcessoService.Remove(id);
+
+                _response.SetSuccess();
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.NomeDocumentoProcesso + " excluída com sucesso.";
+                _response.Data = documentoProcessoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível excluir a DocumentoProcesso!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        private async Task<bool> DocumentoProcessoExists(DocumentoProcessoDTO documentoProcessoDTO)
+        {
+            var documentoProcessosDTO = await _documentoProcessoService.GetByState(documentoProcessoDTO.IdProcesso);
+            return documentoProcessosDTO.FirstOrDefault(c => c.Id != documentoProcessoDTO.Id && Operator.CompareString(c.NomeDocumentoProcesso, documentoProcessoDTO.NomeDocumentoProcesso)) is not null;
+        }
+    }
 }

@@ -18,7 +18,7 @@ namespace SGED.Objects.Models.Entities
         public string DescricaoTipoProcesso { get; set; }
 
         [Column("statustipoprocesso")]
-        public StatusEnum Status { get; set; }
+        public StatusProcessConfiguration Status { get; set; }
 
 
         public ICollection<Processo>? Processos { get; set; }

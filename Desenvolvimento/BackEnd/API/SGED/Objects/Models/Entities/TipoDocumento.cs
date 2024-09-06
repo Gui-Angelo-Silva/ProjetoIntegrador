@@ -18,10 +18,8 @@ namespace SGED.Objects.Models.Entities
         public string DescricaoTipoDocumento { get; set; }
 
         [Column("statustipoprocesso")]
-        public StatusEnum Status { get; set; }
+        public StatusProcessConfiguration Status { get; set; }
 
         public ICollection<TipoDocumentoEtapa>? TipoDocumentoEtapas { get; set; }
-
-		public ICollection<DocumentoProcesso>? DocumentosProcesso { get; set; }
 	}
 }

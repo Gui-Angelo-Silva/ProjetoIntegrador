@@ -7,10 +7,12 @@ import Subtitle from "../../../components/Title/Subtitle";
 import ImgDocumentoProcesso from "../../../assets/card/ImgDocumentoProcessoAtualizada.png";
 import LayoutPage from "../../../components/Layout/LayoutPage";
 import CardProcess from "../../../components/Card/CardProcess";
+import { useNavigate } from "react-router-dom";
 
 export default function Document() {
     const [hoveredCard, setHoveredCard] = useState(null);
     const { componentMounted } = useMontage();
+    const navigate = useNavigate();
 
     const { addSegment, inDevelopment } = useServer();
 
@@ -18,7 +20,7 @@ export default function Document() {
         {
             title: "Processo",
             imgSrc: ImgProcesso,
-            onClick: () => inDevelopment("Controle de Processo"),
+            onClick: () => addSegment("processo"),
         },
         {
             title: "Doc. Processo",

@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
-//import { motion } from "framer-motion";
 
 // Icon imports
 import { FilePlus, Pen, Trash, Warning } from "@phosphor-icons/react";

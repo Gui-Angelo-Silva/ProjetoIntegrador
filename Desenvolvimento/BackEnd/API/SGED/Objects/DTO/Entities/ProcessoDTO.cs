@@ -1,4 +1,4 @@
-﻿using SGED.Objects.Enums;
+﻿using SGED.Objects.Enums.Status;
 using SGED.Objects.Models.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -24,7 +24,7 @@ namespace SGED.Objects.DTO.Entities
         public string DataAprovacao { get; set; }
 
         [Required(ErrorMessage = "O stauts é requerido!")]
-        public StatusProcessModel Status { get; set; }
+        public StatusProcess Status { get; set; }
 
         [Required(ErrorMessage = "O imóvel é requerido!")]
         public int IdImovel { get; set; }
@@ -55,9 +55,10 @@ namespace SGED.Objects.DTO.Entities
         public ICollection<DocumentoProcessoDTO>? DocumentosProcessoDTOs { get; set; }
 
 
-        public void AssignDefaultState() => Status = StatusProcessModelExtensions.AssignDefaultState();
-        public void PutOnPending() => Status = StatusProcessModelExtensions.PutOnPending();
-        public void MoveToAnalysis() => Status = StatusProcessModelExtensions.MoveToAnalysis();
-        public void Approve() => Status = StatusProcessModelExtensions.Approve();
+        public void AssignDefaultState() => Status = StatusProcessExtensions.AssignDefaultState();
+        public void PutOnPending() => Status = StatusProcessExtensions.PutInProgress();
+        public void MoveToAnalysis() => Status = StatusProcessExtensions.MoveToAnalysis();
+        public void Approve() => Status = StatusProcessExtensions.Approve();
+        public void Disapprove() => Status = StatusProcessExtensions.Disapprove();
     }
 }

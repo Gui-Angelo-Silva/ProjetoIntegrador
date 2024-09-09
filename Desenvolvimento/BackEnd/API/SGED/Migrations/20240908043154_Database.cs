@@ -118,8 +118,8 @@ namespace SGED.Migrations
                 {
                     idTipoDocumento = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    nomeTipoDocumento = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
-                    descricaoTipoDocumento = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false),
+                    nomeTipoDocumento = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    descricaoTipoDocumento = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     statustipoprocesso = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -161,8 +161,8 @@ namespace SGED.Migrations
                 {
                     idtipoprocesso = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    tipoprocesso = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    descricaotipoprocesso = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    tipoprocesso = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    descricaotipoprocesso = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     statustipoprocesso = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -259,7 +259,7 @@ namespace SGED.Migrations
                     idetapa = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     nomeetapa = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    descricaoetapa = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
+                    descricaoetapa = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     posicaoetapa = table.Column<int>(type: "integer", nullable: false),
                     statusetapa = table.Column<int>(type: "integer", nullable: false),
                     IdTipoProcesso = table.Column<int>(type: "integer", nullable: false)
@@ -510,7 +510,7 @@ namespace SGED.Migrations
                 {
                     idprocesso = table.Column<Guid>(type: "uuid", nullable: false),
                     identificacaoprocesso = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    descricaoprocesso = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    descricaoprocesso = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     situacaoproceso = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
                     dataaprovacao = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
                     statusprocesso = table.Column<int>(type: "integer", nullable: false),
@@ -568,14 +568,14 @@ namespace SGED.Migrations
                 {
                     iddocumentoprocesso = table.Column<Guid>(type: "uuid", nullable: false),
                     identificacaodocumento = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    descricaodocumento = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    descricaodocumento = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     observacaodocumento = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
                     arquivodocumento = table.Column<byte[]>(type: "bytea", nullable: false),
                     statusdocumentoprocesso = table.Column<int>(type: "integer", nullable: false),
                     IdProcesso = table.Column<Guid>(type: "uuid", nullable: false),
                     idtipodocumentoetapa = table.Column<int>(type: "integer", nullable: false),
                     IdResponsavel = table.Column<int>(type: "integer", nullable: false),
-                    idaprovador = table.Column<int>(type: "integer", nullable: true)
+                    idaprovador = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -671,6 +671,33 @@ namespace SGED.Migrations
                     { 3, "Terreno com obras em andamento.", "Em Construção" },
                     { 4, "Terreno com construções, mas sem uso.", "Desocupada" },
                     { 5, "Terreno com construções e em uso.", "Ocupada" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "tipodocumento",
+                columns: new[] { "idTipoDocumento", "descricaoTipoDocumento", "nomeTipoDocumento", "statustipoprocesso" },
+                values: new object[,]
+                {
+                    { 1, "Documento que autoriza o início da obra", "Alvará de Construção", 1 },
+                    { 2, "Certificado de conclusão de obra e habitabilidade", "Habite-se", 1 },
+                    { 3, "Autorização para atividades de impacto ambiental", "Licença Ambiental", 1 },
+                    { 4, "Documento que atesta a conformidade do uso do solo com a legislação", "Certidão de Uso de Solo", 1 },
+                    { 5, "Documento que comprova a inexistência de débitos tributários", "Certidão Negativa de Débitos", 1 },
+                    { 6, "Projeto aprovado pelos órgãos competentes", "Projeto Arquitetônico Aprovado", 1 },
+                    { 7, "Projeto detalhado da estrutura do imóvel", "Projeto Estrutural", 1 },
+                    { 8, "Documento contendo o projeto das instalações elétricas", "Projeto Elétrico", 1 },
+                    { 9, "Documento contendo o projeto de instalações de água e esgoto", "Projeto Hidrossanitário", 1 },
+                    { 10, "Plano de paisagismo do imóvel", "Projeto de Paisagismo", 1 },
+                    { 11, "Documento que autoriza a realização de reformas no imóvel", "Alvará de Reforma", 1 },
+                    { 12, "Documento detalhando todas as características da obra", "Memorial Descritivo", 1 },
+                    { 13, "Autorização para uso e ocupação do imóvel", "Licença de Ocupação", 1 },
+                    { 14, "Documento que atesta a conformidade do imóvel com as normas de acessibilidade", "Laudo de Acessibilidade", 1 },
+                    { 15, "Documento que autoriza a demolição de estruturas existentes", "Autorização para Demolição", 1 },
+                    { 16, "Documento que atesta a regularização de uma construção perante as autoridades", "Certificado de Regularização de Construção", 1 },
+                    { 17, "Certificação emitida para construções que atendem a critérios de sustentabilidade", "Certificado de Sustentabilidade", 1 },
+                    { 18, "Documento que detalha as medidas de segurança contra incêndio de um imóvel", "Plano de Segurança Contra Incêndio", 1 },
+                    { 19, "Relatório que descreve as condições técnicas da construção", "Relatório de Vistoria Técnica", 1 },
+                    { 20, "Documento detalhando os cálculos estruturais realizados para o projeto", "Memorial de Cálculo Estrutural", 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -871,6 +898,29 @@ namespace SGED.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "tipoprocesso",
+                columns: new[] { "idtipoprocesso", "descricaotipoprocesso", "tipoprocesso", "statustipoprocesso" },
+                values: new object[,]
+                {
+                    { 1, "Processo de aprovação do projeto de construção ou reforma", "Aprovação de Projeto", 1 },
+                    { 2, "Processo para obtenção de licença para construção ou alteração de uso", "Licenciamento Urbanístico", 1 },
+                    { 3, "Processo de regularização de imóvel junto ao município", "Regularização de Imóvel", 1 },
+                    { 4, "Desenvolvimento do projeto arquitetônico do imóvel", "Elaboração de Projeto Arquitetônico", 1 },
+                    { 5, "Desenvolvimento do projeto estrutural do imóvel", "Elaboração de Projeto Estrutural", 1 },
+                    { 6, "Planejamento das instalações elétricas do imóvel", "Projeto de Instalações Elétricas", 1 },
+                    { 7, "Desenvolvimento do projeto hidrossanitário do imóvel", "Projeto Hidrossanitário", 1 },
+                    { 8, "Elaboração do projeto paisagístico do entorno do imóvel", "Projeto de Paisagismo", 1 },
+                    { 9, "Processo de reforma ou restauro de edificações existentes", "Reforma ou Restauro", 1 },
+                    { 10, "Processo para regularizar terrenos ou imóveis", "Regularização Fundiária", 1 },
+                    { 11, "Desenvolvimento de projeto para garantir acessibilidade no imóvel", "Projeto de Acessibilidade", 1 },
+                    { 12, "Análise de impacto ambiental para aprovação de projetos", "Estudo de Impacto Ambiental", 1 },
+                    { 13, "Processo de demolição de construções existentes", "Demolição", 1 },
+                    { 14, "Processo para regularizar construções não autorizadas ou fora das normas", "Regularização de Construção", 1 },
+                    { 15, "Avaliação de edificações para certificação de sustentabilidade", "Certificação de Sustentabilidade", 1 },
+                    { 16, "Planejamento das medidas de segurança contra incêndio", "Projeto de Segurança Contra Incêndio", 1 }
+                });
+
+            migrationBuilder.InsertData(
                 table: "tipouso",
                 columns: new[] { "iduso", "descricaouso", "nomeuso" },
                 values: new object[,]
@@ -919,6 +969,45 @@ namespace SGED.Migrations
                     { 8, 1, "São Francisco" },
                     { 9, 1, "São João das Duas Pontes" },
                     { 10, 1, "Urânia" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "etapa",
+                columns: new[] { "idetapa", "descricaoetapa", "IdTipoProcesso", "nomeetapa", "posicaoetapa", "statusetapa" },
+                values: new object[,]
+                {
+                    { 1, "Avaliação inicial da documentação", 1, "Análise Preliminar", 1, 1 },
+                    { 2, "Visita ao local para verificação", 1, "Vistoria Técnica", 2, 1 },
+                    { 3, "Entrega do alvará ou licença para execução", 2, "Emissão de Licença", 1, 1 },
+                    { 4, "Inspeção para determinar o impacto ambiental do projeto", 2, "Vistoria Ambiental", 2, 1 },
+                    { 5, "Desenvolvimento de estudos para identificar possíveis impactos ambientais", 2, "Elaboração do Estudo Ambiental", 3, 1 },
+                    { 6, "Participação em audiências públicas para discussão do impacto ambiental", 2, "Consulta Pública", 4, 1 },
+                    { 7, "Verificação de toda a documentação necessária", 3, "Análise Documental", 1, 1 },
+                    { 8, "Emissão do certificado de conformidade", 3, "Certificação Final", 2, 1 },
+                    { 9, "Determinar os requisitos e expectativas do cliente para o projeto arquitetônico", 4, "Definição de Escopo", 1, 1 },
+                    { 10, "Criação do esboço inicial do projeto com base no escopo definido", 4, "Desenho Preliminar", 2, 1 },
+                    { 11, "Revisão e aprovação do desenho preliminar pelo cliente e órgãos competentes", 4, "Aprovação de Projeto", 3, 1 },
+                    { 12, "Construção das fundações e da estrutura do imóvel", 5, "Execução de Estrutura", 1, 1 },
+                    { 13, "Instalação de componentes elétricos conforme projeto", 6, "Instalações Elétricas", 1, 1 },
+                    { 14, "Execução do sistema de água e esgoto", 7, "Instalações Hidrossanitárias", 1, 1 },
+                    { 15, "Implementação do projeto de paisagismo", 8, "Plantio e Jardinagem", 1, 1 },
+                    { 16, "Reparos na estrutura de edificações históricas", 9, "Restauro Estrutural", 1, 1 },
+                    { 17, "Verificação da documentação fundiária e da situação do terreno", 10, "Análise Fundiária", 1, 1 },
+                    { 18, "Desenvolvimento de planos para garantir a acessibilidade de acordo com as normas", 11, "Elaboração do Projeto de Acessibilidade", 1, 1 },
+                    { 19, "Revisão das normas de acessibilidade aplicáveis ao projeto", 11, "Análise de Normas", 2, 1 },
+                    { 20, "Modificação do projeto para garantir conformidade com as normas de acessibilidade", 11, "Ajuste do Projeto", 3, 1 },
+                    { 21, "Elaboração de plano para demolição de edificações", 13, "Planejamento de Demolição", 1, 1 },
+                    { 22, "Processo para obtenção de autorização para demolição", 13, "Obtenção de Licença para Demolição", 2, 1 },
+                    { 23, "Realização da demolição com base no plano aprovado", 13, "Execução da Demolição", 3, 1 },
+                    { 24, "Remoção de entulhos e preparação do terreno para novos projetos", 13, "Limpeza do Terreno", 4, 1 },
+                    { 25, "Documentação e adequação da construção às normas vigentes", 14, "Regularização de Construção", 1, 1 },
+                    { 26, "Atualização da documentação do imóvel nos registros competentes", 14, "Atualização de Registros Imobiliários", 2, 1 },
+                    { 27, "Avaliação dos critérios de sustentabilidade da construção", 15, "Certificação de Sustentabilidade", 1, 1 },
+                    { 28, "Verificação dos requisitos de sustentabilidade aplicáveis", 15, "Revisão de Requisitos", 2, 1 },
+                    { 29, "Implementação de melhorias para atender aos requisitos de certificação", 15, "Ajustes Finais para Certificação", 3, 1 },
+                    { 30, "Análise dos riscos de incêndio e necessidades de segurança", 16, "Avaliação de Risco de Incêndio", 1, 1 },
+                    { 31, "Criação do projeto de segurança contra incêndio conforme normas", 16, "Desenvolvimento do Projeto de Segurança", 2, 1 },
+                    { 32, "Instalação de sistemas e equipamentos de segurança", 16, "Implementação de Medidas de Segurança", 3, 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -1028,6 +1117,64 @@ namespace SGED.Migrations
                     { 76, 2, "Córrego do Açude" },
                     { 77, 2, "Residencial São Lucas" },
                     { 78, 8, "Centro" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "tipodocumentoetapa",
+                columns: new[] { "idtipodocumentoetapa", "IdEtapa", "IdTipoDocumento", "posicaotipodocumentoetapa", "statustipodocumentoetapa" },
+                values: new object[,]
+                {
+                    { 1, 1, 1, 1, 1 },
+                    { 2, 1, 2, 2, 1 },
+                    { 3, 1, 4, 3, 1 },
+                    { 4, 1, 5, 4, 1 },
+                    { 5, 2, 12, 1, 1 },
+                    { 6, 2, 19, 2, 1 },
+                    { 7, 3, 3, 1, 1 },
+                    { 8, 3, 4, 2, 1 },
+                    { 9, 3, 5, 3, 1 },
+                    { 10, 3, 6, 4, 1 },
+                    { 11, 4, 3, 1, 1 },
+                    { 12, 4, 10, 2, 1 },
+                    { 13, 5, 3, 1, 1 },
+                    { 14, 6, 3, 1, 1 },
+                    { 15, 6, 4, 2, 1 },
+                    { 16, 6, 5, 3, 1 },
+                    { 17, 6, 6, 4, 1 },
+                    { 18, 6, 7, 5, 1 },
+                    { 19, 6, 8, 6, 1 },
+                    { 20, 6, 9, 7, 1 },
+                    { 21, 7, 1, 1, 1 },
+                    { 22, 7, 2, 2, 1 },
+                    { 23, 7, 6, 3, 1 },
+                    { 24, 7, 12, 4, 1 },
+                    { 25, 8, 2, 1, 1 },
+                    { 26, 8, 16, 2, 1 },
+                    { 27, 8, 17, 3, 1 },
+                    { 28, 8, 18, 4, 1 },
+                    { 29, 9, 6, 1, 1 },
+                    { 30, 9, 7, 2, 1 },
+                    { 31, 9, 8, 3, 1 },
+                    { 32, 9, 9, 4, 1 },
+                    { 33, 10, 7, 1, 1 },
+                    { 34, 10, 8, 2, 1 },
+                    { 35, 10, 9, 3, 1 },
+                    { 36, 11, 6, 1, 1 },
+                    { 37, 11, 7, 2, 1 },
+                    { 38, 11, 8, 3, 1 },
+                    { 39, 11, 9, 4, 1 },
+                    { 40, 12, 3, 1, 1 },
+                    { 41, 12, 10, 2, 1 },
+                    { 42, 13, 1, 1, 1 },
+                    { 43, 13, 12, 2, 1 },
+                    { 44, 13, 6, 3, 1 },
+                    { 45, 13, 7, 4, 1 },
+                    { 46, 13, 8, 5, 1 },
+                    { 47, 13, 9, 6, 1 },
+                    { 48, 14, 2, 1, 1 },
+                    { 49, 14, 16, 2, 1 },
+                    { 50, 14, 17, 3, 1 },
+                    { 51, 14, 18, 4, 1 }
                 });
 
             migrationBuilder.InsertData(

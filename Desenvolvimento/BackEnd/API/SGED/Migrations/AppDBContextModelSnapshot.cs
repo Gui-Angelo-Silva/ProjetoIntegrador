@@ -662,11 +662,11 @@ namespace SGED.Migrations
 
                     b.Property<string>("DescricaoDocumento")
                         .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("character varying(300)")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("descricaodocumento");
 
-                    b.Property<int?>("IdAprovador")
+                    b.Property<int>("IdAprovador")
                         .HasColumnType("integer")
                         .HasColumnName("idaprovador");
 
@@ -964,8 +964,8 @@ namespace SGED.Migrations
 
                     b.Property<string>("DescricaoEtapa")
                         .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("character varying(250)")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("descricaoetapa");
 
                     b.Property<int>("IdTipoProcesso")
@@ -990,6 +990,296 @@ namespace SGED.Migrations
                     b.HasIndex("IdTipoProcesso");
 
                     b.ToTable("etapa");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DescricaoEtapa = "Avaliação inicial da documentação",
+                            IdTipoProcesso = 1,
+                            NomeEtapa = "Análise Preliminar",
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DescricaoEtapa = "Visita ao local para verificação",
+                            IdTipoProcesso = 1,
+                            NomeEtapa = "Vistoria Técnica",
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DescricaoEtapa = "Entrega do alvará ou licença para execução",
+                            IdTipoProcesso = 2,
+                            NomeEtapa = "Emissão de Licença",
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DescricaoEtapa = "Inspeção para determinar o impacto ambiental do projeto",
+                            IdTipoProcesso = 2,
+                            NomeEtapa = "Vistoria Ambiental",
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            DescricaoEtapa = "Desenvolvimento de estudos para identificar possíveis impactos ambientais",
+                            IdTipoProcesso = 2,
+                            NomeEtapa = "Elaboração do Estudo Ambiental",
+                            Posicao = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            DescricaoEtapa = "Participação em audiências públicas para discussão do impacto ambiental",
+                            IdTipoProcesso = 2,
+                            NomeEtapa = "Consulta Pública",
+                            Posicao = 4,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            DescricaoEtapa = "Verificação de toda a documentação necessária",
+                            IdTipoProcesso = 3,
+                            NomeEtapa = "Análise Documental",
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            DescricaoEtapa = "Emissão do certificado de conformidade",
+                            IdTipoProcesso = 3,
+                            NomeEtapa = "Certificação Final",
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            DescricaoEtapa = "Determinar os requisitos e expectativas do cliente para o projeto arquitetônico",
+                            IdTipoProcesso = 4,
+                            NomeEtapa = "Definição de Escopo",
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            DescricaoEtapa = "Criação do esboço inicial do projeto com base no escopo definido",
+                            IdTipoProcesso = 4,
+                            NomeEtapa = "Desenho Preliminar",
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 11,
+                            DescricaoEtapa = "Revisão e aprovação do desenho preliminar pelo cliente e órgãos competentes",
+                            IdTipoProcesso = 4,
+                            NomeEtapa = "Aprovação de Projeto",
+                            Posicao = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            DescricaoEtapa = "Construção das fundações e da estrutura do imóvel",
+                            IdTipoProcesso = 5,
+                            NomeEtapa = "Execução de Estrutura",
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            DescricaoEtapa = "Instalação de componentes elétricos conforme projeto",
+                            IdTipoProcesso = 6,
+                            NomeEtapa = "Instalações Elétricas",
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 14,
+                            DescricaoEtapa = "Execução do sistema de água e esgoto",
+                            IdTipoProcesso = 7,
+                            NomeEtapa = "Instalações Hidrossanitárias",
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 15,
+                            DescricaoEtapa = "Implementação do projeto de paisagismo",
+                            IdTipoProcesso = 8,
+                            NomeEtapa = "Plantio e Jardinagem",
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 16,
+                            DescricaoEtapa = "Reparos na estrutura de edificações históricas",
+                            IdTipoProcesso = 9,
+                            NomeEtapa = "Restauro Estrutural",
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 17,
+                            DescricaoEtapa = "Verificação da documentação fundiária e da situação do terreno",
+                            IdTipoProcesso = 10,
+                            NomeEtapa = "Análise Fundiária",
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 18,
+                            DescricaoEtapa = "Desenvolvimento de planos para garantir a acessibilidade de acordo com as normas",
+                            IdTipoProcesso = 11,
+                            NomeEtapa = "Elaboração do Projeto de Acessibilidade",
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 19,
+                            DescricaoEtapa = "Revisão das normas de acessibilidade aplicáveis ao projeto",
+                            IdTipoProcesso = 11,
+                            NomeEtapa = "Análise de Normas",
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 20,
+                            DescricaoEtapa = "Modificação do projeto para garantir conformidade com as normas de acessibilidade",
+                            IdTipoProcesso = 11,
+                            NomeEtapa = "Ajuste do Projeto",
+                            Posicao = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 21,
+                            DescricaoEtapa = "Elaboração de plano para demolição de edificações",
+                            IdTipoProcesso = 13,
+                            NomeEtapa = "Planejamento de Demolição",
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 22,
+                            DescricaoEtapa = "Processo para obtenção de autorização para demolição",
+                            IdTipoProcesso = 13,
+                            NomeEtapa = "Obtenção de Licença para Demolição",
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 23,
+                            DescricaoEtapa = "Realização da demolição com base no plano aprovado",
+                            IdTipoProcesso = 13,
+                            NomeEtapa = "Execução da Demolição",
+                            Posicao = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 24,
+                            DescricaoEtapa = "Remoção de entulhos e preparação do terreno para novos projetos",
+                            IdTipoProcesso = 13,
+                            NomeEtapa = "Limpeza do Terreno",
+                            Posicao = 4,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 25,
+                            DescricaoEtapa = "Documentação e adequação da construção às normas vigentes",
+                            IdTipoProcesso = 14,
+                            NomeEtapa = "Regularização de Construção",
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 26,
+                            DescricaoEtapa = "Atualização da documentação do imóvel nos registros competentes",
+                            IdTipoProcesso = 14,
+                            NomeEtapa = "Atualização de Registros Imobiliários",
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 27,
+                            DescricaoEtapa = "Avaliação dos critérios de sustentabilidade da construção",
+                            IdTipoProcesso = 15,
+                            NomeEtapa = "Certificação de Sustentabilidade",
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 28,
+                            DescricaoEtapa = "Verificação dos requisitos de sustentabilidade aplicáveis",
+                            IdTipoProcesso = 15,
+                            NomeEtapa = "Revisão de Requisitos",
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 29,
+                            DescricaoEtapa = "Implementação de melhorias para atender aos requisitos de certificação",
+                            IdTipoProcesso = 15,
+                            NomeEtapa = "Ajustes Finais para Certificação",
+                            Posicao = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 30,
+                            DescricaoEtapa = "Análise dos riscos de incêndio e necessidades de segurança",
+                            IdTipoProcesso = 16,
+                            NomeEtapa = "Avaliação de Risco de Incêndio",
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 31,
+                            DescricaoEtapa = "Criação do projeto de segurança contra incêndio conforme normas",
+                            IdTipoProcesso = 16,
+                            NomeEtapa = "Desenvolvimento do Projeto de Segurança",
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 32,
+                            DescricaoEtapa = "Instalação de sistemas e equipamentos de segurança",
+                            IdTipoProcesso = 16,
+                            NomeEtapa = "Implementação de Medidas de Segurança",
+                            Posicao = 3,
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.Fiscal", b =>
@@ -1709,8 +1999,8 @@ namespace SGED.Migrations
 
                     b.Property<string>("DescricaoProcesso")
                         .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("character varying(300)")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("descricaoprocesso");
 
                     b.Property<int>("IdAprovador")
@@ -1825,14 +2115,14 @@ namespace SGED.Migrations
 
                     b.Property<string>("DescricaoTipoDocumento")
                         .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("character varying(450)")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("descricaoTipoDocumento");
 
                     b.Property<string>("NomeTipoDocumento")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("nomeTipoDocumento");
 
                     b.Property<int>("Status")
@@ -1842,6 +2132,148 @@ namespace SGED.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tipodocumento");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DescricaoTipoDocumento = "Documento que autoriza o início da obra",
+                            NomeTipoDocumento = "Alvará de Construção",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DescricaoTipoDocumento = "Certificado de conclusão de obra e habitabilidade",
+                            NomeTipoDocumento = "Habite-se",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DescricaoTipoDocumento = "Autorização para atividades de impacto ambiental",
+                            NomeTipoDocumento = "Licença Ambiental",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DescricaoTipoDocumento = "Documento que atesta a conformidade do uso do solo com a legislação",
+                            NomeTipoDocumento = "Certidão de Uso de Solo",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            DescricaoTipoDocumento = "Documento que comprova a inexistência de débitos tributários",
+                            NomeTipoDocumento = "Certidão Negativa de Débitos",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            DescricaoTipoDocumento = "Projeto aprovado pelos órgãos competentes",
+                            NomeTipoDocumento = "Projeto Arquitetônico Aprovado",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            DescricaoTipoDocumento = "Projeto detalhado da estrutura do imóvel",
+                            NomeTipoDocumento = "Projeto Estrutural",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            DescricaoTipoDocumento = "Documento contendo o projeto das instalações elétricas",
+                            NomeTipoDocumento = "Projeto Elétrico",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            DescricaoTipoDocumento = "Documento contendo o projeto de instalações de água e esgoto",
+                            NomeTipoDocumento = "Projeto Hidrossanitário",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            DescricaoTipoDocumento = "Plano de paisagismo do imóvel",
+                            NomeTipoDocumento = "Projeto de Paisagismo",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 11,
+                            DescricaoTipoDocumento = "Documento que autoriza a realização de reformas no imóvel",
+                            NomeTipoDocumento = "Alvará de Reforma",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            DescricaoTipoDocumento = "Documento detalhando todas as características da obra",
+                            NomeTipoDocumento = "Memorial Descritivo",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            DescricaoTipoDocumento = "Autorização para uso e ocupação do imóvel",
+                            NomeTipoDocumento = "Licença de Ocupação",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 14,
+                            DescricaoTipoDocumento = "Documento que atesta a conformidade do imóvel com as normas de acessibilidade",
+                            NomeTipoDocumento = "Laudo de Acessibilidade",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 15,
+                            DescricaoTipoDocumento = "Documento que autoriza a demolição de estruturas existentes",
+                            NomeTipoDocumento = "Autorização para Demolição",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 16,
+                            DescricaoTipoDocumento = "Documento que atesta a regularização de uma construção perante as autoridades",
+                            NomeTipoDocumento = "Certificado de Regularização de Construção",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 17,
+                            DescricaoTipoDocumento = "Certificação emitida para construções que atendem a critérios de sustentabilidade",
+                            NomeTipoDocumento = "Certificado de Sustentabilidade",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 18,
+                            DescricaoTipoDocumento = "Documento que detalha as medidas de segurança contra incêndio de um imóvel",
+                            NomeTipoDocumento = "Plano de Segurança Contra Incêndio",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 19,
+                            DescricaoTipoDocumento = "Relatório que descreve as condições técnicas da construção",
+                            NomeTipoDocumento = "Relatório de Vistoria Técnica",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 20,
+                            DescricaoTipoDocumento = "Documento detalhando os cálculos estruturais realizados para o projeto",
+                            NomeTipoDocumento = "Memorial de Cálculo Estrutural",
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.TipoDocumentoEtapa", b =>
@@ -1874,6 +2306,416 @@ namespace SGED.Migrations
                     b.HasIndex("IdTipoDocumento");
 
                     b.ToTable("tipodocumentoetapa");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IdEtapa = 1,
+                            IdTipoDocumento = 1,
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IdEtapa = 1,
+                            IdTipoDocumento = 2,
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IdEtapa = 1,
+                            IdTipoDocumento = 4,
+                            Posicao = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            IdEtapa = 1,
+                            IdTipoDocumento = 5,
+                            Posicao = 4,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            IdEtapa = 2,
+                            IdTipoDocumento = 12,
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            IdEtapa = 2,
+                            IdTipoDocumento = 19,
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            IdEtapa = 3,
+                            IdTipoDocumento = 3,
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            IdEtapa = 3,
+                            IdTipoDocumento = 4,
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            IdEtapa = 3,
+                            IdTipoDocumento = 5,
+                            Posicao = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            IdEtapa = 3,
+                            IdTipoDocumento = 6,
+                            Posicao = 4,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 11,
+                            IdEtapa = 4,
+                            IdTipoDocumento = 3,
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            IdEtapa = 4,
+                            IdTipoDocumento = 10,
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            IdEtapa = 5,
+                            IdTipoDocumento = 3,
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 14,
+                            IdEtapa = 6,
+                            IdTipoDocumento = 3,
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 15,
+                            IdEtapa = 6,
+                            IdTipoDocumento = 4,
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 16,
+                            IdEtapa = 6,
+                            IdTipoDocumento = 5,
+                            Posicao = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 17,
+                            IdEtapa = 6,
+                            IdTipoDocumento = 6,
+                            Posicao = 4,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 18,
+                            IdEtapa = 6,
+                            IdTipoDocumento = 7,
+                            Posicao = 5,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 19,
+                            IdEtapa = 6,
+                            IdTipoDocumento = 8,
+                            Posicao = 6,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 20,
+                            IdEtapa = 6,
+                            IdTipoDocumento = 9,
+                            Posicao = 7,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 21,
+                            IdEtapa = 7,
+                            IdTipoDocumento = 1,
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 22,
+                            IdEtapa = 7,
+                            IdTipoDocumento = 2,
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 23,
+                            IdEtapa = 7,
+                            IdTipoDocumento = 6,
+                            Posicao = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 24,
+                            IdEtapa = 7,
+                            IdTipoDocumento = 12,
+                            Posicao = 4,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 25,
+                            IdEtapa = 8,
+                            IdTipoDocumento = 2,
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 26,
+                            IdEtapa = 8,
+                            IdTipoDocumento = 16,
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 27,
+                            IdEtapa = 8,
+                            IdTipoDocumento = 17,
+                            Posicao = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 28,
+                            IdEtapa = 8,
+                            IdTipoDocumento = 18,
+                            Posicao = 4,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 29,
+                            IdEtapa = 9,
+                            IdTipoDocumento = 6,
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 30,
+                            IdEtapa = 9,
+                            IdTipoDocumento = 7,
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 31,
+                            IdEtapa = 9,
+                            IdTipoDocumento = 8,
+                            Posicao = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 32,
+                            IdEtapa = 9,
+                            IdTipoDocumento = 9,
+                            Posicao = 4,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 33,
+                            IdEtapa = 10,
+                            IdTipoDocumento = 7,
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 34,
+                            IdEtapa = 10,
+                            IdTipoDocumento = 8,
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 35,
+                            IdEtapa = 10,
+                            IdTipoDocumento = 9,
+                            Posicao = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 36,
+                            IdEtapa = 11,
+                            IdTipoDocumento = 6,
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 37,
+                            IdEtapa = 11,
+                            IdTipoDocumento = 7,
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 38,
+                            IdEtapa = 11,
+                            IdTipoDocumento = 8,
+                            Posicao = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 39,
+                            IdEtapa = 11,
+                            IdTipoDocumento = 9,
+                            Posicao = 4,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 40,
+                            IdEtapa = 12,
+                            IdTipoDocumento = 3,
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 41,
+                            IdEtapa = 12,
+                            IdTipoDocumento = 10,
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 42,
+                            IdEtapa = 13,
+                            IdTipoDocumento = 1,
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 43,
+                            IdEtapa = 13,
+                            IdTipoDocumento = 12,
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 44,
+                            IdEtapa = 13,
+                            IdTipoDocumento = 6,
+                            Posicao = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 45,
+                            IdEtapa = 13,
+                            IdTipoDocumento = 7,
+                            Posicao = 4,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 46,
+                            IdEtapa = 13,
+                            IdTipoDocumento = 8,
+                            Posicao = 5,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 47,
+                            IdEtapa = 13,
+                            IdTipoDocumento = 9,
+                            Posicao = 6,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 48,
+                            IdEtapa = 14,
+                            IdTipoDocumento = 2,
+                            Posicao = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 49,
+                            IdEtapa = 14,
+                            IdTipoDocumento = 16,
+                            Posicao = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 50,
+                            IdEtapa = 14,
+                            IdTipoDocumento = 17,
+                            Posicao = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 51,
+                            IdEtapa = 14,
+                            IdTipoDocumento = 18,
+                            Posicao = 4,
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.TipoInfraestrutura", b =>
@@ -3040,14 +3882,14 @@ namespace SGED.Migrations
 
                     b.Property<string>("DescricaoTipoProcesso")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("descricaotipoprocesso");
 
                     b.Property<string>("NomeTipoProcesso")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("tipoprocesso");
 
                     b.Property<int>("Status")
@@ -3057,6 +3899,120 @@ namespace SGED.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tipoprocesso");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DescricaoTipoProcesso = "Processo de aprovação do projeto de construção ou reforma",
+                            NomeTipoProcesso = "Aprovação de Projeto",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DescricaoTipoProcesso = "Processo para obtenção de licença para construção ou alteração de uso",
+                            NomeTipoProcesso = "Licenciamento Urbanístico",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DescricaoTipoProcesso = "Processo de regularização de imóvel junto ao município",
+                            NomeTipoProcesso = "Regularização de Imóvel",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DescricaoTipoProcesso = "Desenvolvimento do projeto arquitetônico do imóvel",
+                            NomeTipoProcesso = "Elaboração de Projeto Arquitetônico",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            DescricaoTipoProcesso = "Desenvolvimento do projeto estrutural do imóvel",
+                            NomeTipoProcesso = "Elaboração de Projeto Estrutural",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            DescricaoTipoProcesso = "Planejamento das instalações elétricas do imóvel",
+                            NomeTipoProcesso = "Projeto de Instalações Elétricas",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            DescricaoTipoProcesso = "Desenvolvimento do projeto hidrossanitário do imóvel",
+                            NomeTipoProcesso = "Projeto Hidrossanitário",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            DescricaoTipoProcesso = "Elaboração do projeto paisagístico do entorno do imóvel",
+                            NomeTipoProcesso = "Projeto de Paisagismo",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            DescricaoTipoProcesso = "Processo de reforma ou restauro de edificações existentes",
+                            NomeTipoProcesso = "Reforma ou Restauro",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            DescricaoTipoProcesso = "Processo para regularizar terrenos ou imóveis",
+                            NomeTipoProcesso = "Regularização Fundiária",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 11,
+                            DescricaoTipoProcesso = "Desenvolvimento de projeto para garantir acessibilidade no imóvel",
+                            NomeTipoProcesso = "Projeto de Acessibilidade",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            DescricaoTipoProcesso = "Análise de impacto ambiental para aprovação de projetos",
+                            NomeTipoProcesso = "Estudo de Impacto Ambiental",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            DescricaoTipoProcesso = "Processo de demolição de construções existentes",
+                            NomeTipoProcesso = "Demolição",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 14,
+                            DescricaoTipoProcesso = "Processo para regularizar construções não autorizadas ou fora das normas",
+                            NomeTipoProcesso = "Regularização de Construção",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 15,
+                            DescricaoTipoProcesso = "Avaliação de edificações para certificação de sustentabilidade",
+                            NomeTipoProcesso = "Certificação de Sustentabilidade",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 16,
+                            DescricaoTipoProcesso = "Planejamento das medidas de segurança contra incêndio",
+                            NomeTipoProcesso = "Projeto de Segurança Contra Incêndio",
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.TipoUsuario", b =>

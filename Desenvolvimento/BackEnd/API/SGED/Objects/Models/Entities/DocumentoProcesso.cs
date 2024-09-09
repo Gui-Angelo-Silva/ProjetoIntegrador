@@ -1,4 +1,4 @@
-﻿using SGED.Objects.Enums;
+﻿using SGED.Objects.Enums.Status;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SGED.Objects.Models.Entities
@@ -23,7 +23,7 @@ namespace SGED.Objects.Models.Entities
         public byte[] ArquivoDocumento { get; set; }
 
         [Column("statusdocumentoprocesso")]
-        public StatusProcessModel Status { get; set; }
+        public StatusDocumentProcess Status { get; set; }
 
         [ForeignKey("idprocesso")]
         public Guid IdProcesso { get; set; }
@@ -35,7 +35,7 @@ namespace SGED.Objects.Models.Entities
         public int IdResponsavel { get; set; }
 
         [Column("idaprovador")]
-        public int? IdAprovador { get; set; } // Tornado opcional
+        public int IdAprovador { get; set; }
 
 
         public Processo? Processo { get; set; }

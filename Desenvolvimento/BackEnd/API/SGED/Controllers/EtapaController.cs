@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SGED.Objects.DTO.Entities;
-using SGED.Objects.Enums;
+using SGED.Objects.Enums.Status;
 using SGED.Objects.Interfaces;
 using SGED.Objects.Models.Entities;
 using SGED.Objects.Utilities;
@@ -141,7 +141,7 @@ namespace SGED.Controllers
                     return BadRequest(_response);
                 }
 
-                etapaDTO.Posicao = etapasDTO.Count() + 1; etapaDTO.Enable();
+                etapaDTO.Posicao = etapasDTO.Count() + 1; etapaDTO.Activate();
                 await _etapaService.Create(etapaDTO);
 
                 _response.SetSuccess();
@@ -338,7 +338,7 @@ namespace SGED.Controllers
                     _response.Data = new { errorId = "Etapa não encontrada!" };
                     return NotFound(_response);
                 }
-                else if (etapaDTO.Status == StatusProcessConfiguration.Habilitado)
+                else if (etapaDTO.Status == StatusData.Active)
                 {
                     _response.SetSuccess();
                     _response.Message = "A Etapa já está " + etapaDTO.GetState().ToLower() + ".";
@@ -347,7 +347,7 @@ namespace SGED.Controllers
                 }
                 else
                 {
-                    etapaDTO.Enable();
+                    etapaDTO.Activate();
                     await _etapaService.Update(etapaDTO);
 
                     _response.SetSuccess();
@@ -378,7 +378,7 @@ namespace SGED.Controllers
                     _response.Data = new { errorId = "Etapa não encontrada!" };
                     return NotFound(_response);
                 }
-                else if (etapaDTO.Status == StatusProcessConfiguration.Habilitado)
+                else if (etapaDTO.Status == StatusData.Active)
                 {
                     _response.SetSuccess();
                     _response.Message = "A Etapa já está " + etapaDTO.GetState().ToLower() + ".";
@@ -387,7 +387,7 @@ namespace SGED.Controllers
                 }
                 else
                 {
-                    etapaDTO.Enable();
+                    etapaDTO.Activate();
                     await _etapaService.Update(etapaDTO);
 
                     _response.SetSuccess();

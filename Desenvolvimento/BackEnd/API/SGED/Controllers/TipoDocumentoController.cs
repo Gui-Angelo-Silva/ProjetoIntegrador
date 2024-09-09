@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SGED.Objects.DTO.Entities;
-using SGED.Objects.Enums;
+using SGED.Objects.Enums.Status;
 using SGED.Objects.Models.Entities;
 using SGED.Objects.Utilities;
 using SGED.Services.Entities;
@@ -94,7 +94,7 @@ namespace SGED.Controllers
                     return BadRequest(_response);
                 }
 
-                tipoDocumentoDTO.Enable();
+                tipoDocumentoDTO.Activate();
                 await _tipoDocumentoService.Create(tipoDocumentoDTO);
 
                 _response.SetSuccess();
@@ -178,7 +178,7 @@ namespace SGED.Controllers
                     _response.Data = new { errorId = "Tipo de Documento não encontrado!" };
                     return NotFound(_response);
                 }
-                else if (tipoDocumentoDTO.Status == StatusProcessConfiguration.Habilitado)
+                else if (tipoDocumentoDTO.Status == StatusData.Active)
                 {
                     _response.SetSuccess();
                     _response.Message = "O Tipo de Documento " + tipoDocumentoDTO.NomeTipoDocumento + " já está " + tipoDocumentoDTO.GetState().ToLower() + ".";
@@ -187,7 +187,7 @@ namespace SGED.Controllers
                 }
                 else
                 {
-                    tipoDocumentoDTO.Enable();
+                    tipoDocumentoDTO.Activate();
                     await _tipoDocumentoService.Update(tipoDocumentoDTO);
 
                     _response.SetSuccess();
@@ -218,7 +218,7 @@ namespace SGED.Controllers
                     _response.Data = new { errorId = "Tipo de Documento não encontrado!" };
                     return NotFound(_response);
                 }
-                else if (tipoDocumentoDTO.Status == StatusProcessConfiguration.Desativado)
+                else if (tipoDocumentoDTO.Status == StatusData.Blocked)
                 {
                     _response.SetSuccess();
                     _response.Message = "O Tipo de Documento " + tipoDocumentoDTO.NomeTipoDocumento + " já está " + tipoDocumentoDTO.GetState().ToLower() + ".";
@@ -227,7 +227,7 @@ namespace SGED.Controllers
                 }
                 else
                 {
-                    tipoDocumentoDTO.Disable();
+                    tipoDocumentoDTO.Block();
                     await _tipoDocumentoService.Update(tipoDocumentoDTO);
 
                     _response.SetSuccess();

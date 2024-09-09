@@ -30,7 +30,13 @@ namespace SGED.Services.Entities
 			return _mapper.Map<ImovelDTO>(imovel);
 		}
 
-		public async Task Create(ImovelDTO imovelDTO)
+        public async Task<ImovelDTO> GetByProperty(string propertyName, string data)
+        {
+            var imovel = await _imovelRepository.GetByProperty(propertyName, data);
+            return _mapper.Map<ImovelDTO>(imovel);
+        }
+
+        public async Task Create(ImovelDTO imovelDTO)
 		{
 			var imovel = _mapper.Map<Imovel>(imovelDTO);
 			await _imovelRepository.Create(imovel);

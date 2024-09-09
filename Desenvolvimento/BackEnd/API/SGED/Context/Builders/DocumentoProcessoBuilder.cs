@@ -10,7 +10,7 @@ namespace SGED.Context.Builders
             // Configuração do Builder para DocumentoProcesso
             modelBuilder.Entity<DocumentoProcesso>().Property(td => td.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<DocumentoProcesso>().Property(td => td.IdentificacaoDocumento).HasMaxLength(50).IsRequired();
-            modelBuilder.Entity<DocumentoProcesso>().Property(td => td.DescricaoDocumento).HasMaxLength(300);
+            modelBuilder.Entity<DocumentoProcesso>().Property(td => td.DescricaoDocumento).HasMaxLength(500);
             modelBuilder.Entity<DocumentoProcesso>().Property(td => td.ObservacaoDocumento).HasMaxLength(300);
             modelBuilder.Entity<DocumentoProcesso>().Property(td => td.ArquivoDocumento);
             modelBuilder.Entity<DocumentoProcesso>().Property(td => td.Status).IsRequired();

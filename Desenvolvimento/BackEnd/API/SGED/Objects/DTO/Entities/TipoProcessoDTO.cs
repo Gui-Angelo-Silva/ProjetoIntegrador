@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using SGED.Objects.Enums;
+using SGED.Objects.Enums.Status;
 using SGED.Objects.Interfaces;
 
 namespace SGED.Objects.DTO.Entities
@@ -19,14 +19,12 @@ namespace SGED.Objects.DTO.Entities
         public string DescricaoTipoProcesso { get; set; }
 
         [Required(ErrorMessage = "O status é requerido!")]
-        public StatusProcessConfiguration Status { get; set; }
+        public StatusData Status { get; set; }
 
 
-        public void Enable() => Status = StatusProcessConfigurationExtensions.Enable();
-        public void Pending() => Status = StatusProcessConfigurationExtensions.Pending();
-        public void Wait() => Status = StatusProcessConfigurationExtensions.Wait();
-        public void Block() => Status = StatusProcessConfigurationExtensions.Block();
-        public void Disable() => Status = StatusProcessConfigurationExtensions.Disable();
+        public void Activate() => Status = StatusDataExtensions.Activate();
+        public void Deactivate() => Status = StatusDataExtensions.Deactivate();
+        public void Block() => Status = StatusDataExtensions.Block();
 
         public string GetState() => IStatusStateExtensions.GetState(this.Status);
         public bool CanEdit() => IStatusStateExtensions.CanEdit(this.Status);

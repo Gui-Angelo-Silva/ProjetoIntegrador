@@ -1,4 +1,4 @@
-﻿using SGED.Objects.Enums;
+﻿using SGED.Objects.Enums.Status;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SGED.Objects.Models.Entities
@@ -23,7 +23,7 @@ namespace SGED.Objects.Models.Entities
         public string DataAprovacao { get; set; }
 
         [Column("statusprocesso")]
-        public StatusProcessModel Status { get; set; }
+        public StatusProcess Status { get; set; }
 
         [ForeignKey("idimovel")]
         public int IdImovel { get; set; }

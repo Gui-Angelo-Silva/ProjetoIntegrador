@@ -1,4 +1,4 @@
-﻿using SGED.Objects.Enums;
+﻿using SGED.Objects.Enums.Status;
 using SGED.Objects.Utilities.StatusState;
 
 namespace SGED.Objects.Interfaces
@@ -13,37 +13,36 @@ namespace SGED.Objects.Interfaces
 
     public static class IStatusStateExtensions
     {
-        private static IStatusState CreateState(StatusProcessConfiguration status)
+        private static IStatusState CreateState(StatusData status)
         {
             return status switch
             {
-                StatusProcessConfiguration.Habilitado => new HabilitadoState(),
-                StatusProcessConfiguration.EmEspera => new EmEsperaState(),
-                StatusProcessConfiguration.Bloqueado => new BloqueadoState(),
-                StatusProcessConfiguration.Desativado => new DesativadoState(),
-                _ => new HabilitadoState()
+                StatusData.Active => new AtivoState(),
+                StatusData.Inactivated => new InativoState(),
+                StatusData.Blocked => new BloqueadoState(),
+                _ => new AtivoState()
             };
         }
 
-        public static string GetState(StatusProcessConfiguration status)
+        public static string GetState(StatusData status)
         {
             IStatusState statusState = CreateState(status);
             return statusState.State;
         }
 
-        public static bool CanEdit(StatusProcessConfiguration status)
+        public static bool CanEdit(StatusData status)
         {
             IStatusState statusState = CreateState(status);
             return statusState.CanEdit();
         }
 
-        public static bool CanRelate(StatusProcessConfiguration status)
+        public static bool CanRelate(StatusData status)
         {
             IStatusState statusState = CreateState(status);
             return statusState.CanRelate();
         }
 
-        public static bool CanRemove(StatusProcessConfiguration status)
+        public static bool CanRemove(StatusData status)
         {
             IStatusState statusState = CreateState(status);
             return statusState.CanToRemove();

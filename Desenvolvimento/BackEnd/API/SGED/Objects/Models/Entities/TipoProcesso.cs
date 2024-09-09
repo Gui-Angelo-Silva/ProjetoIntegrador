@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using SGED.Objects.Enums;
+using SGED.Objects.Enums.Status;
 using SGED.Objects.Interfaces;
 using SGED.Objects.Utilities;
 
@@ -18,7 +18,7 @@ namespace SGED.Objects.Models.Entities
         public string DescricaoTipoProcesso { get; set; }
 
         [Column("statustipoprocesso")]
-        public StatusProcessConfiguration Status { get; set; }
+        public StatusData Status { get; set; }
 
 
         public ICollection<Processo>? Processos { get; set; }

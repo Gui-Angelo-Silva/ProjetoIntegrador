@@ -395,15 +395,28 @@ const AddProcess = () => {
     });
   }, [expandedRows]);
 
+
+
+  
+  const [activeDocument, setActiveDocument] = useState(null);
+
+  const handleToggle = (id) => {
+    setActiveDocument(activeDocument === id ? null : id);
+  };
+
+
+
   return (
     <LayoutPage>
       <LinkTitle pageName="Cadastrar Processo" otherRoute="Processo" />
       <div className="mt-8">
         <div className="flex">
+          {/* Imóvel: ----------------------------------------------------------------------------------------------------*/}
+
           <div
             className="mr-8 h-[200px] w-[200px] rounded-lg border-[2px] flex items-center justify-center"
           >
-            {realstate.imagemImovel ? (
+            {realstate.imagemImovel && realstate.imagemImovel.length > 0 ? (
               <img
                 src={realstate.imagemImovel[currentImageIndex]}
               />
@@ -443,10 +456,14 @@ const AddProcess = () => {
 
             <h1 className="text-lg text-gray-700">Proprietário:</h1>
             <div>
-              <img
-                src={owner.imagemPessoa ? owner.imagemPessoa : ""}
-                className="cursor-pointer rounded-full w-[50px] h-[50px] object-cover p-1 shadow-md"
-              />
+              {owner.imagemPessoa ? (
+                <img
+                  src={owner.imagemPessoa ? owner.imagemPessoa : ""}
+                  className="cursor-pointer rounded-full w-[50px] h-[50px] object-cover p-1 shadow-md"
+                />
+              ) : (
+                <User size={50} />
+              )}
               <input
                 type="text"
                 disabled
@@ -457,10 +474,14 @@ const AddProcess = () => {
 
             <h1 className="text-lg text-gray-700">Contribuinte:</h1>
             <div>
-              <img
-                src={taxpayer.imagemPessoa ? taxpayer.imagemPessoa : ""}
-                className="cursor-pointer rounded-full w-[50px] h-[50px] object-cover p-1 shadow-md"
-              />
+              {taxpayer.imagemPessoa ? (
+                <img
+                  src={taxpayer.imagemPessoa ? taxpayer.imagemPessoa : ""}
+                  className="cursor-pointer rounded-full w-[50px] h-[50px] object-cover p-1 shadow-md"
+                />
+              ) : (
+                <User size={50} />
+              )}
               <input
                 type="text"
                 disabled
@@ -486,7 +507,8 @@ const AddProcess = () => {
             />
           </div>
 
-          <hr /> {/* Divisão ------------------------------------------- */}
+
+          {/* Tipo Processo: ----------------------------------------------------------------------------------------------------*/}
 
           <div className="flex flex-col w-1/3 gap-y-3">
             <h1 className="text-lg text-gray-700">Tipo Processo:</h1>
@@ -516,8 +538,8 @@ const AddProcess = () => {
               value={typeProcess.descricaoTipoProcesso || ''}
             ></textarea>
 
-            {/* Processo ------------------------------------------- */}
-            <h1 className="">Processo:</h1>
+
+            {/* Processo: ----------------------------------------------------------------------------------------------------*/}
 
             <h1 className="text-lg text-gray-700">Número de Identificação:</h1>
             <input
@@ -609,7 +631,7 @@ const AddProcess = () => {
               type="text"
               disabled
               className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
-              value={supervisor.cpfCnepjPessoa || ''}
+              value={supervisor.cpfCnpjPessoa || ''}
             />
 
 
@@ -725,8 +747,34 @@ const AddProcess = () => {
 
                           if (typeDocument) {
                             return (
-                              <li key={typeDocument.id} className="p-2 border-b border-gray-200 cursor-pointer" onClick={() => toggleDetail(typeDocument.id)}>
-                                <span>Documento {typeDocumentStage.posicao} - {typeDocument.nomeTipoDocumento}</span>
+                              <li key={typeDocument.id} className="p-2 border-b border-gray-200 cursor-pointer">
+                                <span>Documento {typeDocument.posicao} - {typeDocument.nomeTipoDocumento}</span>
+                                <button
+                                  className="text-blue-600"
+                                  onClick={() => handleToggle(typeDocument.id)}
+                                >
+                                  Anexar
+                                </button>
+                                {activeDocument === typeDocument.id && (
+                                  <div className="mt-2">
+                                    <form>
+                                      <label htmlFor="fileUpload" className="block mb-2 text-sm font-medium text-gray-700">
+                                        Selecione um arquivo:
+                                      </label>
+                                      <input
+                                        type="file"
+                                        id="fileUpload"
+                                        className="block w-full text-sm text-gray-500 border border-gray-300 rounded-lg cursor-pointer focus:outline-none"
+                                      />
+                                      <button
+                                        type="submit"
+                                        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
+                                      >
+                                        Enviar
+                                      </button>
+                                    </form>
+                                  </div>
+                                )}
                               </li>
                             );
                           }

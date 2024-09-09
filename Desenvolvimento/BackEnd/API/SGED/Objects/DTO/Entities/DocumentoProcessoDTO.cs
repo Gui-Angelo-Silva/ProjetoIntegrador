@@ -32,7 +32,6 @@ namespace SGED.Objects.DTO.Entities
         [Required(ErrorMessage = "O documento etapa é requerido!")]
         public int IdTipoDocumentoEtapa { get; set; }
 
-        [Required(ErrorMessage = "O responsavel é requerido!")]
         public int IdResponsavel { get; set; }
 
         public int IdAprovador { get; set; }

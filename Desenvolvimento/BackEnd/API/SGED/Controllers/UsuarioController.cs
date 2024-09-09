@@ -58,15 +58,15 @@ namespace SGED.Controllers
 
                 _response.SetSuccess();
                 _response.Message = registrationNumbers.Any() ?
-                    "Lista das Inscrições Cadastrais obtida com sucesso." :
-                    "Nenhuma Inscrição Cadastral encontrada.";
+                    "Lista dos Nomes de Usuário obtida com sucesso." :
+                    "Nenhum Usuário encontrado.";
                 _response.Data = registrationNumbers;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
                 _response.SetError();
-                _response.Message = "Não foi possível adquirir a lista das Inscrições Cadastrais!";
+                _response.Message = "Não foi possível adquirir a lista dos Nomes de Usuário!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }

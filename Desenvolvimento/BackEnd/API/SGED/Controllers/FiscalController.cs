@@ -45,6 +45,30 @@ namespace SGED.Controllers
             }
         }
 
+        [HttpGet("GetAllNames")]
+        public async Task<ActionResult<IEnumerable<FiscalDTO>>> GetAllNames()
+        {
+            try
+            {
+                var fiscalsDTO = await _fiscalService.GetAll();
+                var registrationNumbers = fiscalsDTO.Select(u => new { u.Id, u.NomePessoa }).ToList();
+
+                _response.SetSuccess();
+                _response.Message = registrationNumbers.Any() ?
+                    "Lista dos Nomes de Fiscal obtida com sucesso." :
+                    "Nenhum Fiscal encontrado.";
+                _response.Data = registrationNumbers;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista dos Nomes de Fiscal!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
         [HttpGet("{id:int}", Name = "GetFiscal")]
         public async Task<ActionResult<FiscalDTO>> Get(int id)
         {

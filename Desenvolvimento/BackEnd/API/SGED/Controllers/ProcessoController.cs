@@ -259,8 +259,6 @@ namespace SGED.Controllers
                     else documentoProcesso.AssignDefaultState();
                 }
 
-                //documentoProcesso.IdResponsavel = 2;
-
                 await _documentoProcessoService.Create(documentoProcesso);
             }
         }

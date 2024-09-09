@@ -16,7 +16,7 @@ namespace SGED.Context.Builders
             modelBuilder.Entity<DocumentoProcesso>().Property(td => td.Status).IsRequired();
             modelBuilder.Entity<DocumentoProcesso>().Property(td => td.IdProcesso).IsRequired();
             modelBuilder.Entity<DocumentoProcesso>().Property(td => td.IdTipoDocumentoEtapa).IsRequired();
-            modelBuilder.Entity<DocumentoProcesso>().Property(td => td.IdResponsavel).IsRequired();
+            modelBuilder.Entity<DocumentoProcesso>().Property(td => td.IdResponsavel);
             modelBuilder.Entity<DocumentoProcesso>().Property(td => td.IdAprovador);
 
             // Declaração: Defini o GUID como Chave Primária

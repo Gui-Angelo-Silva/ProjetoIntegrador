@@ -46,7 +46,7 @@ const AddProcess = () => {
     processSituation: "",
     processDescription: "",
     approvationDate: "",
-    processStatus: 1,
+    processStatus: 0,
   });
   const [documentsProcess, setDocumentsProcess] = useState([]);
 
@@ -146,7 +146,7 @@ const AddProcess = () => {
 
 
   // Entidades
-  const GetAllNamesEngineer = async () => {
+  const GetAllNamesEngineers = async () => {
     await connection.endpoint("Engenheiro").action("GetAllNames").get();
     list_Engineers.setList(connection.getList());
   };
@@ -200,7 +200,7 @@ const AddProcess = () => {
       GetAllEnrollmentRegistrations();
       GetAllTypes();
       GetAllNamesUsers();
-      GetAllNamesEngineer();
+      GetAllNamesEngineers();
       GetAllNamesSupervisors();
 
       setUpdateData(false);
@@ -757,23 +757,11 @@ const AddProcess = () => {
             ) : (
               <User size={50} />
             )}
-            <Select
-              value={selectBox_UserApprover.selectedOption}
-              onChange={selectBox_UserApprover.handleChange}
-              onInputChange={selectBox_UserApprover.delayedSearch}
-              loadOptions={selectBox_UserApprover.loadOptions}
-              options={selectBox_UserApprover.options}
-              placeholder="Pesquisar usuário . . ."
-              isClearable
-              isSearchable
-              noOptionsMessage={() => {
-                if (list_Users.list.length === 0) {
-                  return "Nenhum Usuário existente!";
-                } else {
-                  return "Nenhuma opção encontrada!";
-                }
-              }}
-              className="style-select"
+            <input
+              type="text"
+              disabled
+              className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
+              value={userApprover.nomePessoa || ''}
             />
             <input
               type="text"

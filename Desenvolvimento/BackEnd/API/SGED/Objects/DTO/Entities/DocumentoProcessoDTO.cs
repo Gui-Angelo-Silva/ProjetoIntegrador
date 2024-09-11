@@ -21,7 +21,7 @@ namespace SGED.Objects.DTO.Entities
 		[MaxLength(300)]
 		public string ObservacaoDocumento { get; set; }
 
-		public byte[] DocumentoDocumento { get; set; }
+		public byte[] ArquivoDocumento { get; set; }
 
         [Required(ErrorMessage = "O status é requerido!")]
         public StatusDocumentProcess Status { get; set; }
@@ -32,9 +32,9 @@ namespace SGED.Objects.DTO.Entities
         [Required(ErrorMessage = "O documento etapa é requerido!")]
         public int IdTipoDocumentoEtapa { get; set; }
 
-        public int IdResponsavel { get; set; }
+        public int? IdResponsavel { get; set; }
 
-        public int IdAprovador { get; set; }
+        public int? IdAprovador { get; set; }
 
 
         [JsonIgnore]

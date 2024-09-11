@@ -17,7 +17,7 @@ namespace SGED.Objects.Models.Entities
 
         public Cidade? Cidade { get; set; }
 
-        [ForeignKey("idcidade")]
+        [Column("idcidade")]
         public int IdCidade { get; set; }
 
         public ICollection<Logradouro>? Logradouros { get; set; }

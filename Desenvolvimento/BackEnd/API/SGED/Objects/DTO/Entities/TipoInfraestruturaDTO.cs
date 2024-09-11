@@ -13,6 +13,7 @@ namespace SGED.Objects.DTO.Entities
         public string NomeTipoInfraestrutura { get; set; }
 
         [Required(ErrorMessage = "A descrição do tipo infraestrutura é requerida!")]
+        [MaxLength(500)]
         public string? DescricaoTipoInfraestrutura { get; set; }
 
         [JsonIgnore]

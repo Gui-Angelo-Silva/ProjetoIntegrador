@@ -8,7 +8,7 @@ namespace SGED.Context.Builders
         public static void Build(ModelBuilder modelBuilder)
         {
             // Builder
-            modelBuilder.Entity<Usuario>().HasKey(u => u.Id);
+            modelBuilder.Entity<Usuario>().Property(u => u.Id);
             modelBuilder.Entity<Usuario>().Property(u => u.ImagemPessoa).IsRequired();
             modelBuilder.Entity<Usuario>().Property(u => u.NomePessoa).HasMaxLength(70).IsRequired();
             modelBuilder.Entity<Usuario>().Property(u => u.EmailPessoa).IsRequired();
@@ -19,6 +19,10 @@ namespace SGED.Context.Builders
             modelBuilder.Entity<Usuario>().Property(u => u.CargoUsuario).HasMaxLength(50).IsRequired();
             modelBuilder.Entity<Usuario>().Property(u => u.StatusUsuario).IsRequired();
             modelBuilder.Entity<Usuario>().Property(u => u.StatusUsuario).IsRequired();
+            modelBuilder.Entity<Usuario>().Property(u => u.IdTipoUsuario).IsRequired();
+
+            // Declaração: Defini o ID como Chave Primária
+            modelBuilder.Entity<Usuario>().HasKey(u => u.Id);
 
             // Relacionamento: TipoUsuario -> Usuario
             modelBuilder.Entity<Usuario>()

@@ -32,17 +32,18 @@ namespace SGED.Objects.DTO.Entities
         [Required(ErrorMessage = "O tipo processo é requerido!")]
         public int IdTipoProcesso { get; set; }
 
-        public int IdEngenheiro { get; set; }
+        public int? IdEngenheiro { get; set; }
 
-        public int IdFiscal { get; set; }
+        public int? IdFiscal { get; set; }
 
-        public int IdResponsavel { get; set; }
+        public int? IdResponsavel { get; set; }
 
-        public int IdAprovador { get; set; }
+        public int? IdAprovador { get; set; }
 
 
         [JsonIgnore]
         public ImovelDTO? ImovelDTO { get; set; }
+        [JsonIgnore]
         public TipoProcessoDTO? TipoProcessoDTO { get; set; }
         [JsonIgnore]
         public EngenheiroDTO? EngenheiroDTO { get; set; }

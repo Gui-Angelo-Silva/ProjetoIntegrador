@@ -19,12 +19,12 @@ namespace SGED.Objects.Models.Entities
 
         public TipoDocumento? TipoDocumento { get; set; }
 
-        [ForeignKey("idtipodocumento")]
+        [Column("idtipodocumento")]
         public int IdTipoDocumento { get; set; }
 
         public Etapa? Etapa { get; set; }
 
-        [ForeignKey("idetapa")]
+        [Column("idetapa")]
         public int IdEtapa { get; set; }
 
 

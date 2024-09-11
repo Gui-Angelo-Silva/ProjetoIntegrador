@@ -28,7 +28,7 @@ namespace SGED.Controllers
             _tipoDocumentoService = tipoDocumentoService;
             _tipoDocumentoEtapaService = tipoDocumentoEtapaService;
             _documentoProcessoService = documentoProcessoService;
-            
+
             _processoService = processoService;
             _response = new Response();
         }
@@ -134,12 +134,17 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                if (processoDTO.DocumentosProcessoDTOs.Any() || processoDTO.IdResponsavel != 0) processoDTO.PutOnPending();
+                if (processoDTO.DocumentosProcessoDTOs.Any() || processoDTO.IdResponsavel.HasValue) processoDTO.PutOnPending();
                 else processoDTO.AssignDefaultState();
 
                 await _processoService.Create(processoDTO);
 
-                await PercorrerEtapas(tipoProcessoDTO.Id, processoDTO.Id, processoDTO.IdResponsavel, processoDTO.DocumentosProcessoDTOs);
+                await PercorrerDocumentosEtapa(
+                    tipoProcessoDTO.Id, // ID da Etapa (int)
+                    processoDTO.Id, // ID do Processo (Guid)
+                    processoDTO.IdResponsavel.HasValue ? processoDTO.IdResponsavel.Value : (int?)null, // ID do Responsável (int?)
+                    processoDTO.DocumentosProcessoDTOs // Coleção de Documentos (ICollection<DocumentoProcessoDTO>
+                );
 
                 _response.SetSuccess();
                 _response.Message = "Processo " + processoDTO.IdentificacaoProcesso + " cadastrado com sucesso.";
@@ -233,7 +238,7 @@ namespace SGED.Controllers
             }
         }
 
-        private async Task PercorrerDocumentosEtapa(int idEtapa, Guid idProcesso, int idResponsavel, ICollection<DocumentoProcessoDTO> documentosProcesso)
+        private async Task PercorrerDocumentosEtapa(int idEtapa, Guid idProcesso, int? idResponsavel, ICollection<DocumentoProcessoDTO> documentosProcesso)
         {
             var documentosEtapaDTO = await _tipoDocumentoEtapaService.GetTypeDocumentStagesRelatedToStage(idEtapa);
 
@@ -252,6 +257,8 @@ namespace SGED.Controllers
                     documentoProcesso = new DocumentoProcessoDTO();
 
                     documentoProcesso.IdentificacaoDocumento = "NÃO ANEXADO";
+                    documentoProcesso.DescricaoDocumento = "";
+                    documentoProcesso.ObservacaoDocumento = "";
                     documentoProcesso.IdProcesso = idProcesso;
                     documentoProcesso.IdTipoDocumentoEtapa = documentoEtapa.Id;
 

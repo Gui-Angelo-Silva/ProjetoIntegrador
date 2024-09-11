@@ -22,12 +22,12 @@ namespace SGED.Objects.Models.Entities
 
         public Bairro? Bairro { get; set; }
 
-        [ForeignKey("idbairro")]
+        [Column("idbairro")]
         public int IdBairro { get; set; }
 
         public TipoLogradouro? TipoLogradouro { get; set; }
 
-        [ForeignKey("idtipologradouro")]
+        [Column("idtipologradouro")]
         public int IdTipoLogradouro { get; set; }
 
         public ICollection<Imovel>? Imoveis { get; set; }

@@ -25,17 +25,17 @@ namespace SGED.Objects.Models.Entities
         [Column("statusdocumentoprocesso")]
         public StatusDocumentProcess Status { get; set; }
 
-        [ForeignKey("idprocesso")]
+        [Column("idprocesso")]
         public Guid IdProcesso { get; set; }
 
         [Column("idtipodocumentoetapa")]
         public int IdTipoDocumentoEtapa { get; set; }
 
-        [ForeignKey("idresponsavel")]
-        public int IdResponsavel { get; set; }
+        [Column("idresponsavel")]
+        public int? IdResponsavel { get; set; }
 
         [Column("idaprovador")]
-        public int IdAprovador { get; set; }
+        public int? IdAprovador { get; set; }
 
 
         public Processo? Processo { get; set; }

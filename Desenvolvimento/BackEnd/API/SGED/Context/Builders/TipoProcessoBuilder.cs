@@ -9,10 +9,13 @@ namespace SGED.Context.Builders
         public static void Build(ModelBuilder modelBuilder)
         {
             // Builder
-            modelBuilder.Entity<TipoProcesso>().HasKey(tp => tp.Id);
+            modelBuilder.Entity<TipoProcesso>().Property(tp => tp.Id);
             modelBuilder.Entity<TipoProcesso>().Property(tp => tp.NomeTipoProcesso).HasMaxLength(50).IsRequired();
             modelBuilder.Entity<TipoProcesso>().Property(tp => tp.DescricaoTipoProcesso).HasMaxLength(500).IsRequired();
             modelBuilder.Entity<TipoProcesso>().Property(tp => tp.Status).IsRequired();
+
+            // Declaração: Defini o ID como Chave Primária
+            modelBuilder.Entity<TipoProcesso>().HasKey(tp => tp.Id);
 
 
             // Inserções

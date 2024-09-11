@@ -40,7 +40,7 @@ namespace SGED.Objects.Models.Entities
 
         public TipoUsuario? TipoUsuario { get; set; }
 
-        [ForeignKey("idtipousuario")]
+        [Column("idtipousuario")]
         public int IdTipoUsuario { get; set; }
 
         public ICollection<Sessao>? Sessoes { get; set; }

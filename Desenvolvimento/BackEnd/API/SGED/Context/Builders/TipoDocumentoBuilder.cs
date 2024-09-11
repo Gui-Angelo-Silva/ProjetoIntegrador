@@ -10,10 +10,13 @@ namespace SGED.Context.Builders
         {
             // Builder
             // Builder: TipoDocumento
-            modelBuilder.Entity<TipoDocumento>().HasKey(td => td.Id);
+            modelBuilder.Entity<TipoDocumento>().Property(td => td.Id);
             modelBuilder.Entity<TipoDocumento>().Property(td => td.NomeTipoDocumento).HasMaxLength(50).IsRequired();
             modelBuilder.Entity<TipoDocumento>().Property(td => td.DescricaoTipoDocumento).HasMaxLength(500).IsRequired();
             modelBuilder.Entity<TipoDocumento>().Property(td => td.Status).IsRequired();
+
+            // Declaração: Defini o ID como Chave Primária
+            modelBuilder.Entity<TipoDocumento>().HasKey(td => td.Id);
 
 
             // Inserções

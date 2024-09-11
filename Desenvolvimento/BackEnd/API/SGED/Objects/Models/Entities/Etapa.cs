@@ -25,7 +25,7 @@ namespace SGED.Objects.Models.Entities
 
         public TipoProcesso? TipoProcesso { get; set; }
 
-        [ForeignKey("idtipoprocesso")]
+        [Column("idtipoprocesso")]
         public int IdTipoProcesso { get; set; }
 
         public ICollection<TipoDocumentoEtapa>? TipoDocumentoEtapas { get; set; }

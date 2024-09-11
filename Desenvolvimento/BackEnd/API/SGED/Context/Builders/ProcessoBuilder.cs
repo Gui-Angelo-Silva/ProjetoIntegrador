@@ -66,7 +66,7 @@ namespace SGED.Context.Builders
             modelBuilder.Entity<Processo>()
                 .HasOne(p => p.Aprovador)
                 .WithMany(u => u.ProcessosAprovados)
-                .HasForeignKey(p => p.IdResponsavel)
+                .HasForeignKey(p => p.IdAprovador)
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired(false);
 

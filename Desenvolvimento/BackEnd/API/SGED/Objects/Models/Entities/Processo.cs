@@ -16,7 +16,7 @@ namespace SGED.Objects.Models.Entities
         [Column("descricaoprocesso")]
         public string DescricaoProcesso { get; set; }
 
-        [Column("situacaoproceso")]
+        [Column("situacaoprocesso")]
         public string SituacaoProcesso { get; set; }
 
         [Column("dataaprovacao")]
@@ -25,23 +25,23 @@ namespace SGED.Objects.Models.Entities
         [Column("statusprocesso")]
         public StatusProcess Status { get; set; }
 
-        [ForeignKey("idimovel")]
+        [Column("idimovel")]
         public int IdImovel { get; set; }
 
-        [ForeignKey("idtipoprocesso")]
+        [Column("idtipoprocesso")]
         public int IdTipoProcesso { get; set; }
 
-        [ForeignKey("idengenheiro")]
-        public int IdEngenheiro { get; set; }
+        [Column("idengenheiro")]
+        public int? IdEngenheiro { get; set; }
 
-        [ForeignKey("idfiscal")]
-        public int IdFiscal { get; set; }
+        [Column("idfiscal")]
+        public int? IdFiscal { get; set; }
 
-        [ForeignKey("idresponsavel")]
-        public int IdResponsavel { get; set; }
+        [Column("idresponsavel")]
+        public int? IdResponsavel { get; set; }
 
-        [ForeignKey("idaprovador")]
-        public int IdAprovador { get; set; }
+        [Column("idaprovador")]
+        public int? IdAprovador { get; set; }
 
 
         public Imovel? Imovel { get; set; }

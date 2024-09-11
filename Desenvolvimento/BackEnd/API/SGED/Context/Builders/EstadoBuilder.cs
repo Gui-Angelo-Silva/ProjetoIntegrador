@@ -12,6 +12,9 @@ namespace SGED.Context.Builders
             modelBuilder.Entity<Estado>().Property(e => e.NomeEstado).HasMaxLength(50).IsRequired();
             modelBuilder.Entity<Estado>().Property(e => e.UfEstado).HasMaxLength(2).IsRequired();
 
+            // Declaração: Defini o ID como Chave Primária
+            modelBuilder.Entity<Estado>().HasKey(e => e.Id);
+
 
             // Inserções
             modelBuilder.Entity<Estado>().HasData(

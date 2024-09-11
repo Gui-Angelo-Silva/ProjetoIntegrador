@@ -10,11 +10,14 @@ namespace SGED.Context.Builders
         public static void Build(ModelBuilder modelBuilder)
         {
             // Builder
-            modelBuilder.Entity<TipoDocumentoEtapa>().HasKey(tde => tde.Id);
+            modelBuilder.Entity<TipoDocumentoEtapa>().Property(tde => tde.Id);
             modelBuilder.Entity<TipoDocumentoEtapa>().Property(tde => tde.Posicao).IsRequired();
             modelBuilder.Entity<TipoDocumentoEtapa>().Property(tde => tde.Status).IsRequired();
             modelBuilder.Entity<TipoDocumentoEtapa>().Property(tde => tde.IdTipoDocumento).IsRequired();
             modelBuilder.Entity<TipoDocumentoEtapa>().Property(tde => tde.IdEtapa).IsRequired();
+
+            // Declaração: Defini o ID como Chave Primária
+            modelBuilder.Entity<TipoDocumentoEtapa>().HasKey(tde => tde.Id);
 
             // Relacionamento: TipoDocumento -> TipoDocumentoEtapa
             modelBuilder.Entity<TipoDocumentoEtapa>()

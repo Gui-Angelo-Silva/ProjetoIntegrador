@@ -134,7 +134,7 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                if (processoDTO.DocumentosProcessoDTOs.Any() || processoDTO.IdResponsavel.HasValue) processoDTO.PutOnPending();
+                if (processoDTO.DocumentosProcessoDTOs.Any() || processoDTO.IdResponsavel.HasValue) processoDTO.PutInProgress();
                 else processoDTO.AssignDefaultState();
 
                 await _processoService.Create(processoDTO);
@@ -262,7 +262,7 @@ namespace SGED.Controllers
                     documentoProcesso.IdProcesso = idProcesso;
                     documentoProcesso.IdTipoDocumentoEtapa = documentoEtapa.Id;
 
-                    if (idResponsavel != 0) { documentoProcesso.PutOnPending(); documentoProcesso.IdResponsavel = idResponsavel; } // Existir um responsavel pelo processo
+                    if (idResponsavel.HasValue) { documentoProcesso.PutOnPending(); documentoProcesso.IdResponsavel = idResponsavel; } // Existir um responsavel pelo processo
                     else documentoProcesso.AssignDefaultState();
                 }
 

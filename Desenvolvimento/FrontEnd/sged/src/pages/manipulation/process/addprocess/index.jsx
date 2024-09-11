@@ -23,8 +23,8 @@ const AddProcess = () => {
 
   // Services initialization --------------------------------------------------------------------------------------------------------------------------
   const connection = new ConnectionService();
-  const list_EnrollmentRegistrations = ListModule();
-  const selectBox_EnrollmentRegistrations = SelectModule();
+  const list_Realstate = ListModule();
+  const selectBox_Realstate = SelectModule();
 
   const list_TypesProcess = ListModule();
   const selectBox_TypesProcess = SelectModule();
@@ -40,6 +40,15 @@ const AddProcess = () => {
 
   // State hooks --------------------------------------------------------------------------------------------------------------------------------------
   const [updateData, setUpdateData] = useState(true);
+
+  const [process, setProcess] = useState({
+    identificationNumber: "",
+    processSituation: "",
+    processDescription: "",
+    approvationDate: "",
+    processStatus: 1,
+  });
+  const [documentsProcess, setDocumentsProcess] = useState([]);
 
   const [realstate, setRealstate] = useState({});
   const [owner, setOwner] = useState({});
@@ -63,7 +72,7 @@ const AddProcess = () => {
   // Imóvel
   const GetAllEnrollmentRegistrations = async () => {
     await connection.endpoint("Imovel").action("GetAllEnrollmentRegistrations").get();
-    list_EnrollmentRegistrations.setList(connection.getList());
+    list_Realstate.setList(connection.getList());
   };
 
   const GetRealstate = async (idRealstate) => {
@@ -158,6 +167,33 @@ const AddProcess = () => {
   };
 
 
+  // Cadastro
+  const PostAllDatas = async () => {
+    var dataProcess = {
+      IdentificacaoProcesso: process.identificationNumber,
+      DescricaoProcesso: process.processDescription || "",
+      SituacaoProcesso: process.processSituation || "",
+      DataAprovacao: process.approvationDate || "",
+      Status: process.processStatus || 0,
+
+      IdImovel: selectBox_Realstate.selectedOption.value,
+      IdTipoProcesso: selectBox_TypesProcess.selectedOption.value,
+      IdEngenheiro: selectBox_Engineer.selectedOption.value || null,
+      IdFiscal: selectBox_Supervisor.selectedOption.value || null,
+      IdResponsavel: selectBox_UserResponsible.selectedOption.value || null,
+      IdAprovador: selectBox_UserApprover.selectedOption.value || null,
+
+      DocumentosProcessoDTOs: []
+    };
+
+    console.log(dataProcess);
+
+    await connection.endpoint("Processo").action("PostAllDatas").post(dataProcess);
+    list_Engineers.setList(connection.getList());
+  };
+
+
+
   // UseEffets ----------------------------------------------------------------------------------------------------------------------------------------
   useEffect(() => {
     if (updateData) {
@@ -174,25 +210,25 @@ const AddProcess = () => {
 
   // Imóvel
   useEffect(() => { // Para atualizar as opções do Select bem como o valor padrão selecionado
-    if (list_EnrollmentRegistrations.list.length !== 0) {
-      selectBox_EnrollmentRegistrations.updateOptions(list_EnrollmentRegistrations.list, "id", "inscricaoCadastral");
+    if (list_Realstate.list.length !== 0) {
+      selectBox_Realstate.updateOptions(list_Realstate.list, "id", "inscricaoCadastral");
 
       /*if (!city.idState) {
-          selectBox_EnrollmentRegistrations.selectOption(selectBox_EnrollmentRegistrations.lastSelected ? selectBox_EnrollmentRegistrations.lastSelected : listState.list[0]?.id);
-          selectBox_EnrollmentRegistrations.setLastSelected(0);
+          selectBox_Realstate.selectOption(selectBox_Realstate.lastSelected ? selectBox_Realstate.lastSelected : listState.list[0]?.id);
+          selectBox_Realstate.setLastSelected(0);
       }*/
     } else {
-      selectBox_EnrollmentRegistrations.updateOptions([]);
-      selectBox_EnrollmentRegistrations.selectOption(0);
+      selectBox_Realstate.updateOptions([]);
+      selectBox_Realstate.selectOption(0);
     }
-  }, [list_EnrollmentRegistrations.list]);
+  }, [list_Realstate.list]);
 
   useEffect(() => {
-    if (selectBox_EnrollmentRegistrations.selectedOption.value) {
+    if (selectBox_Realstate.selectedOption.value) {
       setCurrentImageIndex(0);
-      GetRealstate(selectBox_EnrollmentRegistrations.selectedOption.value);
+      GetRealstate(selectBox_Realstate.selectedOption.value);
     }
-  }, [selectBox_EnrollmentRegistrations.selectedOption]);
+  }, [selectBox_Realstate.selectedOption]);
 
   useEffect(() => {
     if (realstate.id) {
@@ -397,7 +433,7 @@ const AddProcess = () => {
 
 
 
-  
+
   const [activeDocument, setActiveDocument] = useState(null);
 
   const handleToggle = (id) => {
@@ -428,22 +464,23 @@ const AddProcess = () => {
           <div className="flex flex-col w-1/3 gap-y-3">
             <h1 className="text-lg text-gray-700">Imóvel:</h1>
             <Select
-              value={selectBox_EnrollmentRegistrations.selectedOption}
-              onChange={selectBox_EnrollmentRegistrations.handleChange}
-              onInputChange={selectBox_EnrollmentRegistrations.delayedSearch}
-              loadOptions={selectBox_EnrollmentRegistrations.loadOptions}
-              options={selectBox_EnrollmentRegistrations.options}
+              value={selectBox_Realstate.selectedOption}
+              onChange={selectBox_Realstate.handleChange}
+              onInputChange={selectBox_Realstate.delayedSearch}
+              loadOptions={selectBox_Realstate.loadOptions}
+              options={selectBox_Realstate.options}
               placeholder="Pesquisar inscrição cadastral . . ."
               isClearable
               isSearchable
               noOptionsMessage={() => {
-                if (list_EnrollmentRegistrations.list.length === 0) {
+                if (list_Realstate.list.length === 0) {
                   return "Nenhuma Inscrição Cadastral existente!";
                 } else {
                   return "Nenhuma opção encontrada!";
                 }
               }}
               className="style-select"
+              required
             />
 
             <h1 className="text-lg text-gray-700">Número:</h1>
@@ -529,6 +566,7 @@ const AddProcess = () => {
                 }
               }}
               className="style-select"
+              required
             />
 
             <h1 className="text-lg text-gray-700">Descrição:</h1>
@@ -545,17 +583,51 @@ const AddProcess = () => {
             <input
               type="text"
               className="rounded-sm border-[#e5e7eb]"
+              onChange={(e) =>
+                setProcess((prevState) => ({
+                  ...prevState,
+                  identificationNumber: e.target.value,
+                }))
+              }
+              value={process.identificationNumber}
+              required
+            />
+
+            <h1 className="text-lg text-gray-700">Situação:</h1>
+            <textarea
+              className="rounded-sm border-[#e5e7eb] w-full h-32 resize-none"
+              onChange={(e) =>
+                setProcess((prevState) => ({
+                  ...prevState,
+                  processSituation: e.target.value,
+                }))
+              }
+              value={process.processSituation}
             />
 
             <h1 className="text-lg text-gray-700">Descrição:</h1>
             <textarea
               className="rounded-sm border-[#e5e7eb] w-full h-32 resize-none"
-            ></textarea>
+              onChange={(e) =>
+                setProcess((prevState) => ({
+                  ...prevState,
+                  processDescription: e.target.value,
+                }))
+              }
+              value={process.processDescription}
+            />
 
             <h1 className="text-lg text-gray-700">Data de Aprovação:</h1>
             <input
-              type="text"
+              type="date"
               className="rounded-sm border-[#e5e7eb]"
+              onChange={(e) =>
+                setProcess((prevState) => ({
+                  ...prevState,
+                  approvationDate: e.target.value,
+                }))
+              }
+              value={process.approvationDate}
             />
 
             <h1 className="text-lg text-gray-700">Status:</h1>
@@ -563,7 +635,7 @@ const AddProcess = () => {
               disabled
               type="text"
               className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
-              value={"Em Andamento"}
+              value={process.processStatus}
             />
 
             <h1 className="text-lg text-gray-700">Engenheiro:</h1>
@@ -716,6 +788,10 @@ const AddProcess = () => {
               value={typeApprover.nomeTipoUsuario || ''}
             />
           </div>
+
+          <button className={`btn bg-[#2AA646] text-white hover:text-white hover:bg-[#059669]`} style={{ width: '100px', height: '40px' }} onClick={() => PostAllDatas()} >
+            {'Cadastrar'}
+          </button>
         </div>
         <hr className="my-10" />
 

@@ -57,7 +57,7 @@ namespace SGED.Objects.DTO.Entities
 
 
         public void AssignDefaultState() => Status = StatusProcessExtensions.AssignDefaultState();
-        public void PutOnPending() => Status = StatusProcessExtensions.PutInProgress();
+        public void PutInProgress() => Status = StatusProcessExtensions.PutInProgress();
         public void MoveToAnalysis() => Status = StatusProcessExtensions.MoveToAnalysis();
         public void Approve() => Status = StatusProcessExtensions.Approve();
         public void Disapprove() => Status = StatusProcessExtensions.Disapprove();

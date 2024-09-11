@@ -12,7 +12,7 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240911023808_Database")]
+    [Migration("20240911170919_Database")]
     partial class Database
     {
         /// <inheritdoc />

@@ -13,6 +13,8 @@ import ConnectionService from "../../../../object/service/connection";
 import ListModule from "../../../../object/modules/list";
 import SelectModule from '../../../../object/modules/select';
 
+import DocumentsComponent from './documents/documentsProcess';
+
 const AddProcess = () => {
   const montage = useMontage();
 
@@ -66,6 +68,10 @@ const AddProcess = () => {
 
   const [engineer, setEngineer] = useState({});
   const [supervisor, setSupervisor] = useState({});
+
+  // Documentos
+  const [datasDocumentsProcess, setDatasDocumentsProcess] = useState([]);
+
 
   // Functions ----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -383,7 +389,6 @@ const AddProcess = () => {
 
   // Gerenciar a lista de Etapas:
   const [expandedRows, setExpandedRows] = useState([]); // Controla quais etapas estão expandidas
-  const [expandedDetail, setExpandedDetail] = useState(null); // Controla qual "detail" foi clicado
   const [typeDocumentStagesData, setTypeDocumentStagesData] = useState({}); // Armazena os dados de TipoDocumentEtapa
   const [typeDocumentsData, setTypeDocumentsData] = useState({}); // Armazena os dados de TipoDocumento
 
@@ -394,13 +399,6 @@ const AddProcess = () => {
         prevRows.includes(rowId)
           ? prevRows.filter((id) => id !== rowId) // Remove a etapa se já estiver expandida
           : [...prevRows, rowId] // Adiciona a etapa se não estiver expandida
-    );
-  };
-
-  // Controla a expansão do detalhe
-  const toggleDetail = (detailId) => {
-    setExpandedDetail((prevDetail) =>
-      prevDetail === detailId ? null : detailId
     );
   };
 
@@ -431,7 +429,46 @@ const AddProcess = () => {
     });
   }, [expandedRows]);
 
+  // Documento
 
+  // Função para anexar o documento, sem interferir nas outras interfaces
+  const handleAttach = (documentId) => {
+    setDatasDocumentsProcess((prevState) => {
+      const documentIndex = prevState.findIndex((data) => data.documentId === documentId);
+      if (documentIndex === -1) {
+        // Cria um novo estado para o documento se não existir
+        return [...prevState, { documentId, file: null, isVisible: true, saved: false }];
+      } else {
+        // Atualiza o estado para tornar a interface de anexo visível
+        const updatedState = [...prevState];
+        updatedState[documentIndex].isVisible = true;
+        return updatedState;
+      }
+    });
+  };
+
+  // Atualiza o arquivo selecionado
+  const handleFileChange = (documentId, file) => {
+    setDatasDocumentsProcess((prevState) =>
+      prevState.map((data) =>
+        data.documentId === documentId ? { ...data, file } : data
+      )
+    );
+  };
+
+  // Salva o documento e atualiza o estado
+  const handleSave = (documentId) => {
+    const documentData = datasDocumentsProcess.find((data) => data.documentId === documentId);
+    if (documentData) {
+      setDocumentsProcess((prevState) => [...prevState, documentData]); // Copia os dados para documentsProcess
+
+      setDatasDocumentsProcess((prevState) =>
+        prevState.map((data) =>
+          data.documentId === documentId ? { ...data, saved: true, isVisible: false } : data
+        )
+      );
+    }
+  };
 
 
   const [activeDocument, setActiveDocument] = useState(null);
@@ -440,6 +477,29 @@ const AddProcess = () => {
     setActiveDocument(activeDocument === id ? null : id);
   };
 
+
+
+  useEffect(() => {
+    console.log(documentsProcess);
+  }, [documentsProcess]);
+
+  useEffect(() => {
+    console.log(datasDocumentsProcess);
+  }, [datasDocumentsProcess]);
+
+  // Chame a função para buscar os documentos das etapas, conforme necessário
+  useEffect(() => {
+    // Suponha que você tenha uma função para obter as etapas
+    const fetchTypeDocumentStages = async (idStage) => {
+      const documents = await GetTypeDocumentStages(idStage);
+      setTypeDocumentStagesData((prevData) => ({ ...prevData, [idStage]: documents }));
+    };
+
+    // Chame fetchTypeDocumentStages para cada etapa que você precisa buscar
+    stages.forEach((stage) => {
+      fetchTypeDocumentStages(stage.id);
+    });
+  }, [stages]);
 
 
   return (
@@ -785,94 +845,13 @@ const AddProcess = () => {
 
 
 
-        <div className='flex gap-x-5'>
-          {/* Lista de Etapas */}
-          <ul className="w-3/4">
-            {stages.map((stage) => {
-              const typeDocumentStages = typeDocumentStagesData[stage.id] || []; // Dados de TipoDocumentoEtapa relacionados à etapa
-
-              return (
-                <li key={stage.id} className="border-b border-gray-200 mb-4">
-                  <div className="flex justify-between items-center p-4 bg-gray-300 cursor-pointer" onClick={() => toggleRow(stage.id)}>
-                    <span>Etapa {stage.posicao} - {stage.nomeEtapa}</span>
-                    <button className="text-blue-600">{expandedRows.includes(stage.id) ? 'Recolher' : 'Expandir'}</button>
-                  </div>
-
-                  {expandedRows.includes(stage.id) && (
-                    <div className="bg-gray-100 p-4">
-                      <ul>
-                        {typeDocumentStages.map((typeDocumentStage) => {
-                          const typeDocument = typeDocumentsData[typeDocumentStage.idTipoDocumento];
-
-                          // Busca o documento se ainda não tiver sido carregado
-                          if (!typeDocument && !typeDocumentsData[typeDocumentStage.idTipoDocumento]) {
-                            fetchTypeDocument(typeDocumentStage.idTipoDocumento);
-                          }
-
-                          if (typeDocument) {
-                            return (
-                              <li key={typeDocument.id} className="p-2 border-b border-gray-200 cursor-pointer">
-                                <span>Documento {typeDocument.posicao} - {typeDocument.nomeTipoDocumento}</span>
-                                <button
-                                  className="text-blue-600"
-                                  onClick={() => handleToggle(typeDocument.id)}
-                                >
-                                  Anexar
-                                </button>
-                                {activeDocument === typeDocument.id && (
-                                  <div className="mt-2">
-                                    <form>
-                                      <label htmlFor="fileUpload" className="block mb-2 text-sm font-medium text-gray-700">
-                                        Selecione um arquivo:
-                                      </label>
-                                      <input
-                                        type="file"
-                                        id="fileUpload"
-                                        className="block w-full text-sm text-gray-500 border border-gray-300 rounded-lg cursor-pointer focus:outline-none"
-                                      />
-                                      <button
-                                        type="submit"
-                                        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
-                                      >
-                                        Enviar
-                                      </button>
-                                    </form>
-                                  </div>
-                                )}
-                              </li>
-                            );
-                          }
-                          return null;
-                        })}
-                      </ul>
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-
-          {/* Lista de Documentos Associados ao Detalhe Selecionado */}
-          {expandedDetail && (
-            <div className="w-1/2">
-              {data.map(row =>
-                row.details.map(detail =>
-                  detail.id === expandedDetail && (
-                    <div key={detail.id} className="bg-white p-4 border">
-                      <h2 className="text-lg mb-4">Documentos para {detail.text}</h2>
-                      {detail.documents.map(doc => (
-                        <div key={doc.id} className="mb-2">
-                          <span>{doc.name}</span>
-                          <input type="file" className="ml-4" />
-                        </div>
-                      ))}
-                    </div>
-                  )
-                )
-              )}
-            </div>
-          )}
-        </div>
+        <DocumentsComponent
+          stages={stages}
+          typeDocumentStagesData={typeDocumentStagesData}
+          typeDocumentsData={typeDocumentsData}
+          fetchTypeDocument={fetchTypeDocument}
+          setDocumentsProcess={setDocumentsProcess}
+        />
       </div>
     </LayoutPage>
   );

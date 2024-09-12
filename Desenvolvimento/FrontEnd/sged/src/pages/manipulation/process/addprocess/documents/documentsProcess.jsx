@@ -6,13 +6,12 @@ const DocumentosComponent = ({ stages, typeDocumentStagesData, typeDocumentsData
   const [expandedRows, setExpandedRows] = useState([]);
   const [formMode, setFormMode] = useState(null); // Armazena o estado atual do formulário
 
-  // Controla a expansão da etapa
   const toggleRow = (rowId) => {
     setExpandedRows(
       (prevRows) =>
         prevRows.includes(rowId)
-          ? prevRows.filter((id) => id !== rowId) // Remove a etapa se já estiver expandida
-          : [...prevRows, rowId] // Adiciona a etapa se não estiver expandida
+          ? prevRows.filter((id) => id !== rowId)
+          : [...prevRows, rowId]
     );
   };
 
@@ -26,9 +25,15 @@ const DocumentosComponent = ({ stages, typeDocumentStagesData, typeDocumentsData
   };
 
   const handleFileChange = (documentId, file) => {
+    if (file && file.type !== 'application/pdf') {
+      alert('Por favor, selecione um arquivo PDF.');
+      return;
+    }
     setDatasDocumentsProcess((prevState) =>
       prevState.map((data) =>
-        data.documentId === documentId ? { ...data, file, previousFile: data.file } : data
+        data.documentId === documentId
+          ? { ...data, file: file ?? data.file, previousFile: file ? data.file : data.previousFile }
+          : data
       )
     );
   };
@@ -39,12 +44,10 @@ const DocumentosComponent = ({ stages, typeDocumentStagesData, typeDocumentsData
       setDocumentsProcess((prevState) => {
         const existingIndex = prevState.findIndex((data) => data.documentId === documentId);
         if (existingIndex !== -1) {
-          // Atualiza o documento existente
           const newState = [...prevState];
           newState[existingIndex] = { ...documentData, saved: true };
           return newState;
         } else {
-          // Adiciona novo documento
           return [...prevState, { ...documentData, saved: true }];
         }
       });
@@ -62,25 +65,23 @@ const DocumentosComponent = ({ stages, typeDocumentStagesData, typeDocumentsData
 
   const handleCancel = (documentId) => {
     if (formMode === 'modifying') {
-      // Se o modo for 'modifying', restaura os dados do documento
       const documentData = datasDocumentsProcess.find((data) => data.documentId === documentId);
       if (documentData) {
         setDatasDocumentsProcess((prevState) =>
           prevState.map((data) =>
             data.documentId === documentId
-              ? { ...documentData, saved: false, previousFile: documentData.file }
+              ? { ...documentData, saved: false, file: documentData.previousFile }
               : data
           )
         );
       }
     } else {
-      // Caso contrário, apenas remove o documento da lista
       setDatasDocumentsProcess((prevState) =>
         prevState.filter((data) => data.documentId !== documentId)
       );
       setActiveDocuments((prev) => prev.filter((id) => id !== documentId));
     }
-    setFormMode(null); // Reseta o modo do formulário
+    setFormMode(null);
   };
 
   const handleRemove = (documentId) => {
@@ -93,13 +94,25 @@ const DocumentosComponent = ({ stages, typeDocumentStagesData, typeDocumentsData
   };
 
   const handleModify = (documentId) => {
+    const documentData = datasDocumentsProcess.find((data) => data.documentId === documentId);
+    if (!documentData) {
+      const existingDocumentData = documentsProcess.find((data) => data.documentId === documentId);
+      if (existingDocumentData) {
+        setDatasDocumentsProcess((prevState) =>
+          prevState.map((data) =>
+            data.documentId === documentId ? { ...existingDocumentData, saved: false } : data
+          )
+        );
+      }
+    } else {
+      setDatasDocumentsProcess((prevState) =>
+        prevState.map((data) =>
+          data.documentId === documentId ? { ...data, saved: false } : data
+        )
+      );
+    }
     setActiveDocuments((prev) => [...prev, documentId]);
-    setDatasDocumentsProcess((prevState) =>
-      prevState.map((data) =>
-        data.documentId === documentId ? { ...data, saved: false } : data
-      )
-    );
-    setFormMode('modifying'); // Define o modo como 'modifying'
+    setFormMode('modifying');
   };
 
   return (
@@ -160,16 +173,30 @@ const DocumentosComponent = ({ stages, typeDocumentStagesData, typeDocumentsData
 
                             {isActive && (
                               <div className="mt-2">
-                                <form onSubmit={(e) => { e.preventDefault(); handleSave(typeDocument.id); }}>
-                                  <label htmlFor={`fileUpload-${typeDocument.id}`} className="block mb-2 text-sm font-medium text-gray-700">
-                                    Selecione um arquivo:
-                                  </label>
+                                <label htmlFor={`fileUpload-${typeDocument.id}`} className="block mb-2 text-sm font-medium text-gray-700">
+                                  Anexar Arquivo:
+                                </label>
+                                <div className="flex items-center">
+                                  <button
+                                    type="button"
+                                    className="px-4 py-2 bg-blue-500 text-white rounded"
+                                    onClick={() => document.getElementById(`fileUpload-${typeDocument.id}`).click()}
+                                  >
+                                    Anexar Arquivo
+                                  </button>
                                   <input
                                     type="file"
                                     id={`fileUpload-${typeDocument.id}`}
-                                    className="block w-full text-sm text-gray-500 border border-gray-300 rounded-lg cursor-pointer focus:outline-none"
+                                    className="hidden"
+                                    accept=".pdf"
                                     onChange={(e) => handleFileChange(typeDocument.id, e.target.files[0])}
                                   />
+                                  {data && data.file && (
+                                    <span className="ml-4 text-gray-700">Arquivo: {data.file.name}</span>
+                                  )}
+                                </div>
+
+                                <form onSubmit={(e) => { e.preventDefault(); handleSave(typeDocument.id); }}>
                                   <div className="flex gap-2 mt-2">
                                     <button
                                       type="button"
@@ -186,15 +213,6 @@ const DocumentosComponent = ({ stages, typeDocumentStagesData, typeDocumentsData
                                     </button>
                                   </div>
                                 </form>
-                                {datasDocumentsProcess
-                                  .filter((data) => data.documentId === typeDocument.id)
-                                  .map((data, index) => (
-                                    data.file && (
-                                      <div key={index} className="mt-2">
-                                        <span>Arquivo selecionado: {data.file.name}</span>
-                                      </div>
-                                    )
-                                  ))}
                               </div>
                             )}
                           </li>

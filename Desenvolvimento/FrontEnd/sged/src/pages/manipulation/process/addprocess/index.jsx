@@ -175,27 +175,47 @@ const AddProcess = () => {
 
   // Cadastro
   const PostAllDatas = async () => {
-    var dataProcess = {
+    // Prepara o array de documentos a partir dos dados armazenados
+    const documentList = await Promise.all(datasDocumentsProcess.map(async (data) => ({
+      identificacaoDocumento: data.documentId,
+      descricaoDocumento: data.description || "",
+      observacaoDocumento: data.observation || "",
+      arquivoDocumento: data.file ? await convertFileToBytes(data.file) : null, // Converte o arquivo para bytes
+      status: data.saved ? "saved" : "not_saved",
+      idTipoDocumentoEtapa: data.typeId || null,
+      idResponsavel: data.responsibleId || null,
+    })));
+  
+    // Constrói o objeto de dados do processo
+    const dataProcess = {
       IdentificacaoProcesso: process.identificationNumber,
       DescricaoProcesso: process.processDescription || "",
       SituacaoProcesso: process.processSituation || "",
       DataAprovacao: process.approvationDate || "",
       Status: process.processStatus || 0,
-
+  
       IdImovel: selectBox_Realstate.selectedOption.value,
       IdTipoProcesso: selectBox_TypesProcess.selectedOption.value,
       IdEngenheiro: selectBox_Engineer.selectedOption.value || null,
       IdFiscal: selectBox_Supervisor.selectedOption.value || null,
       IdResponsavel: selectBox_UserResponsible.selectedOption.value || null,
       IdAprovador: selectBox_UserApprover.selectedOption.value || null,
-
-      DocumentosProcessoDTOs: []
+  
+      DocumentosProcessoDTOs: documentList
     };
-
-    console.log(dataProcess);
-
+  
     await connection.endpoint("Processo").action("PostAllDatas").post(dataProcess);
     list_Engineers.setList(connection.getList());
+  };  
+
+  // Função para converter arquivo em bytes
+  const convertFileToBytes = async (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file); // Lê o arquivo como ArrayBuffer (bytes)
+    });
   };
 
 
@@ -476,16 +496,6 @@ const AddProcess = () => {
   const handleToggle = (id) => {
     setActiveDocument(activeDocument === id ? null : id);
   };
-
-
-
-  useEffect(() => {
-    console.log(documentsProcess);
-  }, [documentsProcess]);
-
-  useEffect(() => {
-    console.log(datasDocumentsProcess);
-  }, [datasDocumentsProcess]);
 
   // Chame a função para buscar os documentos das etapas, conforme necessário
   useEffect(() => {

@@ -27,24 +27,28 @@ const DocumentModal = ({
   const convertFileToBytes = async (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
+      reader.onloadend = () => {
+        const arrayBuffer = reader.result;
+        const bytes = new Uint8Array(arrayBuffer); // Converte ArrayBuffer para Uint8Array
+        resolve(bytes);
+      };
       reader.onerror = reject;
       reader.readAsArrayBuffer(file);
     });
   };
-
+  
   const prepareDataForSave = async () => {
     const documentData = {
       documentId,
       identificationNumber: identificationNumber || "",
       documentDescription: documentDescription || "",
       documentObservation: documentObservation || "",
-      arquive: arquive ? await convertFileToBytes(arquive) : null,
+      arquive: arquive ? await convertFileToBytes(arquive) : null, // Mantém como Uint8Array
       status: 2,
-      idTypeDocumentStage: idTypeDocument || null,
+      idTypeDocumentStage: idTypeDocument || 0,
       idUserResponsible: idUserResponsible || null,
     };
-
+  
     await onSave(documentId, documentData);
   };
 

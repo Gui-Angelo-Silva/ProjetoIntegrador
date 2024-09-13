@@ -171,25 +171,28 @@ const AddProcess = () => {
     setSupervisor(connection.getObject());
   };
 
+  function uint8ArrayToBase64(uint8Array) {
+    // Cria um array de bytes de string usando o Uint8Array
+    const binaryString = String.fromCharCode.apply(null, uint8Array);
+    
+    // Converte a string binária em Base64
+    return btoa(binaryString);
+  }
+
   // Função para postar todos os dados
   const PostAllDatas = async () => {
     // Prepara o array de documentos a partir dos dados armazenados
-    const documentList = await Promise.all(
-      documentsProcess.map(async (data) => {
-        return {
-          identificacaoDocumento: data.identificationNumber || "",
-          descricaoDocumento: data.documentDescription || "",
-          observacaoDocumento: data.documentObservation || "",
-          arquivoDocumento: data.arquive || "", // Converte arquivo para base64 se necessário
-          status: data.documentStatus || 0,
-
-          idProcesso: "3fa85f64-5717-4562-b3fc-2c963f66afa6", // Substitua pelo ID real do processo, se aplicável
-          idTipoDocumentoEtapa: data.idTypeDocumentStage || 0,
-          idResponsavel: data.idUserResponsible || null,
-          idAprovador: data.idAprovador || null, // Adicione um ID de aprovador válido
-        };
-      })
-    );
+    const documentList = documentsProcess.map((data) => ({
+      identificacaoDocumento: data.identificationNumber || "",
+      descricaoDocumento: data.documentDescription || "",
+      observacaoDocumento: data.documentObservation || "",
+      arquivoDocumentoBase64: data.arquive ? uint8ArrayToBase64(data.arquive) : "", // Converte o Uint8Array em Base64
+      status: data.documentStatus || 0,
+      
+      idTipoDocumentoEtapa: data.idTypeDocumentStage || 0,
+      idResponsavel: data.idUserResponsible || null,
+      idAprovador: data.idUserApprover || null,
+    }));
 
     console.log(documentList);
 
@@ -201,14 +204,14 @@ const AddProcess = () => {
       dataAprovacao: process.approvationDate || "",
       status: process.processStatus || 0,
 
-      idImovel: selectBox_Realstate.selectedOption.value || 0,
-      idTipoProcesso: selectBox_TypesProcess.selectedOption.value || 0,
-      idEngenheiro: selectBox_Engineer.selectedOption.value || 0,
-      idFiscal: selectBox_Supervisor.selectedOption.value || 0,
-      idResponsavel: selectBox_UserResponsible.selectedOption.value || 0,
-      idAprovador: selectBox_UserApprover.selectedOption.value || 0,
+      idImovel: selectBox_Realstate.selectedOption.value,
+      idTipoProcesso: selectBox_TypesProcess.selectedOption.value,
+      idEngenheiro: selectBox_Engineer.selectedOption.value || null,
+      idFiscal: selectBox_Supervisor.selectedOption.value || null,
+      idResponsavel: selectBox_UserResponsible.selectedOption.value || null,
+      idAprovador: selectBox_UserApprover.selectedOption.value || null,
 
-      documentosProcessoDTOs: documentList
+      documentosProcessoDTOs: documentList.length > 0? documentList : []
     };
 
     console.log(dataProcess);

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
+
 import { HouseLine, User } from '@phosphor-icons/react';
 
 const ProcessForm = ({
@@ -22,8 +23,10 @@ const ProcessForm = ({
   selectBox_Supervisor,
   userResponsible,
   selectBox_UserResponsible,
+  typeResponsible,
   userApprover,
-  selectBox_UserApprover,
+  typeApprover,
+  
   PostAllDatas
 }) => {
 
@@ -239,7 +242,6 @@ const ProcessForm = ({
           <img
             className="h-[50px] w-[50px]"
             src={engineer.imagemPessoa}
-            alt="Engenheiro"
           />
         ) : (
           <User size={50} />
@@ -253,11 +255,13 @@ const ProcessForm = ({
           placeholder="Pesquisar engenheiro . . ."
           isClearable
           isSearchable
-          noOptionsMessage={() =>
-            list_Users.list.length === 0
-              ? "Nenhum Engenheiro existente!"
-              : "Nenhuma opção encontrada!"
-          }
+          noOptionsMessage={() => {
+            if (list_Users.list.length === 0) {
+              return "Nenhum Engenheiro existente!";
+            } else {
+              return "Nenhuma opção encontrada!";
+            }
+          }}
           className="style-select"
         />
         <input
@@ -272,7 +276,6 @@ const ProcessForm = ({
           <img
             className="h-[50px] w-[50px]"
             src={supervisor.imagemPessoa}
-            alt="Fiscal"
           />
         ) : (
           <User size={50} />
@@ -286,11 +289,13 @@ const ProcessForm = ({
           placeholder="Pesquisar fiscal . . ."
           isClearable
           isSearchable
-          noOptionsMessage={() =>
-            list_Users.list.length === 0
-              ? "Nenhum Fiscal existente!"
-              : "Nenhuma opção encontrada!"
-          }
+          noOptionsMessage={() => {
+            if (list_Users.list.length === 0) {
+              return "Nenhum Fiscal existente!";
+            } else {
+              return "Nenhuma opção encontrada!";
+            }
+          }}
           className="style-select"
         />
         <input
@@ -300,12 +305,13 @@ const ProcessForm = ({
           value={supervisor.cpfCnpjPessoa || ''}
         />
 
+
+        {/* Funcionário Responsável */}
         <h1 className="text-lg text-gray-700">Responsável:</h1>
         {userResponsible.imagemPessoa ? (
           <img
             className="h-[50px] w-[50px]"
             src={userResponsible.imagemPessoa}
-            alt="Responsável"
           />
         ) : (
           <User size={50} />
@@ -316,14 +322,16 @@ const ProcessForm = ({
           onInputChange={selectBox_UserResponsible.delayedSearch}
           loadOptions={selectBox_UserResponsible.loadOptions}
           options={selectBox_UserResponsible.options}
-          placeholder="Pesquisar responsável . . ."
+          placeholder="Pesquisar usuário . . ."
           isClearable
           isSearchable
-          noOptionsMessage={() =>
-            list_Users.list.length === 0
-              ? "Nenhum Responsável existente!"
-              : "Nenhuma opção encontrada!"
-          }
+          noOptionsMessage={() => {
+            if (list_Users.list.length === 0) {
+              return "Nenhum Usuário existente!";
+            } else {
+              return "Nenhuma opção encontrada!";
+            }
+          }}
           className="style-select"
         />
         <input
@@ -332,38 +340,39 @@ const ProcessForm = ({
           className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
           value={userResponsible.emailPessoa || ''}
         />
+        <input
+          type="text"
+          disabled
+          className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
+          value={typeResponsible.nomeTipoUsuario || ''}
+        />
 
         <h1 className="text-lg text-gray-700">Aprovador:</h1>
         {userApprover.imagemPessoa ? (
           <img
             className="h-[50px] w-[50px]"
             src={userApprover.imagemPessoa}
-            alt="Aprovador"
           />
         ) : (
           <User size={50} />
         )}
-        <Select
-          value={selectBox_UserApprover.selectedOption}
-          onChange={selectBox_UserApprover.handleChange}
-          onInputChange={selectBox_UserApprover.delayedSearch}
-          loadOptions={selectBox_UserApprover.loadOptions}
-          options={selectBox_UserApprover.options}
-          placeholder="Pesquisar aprovador . . ."
-          isClearable
-          isSearchable
-          noOptionsMessage={() =>
-            list_Users.list.length === 0
-              ? "Nenhum Aprovador existente!"
-              : "Nenhuma opção encontrada!"
-          }
-          className="style-select"
+        <input
+          type="text"
+          disabled
+          className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
+          value={userApprover.nomePessoa || ''}
         />
         <input
           type="text"
           disabled
           className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
           value={userApprover.emailPessoa || ''}
+        />
+        <input
+          type="text"
+          disabled
+          className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
+          value={typeApprover.nomeTipoUsuario || ''}
         />
 
         <div className="flex justify-center gap-x-3 mt-6">

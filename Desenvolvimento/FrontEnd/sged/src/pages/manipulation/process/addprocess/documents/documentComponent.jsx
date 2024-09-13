@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import DocumentModal from './documentModal';
 
-const DocumentComponent = ({ stages, typeDocumentStagesData, typeDocumentsData, fetchTypeDocument, setDocumentsProcess, documentsProcess }) => {
-  const [datasDocumentsProcess, setDatasDocumentsProcess] = useState([]);
+const DocumentComponent = ({ 
+  stages, 
+  typeDocumentStagesData, 
+  typeDocumentsData, 
+  fetchTypeDocument, 
+  setDocumentsProcess, 
+  documentsProcess, 
+  
+  userResponsible, 
+  typeResponsible 
+}) => {
+  
   const [expandedRows, setExpandedRows] = useState([]);
   const [formMode, setFormMode] = useState(null);
   const [currentDocumentId, setCurrentDocumentId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [idDocumentProcess, setIdDocumentProcess] = useState(1);
 
   const toggleRow = (rowId) => {
     setExpandedRows((prevRows) =>
@@ -17,118 +28,53 @@ const DocumentComponent = ({ stages, typeDocumentStagesData, typeDocumentsData, 
   };
 
   const handleAttach = (documentId) => {
-    // Marcar o documento como ativo sem remover "Anexar"
-    setDatasDocumentsProcess((prevState) => {
-      const exists = prevState.some((data) => data.documentId === documentId);
-      if (exists) return prevState;
-      return [...prevState, { documentId, file: null, saved: false, previousFile: null }];
-    });
-
     setCurrentDocumentId(documentId);
     setFormMode('attaching');
-    setModalOpen(true); // Abre o modal sem alterar a exibição dos botões
+    setModalOpen(true);
   };
 
-  const handleFileChange = (file) => {
-    if (file && file.type !== 'application/pdf') {
-      alert('Por favor, selecione um arquivo PDF.');
-      return;
-    }
-    setDatasDocumentsProcess((prevState) =>
-      prevState.map((data) =>
-        data.documentId === currentDocumentId
-          ? { ...data, file: file ?? data.file, previousFile: file ? data.file : data.previousFile }
-          : data
-      )
-    );
-  };
-
-  const handleSave = (documentId) => {
-    const documentData = datasDocumentsProcess.find((data) => data.documentId === documentId);
-
-    if (documentData) {
-      setDocumentsProcess((prevState) => {
-        const existingIndex = prevState.findIndex((data) => data.documentId === documentId);
-        if (existingIndex !== -1) {
-          const newState = [...prevState];
-          newState[existingIndex] = { ...documentData, saved: true };
-          return newState;
-        } else {
-          return [...prevState, { ...documentData, saved: true }];
-        }
-      });
-
-      setDatasDocumentsProcess((prevState) =>
-        prevState.map((data) =>
-          data.documentId === documentId ? { ...data, saved: true } : data
-        )
-      );
-
-      setFormMode(null);
-      setModalOpen(false);
-    }
-  };
-
-  const handleCancel = (documentId) => {
-    // Verifica se o documentId está definido
-    if (!documentId) return;  
-  
-    if (formMode === 'modifying') {
-      const documentData = documentsProcess.find((data) => data.documentId === documentId);
-  
-      if (documentData) {
-        // Restaura o estado de `datasDocumentsProcess` com base em `documentsProcess`
-        setDatasDocumentsProcess((prevState) => {
-          const existingData = prevState.find((data) => data.documentId === documentId);
-          if (existingData) {
-            return prevState.map((data) =>
-              data.documentId === documentId
-                ? { ...existingData, ...documentData }
-                : data
-            );
-          } else {
-            return [...prevState, { ...documentData }];
-          }
-        });
+  const handleSave = (documentId, data) => {
+    setDocumentsProcess((prevState) => {
+      const existingIndex = prevState.findIndex((data) => data.documentId === documentId);
+      if (existingIndex !== -1) {
+        const newState = [...prevState];
+        newState[existingIndex] = { ...data, saved: true };
+        return newState;
+      } else {
+        return [...prevState, { ...data, saved: true, idDocumentProcess }];
       }
-    } else if (formMode === 'attaching') {
-      // Remove o documento de `datasDocumentsProcess` se estiver no modo de anexação
-      setDatasDocumentsProcess((prevState) =>
-        prevState.filter((data) => data.documentId !== documentId)
-      );
-    }
-  
-    // Reseta o estado do modal
+    });
+
+    setIdDocumentProcess((prevId) => prevId + 1);
     setFormMode(null);
     setModalOpen(false);
-  };  
+  };
+
+  const handleCancel = () => {
+    setFormMode(null);
+    setModalOpen(false);
+  };
 
   const handleRemove = (documentId) => {
-    setDatasDocumentsProcess((prevState) =>
-      prevState.filter((data) => data.documentId !== documentId)
-    );
     setDocumentsProcess((prevState) =>
       prevState.filter((data) => data.documentId !== documentId)
     );
   };
 
   const handleModify = (documentId) => {
-    const documentData = datasDocumentsProcess.find((data) => data.documentId === documentId);
-    if (!documentData) {
-      const existingDocumentData = documentsProcess.find((data) => data.documentId === documentId);
-      if (existingDocumentData) {
-        setDatasDocumentsProcess((prevState) =>
-          [...prevState, { ...existingDocumentData, saved: true }]
-        );
-      }
-    }
+    setCurrentDocumentId(documentId);
     setFormMode('modifying');
-    setModalOpen(true); // Abre o modal para modificação sem alterar a exibição dos botões
+    setModalOpen(true);
   };
 
-  useEffect(() => {
-    console.log(datasDocumentsProcess);
-  }, [datasDocumentsProcess]);
+  // Encontrar o typeDocumentStage atual para o modal
+  const currentTypeDocumentStage = stages.reduce((acc, stage) => {
+    const foundStage = typeDocumentStagesData[stage.id]?.find((typeDocStage) => typeDocStage.idTipoDocumento === currentDocumentId);
+    return foundStage || acc;
+  }, null);
+
+  // Localize o typeDocument usando currentDocumentId
+  const currentTypeDocument = typeDocumentsData[currentDocumentId] || null;
 
   return (
     <div className='flex gap-x-5'>
@@ -152,7 +98,7 @@ const DocumentComponent = ({ stages, typeDocumentStagesData, typeDocumentsData, 
                       }
 
                       if (typeDocument) {
-                        const data = datasDocumentsProcess.find(d => d.documentId === typeDocument.id);
+                        const data = documentsProcess.find(d => d.documentId === typeDocument.id);
 
                         return (
                           <li key={typeDocument.id} className="p-2 border-b border-gray-200 cursor-pointer">
@@ -198,13 +144,14 @@ const DocumentComponent = ({ stages, typeDocumentStagesData, typeDocumentsData, 
 
       <DocumentModal
         isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={handleCancel}
         onSave={handleSave}
-        onCancel={handleCancel}
-        onFileChange={handleFileChange}
-        fileData={datasDocumentsProcess.find(data => data.documentId === currentDocumentId) || {}}
         formMode={formMode}
         documentId={currentDocumentId}
+        typeDocumentStage={currentTypeDocumentStage}
+        typeDocument={currentTypeDocument}
+        userResponsible={userResponsible}
+        typeResponsible={typeResponsible}
       />
     </div>
   );

@@ -171,50 +171,49 @@ const AddProcess = () => {
     setSupervisor(connection.getObject());
   };
 
-
-  // Cadastro
+  // Função para postar todos os dados
   const PostAllDatas = async () => {
     // Prepara o array de documentos a partir dos dados armazenados
-    const documentList = await Promise.all(datasDocumentsProcess.map(async (data) => ({
-      identificacaoDocumento: data.documentId,
-      descricaoDocumento: data.description || "",
-      observacaoDocumento: data.observation || "",
-      arquivoDocumento: data.file ? await convertFileToBytes(data.file) : null, // Converte o arquivo para bytes
-      status: data.saved ? "saved" : "not_saved",
-      idTipoDocumentoEtapa: data.typeId || null,
-      idResponsavel: data.responsibleId || null,
-    })));
+    const documentList = await Promise.all(
+      documentsProcess.map(async (data) => {
+        return {
+          identificacaoDocumento: data.identificationNumber || "",
+          descricaoDocumento: data.documentDescription || "",
+          observacaoDocumento: data.documentObservation || "",
+          arquivoDocumento: data.arquive || "", // Converte arquivo para base64 se necessário
+          status: data.documentStatus || 0,
+
+          idProcesso: "3fa85f64-5717-4562-b3fc-2c963f66afa6", // Substitua pelo ID real do processo, se aplicável
+          idTipoDocumentoEtapa: data.idTypeDocumentStage || 0,
+          idResponsavel: data.idUserResponsible || null,
+          idAprovador: data.idAprovador || null, // Adicione um ID de aprovador válido
+        };
+      })
+    );
+
+    console.log(documentList);
 
     // Constrói o objeto de dados do processo
     const dataProcess = {
-      IdentificacaoProcesso: process.identificationNumber,
-      DescricaoProcesso: process.processDescription || "",
-      SituacaoProcesso: process.processSituation || "",
-      DataAprovacao: process.approvationDate || "",
-      Status: process.processStatus || 0,
+      identificacaoProcesso: process.identificationNumber,
+      descricaoProcesso: process.processDescription || "",
+      situacaoProcesso: process.processSituation || "",
+      dataAprovacao: process.approvationDate || "",
+      status: process.processStatus || 0,
 
-      IdImovel: selectBox_Realstate.selectedOption.value,
-      IdTipoProcesso: selectBox_TypesProcess.selectedOption.value,
-      IdEngenheiro: selectBox_Engineer.selectedOption.value || null,
-      IdFiscal: selectBox_Supervisor.selectedOption.value || null,
-      IdResponsavel: selectBox_UserResponsible.selectedOption.value || null,
-      IdAprovador: selectBox_UserApprover.selectedOption.value || null,
+      idImovel: selectBox_Realstate.selectedOption.value || 0,
+      idTipoProcesso: selectBox_TypesProcess.selectedOption.value || 0,
+      idEngenheiro: selectBox_Engineer.selectedOption.value || 0,
+      idFiscal: selectBox_Supervisor.selectedOption.value || 0,
+      idResponsavel: selectBox_UserResponsible.selectedOption.value || 0,
+      idAprovador: selectBox_UserApprover.selectedOption.value || 0,
 
-      DocumentosProcessoDTOs: documentList
+      documentosProcessoDTOs: documentList
     };
 
-    await connection.endpoint("Processo").action("PostAllDatas").post(dataProcess);
-    list_Engineers.setList(connection.getList());
-  };
+    console.log(dataProcess);
 
-  // Função para converter arquivo em bytes
-  const convertFileToBytes = async (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsArrayBuffer(file); // Lê o arquivo como ArrayBuffer (bytes)
-    });
+    await connection.endpoint("Processo").action("PostAllDatas").post(dataProcess);
   };
 
 
@@ -517,8 +516,9 @@ const AddProcess = () => {
           selectBox_Supervisor={selectBox_Supervisor}
           userResponsible={userResponsible}
           selectBox_UserResponsible={selectBox_UserResponsible}
+          typeResponsible={typeResponsible}
           userApprover={userApprover}
-          selectBox_UserApprover={selectBox_UserApprover}
+          typeApprover={typeApprover}
           PostAllDatas={PostAllDatas}
         />
 
@@ -531,6 +531,9 @@ const AddProcess = () => {
           fetchTypeDocument={fetchTypeDocument}
           setDocumentsProcess={setDocumentsProcess}
           documentsProcess={documentsProcess}
+
+          userResponsible={userResponsible}
+          typeResponsible={typeResponsible}
         />
       </div>
     </LayoutPage>

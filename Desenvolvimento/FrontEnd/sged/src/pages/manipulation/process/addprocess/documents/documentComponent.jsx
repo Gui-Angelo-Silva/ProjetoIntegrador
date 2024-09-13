@@ -1,37 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import DocumentModal from './documentModal';
 
-const DocumentosComponent = ({ stages, typeDocumentStagesData, typeDocumentsData, fetchTypeDocument, setDocumentsProcess }) => {
+const DocumentComponent = ({ stages, typeDocumentStagesData, typeDocumentsData, fetchTypeDocument, setDocumentsProcess, documentsProcess }) => {
   const [datasDocumentsProcess, setDatasDocumentsProcess] = useState([]);
-  const [activeDocuments, setActiveDocuments] = useState([]);
   const [expandedRows, setExpandedRows] = useState([]);
-  const [formMode, setFormMode] = useState(null); // Armazena o estado atual do formulário
+  const [formMode, setFormMode] = useState(null);
+  const [currentDocumentId, setCurrentDocumentId] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const toggleRow = (rowId) => {
-    setExpandedRows(
-      (prevRows) =>
-        prevRows.includes(rowId)
-          ? prevRows.filter((id) => id !== rowId)
-          : [...prevRows, rowId]
+    setExpandedRows((prevRows) =>
+      prevRows.includes(rowId)
+        ? prevRows.filter((id) => id !== rowId)
+        : [...prevRows, rowId]
     );
   };
 
   const handleAttach = (documentId) => {
-    setActiveDocuments((prev) => [...prev, documentId]);
+    // Marcar o documento como ativo sem remover "Anexar"
     setDatasDocumentsProcess((prevState) => {
       const exists = prevState.some((data) => data.documentId === documentId);
       if (exists) return prevState;
       return [...prevState, { documentId, file: null, saved: false, previousFile: null }];
     });
+
+    setCurrentDocumentId(documentId);
+    setFormMode('attaching');
+    setModalOpen(true); // Abre o modal sem alterar a exibição dos botões
   };
 
-  const handleFileChange = (documentId, file) => {
+  const handleFileChange = (file) => {
     if (file && file.type !== 'application/pdf') {
       alert('Por favor, selecione um arquivo PDF.');
       return;
     }
     setDatasDocumentsProcess((prevState) =>
       prevState.map((data) =>
-        data.documentId === documentId
+        data.documentId === currentDocumentId
           ? { ...data, file: file ?? data.file, previousFile: file ? data.file : data.previousFile }
           : data
       )
@@ -40,6 +45,7 @@ const DocumentosComponent = ({ stages, typeDocumentStagesData, typeDocumentsData
 
   const handleSave = (documentId) => {
     const documentData = datasDocumentsProcess.find((data) => data.documentId === documentId);
+
     if (documentData) {
       setDocumentsProcess((prevState) => {
         const existingIndex = prevState.findIndex((data) => data.documentId === documentId);
@@ -58,31 +64,44 @@ const DocumentosComponent = ({ stages, typeDocumentStagesData, typeDocumentsData
         )
       );
 
-      setActiveDocuments((prev) => prev.filter((id) => id !== documentId));
-      setFormMode(null); // Reseta o modo do formulário
+      setFormMode(null);
+      setModalOpen(false);
     }
   };
 
   const handleCancel = (documentId) => {
+    // Verifica se o documentId está definido
+    if (!documentId) return;  
+  
     if (formMode === 'modifying') {
-      const documentData = datasDocumentsProcess.find((data) => data.documentId === documentId);
+      const documentData = documentsProcess.find((data) => data.documentId === documentId);
+  
       if (documentData) {
-        setDatasDocumentsProcess((prevState) =>
-          prevState.map((data) =>
-            data.documentId === documentId
-              ? { ...documentData, saved: false, file: documentData.previousFile }
-              : data
-          )
-        );
+        // Restaura o estado de `datasDocumentsProcess` com base em `documentsProcess`
+        setDatasDocumentsProcess((prevState) => {
+          const existingData = prevState.find((data) => data.documentId === documentId);
+          if (existingData) {
+            return prevState.map((data) =>
+              data.documentId === documentId
+                ? { ...existingData, ...documentData }
+                : data
+            );
+          } else {
+            return [...prevState, { ...documentData }];
+          }
+        });
       }
-    } else {
+    } else if (formMode === 'attaching') {
+      // Remove o documento de `datasDocumentsProcess` se estiver no modo de anexação
       setDatasDocumentsProcess((prevState) =>
         prevState.filter((data) => data.documentId !== documentId)
       );
-      setActiveDocuments((prev) => prev.filter((id) => id !== documentId));
     }
+  
+    // Reseta o estado do modal
     setFormMode(null);
-  };
+    setModalOpen(false);
+  };  
 
   const handleRemove = (documentId) => {
     setDatasDocumentsProcess((prevState) =>
@@ -99,21 +118,17 @@ const DocumentosComponent = ({ stages, typeDocumentStagesData, typeDocumentsData
       const existingDocumentData = documentsProcess.find((data) => data.documentId === documentId);
       if (existingDocumentData) {
         setDatasDocumentsProcess((prevState) =>
-          prevState.map((data) =>
-            data.documentId === documentId ? { ...existingDocumentData, saved: false } : data
-          )
+          [...prevState, { ...existingDocumentData, saved: true }]
         );
       }
-    } else {
-      setDatasDocumentsProcess((prevState) =>
-        prevState.map((data) =>
-          data.documentId === documentId ? { ...data, saved: false } : data
-        )
-      );
     }
-    setActiveDocuments((prev) => [...prev, documentId]);
     setFormMode('modifying');
+    setModalOpen(true); // Abre o modal para modificação sem alterar a exibição dos botões
   };
+
+  useEffect(() => {
+    console.log(datasDocumentsProcess);
+  }, [datasDocumentsProcess]);
 
   return (
     <div className='flex gap-x-5'>
@@ -138,15 +153,13 @@ const DocumentosComponent = ({ stages, typeDocumentStagesData, typeDocumentsData
 
                       if (typeDocument) {
                         const data = datasDocumentsProcess.find(d => d.documentId === typeDocument.id);
-                        const isActive = activeDocuments.includes(typeDocument.id);
 
                         return (
                           <li key={typeDocument.id} className="p-2 border-b border-gray-200 cursor-pointer">
-                            <span>Documento {typeDocument.posicao} - {typeDocument.nomeTipoDocumento}</span>
-                            {!isActive && data && data.saved ? (
+                            <span>Documento {typeDocumentStage.posicao} - {typeDocument.nomeTipoDocumento}</span>
+                            {data && data.saved ? (
                               <>
                                 <span className="text-green-600 ml-4">Anexado</span>
-
                                 <div className="flex gap-2 float-right">
                                   <button
                                     className="text-red-500"
@@ -162,58 +175,13 @@ const DocumentosComponent = ({ stages, typeDocumentStagesData, typeDocumentsData
                                   </button>
                                 </div>
                               </>
-                            ) : !isActive && (
+                            ) : (
                               <button
                                 className="text-blue-600 float-right"
                                 onClick={() => handleAttach(typeDocument.id)}
                               >
                                 Anexar
                               </button>
-                            )}
-
-                            {isActive && (
-                              <div className="mt-2">
-                                <label htmlFor={`fileUpload-${typeDocument.id}`} className="block mb-2 text-sm font-medium text-gray-700">
-                                  Anexar Arquivo:
-                                </label>
-                                <div className="flex items-center">
-                                  <button
-                                    type="button"
-                                    className="px-4 py-2 bg-blue-500 text-white rounded"
-                                    onClick={() => document.getElementById(`fileUpload-${typeDocument.id}`).click()}
-                                  >
-                                    Anexar Arquivo
-                                  </button>
-                                  <input
-                                    type="file"
-                                    id={`fileUpload-${typeDocument.id}`}
-                                    className="hidden"
-                                    accept=".pdf"
-                                    onChange={(e) => handleFileChange(typeDocument.id, e.target.files[0])}
-                                  />
-                                  {data && data.file && (
-                                    <span className="ml-4 text-gray-700">Arquivo: {data.file.name}</span>
-                                  )}
-                                </div>
-
-                                <form onSubmit={(e) => { e.preventDefault(); handleSave(typeDocument.id); }}>
-                                  <div className="flex gap-2 mt-2">
-                                    <button
-                                      type="button"
-                                      className="px-4 py-2 bg-gray-400 text-white rounded"
-                                      onClick={() => handleCancel(typeDocument.id)}
-                                    >
-                                      {formMode === 'modifying' ? 'Cancelar' : 'Cancelar'}
-                                    </button>
-                                    <button
-                                      type="submit"
-                                      className="px-4 py-2 bg-blue-500 text-white rounded"
-                                    >
-                                      {formMode === 'modifying' ? 'Alterar' : 'Salvar'}
-                                    </button>
-                                  </div>
-                                </form>
-                              </div>
                             )}
                           </li>
                         );
@@ -227,8 +195,19 @@ const DocumentosComponent = ({ stages, typeDocumentStagesData, typeDocumentsData
           );
         })}
       </ul>
+
+      <DocumentModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSave={handleSave}
+        onCancel={handleCancel}
+        onFileChange={handleFileChange}
+        fileData={datasDocumentsProcess.find(data => data.documentId === currentDocumentId) || {}}
+        formMode={formMode}
+        documentId={currentDocumentId}
+      />
     </div>
   );
 };
 
-export default DocumentosComponent;
+export default DocumentComponent;

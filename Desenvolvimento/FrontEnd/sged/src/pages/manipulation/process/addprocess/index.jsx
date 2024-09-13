@@ -13,7 +13,7 @@ import ConnectionService from "../../../../object/service/connection";
 import ListModule from "../../../../object/modules/list";
 import SelectModule from '../../../../object/modules/select';
 
-import DocumentsComponent from './documents/documentsProcess';
+import DocumentComponent from './documents/documentComponent';
 
 const AddProcess = () => {
   const montage = useMontage();
@@ -855,12 +855,13 @@ const AddProcess = () => {
 
 
 
-        <DocumentsComponent
+        <DocumentComponent
           stages={stages}
           typeDocumentStagesData={typeDocumentStagesData}
           typeDocumentsData={typeDocumentsData}
           fetchTypeDocument={fetchTypeDocument}
           setDocumentsProcess={setDocumentsProcess}
+          documentsProcess={documentsProcess}
         />
       </div>
     </LayoutPage>

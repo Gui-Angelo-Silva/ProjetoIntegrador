@@ -45,6 +45,30 @@ namespace SGED.Controllers
             }
         }
 
+        [HttpGet("GetAllNames")]
+        public async Task<ActionResult<IEnumerable<EngenheiroDTO>>> GetAllNames()
+        {
+            try
+            {
+                var engenheirosDTO = await _engenheiroService.GetAll();
+                var registrationNumbers = engenheirosDTO.Select(u => new { u.Id, u.NomePessoa }).ToList();
+
+                _response.SetSuccess();
+                _response.Message = registrationNumbers.Any() ?
+                    "Lista dos Nomes de Engenheiro obtida com sucesso." :
+                    "Nenhum Engenheiro encontrado.";
+                _response.Data = registrationNumbers;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista dos Nomes de Engenheiro!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
         [HttpGet("{id:int}", Name = "GetEngenheiro")]
         public async Task<ActionResult<EngenheiroDTO>> Get(int id)
         {

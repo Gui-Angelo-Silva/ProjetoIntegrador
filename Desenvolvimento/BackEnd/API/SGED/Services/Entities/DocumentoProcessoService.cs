@@ -23,7 +23,13 @@ public class DocumentoProcessoService : IDocumentoProcessoService
         return _mapper.Map<IEnumerable<DocumentoProcessoDTO>>(documentoProcessos);
     }
 
-    public async Task<DocumentoProcessoDTO> GetById(int id)
+    public async Task<IEnumerable<DocumentoProcessoDTO>> GetByProcess(Guid idProcesso)
+    {
+        var documentoProcessos = await _documentoProcessoRepository.GetByProcess(idProcesso);
+        return _mapper.Map<IEnumerable<DocumentoProcessoDTO>>(documentoProcessos);
+    }
+
+    public async Task<DocumentoProcessoDTO> GetById(Guid id)
     {
         var documentoProcesso = await _documentoProcessoRepository.GetById(id);
         return _mapper.Map<DocumentoProcessoDTO>(documentoProcesso);
@@ -42,7 +48,7 @@ public class DocumentoProcessoService : IDocumentoProcessoService
         await _documentoProcessoRepository.Update(documentoProcesso);
     }
 
-    public async Task Remove(int id)
+    public async Task Remove(Guid id)
     {
         await _documentoProcessoRepository.Delete(id);
     }

@@ -1,34 +1,46 @@
-﻿using SGED.Objects.Enums;
+﻿using SGED.Objects.Enums.Status;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SGED.Objects.Models.Entities
 {
-	[Table("documentoprocesso")]
-	public class DocumentoProcesso
-	{
-		[Column("iddocumentoprocesso")]
-		public int Id { get; set; }
+    [Table("documentoprocesso")]
+    public class DocumentoProcesso
+    {
+        [Column("iddocumentoprocesso")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; } // Alterado para GUID
 
-		[Column("descricaodocumentoprocesso")]
-		public string Descricao { get; set; }
+        [Column("identificacaodocumento")]
+        public string IdentificacaoDocumento { get; set; }
 
-		[Column("observacaodocumentoprocesso")]
-		public string Observacao { get; set; }
+        [Column("descricaodocumento")]
+        public string DescricaoDocumento { get; set; }
 
-		[Column("situacaodocumentoprocesso")]
-		public string Situacao { get; set; }
+        [Column("observacaodocumento")]
+        public string ObservacaoDocumento { get; set; }
 
-		[Column("documentodocumentoprocesso")]
-		public byte[] Documento { get; set; }
+        [Column("arquivodocumento")]
+        public byte[] ArquivoDocumento { get; set; }
 
-		[Column("idtipodocumento")]
-		public int IdTipoDocumento { get; set; }
+        [Column("statusdocumentoprocesso")]
+        public StatusDocumentProcess Status { get; set; }
 
-		[ForeignKey("idprocesso")]
-		public int IdProcesso { get; set; }
+        [Column("idprocesso")]
+        public Guid IdProcesso { get; set; }
 
-		public Processo? Processo { get; set; }
+        [Column("idtipodocumentoetapa")]
+        public int IdTipoDocumentoEtapa { get; set; }
 
-		public TipoDocumento? TipoDocumento { get; set; }
-	}
+        [Column("idresponsavel")]
+        public int? IdResponsavel { get; set; }
+
+        [Column("idaprovador")]
+        public int? IdAprovador { get; set; }
+
+
+        public Processo? Processo { get; set; }
+        public TipoDocumentoEtapa? TipoDocumentoEtapa { get; set; }
+        public Usuario? Responsavel { get; set; }
+        public Usuario? Aprovador { get; set; }
+    }
 }

@@ -48,12 +48,64 @@ namespace SGED.Controllers
             }
         }
 
+        [HttpGet("GetAllEnrollmentRegistrations")]
+        public async Task<ActionResult<IEnumerable<ImovelDTO>>> GetAllEnrollmentRegistrations()
+        {
+            try
+            {
+                var imovelsDTO = await _imovelService.GetAll();
+                var registrationNumbers = imovelsDTO.Select(i => new { i.Id, i.InscricaoCadastral }).ToList();
+
+                _response.SetSuccess();
+                _response.Message = registrationNumbers.Any() ?
+                    "Lista das Inscrições Cadastrais obtida com sucesso." :
+                    "Nenhuma Inscrição Cadastral encontrada.";
+                _response.Data = registrationNumbers;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista das Inscrições Cadastrais!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
         [HttpGet("{id:int}", Name = "GetImovel")]
         public async Task<ActionResult<ImovelDTO>> Get(int id)
         {
             try
             {
-                var imovelDTO = await _imovelService.GetById(id);
+                var imovelDTO = await _imovelService.GetByProperty("Id", id.ToString());
+                if (imovelDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "Imóvel não encontrado!";
+                    _response.Data = imovelDTO;
+                    return NotFound(_response);
+                };
+
+                _response.SetSuccess();
+                _response.Message = "Imóvel " + imovelDTO.InscricaoCadastral + " obtido com sucesso.";
+                _response.Data = imovelDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir o Imóvel informado!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpGet("GetByEnrollment/{enrollment}", Name = "GetByEnrollment")]
+        public async Task<ActionResult<ImovelDTO>> GetByEnrollment(string enrollment)
+        {
+            try
+            {
+                var imovelDTO = await _imovelService.GetByProperty("InscricaoCadastral", enrollment);
                 if (imovelDTO is null)
                 {
                     _response.SetNotFound();

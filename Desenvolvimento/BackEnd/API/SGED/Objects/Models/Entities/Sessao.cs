@@ -35,7 +35,7 @@ namespace SGED.Objects.Models.Entities
 
         public Usuario? Usuario { get; set; }
 
-        [ForeignKey("idusuario")]
+        [Column("idusuario")]
         public int IdUsuario { get; set; }
 
 

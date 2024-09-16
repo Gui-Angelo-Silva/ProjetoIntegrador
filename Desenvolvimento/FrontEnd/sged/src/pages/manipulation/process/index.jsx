@@ -8,7 +8,7 @@ import { useServer } from '../../../routes/serverRoute';
 
 export default function Process() {
     const montage = useMontage();
-    const { addSegment, inDevelopment } = useServer();
+    const server = useServer();
 
     useEffect(() => {
         montage.componentMounted();
@@ -21,7 +21,7 @@ export default function Process() {
         <LayoutPage>
             <LinkTitle pageName="Processo" otherRoute="Documentos" />
             <div className='mt-6'>
-                <button className='btn btn-warning' onClick={() => addSegment("cadastrar-processo")}>Cadastrar Processo</button>
+                <button className='btn btn-warning' onClick={() => server.addSegment("cadastrar-processo")}>Cadastrar Processo</button>
             </div>
         </LayoutPage>
     )

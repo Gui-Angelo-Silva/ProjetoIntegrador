@@ -8,9 +8,12 @@ namespace SGED.Context.Builders
         public static void Build(ModelBuilder modelBuilder)
         {
             // Builder
-            modelBuilder.Entity<Cidade>().HasKey(c => c.Id);
+            modelBuilder.Entity<Cidade>().Property(c => c.Id);
             modelBuilder.Entity<Cidade>().Property(c => c.NomeCidade).HasMaxLength(100).IsRequired();
             modelBuilder.Entity<Cidade>().Property(c => c.IdEstado).IsRequired();
+
+            // Declaração: Defini o ID como Chave Primária
+            modelBuilder.Entity<Cidade>().HasKey(c => c.Id);
 
             // Relacionamento: Estado -> Cidade
             modelBuilder.Entity<Cidade>()

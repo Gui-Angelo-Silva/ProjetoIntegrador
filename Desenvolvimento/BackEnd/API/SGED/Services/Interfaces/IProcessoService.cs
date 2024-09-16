@@ -5,9 +5,9 @@ namespace SGED.Services.Interfaces
     public interface IProcessoService
     {
         Task<IEnumerable<ProcessoDTO>> GetAll();
-        Task<ProcessoDTO> GetById(int id);
+        Task<ProcessoDTO> GetById(Guid id);
         Task Create(ProcessoDTO ProcessoDTO);
         Task Update(ProcessoDTO ProcessoDTO);
-        Task Remove(int id);
+        Task Remove(Guid id);
     }
 }

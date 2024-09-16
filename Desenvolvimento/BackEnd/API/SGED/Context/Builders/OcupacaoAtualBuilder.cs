@@ -8,9 +8,12 @@ namespace SGED.Context.Builders
         public static void Build(ModelBuilder modelBuilder)
         {
             // Builder
-            modelBuilder.Entity<OcupacaoAtual>().HasKey(tu => tu.Id);
-            modelBuilder.Entity<OcupacaoAtual>().Property(tu => tu.NomeOcupacaoAtual).HasMaxLength(50).IsRequired();
-            modelBuilder.Entity<OcupacaoAtual>().Property(tu => tu.DescricaoOcupacaoAtual).IsRequired();
+            modelBuilder.Entity<OcupacaoAtual>().Property(oa => oa.Id);
+            modelBuilder.Entity<OcupacaoAtual>().Property(oa => oa.NomeOcupacaoAtual).HasMaxLength(50).IsRequired();
+            modelBuilder.Entity<OcupacaoAtual>().Property(oa => oa.DescricaoOcupacaoAtual).IsRequired();
+
+            // Declaração: Defini o ID como Chave Primária
+            modelBuilder.Entity<OcupacaoAtual>().HasKey(oa => oa.Id);
 
 
             // Inserções

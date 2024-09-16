@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SGED.Context;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
@@ -24,7 +25,27 @@ namespace SGED.Repositories.Entities
 			return await _dbContext.Imovel.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
 		}
 
-		public async Task<Imovel> Create(Imovel imovel)
+        public async Task<Imovel> GetByProperty(string propertyName, string data)
+        {
+            // Use reflexão para acessar a propriedade dinamicamente
+            var imovels = await _dbContext.Imovel.AsNoTracking().ToListAsync();
+
+            // Encontrar o primeiro imovel que atende ao critério
+            var imovel = imovels.FirstOrDefault(i =>
+            {
+                var propertyInfo = i.GetType().GetProperty(propertyName);
+                if (propertyInfo != null)
+                {
+                    var propertyValue = propertyInfo.GetValue(i)?.ToString();
+                    return propertyValue == data;
+                }
+                return false;
+            });
+
+            return imovel;
+        }
+
+        public async Task<Imovel> Create(Imovel imovel)
 		{
 			_dbContext.Imovel.Add(imovel);
 			await _dbContext.SaveChangesAsync();

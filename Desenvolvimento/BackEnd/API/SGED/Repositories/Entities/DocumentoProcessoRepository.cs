@@ -23,11 +23,15 @@ public class DocumentoProcessoRepository : IDocumentoProcessoRepository
 		return await _dbContext.DocumentoProcesso.AsNoTracking().ToListAsync();
 	}
 
-	public async Task<DocumentoProcesso> GetById(int id)
-	{
-		return await _dbContext.DocumentoProcesso.AsNoTracking().FirstOrDefaultAsync(tde => tde.Id == id);
-	}
+    public async Task<IEnumerable<DocumentoProcesso>> GetByProcess(Guid idProcesso)
+    {
+        return await _dbContext.DocumentoProcesso.AsNoTracking().Where(dp => dp.IdProcesso == idProcesso).ToListAsync();
+    }
 
+    public async Task<DocumentoProcesso> GetById(Guid id)
+	{
+		return await _dbContext.DocumentoProcesso.AsNoTracking().FirstOrDefaultAsync(dp => dp.Id == id);
+	}
 
 	public async Task<DocumentoProcesso> Create(DocumentoProcesso DocumentoProcesso)
 	{
@@ -43,7 +47,7 @@ public class DocumentoProcessoRepository : IDocumentoProcessoRepository
 		return DocumentoProcesso;
 	}
 
-	public async Task<DocumentoProcesso> Delete(int id)
+	public async Task<DocumentoProcesso> Delete(Guid id)
 	{
 		var DocumentoProcesso = await GetById(id);
 		_dbContext.DocumentoProcesso.Remove(DocumentoProcesso);
@@ -53,7 +57,7 @@ public class DocumentoProcessoRepository : IDocumentoProcessoRepository
 
 	public async Task<IEnumerable<DocumentoProcesso>> GetDocumentProcessRelatedToTypeDocument(int IdTipoDocumento)
 	{
-		return await _dbContext.DocumentoProcesso.Where(tde => tde.IdTipoDocumento == IdTipoDocumento).AsNoTracking().ToListAsync();
+		return await _dbContext.DocumentoProcesso.Where(tde => tde.IdTipoDocumentoEtapa == IdTipoDocumento).AsNoTracking().ToListAsync();
 	}
 
 

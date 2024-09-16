@@ -23,7 +23,7 @@ public class ProcessoService : IProcessoService
         return _mapper.Map<IEnumerable<ProcessoDTO>>(processos);
     }
 
-    public async Task<ProcessoDTO> GetById(int id)
+    public async Task<ProcessoDTO> GetById(Guid id)
     {
         var processo = await _processoRepository.GetById(id);
         return _mapper.Map<ProcessoDTO>(processo);
@@ -42,7 +42,7 @@ public class ProcessoService : IProcessoService
         await _processoRepository.Update(processo);
     }
 
-    public async Task Remove(int id)
+    public async Task Remove(Guid id)
     {
         await _processoRepository.Delete(id);
     }

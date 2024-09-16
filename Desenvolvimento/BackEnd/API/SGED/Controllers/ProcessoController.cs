@@ -4,6 +4,7 @@ using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
+using SGED.Services.Entities;
 
 namespace SGED.Controllers
 {
@@ -11,13 +12,24 @@ namespace SGED.Controllers
     [ApiController]
     public class ProcessoController : Controller
     {
+        private readonly ITipoProcessoService _tipoProcessoService;
+        private readonly IEtapaService _etapaService;
+        private readonly ITipoDocumentoService _tipoDocumentoService;
+        private readonly ITipoDocumentoEtapaService _tipoDocumentoEtapaService;
+        private readonly IDocumentoProcessoService _documentoProcessoService;
+
         private readonly IProcessoService _processoService;
         private readonly Response _response;
 
-        public ProcessoController(IProcessoService processoService)
+        public ProcessoController(ITipoProcessoService tipoProcessoService, IEtapaService etapaService, ITipoDocumentoService tipoDocumentoService, ITipoDocumentoEtapaService tipoDocumentoEtapaService, IDocumentoProcessoService documentoProcessoService, IProcessoService processoService)
         {
-            _processoService = processoService;
+            _tipoProcessoService = tipoProcessoService;
+            _etapaService = etapaService;
+            _tipoDocumentoService = tipoDocumentoService;
+            _tipoDocumentoEtapaService = tipoDocumentoEtapaService;
+            _documentoProcessoService = documentoProcessoService;
 
+            _processoService = processoService;
             _response = new Response();
         }
 
@@ -44,7 +56,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetProcesso")]
-        public async Task<ActionResult<ProcessoDTO>> Get(int id)
+        public async Task<ActionResult<ProcessoDTO>> Get(Guid id)
         {
             try
             {
@@ -58,7 +70,7 @@ namespace SGED.Controllers
                 };
 
                 _response.SetSuccess();
-                _response.Message = "Processo " + processoDTO.StatusProcesso + " obtido com sucesso.";
+                _response.Message = "Processo " + processoDTO.IdentificacaoProcesso + " obtido com sucesso.";
                 _response.Data = processoDTO;
                 return Ok(_response);
             }
@@ -81,14 +93,61 @@ namespace SGED.Controllers
                 _response.Data = processoDTO;
                 return BadRequest(_response);
             }
-            processoDTO.Id = 0;
 
             try
             {
                 await _processoService.Create(processoDTO);
 
                 _response.SetSuccess();
-                _response.Message = "Processo " + processoDTO.StatusProcesso + " cadastrado com sucesso.";
+                _response.Message = "Processo " + processoDTO.IdentificacaoProcesso + " cadastrado com sucesso.";
+                _response.Data = processoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível cadastrar o Processo!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpPost("PostAllDatas")]
+        public async Task<ActionResult> PostAllDatas([FromBody] ProcessoDTO processoDTO)
+        {
+            if (processoDTO is null)
+            {
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
+                _response.Data = processoDTO;
+                return BadRequest(_response);
+            }
+
+            try
+            {
+                var tipoProcessoDTO = await _tipoProcessoService.GetById(processoDTO.IdTipoProcesso);
+                if (tipoProcessoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "O Tipo Processo informado não existe!";
+                    _response.Data = new { errorIdTipoProcesso = "O Tipo Processo informado não existe!" };
+                    return NotFound(_response);
+                }
+
+                if (processoDTO.DocumentosProcessoDTOs.Any() || processoDTO.IdResponsavel.HasValue) processoDTO.PutInProgress();
+                else processoDTO.AssignDefaultState();
+
+                await _processoService.Create(processoDTO);
+
+                await PercorrerDocumentosEtapa(
+                    tipoProcessoDTO.Id, // ID da Etapa (int)
+                    processoDTO.Id, // ID do Processo (Guid)
+                    processoDTO.IdResponsavel.HasValue ? processoDTO.IdResponsavel.Value : (int?)null, // ID do Responsável (int?)
+                    processoDTO.DocumentosProcessoDTOs // Coleção de Documentos (ICollection<DocumentoProcessoDTO>
+                );
+
+                _response.SetSuccess();
+                _response.Message = "Processo " + processoDTO.IdentificacaoProcesso + " cadastrado com sucesso.";
                 _response.Data = processoDTO;
                 return Ok(_response);
             }
@@ -126,7 +185,7 @@ namespace SGED.Controllers
                 await _processoService.Update(processoDTO);
 
                 _response.SetSuccess();
-                _response.Message = "Processo " + processoDTO.StatusProcesso + " alterado com sucesso.";
+                _response.Message = "Processo " + processoDTO.IdentificacaoProcesso + " alterado com sucesso.";
                 _response.Data = processoDTO;
                 return Ok(_response);
             }
@@ -140,7 +199,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult<ProcessoDTO>> Delete(int id)
+        public async Task<ActionResult<ProcessoDTO>> Delete(Guid id)
         {
             try
             {
@@ -156,7 +215,7 @@ namespace SGED.Controllers
                 await _processoService.Remove(id);
 
                 _response.SetSuccess();
-                _response.Message = "Processo " + processoDTO.StatusProcesso + " excluído com sucesso.";
+                _response.Message = "Processo " + processoDTO.IdentificacaoProcesso + " excluído com sucesso.";
                 _response.Data = processoDTO;
                 return Ok(_response);
             }
@@ -166,6 +225,48 @@ namespace SGED.Controllers
                 _response.Message = "Não foi possível excluir o Processo!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        private async Task PercorrerEtapas(int idTipoProcesso, Guid idProcesso, int idResponsavel, ICollection<DocumentoProcessoDTO> documentosProcesso)
+        {
+            var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(idTipoProcesso);
+
+            foreach (var etapa in etapasDTO)
+            {
+                await PercorrerDocumentosEtapa(etapa.Id, idProcesso, idResponsavel, documentosProcesso);
+            }
+        }
+
+        private async Task PercorrerDocumentosEtapa(int idEtapa, Guid idProcesso, int? idResponsavel, ICollection<DocumentoProcessoDTO> documentosProcesso)
+        {
+            var documentosEtapaDTO = await _tipoDocumentoEtapaService.GetTypeDocumentStagesRelatedToStage(idEtapa);
+
+            foreach (var documentoEtapa in documentosEtapaDTO)
+            {
+                var documentoProcesso = documentosProcesso.FirstOrDefault(dp => dp.IdTipoDocumentoEtapa == documentoEtapa.Id);
+
+                if (documentoProcesso != null) // Se o documento foi declarado
+                {
+                    documentoProcesso.MarkAsAttached();
+                    documentoProcesso.IdProcesso = idProcesso;
+                    documentoProcesso.IdResponsavel = idResponsavel;
+                }
+                else // Se nenhum documento foi declarado
+                {
+                    documentoProcesso = new DocumentoProcessoDTO();
+
+                    documentoProcesso.IdentificacaoDocumento = "NÃO ANEXADO";
+                    documentoProcesso.DescricaoDocumento = "";
+                    documentoProcesso.ObservacaoDocumento = "";
+                    documentoProcesso.IdProcesso = idProcesso;
+                    documentoProcesso.IdTipoDocumentoEtapa = documentoEtapa.Id;
+
+                    if (idResponsavel.HasValue) { documentoProcesso.PutOnPending(); documentoProcesso.IdResponsavel = idResponsavel; } // Existir um responsavel pelo processo
+                    else documentoProcesso.AssignDefaultState();
+                }
+
+                await _documentoProcessoService.Create(documentoProcesso);
             }
         }
     }

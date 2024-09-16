@@ -171,30 +171,40 @@ const AddProcess = () => {
     setSupervisor(connection.getObject());
   };
 
+  const convertFileToBytes = async (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const arrayBuffer = reader.result;
+        const bytes = new Uint8Array(arrayBuffer); // Converte ArrayBuffer para Uint8Array
+        resolve(bytes);
+      };
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file);
+    });
+  };
+
   function uint8ArrayToBase64(uint8Array) {
-    // Cria um array de bytes de string usando o Uint8Array
-    const binaryString = String.fromCharCode.apply(null, uint8Array);
-    
-    // Converte a string binária em Base64
+    let binaryString = "";
+    for (let i = 0; i < uint8Array.length; i++) {
+      binaryString += String.fromCharCode(uint8Array[i]);
+    }
     return btoa(binaryString);
   }
 
-  // Função para postar todos os dados
   const PostAllDatas = async () => {
-    // Prepara o array de documentos a partir dos dados armazenados
-    const documentList = documentsProcess.map((data) => ({
-      identificacaoDocumento: data.identificationNumber || "",
-      descricaoDocumento: data.documentDescription || "",
-      observacaoDocumento: data.documentObservation || "",
-      arquivoDocumentoBase64: data.arquive ? uint8ArrayToBase64(data.arquive) : "", // Converte o Uint8Array em Base64
-      status: data.documentStatus || 0,
-      
-      idTipoDocumentoEtapa: data.idTypeDocumentStage || 0,
-      idResponsavel: data.idUserResponsible || null,
-      idAprovador: data.idUserApprover || null,
-    }));
-
-    console.log(documentList);
+    const documentList = await Promise.all(
+      documentsProcess.map(async (data) => ({
+        identificacaoDocumento: data.identificationNumber || "",
+        descricaoDocumento: data.documentDescription || "",
+        observacaoDocumento: data.documentObservation || "",
+        arquivoDocumentoBase64: data.arquive ? uint8ArrayToBase64(await convertFileToBytes(data.arquive)) : "", // Converte o Uint8Array em Base64
+        status: data.documentStatus || 0,
+        idTipoDocumentoEtapa: data.idTypeDocumentStage || 0,
+        idResponsavel: data.idUserResponsible || null,
+        idAprovador: data.idUserApprover || null,
+      }))
+    );
 
     // Constrói o objeto de dados do processo
     const dataProcess = {
@@ -211,10 +221,8 @@ const AddProcess = () => {
       idResponsavel: selectBox_UserResponsible.selectedOption.value || null,
       idAprovador: selectBox_UserApprover.selectedOption.value || null,
 
-      documentosProcessoDTOs: documentList.length > 0? documentList : []
+      documentosProcessoDTOs: documentList.length > 0 ? documentList : []
     };
-
-    console.log(dataProcess);
 
     await connection.endpoint("Processo").action("PostAllDatas").post(dataProcess);
   };

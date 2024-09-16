@@ -65,7 +65,7 @@ const ProcessForm = ({
       </div>
 
       <div className="flex flex-col w-1/3 gap-y-3">
-        <h1 className="text-lg text-gray-700">Imóvel:</h1>
+        <h1 className="text-lg text-gray-700">Imóvel: <span className="text-red-600">*</span></h1>
         <Select
           value={selectBox_Realstate.selectedOption}
           onChange={selectBox_Realstate.handleChange}
@@ -150,7 +150,7 @@ const ProcessForm = ({
       {/* Tipo Processo: ----------------------------------------------------------------------------------------------------*/}
 
       <div className="flex flex-col w-1/3 gap-y-3">
-        <h1 className="text-lg text-gray-700">Tipo Processo:</h1>
+        <h1 className="text-lg text-gray-700">Tipo Processo: <span className="text-red-600">*</span></h1>
         <Select
           value={selectBox_TypesProcess.selectedOption}
           onChange={selectBox_TypesProcess.handleChange}
@@ -178,7 +178,7 @@ const ProcessForm = ({
 
         {/* Processo: ----------------------------------------------------------------------------------------------------*/}
 
-        <h1 className="text-lg text-gray-700">Número de Identificação:</h1>
+        <h1 className="text-lg text-gray-700">Número de Identificação: <span className="text-red-600">*</span></h1>
         <input
           type="text"
           className="rounded-sm border-[#e5e7eb]"

@@ -23,19 +23,6 @@ const DocumentModal = ({
   const [documentStatus, setDocumentStatus] = useState(0);
   const [idTypeDocument, setIdTypeDocument] = useState(0);
   const [idUserResponsible, setIdUserResponsible] = useState(0);
-
-  const convertFileToBytes = async (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const arrayBuffer = reader.result;
-        const bytes = new Uint8Array(arrayBuffer); // Converte ArrayBuffer para Uint8Array
-        resolve(bytes);
-      };
-      reader.onerror = reject;
-      reader.readAsArrayBuffer(file);
-    });
-  };
   
   const prepareDataForSave = async () => {
     const documentData = {
@@ -43,7 +30,7 @@ const DocumentModal = ({
       identificationNumber: identificationNumber || "",
       documentDescription: documentDescription || "",
       documentObservation: documentObservation || "",
-      arquive: arquive ? await convertFileToBytes(arquive) : null, // Mantém como Uint8Array
+      arquive: arquive ? arquive : null, // arquivo salvo
       status: 2,
       idTypeDocumentStage: idTypeDocument || 0,
       idUserResponsible: idUserResponsible || null,
@@ -74,7 +61,7 @@ const DocumentModal = ({
           <h1 className="text-lg text-gray-700">Id:</h1>
           <input type="text" className="rounded-sm border-[#e5e7eb]" value={idDocumentProcess} disabled />
 
-          <h1 className="text-lg text-gray-700">Número de Identificação:</h1>
+          <h1 className="text-lg text-gray-700">Número de Identificação: <span className="text-red-600">*</span></h1>
           <input
             type="text"
             className="rounded-sm border-[#e5e7eb]"
@@ -104,7 +91,7 @@ const DocumentModal = ({
             required
           />
 
-          <h1 className="text-lg text-gray-700">Arquivo:</h1>
+          <h1 className="text-lg text-gray-700">Arquivo: <span className="text-red-600">*</span></h1>
           <input
             type="file"
             className="rounded-sm border-[#e5e7eb]"

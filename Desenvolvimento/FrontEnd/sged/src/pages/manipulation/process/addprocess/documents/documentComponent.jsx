@@ -1,22 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import DocumentModal from './documentModal';
+import DocumentView from './documentView';
 
-const DocumentComponent = ({ 
-  stages, 
-  typeDocumentStagesData, 
-  typeDocumentsData, 
-  fetchTypeDocument, 
-  setDocumentsProcess, 
-  documentsProcess, 
-  
-  userResponsible, 
-  typeResponsible 
+const DocumentComponent = ({
+  stages,
+  typeDocumentStagesData,
+  typeDocumentsData,
+  fetchTypeDocument,
+  setDocumentsProcess,
+  documentsProcess,
+  userResponsible,
+  typeResponsible
 }) => {
-  
   const [expandedRows, setExpandedRows] = useState([]);
   const [formMode, setFormMode] = useState(null);
   const [currentDocumentId, setCurrentDocumentId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [currentDocumentData, setCurrentDocumentData] = useState(null);
   const [idDocumentProcess, setIdDocumentProcess] = useState(1);
 
   const toggleRow = (rowId) => {
@@ -53,6 +54,7 @@ const DocumentComponent = ({
   const handleCancel = () => {
     setFormMode(null);
     setModalOpen(false);
+    setViewModalOpen(false);
   };
 
   const handleRemove = (documentId) => {
@@ -67,13 +69,25 @@ const DocumentComponent = ({
     setModalOpen(true);
   };
 
-  // Encontrar o typeDocumentStage atual para o modal
+  const handleView = (documentId) => {
+    const documentData = documentsProcess.find(d => d.documentId === documentId);
+    setCurrentDocumentId(documentId);
+    setCurrentDocumentData(documentData);
+    setViewModalOpen(true);
+  };
+
+  const handleOpenInNewTab = (documentId) => {
+    const documentData = documentsProcess.find(d => d.documentId === documentId);
+    if (documentData?.arquive) {
+      window.open(URL.createObjectURL(documentData.arquive), '_blank');
+    }
+  };
+
   const currentTypeDocumentStage = stages.reduce((acc, stage) => {
     const foundStage = typeDocumentStagesData[stage.id]?.find((typeDocStage) => typeDocStage.idTipoDocumento === currentDocumentId);
     return foundStage || acc;
   }, null);
 
-  // Localize o typeDocument usando currentDocumentId
   const currentTypeDocument = typeDocumentsData[currentDocumentId] || null;
 
   return (
@@ -119,6 +133,18 @@ const DocumentComponent = ({
                                   >
                                     Alterar
                                   </button>
+                                  <button
+                                    className="text-gray-500"
+                                    onClick={() => handleView(typeDocument.id)}
+                                  >
+                                    Visualizar
+                                  </button>
+                                  <button
+                                    className="text-blue-600"
+                                    onClick={() => handleOpenInNewTab(typeDocument.id)}
+                                  >
+                                    Abrir Documento
+                                  </button>
                                 </div>
                               </>
                             ) : (
@@ -142,6 +168,7 @@ const DocumentComponent = ({
         })}
       </ul>
 
+      {/* Modal para anexar e modificar documentos */}
       <DocumentModal
         isOpen={modalOpen}
         onClose={handleCancel}
@@ -152,6 +179,14 @@ const DocumentComponent = ({
         typeDocument={currentTypeDocument}
         userResponsible={userResponsible}
         typeResponsible={typeResponsible}
+      />
+
+      {/* Modal para visualização do documento */}
+      <DocumentView
+        isOpen={viewModalOpen}
+        onClose={handleCancel}
+        typeDocument={currentTypeDocument}
+        data={currentDocumentData}
       />
     </div>
   );

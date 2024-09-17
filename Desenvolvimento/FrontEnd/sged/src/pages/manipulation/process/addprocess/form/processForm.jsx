@@ -26,7 +26,7 @@ const ProcessForm = ({
   typeResponsible,
   userApprover,
   typeApprover,
-  
+
   PostAllDatas
 }) => {
 
@@ -53,19 +53,19 @@ const ProcessForm = ({
   }, [selectBox_Realstate.selectedOption]);
 
   return (
-    <div className="flex">
+    <div className="grid grid-cols-3 gap-x-7">
       {/* Imóvel: ----------------------------------------------------------------------------------------------------*/}
+      <div className="border-2 rounded-lg p-4">
+        <h2 className="text-xl font-semibold text-gray-700 mb-4">Informações do Imóvel</h2>
+        <div className="mr-8 h-[200px] w-[200px] rounded-lg border-[2px] flex items-center justify-center">
+          {realstate.imagemImovel && realstate.imagemImovel.length > 0 ? (
+            <img src={realstate.imagemImovel[currentImageIndex]} alt="Imóvel" />
+          ) : (
+            <HouseLine size={50} />
+          )}
+        </div>
 
-      <div className="mr-8 h-[200px] w-[200px] rounded-lg border-[2px] flex items-center justify-center">
-        {realstate.imagemImovel && realstate.imagemImovel.length > 0 ? (
-          <img src={realstate.imagemImovel[currentImageIndex]} alt="Imóvel" />
-        ) : (
-          <HouseLine size={50} />
-        )}
-      </div>
-
-      <div className="flex flex-col w-1/3 gap-y-3">
-        <h1 className="text-lg text-gray-700">Imóvel: <span className="text-red-600">*</span></h1>
+        <h1 className="text-lg text-gray-700 mt-4">Imóvel: <span className="text-red-600">*</span></h1>
         <Select
           value={selectBox_Realstate.selectedOption}
           onChange={selectBox_Realstate.handleChange}
@@ -84,72 +84,212 @@ const ProcessForm = ({
           required
         />
 
-        <h1 className="text-lg text-gray-700">Número:</h1>
+        <h1 className="text-lg text-gray-700 mt-4">Número:</h1>
         <input
           type="text"
           disabled
-          className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
+          className="cursor-not-allowed rounded-sm border-[#e5e7eb] w-full"
           value={realstate.numeroImovel || ''}
         />
 
-        <h1 className="text-lg text-gray-700">Proprietário:</h1>
-        <div>
-          {owner.imagemPessoa ? (
-            <img
-              src={owner.imagemPessoa}
-              alt="Proprietário"
-              className="cursor-pointer rounded-full w-[50px] h-[50px] object-cover p-1 shadow-md"
-            />
-          ) : (
-            <User size={50} />
-          )}
-          <input
-            type="text"
-            disabled
-            className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
-            value={owner.nomePessoa || ''}
-          />
-        </div>
-
-        <h1 className="text-lg text-gray-700">Contribuinte:</h1>
-        <div>
-          {taxpayer.imagemPessoa ? (
-            <img
-              src={taxpayer.imagemPessoa}
-              alt="Contribuinte"
-              className="cursor-pointer rounded-full w-[50px] h-[50px] object-cover p-1 shadow-md"
-            />
-          ) : (
-            <User size={50} />
-          )}
-          <input
-            type="text"
-            disabled
-            className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
-            value={taxpayer.nomePessoa || ''}
-          />
-        </div>
-
-        <h1 className="text-lg text-gray-700">Uso:</h1>
+        <h1 className="text-lg text-gray-700 mt-4">Proprietário:</h1>
         <input
           type="text"
           disabled
-          className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
+          className="cursor-not-allowed rounded-sm border-[#e5e7eb] w-full"
+          value={owner.nomePessoa || ''}
+        />
+        {/* <div>
+            {owner.imagemPessoa ? (
+              <img
+                src={owner.imagemPessoa}
+                alt="Proprietário"
+                className="cursor-pointer rounded-full w-[50px] h-[50px] object-cover p-1 shadow-md"
+              />
+            ) : (
+              <User size={50} />
+            )}
+          </div> */}
+
+        <h1 className="text-lg text-gray-700 mt-4">Contribuinte:</h1>
+        <input
+          type="text"
+          disabled
+          className="cursor-not-allowed rounded-sm border-[#e5e7eb] w-full"
+          value={taxpayer.nomePessoa || ''}
+        />
+        {/* <div>
+              {taxpayer.imagemPessoa ? (
+                <img
+                  src={taxpayer.imagemPessoa}
+                  alt="Contribuinte"
+                  className="cursor-pointer rounded-full w-[50px] h-[50px] object-cover p-1 shadow-md"
+                />
+              ) : (
+                <User size={50} />
+              )}
+            </div> */}
+
+        <h1 className="text-lg text-gray-700 mt-4">Uso:</h1>
+        <input
+          type="text"
+          disabled
+          className="cursor-not-allowed rounded-sm w-full border-[#e5e7eb]"
           value={use.nomeUso || ''}
         />
 
-        <h1 className="text-lg text-gray-700">Ocupação Atual:</h1>
+        <h1 className="text-lg text-gray-700 mt-4">Ocupação Atual:</h1>
         <input
           type="text"
           disabled
-          className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
+          className="cursor-not-allowed rounded-sm w-full border-[#e5e7eb]"
           value={occupation.nomeOcupacaoAtual || ''}
         />
       </div>
 
       {/* Tipo Processo: ----------------------------------------------------------------------------------------------------*/}
+      <div className="border-2 rounded-lg p-4">
+        <h2 className="text-xl font-semibold text-gray-700 mb-4">Pessoas Envolvidas no Projeto</h2>
+        <div className="flex flex-col gap-y-3">
+          <h1 className="text-lg text-gray-700">Engenheiro:</h1>
+          {engineer.imagemPessoa ? (
+            <img
+              className="h-[50px] w-[50px]"
+              src={engineer.imagemPessoa}
+            />
+          ) : (
+            <User size={50} />
+          )}
+          <Select
+            value={selectBox_Engineer.selectedOption}
+            onChange={selectBox_Engineer.handleChange}
+            onInputChange={selectBox_Engineer.delayedSearch}
+            loadOptions={selectBox_Engineer.loadOptions}
+            options={selectBox_Engineer.options}
+            placeholder="Pesquisar engenheiro . . ."
+            isClearable
+            isSearchable
+            noOptionsMessage={() => {
+              if (list_Users.list.length === 0) {
+                return "Nenhum Engenheiro existente!";
+              } else {
+                return "Nenhuma opção encontrada!";
+              }
+            }}
+            className="style-select"
+          />
+          <input
+            type="text"
+            disabled
+            className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
+            value={engineer.creaEngenheiro || ''}
+          />
 
-      <div className="flex flex-col w-1/3 gap-y-3">
+          <h1 className="text-lg text-gray-700">Fiscal:</h1>
+          {supervisor.imagemPessoa ? (
+            <img
+              className="h-[50px] w-[50px]"
+              src={supervisor.imagemPessoa}
+            />
+          ) : (
+            <User size={50} />
+          )}
+          <Select
+            value={selectBox_Supervisor.selectedOption}
+            onChange={selectBox_Supervisor.handleChange}
+            onInputChange={selectBox_Supervisor.delayedSearch}
+            loadOptions={selectBox_Supervisor.loadOptions}
+            options={selectBox_Supervisor.options}
+            placeholder="Pesquisar fiscal . . ."
+            isClearable
+            isSearchable
+            noOptionsMessage={() => {
+              if (list_Users.list.length === 0) {
+                return "Nenhum Fiscal existente!";
+              } else {
+                return "Nenhuma opção encontrada!";
+              }
+            }}
+            className="style-select"
+          />
+          <input
+            type="text"
+            disabled
+            className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
+            value={supervisor.cpfCnpjPessoa || ''}
+          />
+          <h1 className="text-lg text-gray-700">Responsável:</h1>
+          {userResponsible.imagemPessoa ? (
+            <img
+              className="h-[50px] w-[50px]"
+              src={userResponsible.imagemPessoa}
+            />
+          ) : (
+            <User size={50} />
+          )}
+          <Select
+            value={selectBox_UserResponsible.selectedOption}
+            onChange={selectBox_UserResponsible.handleChange}
+            onInputChange={selectBox_UserResponsible.delayedSearch}
+            loadOptions={selectBox_UserResponsible.loadOptions}
+            options={selectBox_UserResponsible.options}
+            placeholder="Pesquisar usuário . . ."
+            isClearable
+            isSearchable
+            noOptionsMessage={() => {
+              if (list_Users.list.length === 0) {
+                return "Nenhum Usuário existente!";
+              } else {
+                return "Nenhuma opção encontrada!";
+              }
+            }}
+            className="style-select"
+          />
+          <input
+            type="text"
+            disabled
+            className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
+            value={userResponsible.emailPessoa || ''}
+          />
+          <input
+            type="text"
+            disabled
+            className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
+            value={typeResponsible.nomeTipoUsuario || ''}
+          />
+
+          <h1 className="text-lg text-gray-700">Aprovador:</h1>
+          {userApprover.imagemPessoa ? (
+            <img
+              className="h-[50px] w-[50px]"
+              src={userApprover.imagemPessoa}
+            />
+          ) : (
+            <User size={50} />
+          )}
+          <input
+            type="text"
+            disabled
+            className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
+            value={userApprover.nomePessoa || ''}
+          />
+          <input
+            type="text"
+            disabled
+            className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
+            value={userApprover.emailPessoa || ''}
+          />
+          <input
+            type="text"
+            disabled
+            className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
+            value={typeApprover.nomeTipoUsuario || ''}
+          />
+        </div>
+      </div>
+      <div className="border-2 rounded-lg p-4">
+        <h2 className="text-xl font-semibold text-gray-700 mb-4">Tipo de Processo</h2>
+        {/* Funcionário Responsável */}
         <h1 className="text-lg text-gray-700">Tipo Processo: <span className="text-red-600">*</span></h1>
         <Select
           value={selectBox_TypesProcess.selectedOption}
@@ -169,7 +309,7 @@ const ProcessForm = ({
           required
         />
 
-        <h1 className="text-lg text-gray-700">Descrição:</h1>
+        <h1 className="text-lg text-gray-700 mt-4">Descrição do Tipo de Processo:</h1>
         <textarea
           disabled
           className="cursor-not-allowed rounded-sm border-[#e5e7eb] w-full h-32 resize-none"
@@ -178,10 +318,10 @@ const ProcessForm = ({
 
         {/* Processo: ----------------------------------------------------------------------------------------------------*/}
 
-        <h1 className="text-lg text-gray-700">Número de Identificação: <span className="text-red-600">*</span></h1>
+        <h1 className="text-lg text-gray-700 mt-4">Número de Identificação: <span className="text-red-600">*</span></h1>
         <input
           type="text"
-          className="rounded-sm border-[#e5e7eb]"
+          className="rounded-sm border-[#e5e7eb] w-full"
           onChange={(e) =>
             setProcess((prevState) => ({
               ...prevState,
@@ -192,7 +332,7 @@ const ProcessForm = ({
           required
         />
 
-        <h1 className="text-lg text-gray-700">Situação:</h1>
+        <h1 className="text-lg text-gray-700 mt-4">Situação:</h1>
         <textarea
           className="rounded-sm border-[#e5e7eb] w-full h-32 resize-none"
           onChange={(e) =>
@@ -204,7 +344,7 @@ const ProcessForm = ({
           value={process.processSituation}
         />
 
-        <h1 className="text-lg text-gray-700">Descrição:</h1>
+        <h1 className="text-lg text-gray-700 mt-4">Descrição:</h1>
         <textarea
           className="rounded-sm border-[#e5e7eb] w-full h-32 resize-none"
           onChange={(e) =>
@@ -216,7 +356,7 @@ const ProcessForm = ({
           value={process.processDescription}
         />
 
-        <h1 className="text-lg text-gray-700">Data de Aprovação:</h1>
+        <h1 className="text-lg text-gray-700 mt-4">Data de Aprovação:</h1>
         <input
           type="date"
           className="rounded-sm border-[#e5e7eb]"
@@ -229,152 +369,13 @@ const ProcessForm = ({
           value={process.approvationDate}
         />
 
-        <h1 className="text-lg text-gray-700">Status:</h1>
+        <h1 className="text-lg text-gray-700 mt-4">Status:</h1>
         <input
           disabled
           type="text"
           className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
           value={process.processStatus}
         />
-
-        <h1 className="text-lg text-gray-700">Engenheiro:</h1>
-        {engineer.imagemPessoa ? (
-          <img
-            className="h-[50px] w-[50px]"
-            src={engineer.imagemPessoa}
-          />
-        ) : (
-          <User size={50} />
-        )}
-        <Select
-          value={selectBox_Engineer.selectedOption}
-          onChange={selectBox_Engineer.handleChange}
-          onInputChange={selectBox_Engineer.delayedSearch}
-          loadOptions={selectBox_Engineer.loadOptions}
-          options={selectBox_Engineer.options}
-          placeholder="Pesquisar engenheiro . . ."
-          isClearable
-          isSearchable
-          noOptionsMessage={() => {
-            if (list_Users.list.length === 0) {
-              return "Nenhum Engenheiro existente!";
-            } else {
-              return "Nenhuma opção encontrada!";
-            }
-          }}
-          className="style-select"
-        />
-        <input
-          type="text"
-          disabled
-          className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
-          value={engineer.creaEngenheiro || ''}
-        />
-
-        <h1 className="text-lg text-gray-700">Fiscal:</h1>
-        {supervisor.imagemPessoa ? (
-          <img
-            className="h-[50px] w-[50px]"
-            src={supervisor.imagemPessoa}
-          />
-        ) : (
-          <User size={50} />
-        )}
-        <Select
-          value={selectBox_Supervisor.selectedOption}
-          onChange={selectBox_Supervisor.handleChange}
-          onInputChange={selectBox_Supervisor.delayedSearch}
-          loadOptions={selectBox_Supervisor.loadOptions}
-          options={selectBox_Supervisor.options}
-          placeholder="Pesquisar fiscal . . ."
-          isClearable
-          isSearchable
-          noOptionsMessage={() => {
-            if (list_Users.list.length === 0) {
-              return "Nenhum Fiscal existente!";
-            } else {
-              return "Nenhuma opção encontrada!";
-            }
-          }}
-          className="style-select"
-        />
-        <input
-          type="text"
-          disabled
-          className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
-          value={supervisor.cpfCnpjPessoa || ''}
-        />
-
-
-        {/* Funcionário Responsável */}
-        <h1 className="text-lg text-gray-700">Responsável:</h1>
-        {userResponsible.imagemPessoa ? (
-          <img
-            className="h-[50px] w-[50px]"
-            src={userResponsible.imagemPessoa}
-          />
-        ) : (
-          <User size={50} />
-        )}
-        <Select
-          value={selectBox_UserResponsible.selectedOption}
-          onChange={selectBox_UserResponsible.handleChange}
-          onInputChange={selectBox_UserResponsible.delayedSearch}
-          loadOptions={selectBox_UserResponsible.loadOptions}
-          options={selectBox_UserResponsible.options}
-          placeholder="Pesquisar usuário . . ."
-          isClearable
-          isSearchable
-          noOptionsMessage={() => {
-            if (list_Users.list.length === 0) {
-              return "Nenhum Usuário existente!";
-            } else {
-              return "Nenhuma opção encontrada!";
-            }
-          }}
-          className="style-select"
-        />
-        <input
-          type="text"
-          disabled
-          className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
-          value={userResponsible.emailPessoa || ''}
-        />
-        <input
-          type="text"
-          disabled
-          className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
-          value={typeResponsible.nomeTipoUsuario || ''}
-        />
-
-        <h1 className="text-lg text-gray-700">Aprovador:</h1>
-        {userApprover.imagemPessoa ? (
-          <img
-            className="h-[50px] w-[50px]"
-            src={userApprover.imagemPessoa}
-          />
-        ) : (
-          <User size={50} />
-        )}
-        <input
-          type="text"
-          disabled
-          className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
-          value={userApprover.nomePessoa || ''}
-        />
-        <input
-          type="text"
-          disabled
-          className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
-          value={userApprover.emailPessoa || ''}
-        />
-        <input
-          type="text"
-          disabled
-          className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
-          value={typeApprover.nomeTipoUsuario || ''}
-        />
-
         <div className="flex justify-center gap-x-3 mt-6">
           <button
             type="button"
@@ -383,6 +384,7 @@ const ProcessForm = ({
           >
             Salvar
           </button>
+
         </div>
       </div>
     </div>

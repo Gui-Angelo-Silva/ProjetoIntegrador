@@ -92,7 +92,7 @@ const DocumentComponent = ({
 
   return (
     <div className='flex gap-x-5'>
-      <ul className="w-3/4">
+      <ul className="w-full">
         {stages.map((stage) => {
           const typeDocumentStages = typeDocumentStagesData[stage.id] || [];
           return (

@@ -55,11 +55,11 @@ const ProcessForm = ({
   return (
     <div className="grid grid-cols-3 gap-x-7">
       {/* Imóvel: ----------------------------------------------------------------------------------------------------*/}
-      <div className="border-2 rounded-lg p-4">
+      <div className="border-2 rounded-lg p-4 shadow-sm">
         <h2 className="text-xl font-semibold text-gray-700 mb-4">Informações do Imóvel</h2>
-        <div className="mr-8 h-[200px] w-[200px] rounded-lg border-[2px] flex items-center justify-center">
+        <div className="mr-8  w-full rounded-lg border-[2px] flex items-center justify-center">
           {realstate.imagemImovel && realstate.imagemImovel.length > 0 ? (
-            <img src={realstate.imagemImovel[currentImageIndex]} alt="Imóvel" />
+            <img src={realstate.imagemImovel[currentImageIndex]} alt="Imóvel" className="rounded-lg border-[2px]" />
           ) : (
             <HouseLine size={50} />
           )}
@@ -146,10 +146,9 @@ const ProcessForm = ({
           value={occupation.nomeOcupacaoAtual || ''}
         />
       </div>
-
-      {/* Tipo Processo: ----------------------------------------------------------------------------------------------------*/}
-      <div className="border-2 rounded-lg p-4">
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">Pessoas Envolvidas no Projeto</h2>
+      {/* Pessoas Envolvidas no Processo: ----------------------------------------------------------------------------------------------------*/}
+      <div className="border-2 rounded-lg p-4 shadow-sm">
+        <h2 className="text-xl font-semibold text-gray-700 mb-4">Pessoas Envolvidas no Processo</h2>
         <div className="flex flex-col gap-y-3">
           <h1 className="text-lg text-gray-700">Engenheiro:</h1>
           {engineer.imagemPessoa ? (
@@ -287,7 +286,8 @@ const ProcessForm = ({
           />
         </div>
       </div>
-      <div className="border-2 rounded-lg p-4">
+      {/* Tipo Processo: ----------------------------------------------------------------------------------------------------*/}
+      <div className="border-2 rounded-lg p-4 shadow-sm">
         <h2 className="text-xl font-semibold text-gray-700 mb-4">Tipo de Processo</h2>
         {/* Funcionário Responsável */}
         <h1 className="text-lg text-gray-700">Tipo Processo: <span className="text-red-600">*</span></h1>

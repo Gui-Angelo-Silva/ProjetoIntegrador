@@ -1,4 +1,4 @@
-import ImgImovel from "../../assets/card/ImgImovel.png";
+import ImgImovel from "../../assets/card/ImgImovelAtualizada.png";
 import ImgEstado from "../../assets/card/ImgEstado.png";
 import ImgCidade from "../../assets/card/ImgCidade.png";
 import ImgLogradouro from "../../assets/card/ImgLogradouro.png";
@@ -18,6 +18,8 @@ import ImgTipoInfraestrutura from "../../assets/card/ImgTipoInfraestrutra.png";
 import ImgInfraestrutura from "../../assets/card/ImgInfraestrutura.png";
 import ImgOcupacaoAtual from "../../assets/card/ImgOcupacaoAtual.png";
 import ImgTopografia from "../../assets/card/ImgTopografia.png";
+import ImgUso from "../../assets/card/ImgUso.png";
+import ImgInstalacao from "../../assets/card/ImgInstalacao.png";
 
 import { useServer } from "../../routes/serverRoute";
 
@@ -88,7 +90,7 @@ function Cards() {
             },
             {
                 onClick: () => addSegment("uso"),
-                image: ImgMunicipe,
+                image: ImgUso,
                 tooltip: "Abrir a Página de Controle de Uso",
                 title: "Uso",
                 module: "Dados Adicionais"
@@ -109,7 +111,7 @@ function Cards() {
             },
             {
                 onClick: () => addSegment("instalacao"),
-                image: ImgAuditoria,
+                image: ImgInstalacao,
                 tooltip: "Abrir a Página de Controle de Instalação",
                 title: "Instalação",
                 module: "Dados Adicionais"

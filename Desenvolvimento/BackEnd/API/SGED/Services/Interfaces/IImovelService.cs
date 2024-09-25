@@ -1,4 +1,5 @@
 ﻿using SGED.Objects.DTO.Entities;
+using SGED.Objects.Models.Entities;
 
 namespace SGED.Services.Interfaces
 {
@@ -6,7 +7,8 @@ namespace SGED.Services.Interfaces
 	{
 		Task<IEnumerable<ImovelDTO>> GetAll();
 		Task<ImovelDTO> GetById(int id);
-		Task Create(ImovelDTO imovelDTO);
+		Task<ImovelDTO> GetByProperty(string propertyName, string data);
+        Task Create(ImovelDTO imovelDTO);
 		Task Update(ImovelDTO imovelDTO);
 		Task Remove(int id);
 	}

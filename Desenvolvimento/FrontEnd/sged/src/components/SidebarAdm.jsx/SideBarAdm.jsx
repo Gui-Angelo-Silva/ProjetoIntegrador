@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { CaretRight, CaretLeft, HardDrives } from '@phosphor-icons/react';
+import { CaretRight, CaretLeft } from '@phosphor-icons/react';
 import FolderCopyIcon from '@mui/icons-material/FolderCopy';
 import DescriptionIcon from '@mui/icons-material/Description';
 import SaveIcon from '@mui/icons-material/Save';
@@ -42,6 +42,25 @@ export default function SideBarAdm() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [isSidebarExpanded]);
 
+    useEffect(() => {
+        const handleMouseLeave = () => {
+            if (!isSmallScreen && isSidebarExpanded) {
+                setIsSidebarExpanded(false);
+            }
+        };
+
+        const sidebarElement = sidebarRef.current;
+        if (sidebarElement) {
+            sidebarElement.addEventListener("mouseleave", handleMouseLeave);
+        }
+
+        return () => {
+            if (sidebarElement) {
+                sidebarElement.removeEventListener("mouseleave", handleMouseLeave);
+            }
+        };
+    }, [isSidebarExpanded, isSmallScreen]);
+
     const handleToggleAtendente = () => {
         setIsAtendenteOpen(!isAtendenteOpen);
         if (!isSidebarExpanded) {
@@ -59,12 +78,12 @@ export default function SideBarAdm() {
     const toggleSidebar = () => setIsSidebarExpanded(!isSidebarExpanded);
 
     return (
-        <div className={`relative`} ref={sidebarRef}>
+        <div className="relative" ref={sidebarRef}>
             <div
                 className={`fixed h-full border-r-[2.5px] border-r-gray-200 shadow-md transition-width duration-300 ease-in-out bg-white text-gray-600
                             ${isSidebarExpanded ? 'w-[200px] sm:w-[200px] md:w-[220px] lg:w-[240px] xl:w-[260px]' : 'w-[55px]'} `}
                 onMouseEnter={isSmallScreen ? () => setIsSidebarExpanded(true) : undefined}
-                onMouseLeave={isSmallScreen ? () => setIsSidebarExpanded(false) : undefined}
+                style={{ overflow: 'hidden' }}
             >
                 <MenuItem
                     icon={PersonalVideoIcon}
@@ -132,12 +151,6 @@ export default function SideBarAdm() {
                         />
                     </div>
                 )}
-                <div 
-                    className="absolute -right-[17px] top-1/2 transform text-gray-400 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-white border-2 border-gray-200 rounded-full cursor-pointer"
-                    onClick={toggleSidebar}
-                >
-                    {isSidebarExpanded ? <CaretLeft size={20} /> : <CaretRight size={20} />}
-                </div>
             </div>
         </div>
     );

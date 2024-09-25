@@ -6,7 +6,8 @@ namespace SGED.Repositories.Interfaces
 	{
 		Task<IEnumerable<Imovel>> GetAll();
 		Task<Imovel> GetById(int id);
-		Task<Imovel> Create(Imovel imovel);
+		Task<Imovel> GetByProperty(string propertyName, string data);
+        Task<Imovel> Create(Imovel imovel);
 		Task<Imovel> Update(Imovel imovel);
 		Task<Imovel> Delete(int id);
 	}

@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
 
 const PopUpManager = () => {
     const [codePopUp, setCodePopUp] = useState(0);
     const [popups, setPopups] = useState([]);
     const initialBottomPosition = 20;
+    const [isConfigVisible, setIsConfigVisible] = useState(true);
 
-    const addPopUp = (action, status, message) => {
+    const checkConfigStatus = () => {
+        const configStatus = Cookies.get('configId1Active');
+        return configStatus === 'true';
+    };
+
+    const addPopUp = async (action, status, message) => {
+        if (!checkConfigStatus() && action === "get") return null;
+
         const id = Date.now();
         const newPopup = { id, action, status, message, bottomPosition: `${initialBottomPosition}px`, code: codePopUp };
         setPopups(prevPopups => {

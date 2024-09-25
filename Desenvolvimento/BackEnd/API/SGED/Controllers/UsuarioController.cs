@@ -48,6 +48,30 @@ namespace SGED.Controllers
             }
         }
 
+        [HttpGet("GetAllNames")]
+        public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetAllNames()
+        {
+            try
+            {
+                var usuariosDTO = await _usuarioService.GetAll();
+                var registrationNumbers = usuariosDTO.Select(u => new { u.Id, u.NomePessoa }).ToList();
+
+                _response.SetSuccess();
+                _response.Message = registrationNumbers.Any() ?
+                    "Lista dos Nomes de Usuário obtida com sucesso." :
+                    "Nenhum Usuário encontrado.";
+                _response.Data = registrationNumbers;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista dos Nomes de Usuário!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
         [HttpGet("{id:int}", Name = "GetUsuario")]
         public async Task<ActionResult<UsuarioDTO>> Get(int id)
         {

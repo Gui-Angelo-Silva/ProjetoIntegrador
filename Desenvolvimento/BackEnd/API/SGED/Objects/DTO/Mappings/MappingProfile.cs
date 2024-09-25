@@ -10,6 +10,7 @@ namespace SGED.Objects.DTO.Mappings
         {
             // Classes do Sistema:
 
+
             // Objetos de Pessoa:
 
             CreateMap<MunicipeDTO, Municipe>();
@@ -84,14 +85,25 @@ namespace SGED.Objects.DTO.Mappings
             CreateMap<TipoDocumentoEtapaDTO, TipoDocumentoEtapa>();
             CreateMap<TipoDocumentoEtapa, TipoDocumentoEtapaDTO>().ReverseMap();
 
+            CreateMap<ProcessoDTO, Processo>();
+            CreateMap<Processo, ProcessoDTO>().ReverseMap();
 
-            // Objetos do Servidor:
+            CreateMap<DocumentoProcessoDTO, DocumentoProcesso>();
+			CreateMap<DocumentoProcesso, DocumentoProcessoDTO>().ReverseMap();
 
-            CreateMap<LoginDTO, Login>();
+
+			// Objetos do Servidor:
+
+			CreateMap<LoginDTO, Login>();
             CreateMap<Login, LoginDTO>().ReverseMap();
 
             CreateMap<SessaoDTO, Sessao>();
             CreateMap<Sessao, SessaoDTO>().ReverseMap();
+
+            // Objetos da Configuração
+
+            CreateMap<ConfiguracaoDTO, Configuracao>();
+            CreateMap<Configuracao, ConfiguracaoDTO>().ReverseMap();
         }
     }
 }

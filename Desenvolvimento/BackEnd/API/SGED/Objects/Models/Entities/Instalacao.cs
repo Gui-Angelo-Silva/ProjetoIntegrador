@@ -16,12 +16,12 @@ namespace SGED.Objects.Models.Entities
 
         public Infraestrutura? Infraestrutura { get; set; }
 
-        [ForeignKey("idinfraestrutura")]
+        [Column("idinfraestrutura")]
         public int IdInfraestrutura { get; set; }
 
         public Imovel? Imovel { get; set; }
 
-        [ForeignKey("idimovel")]
+        [Column("idimovel")]
         public int IdImovel { get; set; }
 
         public Engenheiro? Engenheiro { get; set; }

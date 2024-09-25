@@ -8,13 +8,16 @@ namespace SGED.Context.Builders
         public static void Build(ModelBuilder modelBuilder)
         {
             // Builder
-            modelBuilder.Entity<Logradouro>().HasKey(l => l.Id);
+            modelBuilder.Entity<Logradouro>().Property(l => l.Id);
             modelBuilder.Entity<Logradouro>().Property(l => l.Cep).HasMaxLength(9).IsRequired();
             modelBuilder.Entity<Logradouro>().Property(l => l.RuaLogradouro).HasMaxLength(100).IsRequired();
             modelBuilder.Entity<Logradouro>().Property(l => l.NumeroInicial).HasMaxLength(10).IsRequired();
             modelBuilder.Entity<Logradouro>().Property(l => l.NumeroFinal).HasMaxLength(10).IsRequired();
             modelBuilder.Entity<Logradouro>().Property(l => l.IdBairro).IsRequired();
             modelBuilder.Entity<Logradouro>().Property(l => l.IdTipoLogradouro).IsRequired();
+
+            // Declaração: Defini o ID como Chave Primária
+            modelBuilder.Entity<Logradouro>().HasKey(l => l.Id);
 
             // Relacionamento: Bairro -> Logradouro
             modelBuilder.Entity<Logradouro>()

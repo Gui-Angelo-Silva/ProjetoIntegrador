@@ -7,10 +7,16 @@ function ControlModule() {
     const [lastSelected, setLastSelected] = useState({});
 
     const updateOptions = (list, atributeId, atributeName) => {
-        const updatedOptions = list.map(item => ({
-            value: item[atributeId],
-            label: item[atributeName]
-        }));
+        const updatedOptions = atributeId && atributeName ?
+            list.map(item => ({
+                value: item[atributeId],
+                label: item[atributeName]
+            })) :
+            list.map(item => ({
+                value: item,
+                label: item
+            }));
+
         setOptions(updatedOptions);
     };
 

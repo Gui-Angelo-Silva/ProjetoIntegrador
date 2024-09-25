@@ -16,7 +16,7 @@ namespace SGED.Objects.Models.Entities
 
         public TipoInfraestrutura? TipoInfraestrutura { get; set; }
 
-        [ForeignKey("idtipoinfraestrutura")]
+        [Column("idtipoinfraestrutura")]
         public int IdTipoInfraestrutura { get; set; }
 
         public ICollection<Instalacao>? Instalacoes { get; set; }

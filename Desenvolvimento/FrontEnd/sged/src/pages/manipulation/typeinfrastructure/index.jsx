@@ -30,7 +30,7 @@ export default function TypeInfrastructure() {
 
     // Marking the assembled component
     const montage = useMontage();
-    
+
     useEffect(() => {
         montage.componentMounted();
     }, []);
@@ -280,7 +280,7 @@ export default function TypeInfrastructure() {
                             <br />
                             <label className="text-[#444444]">Descrição: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation} value={typeInfrastructure.typeInfrastructureDescription} onChange={(e) => typeInfrastructure.setTypeInfrastructureDescription(e.target.value)} />
+                            <textarea type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation} value={typeInfrastructure.typeInfrastructureDescription} onChange={(e) => typeInfrastructure.setTypeInfrastructureDescription(e.target.value)} />
                             <br />
                         </div>
                     </ModalBody>
@@ -316,7 +316,14 @@ export default function TypeInfrastructure() {
                             <br />
                             <label className="text-[#444444]">Descrição: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation}  value={typeInfrastructure.typeInfrastructureDescription} onChange={(e) => typeInfrastructure.setTypeInfrastructureDescription(e.target.value)} />
+                            <textarea
+                                className={`form-control rounded-md border-[#BCBCBC]`}
+                                disabled={inOperation}
+                                value={typeInfrastructure.typeInfrastructureDescription}
+                                onChange={(e) => typeInfrastructure.setTypeInfrastructureDescription(e.target.value)}
+                                rows={typeInfrastructure.typeInfrastructureDescription.split('\n').length} // Definir o número de linhas com base no conteúdo atual
+                                style={{ resize: 'none', minHeight: '60px' }} // Evitar redimensionamento manual e definir altura mínima desejada
+                            />
                             <br />
                         </div>
                     </ModalBody>

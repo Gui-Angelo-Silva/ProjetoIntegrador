@@ -38,34 +38,36 @@ namespace SGED.Objects.Models.Entities
 
         public Logradouro? Logradouro { get; set; }
 
-        [ForeignKey("idlogradouro")]
+        [Column("idlogradouro")]
         public int IdLogradouro { get; set; }
 
         public Municipe? Proprietario { get; set; }
 
-        [ForeignKey("idproprietario")]
+        [Column("idproprietario")]
         public int IdProprietario { get; set; }
 
         public Municipe? Contribuinte { get; set; }
 
-        [ForeignKey("idcontribuinte")]
+        [Column("idcontribuinte")]
         public int IdContribuinte { get; set; }
 
         public Topografia? Topografia { get; set; }
 
-        [ForeignKey("idtopografia")]
+        [Column("idtopografia")]
         public int IdTopografia { get; set; }
 
         public Uso? Uso { get; set; }
 
-        [ForeignKey("iduso")]
+        [Column("iduso")]
         public int IdUso { get; set; }
 
         public OcupacaoAtual? OcupacaoAtual { get; set; }
 
-        [ForeignKey("idocupacaoatual")]
+        [Column("idocupacaoatual")]
         public int IdOcupacaoAtual { get; set; }
 
+
+        public ICollection<Processo>? Processos { get; set; }
         public ICollection<Instalacao>? Instalacoes { get; set; }
     }
 }

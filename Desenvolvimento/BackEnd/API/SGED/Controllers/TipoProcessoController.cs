@@ -5,7 +5,7 @@ using SGED.Objects.Models.Entities;
 using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
 using SGED.Services.Entities;
-using SGED.Objects.Enums;
+using SGED.Objects.Enums.Status;
 
 namespace SGED.Controllers
 {
@@ -40,6 +40,30 @@ namespace SGED.Controllers
             {
                 _response.SetError();
                 _response.Message = "Não foi possível adquirir a lista do(s) Tipo(s) de Processo!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpGet("GetAllTypes")]
+        public async Task<ActionResult<IEnumerable<TipoProcessoDTO>>> GetAllTypes()
+        {
+            try
+            {
+                var tipoProcessosDTO = await _tipoProcessoService.GetAll();
+                var registrationNumbers = tipoProcessosDTO.Select(tp => new { tp.Id, tp.NomeTipoProcesso }).ToList();
+
+                _response.SetSuccess();
+                _response.Message = registrationNumbers.Any() ?
+                    "Lista dos Nomes dos Tipos de Processo obtida com sucesso." :
+                    "Nenhum Tipo Processo encontrado.";
+                _response.Data = registrationNumbers;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista dos Nomes dos Tipos de Processo!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -97,7 +121,7 @@ namespace SGED.Controllers
                 }
                 else
                 {
-                    tipoProcessoDTO.Enable();
+                    tipoProcessoDTO.Activate();
                     await _tipoProcessoService.Create(tipoProcessoDTO);
 
                     _response.SetSuccess();
@@ -185,7 +209,7 @@ namespace SGED.Controllers
                     _response.Data = new { errorId = "Tipo de Processo não encontrado!" };
                     return NotFound(_response);
                 }
-                else if (tipoProcessoDTO.Status == StatusEnum.Habilitado)
+                else if (tipoProcessoDTO.Status == StatusData.Active)
                 {
                     _response.SetSuccess();
                     _response.Message = "O Tipo de Processo já está " + tipoProcessoDTO.GetState().ToLower() + ".";
@@ -194,7 +218,7 @@ namespace SGED.Controllers
                 }
                 else
                 {
-                    tipoProcessoDTO.Enable();
+                    tipoProcessoDTO.Activate();
                     await _tipoProcessoService.Update(tipoProcessoDTO);
 
                     _response.SetSuccess();
@@ -225,7 +249,7 @@ namespace SGED.Controllers
                     _response.Data = new { errorId = "Tipo de Processo não encontrado!" };
                     return NotFound(_response);
                 }
-                else if (tipoProcessoDTO.Status == StatusEnum.Habilitado)
+                else if (tipoProcessoDTO.Status == StatusData.Active)
                 {
                     _response.SetSuccess();
                     _response.Message = "O Tipo de Processo já está " + tipoProcessoDTO.GetState().ToLower() + ".";
@@ -234,7 +258,7 @@ namespace SGED.Controllers
                 }
                 else
                 {
-                    tipoProcessoDTO.Enable();
+                    tipoProcessoDTO.Activate();
                     await _tipoProcessoService.Update(tipoProcessoDTO);
 
                     _response.SetSuccess();

@@ -112,9 +112,9 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                if (instalacaoDTO.IdEngenheiro != 0)
+                if (instalacaoDTO.IdEngenheiro.HasValue)
                 {
-                    var engenheiroDTO = await _engenheiroService.GetById(instalacaoDTO.IdEngenheiro);
+                    var engenheiroDTO = await _engenheiroService.GetById(instalacaoDTO.IdEngenheiro.Value);
                     if (engenheiroDTO is null)
                     {
                         _response.SetNotFound();
@@ -180,9 +180,9 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                if (instalacaoDTO.IdEngenheiro != 0)
+                if (instalacaoDTO.IdEngenheiro.HasValue)
                 {
-                    var engenheiroDTO = await _engenheiroService.GetById(instalacaoDTO.IdEngenheiro);
+                    var engenheiroDTO = await _engenheiroService.GetById(instalacaoDTO.IdEngenheiro.Value);
                     if (engenheiroDTO is null)
                     {
                         _response.SetNotFound();

@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useMontage } from "../../../object/modules/montage";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
+import Navbar from "../../../components/NavBarAdm/NavBarAdm.jsx"
 
 export default function Test() {
     const montage = useMontage();
@@ -13,6 +14,7 @@ export default function Test() {
 
     return (
         <div className="flex flex-col items-center justify-center h-screen">
+            <Navbar />
             <div className="mb-4">
                 <p>{popups.length} Pop-ups na lista</p>
             </div>

@@ -25,6 +25,8 @@ import TypeInfrastructure from '../../pages/manipulation/typeinfrastructure';
 import Infrastructure from '../../pages/manipulation/infrastructure';
 import Installation from '../../pages/manipulation/installation';
 import Setting from '../../pages/account/setting';
+import Process from '../../pages/manipulation/process';
+import AddProcess from '../../pages/manipulation/process/addprocess';
 
 export default function RouteA() {
     return (
@@ -54,6 +56,8 @@ export default function RouteA() {
             <Route path="/cadastros/infraestrutura" element={<Infrastructure />}></Route>
             <Route path="/cadastros/instalacao" element={<Installation />}></Route>
             <Route path="/configuracao" element={<Setting />}></Route>
+            <Route path="/documentos/processo" element={<Process />}></Route>
+            <Route path="/documentos/processo/cadastrar-processo" element={<AddProcess />}></Route>
 
             <Route path="/documentos" element={<Document />}></Route>
             <Route path="/teste" element={<Test />}></Route>

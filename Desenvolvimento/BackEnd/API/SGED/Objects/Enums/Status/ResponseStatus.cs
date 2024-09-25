@@ -1,4 +1,4 @@
-﻿namespace SGED.Objects.Enums
+﻿namespace SGED.Objects.Enums.Status
 {
     public enum ResponseStatus
     {

@@ -2,14 +2,13 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
-//import { motion } from "framer-motion";
 
 // Icon imports
 import { FilePlus, Pen, Trash, Warning } from "@phosphor-icons/react";
 
 // Component imports
 import LinkTitle from "../../../components/Title/LinkTitle";
-import SearchBar from "../../../components/Search/SearchBar";
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
 import CancelButton from "../../../components/Button/CancelButton";
 import CustomTable from "../../../components/Table/Table";
@@ -30,7 +29,7 @@ export default function State() {
 
     // Marking the assembled component
     const montage = useMontage();
-    
+
     useEffect(() => {
         montage.componentMounted();
     }, []);
@@ -52,6 +51,7 @@ export default function State() {
     const [lastRequisition, setLastRequisition] = useState('');
     const [modalError, setModalError] = useState(false);
     const [timeLeft, setTimeLeft] = useState(0);
+    const [scheduleRequest, setScheduleRequest] = useState(false);
 
     // useEffect hooks
     useEffect(() => {
@@ -63,8 +63,6 @@ export default function State() {
             openCloseModalEdit(false);
             openCloseModalDelete(false);
         }
-
-        list.searchBy ? null : list.setSearchBy('nomeEstado');
     }, [updateData]);
 
     useEffect(() => {
@@ -108,6 +106,27 @@ export default function State() {
             clearInterval(timer);
         };
     }, [modalError]);
+
+    useEffect(() => {
+        if (scheduleRequest) {
+            setInterval(() => {
+                GetState();
+            }, 60000);
+
+            setScheduleRequest(false);
+        }
+    }, [scheduleRequest]);
+
+    useEffect(() => {
+        if (scheduleRequest && state.stateId !== 0) {
+            const stateIdNotInList = !list.list.some(object => object.id === state.stateId);
+
+            if (stateIdNotInList) {
+                setLastRequisition(modalEdit ? "alterar" : "excluir");
+                openCloseModalError(true);
+            }
+        }
+    }, [scheduleRequest]);
 
     // State selection handler
     const selectState = (object, option) => {
@@ -169,6 +188,7 @@ export default function State() {
 
         await connection.endpoint("Estado").get();
         managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
+        setScheduleRequest(true);
 
         list.setList(connection.getList());
     };
@@ -231,6 +251,7 @@ export default function State() {
 
     return (
         <>
+            {/* POP-UP's */}
             {<div>
                 {managerPopUp.popups.map(popup => (
                     <PopUp
@@ -244,16 +265,16 @@ export default function State() {
                     />
                 ))}
             </div>}
+
             <LayoutPage>
                 <LinkTitle pageName="Estado" />
-                <SearchBar
-                    placeholder="Pesquisar Estado"
-                    onSearchChange={(value) => list.handleSearch(value)}
-                    onSearchByChange={(value) => list.handleSearchBy(value)}
-                    options={[
+                <MultiSearchBar
+                    maxSearchBars={2}
+                    searchOptions={[
                         { label: 'Estado', value: 'nomeEstado' },
                         { label: 'Sigla', value: 'ufEstado' },
                     ]}
+                    setSearchDictionary={list.setSearchDictionary}
                     button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
                 />
                 <CustomTable
@@ -394,10 +415,9 @@ export default function State() {
                     </ModalHeader>
                     <ModalBody className="text-center flex flex-col justify-center items-center">
                         <h3 className="pl-4 text-lg font-thin">
-                            O Estado não existe no banco de dados.
+                            O Estado  {lastRequisition === "buscar" ? "selecionado" : "informado" } não existe no banco de dados.
                             <br />
-                            O sistema irá carregar os dados atualizados após o fechamento da tela.
-                            Tempo restante: {timeLeft}s
+                            O sistema irá carregar os dados atuais após fechar a tela. Tempo restante: {timeLeft}s
                         </h3>
                     </ModalBody>
                     <ModalFooter className="flex justify-center">

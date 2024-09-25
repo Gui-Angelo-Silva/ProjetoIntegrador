@@ -7,7 +7,7 @@ using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
 using SGED.Objects.Models.Entities;
 using System.Collections;
-using SGED.Objects.Enums;
+using SGED.Objects.Enums.Status;
 
 namespace SGED.Controllers
 {
@@ -233,7 +233,7 @@ namespace SGED.Controllers
 
                 var tipoDocumentoEtapasDTO = await _tipoDocumentoEtapaService.GetTypeDocumentStagesRelatedToStage(etapaDTO.Id);
                 tipoDocumentoEtapaDTO.Posicao = tipoDocumentoEtapasDTO.Count() + 1;
-                tipoDocumentoEtapaDTO.Enable();
+                tipoDocumentoEtapaDTO.Activate();
                 await _tipoDocumentoEtapaService.Create(tipoDocumentoEtapaDTO);
 
                 _response.SetSuccess();
@@ -446,7 +446,7 @@ namespace SGED.Controllers
                     _response.Data = new { errorId = "Relacionamento entre Etapa e Tipo de Documento não encontrado!" };
                     return NotFound(_response);
                 }
-                else if (tipoDocumentoEtapaDTO.Status == StatusEnum.Habilitado)
+                else if (tipoDocumentoEtapaDTO.Status == StatusData.Active)
                 {
                     _response.SetSuccess();
                     _response.Message = "O relacionamento entre Etapa e Tipo de Documento já está " + tipoDocumentoEtapaDTO.GetState().ToLower() + ".";
@@ -455,7 +455,7 @@ namespace SGED.Controllers
                 }
                 else
                 {
-                    tipoDocumentoEtapaDTO.Enable();
+                    tipoDocumentoEtapaDTO.Activate();
                     await _tipoDocumentoEtapaService.Update(tipoDocumentoEtapaDTO);
 
                     _response.SetSuccess();
@@ -486,7 +486,7 @@ namespace SGED.Controllers
                     _response.Data = new { errorId = "Relacionamento entre Etapa e Tipo de Documento não encontrado!" };
                     return NotFound(_response);
                 }
-                else if (tipoDocumentoEtapaDTO.Status == StatusEnum.Desativado)
+                else if (tipoDocumentoEtapaDTO.Status == StatusData.Blocked)
                 {
                     _response.SetSuccess();
                     _response.Message = "O relacionamento entre Etapa e Tipo de Documento já está " + tipoDocumentoEtapaDTO.GetState().ToLower() + ".";
@@ -495,7 +495,7 @@ namespace SGED.Controllers
                 }
                 else
                 {
-                    tipoDocumentoEtapaDTO.Disable();
+                    tipoDocumentoEtapaDTO.Block();
                     await _tipoDocumentoEtapaService.Update(tipoDocumentoEtapaDTO);
 
                     _response.SetSuccess();

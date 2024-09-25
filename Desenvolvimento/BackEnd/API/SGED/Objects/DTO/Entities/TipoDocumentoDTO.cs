@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using SGED.Objects.Enums;
+using System.Text.Json.Serialization;
+using SGED.Objects.Enums.Status;
 using SGED.Objects.Interfaces;
 using SGED.Objects.Utilities;
 
 namespace SGED.Objects.DTO.Entities
 {
-	public class TipoDocumentoDTO
+    public class TipoDocumentoDTO
 	{
 		public int Id { get; set; }
 
@@ -20,14 +21,15 @@ namespace SGED.Objects.DTO.Entities
 		public string DescricaoTipoDocumento { get; set; }
 
 		[Required(ErrorMessage = "O status é requerido!")]
-        public StatusEnum Status { get; set; }
+        public StatusData Status { get; set; }
+
+		[JsonIgnore]
+		public ICollection<DocumentoProcessoDTO>? DocumentosProcessoDTO { get; set; }
 
 
-        public void Enable() => Status = StatusEnumExtensions.Enable();
-        public void Pending() => Status = StatusEnumExtensions.Pending();
-        public void Wait() => Status = StatusEnumExtensions.Wait();
-        public void Block() => Status = StatusEnumExtensions.Block();
-        public void Disable() => Status = StatusEnumExtensions.Disable();
+        public void Activate() => Status = StatusDataExtensions.Activate();
+        public void Deactivate() => Status = StatusDataExtensions.Deactivate();
+        public void Block() => Status = StatusDataExtensions.Block();
 
         public string GetState() => IStatusStateExtensions.GetState(this.Status);
         public bool CanEdit() => IStatusStateExtensions.CanEdit(this.Status);

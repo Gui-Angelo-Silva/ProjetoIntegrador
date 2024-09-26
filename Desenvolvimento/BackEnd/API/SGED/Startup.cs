@@ -18,255 +18,259 @@ using SGED.Objects.Models.Entities;
 
 namespace SGED
 {
-	public class Startup
-	{
-		public Startup(IConfiguration configuration)
-		{
-			Configuration = configuration;
-		}
+    public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
 
-		public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; }
 
-		public void ConfigureServices(IServiceCollection services)
-		{
-			// Configuração do banco de dados
-			services.AddDbContext<AppDBContext>(options =>
-				options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+        public void ConfigureServices(IServiceCollection services)
+        {
+            // Busca a string de conexão
+            var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
+                                   ?? Configuration.GetConnectionString("DefaultConnection");
 
-			// Configuração do Swagger
-			services.AddSwaggerGen(c =>
-			{
-				c.SwaggerDoc("v1", new OpenApiInfo { Title = "SGED", Version = "v1" });
+            // Configurando o DbContext com a string de conexão
+            services.AddDbContext<AppDBContext>(options =>
+                options.UseNpgsql(connectionString));
 
-				c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-				{
-					Description = @"Enter 'Bearer' [space] your token",
-					Name = "Authorization",
-					In = ParameterLocation.Header,
-					Type = SecuritySchemeType.ApiKey,
-					Scheme = "Bearer"
-				});
+            // Configuração do Swagger
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SGED", Version = "v1" });
 
-				c.AddSecurityRequirement(new OpenApiSecurityRequirement
-				{
-					{
-						new OpenApiSecurityScheme
-						{
-							Reference = new OpenApiReference
-							{
-								Type = ReferenceType.SecurityScheme,
-								Id = "Bearer"
-							},
-							Scheme = "oauth2",
-							Name = "Bearer",
-							In = ParameterLocation.Header
-						},
-						new List<string>()
-					}
-				});
-			});
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = @"Enter 'Bearer' [space] your token",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
 
-			// Configuração da autenticação JWT
-			services.AddAuthentication("Bearer")
-				.AddJwtBearer("Bearer", options =>
-				{
-					SecurityEntity securityEntity = new SecurityEntity();
-					options.TokenValidationParameters = new TokenValidationParameters
-					{
-						ValidateIssuer = true,
-						ValidateAudience = true,
-						ValidateLifetime = true,
-						ValidateIssuerSigningKey = true,
-						ValidIssuer = securityEntity.Issuer,
-						ValidAudience = securityEntity.Audience,
-						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityEntity.Key)),
-					};
-				});
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header
+                        },
+                        new List<string>()
+                    }
+                });
+            });
 
-			services.AddControllers().AddJsonOptions(
-				c => c.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+            // Configuração da autenticação JWT
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    SecurityEntity securityEntity = new SecurityEntity();
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = securityEntity.Issuer,
+                        ValidAudience = securityEntity.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityEntity.Key)),
+                    };
+                });
 
-			services.AddEndpointsApiExplorer();
+            services.AddControllers().AddJsonOptions(
+                c => c.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-			services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
-			{
-				builder.WithOrigins("http://localhost:3000", "http://localhost:5173")
-					.AllowAnyMethod()
-					.AllowAnyHeader()
-					.AllowCredentials();
-			}));
+            services.AddEndpointsApiExplorer();
 
-			services.AddAuthorization(options =>
-			{
-				options.AddPolicy("ApiScope", policy =>
-				{
-					policy.RequireClaim("scope", "sged");
-				});
-			});
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.WithOrigins("http://localhost:3000", "http://localhost:5173")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+            }));
 
-			services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ApiScope", policy =>
+                {
+                    policy.RequireClaim("scope", "sged");
+                });
+            });
 
-			// Injeção de dependências
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-			// Dependência: Configuração
+            // Injeção de dependências
 
-			services.AddScoped<IConfiguracaoRepository, ConfiguracaoRepository>();
-			services.AddScoped<IConfiguracaoService, ConfiguracaoService>();
+            // Dependência: Configuração
 
-			// Conjunto: Pessoa
+            services.AddScoped<IConfiguracaoRepository, ConfiguracaoRepository>();
+            services.AddScoped<IConfiguracaoService, ConfiguracaoService>();
 
-			// Dependência: Municipe
-			services.AddScoped<IMunicipeRepository, MunicipeRepository>();
-			services.AddScoped<IMunicipeService, MunicipeService>();
+            // Conjunto: Pessoa
 
-			// Dependência: Fiscal
-			services.AddScoped<IFiscalRepository, FiscalRepository>();
-			services.AddScoped<IFiscalService, FiscalService>();
+            // Dependência: Municipe
+            services.AddScoped<IMunicipeRepository, MunicipeRepository>();
+            services.AddScoped<IMunicipeService, MunicipeService>();
 
-			// Dependência: Engenheiro
-			services.AddScoped<IEngenheiroRepository, EngenheiroRepository>();
-			services.AddScoped<IEngenheiroService, EngenheiroService>();
+            // Dependência: Fiscal
+            services.AddScoped<IFiscalRepository, FiscalRepository>();
+            services.AddScoped<IFiscalService, FiscalService>();
 
-			// Dependência: Tipo Usuário
-			services.AddScoped<ITipoUsuarioRepository, TipoUsuarioRepository>();
-			services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
+            // Dependência: Engenheiro
+            services.AddScoped<IEngenheiroRepository, EngenheiroRepository>();
+            services.AddScoped<IEngenheiroService, EngenheiroService>();
 
-			// Dependência: Usuário
-			services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-			services.AddScoped<IUsuarioService, UsuarioService>();
+            // Dependência: Tipo Usuário
+            services.AddScoped<ITipoUsuarioRepository, TipoUsuarioRepository>();
+            services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
 
-			// Dependência: Sessão
-			services.AddScoped<ISessaoRepository, SessaoRepository>();
-			services.AddScoped<ISessaoService, SessaoService>();
+            // Dependência: Usuário
+            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+            services.AddScoped<IUsuarioService, UsuarioService>();
 
-
-			// Conjunto: Imóvel
-
-			// Dependência: Estado
-			services.AddScoped<IEstadoRepository, EstadoRepository>();
-			services.AddScoped<IEstadoService, EstadoService>();
-
-			// Dependência: Cidade
-			services.AddScoped<ICidadeRepository, CidadeRepository>();
-			services.AddScoped<ICidadeService, CidadeService>();
-
-			// Dependência: Bairro
-			services.AddScoped<IBairroRepository, BairroRepository>();
-			services.AddScoped<IBairroService, BairroService>();
-
-			// Dependência: TipoLogradouro
-			services.AddScoped<ITipoLogradouroRepository, TipoLogradouroRepository>();
-			services.AddScoped<ITipoLogradouroService, TipoLogradouroService>();
-
-			// Dependência: Logradouro
-			services.AddScoped<ILogradouroRepository, LogradouroRepository>();
-			services.AddScoped<ILogradouroService, LogradouroService>();
-
-			// Dependência: Imóvel
-			services.AddScoped<IImovelRepository, ImovelRepository>();
-			services.AddScoped<IImovelService, ImovelService>();
+            // Dependência: Sessão
+            services.AddScoped<ISessaoRepository, SessaoRepository>();
+            services.AddScoped<ISessaoService, SessaoService>();
 
 
-			// Conjunto: Aliemntação do Imóvel
+            // Conjunto: Imóvel
 
-			// Dependência: Topografia
-			services.AddScoped<ITopografiaRepository, TopografiaRepository>();
-			services.AddScoped<ITopografiaService, TopografiaService>();
+            // Dependência: Estado
+            services.AddScoped<IEstadoRepository, EstadoRepository>();
+            services.AddScoped<IEstadoService, EstadoService>();
 
-			// Dependência: Tipo Uso
-			services.AddScoped<IUsoRepository, UsoRepository>();
-			services.AddScoped<IUsoService, UsoService>();
+            // Dependência: Cidade
+            services.AddScoped<ICidadeRepository, CidadeRepository>();
+            services.AddScoped<ICidadeService, CidadeService>();
 
-			// Dependência: Ocupação Atual
-			services.AddScoped<IOcupacaoAtualRepository, OcupacaoAtualRepository>();
-			services.AddScoped<IOcupacaoAtualService, OcupacaoAtualService>();
+            // Dependência: Bairro
+            services.AddScoped<IBairroRepository, BairroRepository>();
+            services.AddScoped<IBairroService, BairroService>();
 
-			// Dependência: Tipo Infraestrutura
-			services.AddScoped<ITipoInfraestruturaRepository, TipoInfraestruturaRepository>();
-			services.AddScoped<ITipoInfraestruturaService, TipoInfraestruturaService>();
+            // Dependência: TipoLogradouro
+            services.AddScoped<ITipoLogradouroRepository, TipoLogradouroRepository>();
+            services.AddScoped<ITipoLogradouroService, TipoLogradouroService>();
 
-			// Dependência: Infraestrutura
-			services.AddScoped<IInfraestruturaRepository, InfraestruturaRepository>();
-			services.AddScoped<IInfraestruturaService, InfraestruturaService>();
+            // Dependência: Logradouro
+            services.AddScoped<ILogradouroRepository, LogradouroRepository>();
+            services.AddScoped<ILogradouroService, LogradouroService>();
 
-			// Dependência: Instalaçao
-			services.AddScoped<IInstalacaoRepository, InstalacaoRepository>();
-			services.AddScoped<IInstalacaoService, InstalacaoService>();
+            // Dependência: Imóvel
+            services.AddScoped<IImovelRepository, ImovelRepository>();
+            services.AddScoped<IImovelService, ImovelService>();
 
 
-			// Conjunto: Processo
+            // Conjunto: Aliemntação do Imóvel
 
-			// Dependência: TipoProcesso
-			services.AddScoped<ITipoProcessoRepository, TipoProcessoRepository>();
-			services.AddScoped<ITipoProcessoService, TipoProcessoService>();
+            // Dependência: Topografia
+            services.AddScoped<ITopografiaRepository, TopografiaRepository>();
+            services.AddScoped<ITopografiaService, TopografiaService>();
 
-			// Dependência: Etapa
-			services.AddScoped<IEtapaRepository, EtapaRepository>();
-			services.AddScoped<IEtapaService, EtapaService>();
+            // Dependência: Tipo Uso
+            services.AddScoped<IUsoRepository, UsoRepository>();
+            services.AddScoped<IUsoService, UsoService>();
 
-			// Dependência: Tipo Documento
-			services.AddScoped<ITipoDocumentoRepository, TipoDocumentoRepository>();
-			services.AddScoped<ITipoDocumentoService, TipoDocumentoService>();
+            // Dependência: Ocupação Atual
+            services.AddScoped<IOcupacaoAtualRepository, OcupacaoAtualRepository>();
+            services.AddScoped<IOcupacaoAtualService, OcupacaoAtualService>();
 
-			// Dependência: Processo
-			services.AddScoped<IProcessoRepository, ProcessoRepository>();
-			services.AddScoped<IProcessoService, ProcessoService>();
+            // Dependência: Tipo Infraestrutura
+            services.AddScoped<ITipoInfraestruturaRepository, TipoInfraestruturaRepository>();
+            services.AddScoped<ITipoInfraestruturaService, TipoInfraestruturaService>();
 
-			// Dependência: Tipo Documento Etapa
-			services.AddScoped<ITipoDocumentoEtapaRepository, TipoDocumentoEtapaRepository>();
-			services.AddScoped<ITipoDocumentoEtapaService, TipoDocumentoEtapaService>();
+            // Dependência: Infraestrutura
+            services.AddScoped<IInfraestruturaRepository, InfraestruturaRepository>();
+            services.AddScoped<IInfraestruturaService, InfraestruturaService>();
 
-			// Dependência: Documento Processo
-			services.AddScoped<IDocumentoProcessoRepository, DocumentoProcessoRepository>();
-			services.AddScoped<IDocumentoProcessoService, DocumentoProcessoService>();
+            // Dependência: Instalaçao
+            services.AddScoped<IInstalacaoRepository, InstalacaoRepository>();
+            services.AddScoped<IInstalacaoService, InstalacaoService>();
 
-			// Conjunto: Servidor
 
-			// Task: Fechar Sessão
-			services.AddHostedService<SessionCleanupService>();
+            // Conjunto: Processo
 
-			// Task: Remover Sessões
-			services.AddHostedService<RemoveSessionService>();
-		}
+            // Dependência: TipoProcesso
+            services.AddScoped<ITipoProcessoRepository, TipoProcessoRepository>();
+            services.AddScoped<ITipoProcessoService, TipoProcessoService>();
 
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-		{
-			if (env.IsDevelopment())
-			{
-				app.UseDeveloperExceptionPage();
-				app.UseSwagger();
-				app.UseSwaggerUI(c =>
-				{
-					c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sua API V1");
-					// Adicione essas linhas para habilitar o botão "Authorize"
-					c.DocExpansion(DocExpansion.None);
-					c.DisplayRequestDuration();
-					c.EnableDeepLinking();
-					c.EnableFilter();
-					c.ShowExtensions();
-					c.EnableValidator();
-					c.SupportedSubmitMethods(SubmitMethod.Get, SubmitMethod.Post, SubmitMethod.Put, SubmitMethod.Delete);
-					c.OAuthClientId("swagger-ui");
-					c.OAuthAppName("Swagger UI");
-				});
-			}
-			else
-			{
-				app.UseExceptionHandler("/Home/Error");
-				app.UseHsts();
-			}
+            // Dependência: Etapa
+            services.AddScoped<IEtapaRepository, EtapaRepository>();
+            services.AddScoped<IEtapaService, EtapaService>();
 
-			app.UseHttpsRedirection();
-			app.UseStaticFiles();
+            // Dependência: Tipo Documento
+            services.AddScoped<ITipoDocumentoRepository, TipoDocumentoRepository>();
+            services.AddScoped<ITipoDocumentoService, TipoDocumentoService>();
 
-			app.UseRouting();
+            // Dependência: Processo
+            services.AddScoped<IProcessoRepository, ProcessoRepository>();
+            services.AddScoped<IProcessoService, ProcessoService>();
 
-			app.UseAuthentication();
-			app.UseAuthorization();
+            // Dependência: Tipo Documento Etapa
+            services.AddScoped<ITipoDocumentoEtapaRepository, TipoDocumentoEtapaRepository>();
+            services.AddScoped<ITipoDocumentoEtapaService, TipoDocumentoEtapaService>();
 
-			app.UseCors("MyPolicy");
+            // Dependência: Documento Processo
+            services.AddScoped<IDocumentoProcessoRepository, DocumentoProcessoRepository>();
+            services.AddScoped<IDocumentoProcessoService, DocumentoProcessoService>();
 
-			/*app.UseWhen(context => context.Request.Path.StartsWithSegments("/api") && context.GetEndpoint()?.Metadata.GetMetadata<AnonymousAttribute>() == null,
+            // Conjunto: Servidor
+
+            // Task: Fechar Sessão
+            services.AddHostedService<SessionCleanupService>();
+
+            // Task: Remover Sessões
+            services.AddHostedService<RemoveSessionService>();
+        }
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sua API V1");
+                    // Adicione essas linhas para habilitar o botão "Authorize"
+                    c.DocExpansion(DocExpansion.None);
+                    c.DisplayRequestDuration();
+                    c.EnableDeepLinking();
+                    c.EnableFilter();
+                    c.ShowExtensions();
+                    c.EnableValidator();
+                    c.SupportedSubmitMethods(SubmitMethod.Get, SubmitMethod.Post, SubmitMethod.Put, SubmitMethod.Delete);
+                    c.OAuthClientId("swagger-ui");
+                    c.OAuthAppName("Swagger UI");
+                });
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
+            app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseCors("MyPolicy");
+
+            /*app.UseWhen(context => context.Request.Path.StartsWithSegments("/api") && context.GetEndpoint()?.Metadata.GetMetadata<AnonymousAttribute>() == null,
             appBuilder =>
             {
                 appBuilder.UseValidateSessionMiddleware();
@@ -279,10 +283,10 @@ namespace SGED
                 await next(context);
             });*/
 
-			app.UseEndpoints(endpoints =>
-			{
-				endpoints.MapControllers();
-			});
-		}
-	}
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+        }
+    }
 }

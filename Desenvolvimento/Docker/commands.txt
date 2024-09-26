@@ -1,0 +1,8 @@
+/* Limpar as imagens, containers e volumes gerados */
+
+docker-compose down --rmi all -v
+
+
+/* Executar o compose */
+
+docker-compose up --build

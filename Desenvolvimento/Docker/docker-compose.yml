@@ -10,12 +10,12 @@ services:
       POSTGRES_PASSWORD: 123456
       POSTGRES_DB: sgedDB
     ports:
-      - "5432:5432"  # Porta exposta para o banco de dados
+      - "5432:5432" # Porta exposta para o banco de dados
     volumes:
-      - postgres_data:/var/lib/postgresql/data  # Volume persistente para dados do PostgreSQL
-      - ../Database/sgedDB.sql:/docker-entrypoint-initdb.d/sgedDB.sql  # Carrega o banco de dados inicial
+      - postgres_data:/var/lib/postgresql/data # Volume persistente para dados do PostgreSQL
+      - ../Database/sgedDB.sql:/docker-entrypoint-initdb.d/sgedDB.sql # Carrega o banco de dados inicial
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -26,14 +26,14 @@ services:
 
   api:
     build:
-      context: ../BackEnd/API/SGED  # Diretório onde está seu Dockerfile da API
+      context: ../BackEnd/API/SGED # Diretório onde está seu Dockerfile da API
     container_name: api_container
     restart: always
     ports:
-      - "7096:80"  # Mapeia a porta 5000 do contêiner para a porta 7096 da máquina
+      - "7096:80" # Mapeia a porta 5000 do contêiner para a porta 7096 da máquina
     depends_on:
       postgres:
-        condition: service_healthy  # Garante que o postgres esteja pronto antes de iniciar a API
+        condition: service_healthy # Garante que o postgres esteja pronto antes de iniciar a API
     environment:
       DATABASE_URL: "Host=postgres_container;Port=5432;Database=sgedDB;Username=postgres;Password=123456;"
     logging:
@@ -43,22 +43,23 @@ services:
 
   frontend:
     build:
-      context: ../FrontEnd/sged  # Diretório onde está seu Dockerfile para o frontend
+      context: ../FrontEnd/sged
+      args:
+        VITE_API_URL: http://localhost:7096/api/ # Passa a variável de ambiente no build
     container_name: frontend_container
     restart: always
     ports:
-      - "5173:80"  # Mapeia a porta 80 do contêiner para a porta 5173 da máquina
+      - "5173:80"
     depends_on:
       api:
-        condition: service_started  # Garante que a API esteja em execução antes do frontend
+        condition: service_started
+    volumes:
+      - ../FrontEnd/sged:/app
     logging:
       options:
         max-size: "10m"
         max-file: "3"
-    environment:
-    - REACT_APP_API_URL=http://localhost:7096/api
 
 volumes:
   postgres_data:
-    driver: local  # Volume local para persistência dos dados
-
+    driver: local # Volume local para persistência dos dados

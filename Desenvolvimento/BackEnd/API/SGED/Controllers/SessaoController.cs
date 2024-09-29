@@ -234,34 +234,12 @@ namespace SGED.Controllers
                         NivelAcesso = tipoUsuarioDTO.NivelAcesso
                     }; sessaoDTO.GenerateToken();
 
-                    if (ultimaSessao is null || !ultimaSessao.StatusSessao)
-                    {
-                        await _sessaoService.Create(sessaoDTO);
+                    await _sessaoService.Create(sessaoDTO);
 
-                        _response.SetSuccess();
-                        _response.Message = "Sessão aberta com sucesso!";
-                        _response.Data = sessaoDTO.TokenSessao;
-                        return Ok(_response);
-                    }
-                    else if (ultimaSessao.StatusSessao)
-                    {
-                        if (sessaoDTO.IdUsuario != 1)
-                        {
-                            _response.SetUnauthorized();
-                            _response.Message = "Já existe uma sessão aberta!";
-                            _response.Data = new { errorLogin = "Já existe uma sessão aberta!" };
-                            return Unauthorized(_response);
-                        }
-                        else
-                        {
-                            await _sessaoService.Create(sessaoDTO);
-
-                            _response.SetSuccess();
-                            _response.Message = "Sessão aberta com sucesso!";
-                            _response.Data = sessaoDTO.TokenSessao;
-                            return Ok(_response);
-                        }
-                    }
+                    _response.SetSuccess();
+                    _response.Message = "Sessão aberta com sucesso!";
+                    _response.Data = sessaoDTO.TokenSessao;
+                    return Ok(_response);
                 }
 
                 _response.SetUnauthorized();
@@ -279,7 +257,6 @@ namespace SGED.Controllers
         }
 
         [HttpPut("Validation")]
-        [Anonymous]
         public async Task<IActionResult> ValidateSession([FromBody] TokenAcess token)
         {
             try
@@ -295,9 +272,6 @@ namespace SGED.Controllers
 
                 if (sessaoDTO.StatusSessao && sessaoDTO.ValidateToken())
                 {
-                    sessaoDTO.GenerateToken();
-                    await _sessaoService.Update(sessaoDTO);
-
                     _response.SetSuccess();
                     _response.Message = "Sessão validada com sucesso.";
                     _response.Data = sessaoDTO.TokenSessao;
@@ -325,7 +299,6 @@ namespace SGED.Controllers
         }
 
         [HttpPut("Close")]
-        [Anonymous]
         public async Task<IActionResult> CloseSession([FromBody] TokenAcess token)
         {
             try

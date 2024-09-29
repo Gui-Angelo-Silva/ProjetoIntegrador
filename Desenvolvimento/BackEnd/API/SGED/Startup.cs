@@ -230,7 +230,7 @@ namespace SGED
             services.AddHostedService<SessionCleanupService>();
 
             // Task: Remover Sessões
-            services.AddHostedService<RemoveSessionService>();
+            // services.AddHostedService<RemoveSessionService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

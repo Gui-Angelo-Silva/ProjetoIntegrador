@@ -125,10 +125,10 @@ function SessionService() {
             try {
                 await connection.endpoint("Sessao").action("Validation").put(data);
 
-                if (connection.response.status) setToken(connection.response.data);
+                if (connection.response.status) return true;
                 else defaultToken();
 
-                return true;
+                return false;
 
             } catch (error) {
                 defaultToken();
@@ -140,11 +140,7 @@ function SessionService() {
     };
 
     const validateSession = async () => {
-        var status = await validateToken();
-
-        if (!status) defaultToken();
-
-        return status;
+        return await validateToken();
     };
 
     return {

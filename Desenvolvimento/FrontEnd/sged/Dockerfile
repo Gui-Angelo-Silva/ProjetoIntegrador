@@ -1,4 +1,4 @@
-# Usar uma imagem base do Node.js
+# Dockerfile do frontend
 FROM node:18 AS build
 
 # Define o diretório de trabalho
@@ -10,6 +10,10 @@ RUN npm install  # Instala as dependências
 
 # Copia o restante dos arquivos da aplicação
 COPY . ./
+
+# Adiciona a variável de ambiente diretamente no build
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
 
 # Compila a aplicação para produção
 RUN npm run build  # Compila a aplicação
@@ -25,5 +29,3 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 # Expõe a porta padrão do Nginx
 EXPOSE 80
-
-# O Nginx já é iniciado por padrão, não é necessário especificar um comando aqui

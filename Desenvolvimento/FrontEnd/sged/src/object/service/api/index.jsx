@@ -3,7 +3,7 @@ import TokenClass from '../../class/token';
 function ApiService() {
 
   const token = TokenClass();
-  const baseURL = process.env.REACT_APP_API_URL || "https://localhost:7096/api/";
+  const baseURL = import.meta.env.VITE_API_URL;
 
   const appendRoute = (route) => {
     return baseURL + route;

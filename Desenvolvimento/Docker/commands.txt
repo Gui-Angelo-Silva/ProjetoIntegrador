@@ -1,8 +1,29 @@
+/* Gerar o arquivo para carregar o banco de dados no container */
+
+pg_dump -U postgres -d sgedDB -h localhost -p 5432 -f sged.sql
+
+# Execute o comando na pasta onde deseja guardar o arquivo do banco de dados. Ex: ../Database/
+
+
+
+/* Gerar a DLL da API */
+
+dotnet publish -c Release
+
+# Execute o comando na pasta raiz do projeto, onde está o executavel .csproj da API
+
+
+
 /* Limpar as imagens, containers e volumes gerados */
 
 docker-compose down --rmi all -v
+
+# Execute o comando onde está o docker compose
+
 
 
 /* Executar o compose */
 
 docker-compose up --build
+
+# Execute o comando onde está o docker compose

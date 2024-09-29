@@ -668,6 +668,12 @@ namespace SGED.Migrations
                         .HasColumnType("character varying(500)")
                         .HasColumnName("descricaodocumento");
 
+                    b.Property<string>("HashDocumento")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("hashdocumento");
+
                     b.Property<int?>("IdAprovador")
                         .HasColumnType("integer")
                         .HasColumnName("idaprovador");

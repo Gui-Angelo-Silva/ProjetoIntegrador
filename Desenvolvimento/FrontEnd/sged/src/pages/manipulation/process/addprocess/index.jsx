@@ -183,7 +183,16 @@ const AddProcess = () => {
       reader.readAsArrayBuffer(file);
     });
   };
-
+  
+  // Gera um hash SHA-256 dos bytes e o retorna como string hexadecimal
+  async function generateSHA256(bytes) {
+    const hashBuffer = await crypto.subtle.digest('SHA-256', bytes); // Gera o hash SHA-256
+    const hashArray = Array.from(new Uint8Array(hashBuffer)); // Converte o buffer para array de bytes
+    const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join(''); // Converte cada byte para hexadecimal e junta em uma string
+    return hashHex;
+  }
+  
+  // Converte o Uint8Array em uma string Base64
   function uint8ArrayToBase64(uint8Array) {
     let binaryString = "";
     for (let i = 0; i < uint8Array.length; i++) {
@@ -191,19 +200,26 @@ const AddProcess = () => {
     }
     return btoa(binaryString);
   }
-
+  
   const PostAllDatas = async () => {
     const documentList = await Promise.all(
-      documentsProcess.map(async (data) => ({
-        identificacaoDocumento: data.identificationNumber || "",
-        descricaoDocumento: data.documentDescription || "",
-        observacaoDocumento: data.documentObservation || "",
-        arquivoDocumentoBase64: data.arquive ? uint8ArrayToBase64(await convertFileToBytes(data.arquive)) : "", // Converte o Uint8Array em Base64
-        status: data.documentStatus || 0,
-        idTipoDocumentoEtapa: data.idTypeDocumentStage || 0,
-        idResponsavel: data.idUserResponsible || null,
-        idAprovador: data.idUserApprover || null,
-      }))
+      documentsProcess.map(async (data) => {
+        const bytes = data.arquive ? await convertFileToBytes(data.arquive) : null;
+        const hash = bytes ? await generateSHA256(bytes) : null;
+        const arquivoDocumentoBase64 = bytes ? uint8ArrayToBase64(bytes) : "";
+  
+        return {
+          identificacaoDocumento: data.identificationNumber || "",
+          descricaoDocumento: data.documentDescription || "",
+          observacaoDocumento: data.documentObservation || "",
+          arquivoDocumentoBase64: arquivoDocumentoBase64,
+          hashDocumento: hash || "",
+          status: data.documentStatus || 0,
+          idTipoDocumentoEtapa: data.idTypeDocumentStage || 0,
+          idResponsavel: data.idUserResponsible || null,
+          idAprovador: data.idUserApprover || null,
+        };
+      })
     );
 
     // Constrói o objeto de dados do processo

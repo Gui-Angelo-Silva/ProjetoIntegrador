@@ -248,9 +248,44 @@ namespace SGED.Controllers
 
                 if (documentoProcesso != null) // Se o documento foi declarado
                 {
-                    documentoProcesso.MarkAsAttached();
                     documentoProcesso.IdProcesso = idProcesso;
                     documentoProcesso.IdResponsavel = idResponsavel;
+
+                    // Verifica se ArquivoDocumento não está vazio e se o tipo é PDF
+                    if (documentoProcesso.ArquivoDocumento != null && documentoProcesso.ArquivoDocumento.Length > 0)
+                    {
+                        // Verifica se é PDF
+                        bool isPDF = documentoProcesso.IsPDF();
+
+                        if (isPDF) // Se for PDF
+                        {
+                            // Gera o hash do arquivo para comparação
+                            if (documentoProcesso.GenerateHashSHA256() == documentoProcesso.HashDocumento)
+                            {
+                                documentoProcesso.MarkAsAttached(); // O arquivo está íntegro
+                            }
+                            else
+                            {
+
+                                documentoProcesso.MarkAsNotIntact(); // O arquivo não está íntegro
+                                documentoProcesso.ArquivoDocumento = new byte[0]; // Define o arquivo como vazio
+                                documentoProcesso.HashDocumento = "";
+                            }
+                        }
+                        else
+                        {
+                            // Se não for PDF, marca como não anexado e define o arquivo como vazio
+                            documentoProcesso.MarkAsNotAttached();
+                            documentoProcesso.HashDocumento = "";
+                            documentoProcesso.ArquivoDocumento = new byte[0];
+                        }
+                    }
+                    else
+                    {
+                        // Se o ArquivoDocumento estiver vazio, marca como não anexado
+                        documentoProcesso.MarkAsNotAttached();
+                        documentoProcesso.HashDocumento = "";
+                    }
                 }
                 else // Se nenhum documento foi declarado
                 {
@@ -259,6 +294,7 @@ namespace SGED.Controllers
                     documentoProcesso.IdentificacaoDocumento = "NÃO ANEXADO";
                     documentoProcesso.DescricaoDocumento = "";
                     documentoProcesso.ObservacaoDocumento = "";
+                    documentoProcesso.HashDocumento = "";
                     documentoProcesso.IdProcesso = idProcesso;
                     documentoProcesso.IdTipoDocumentoEtapa = documentoEtapa.Id;
 

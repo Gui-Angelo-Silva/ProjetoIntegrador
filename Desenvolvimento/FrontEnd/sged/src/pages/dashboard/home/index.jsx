@@ -4,7 +4,6 @@ import CardDashboard from "../../../components/Card/CardDashboard";
 import Title from "../../../components/Title/Title";
 import Subtitle from "../../../components/Title/Subtitle";
 import TableDashboard from "../../../components/TableDasboard/TableDashboard";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import { useMontage } from '../../../object/modules/montage';
 
 const data = ["Guilherme", "Gabriel", "Neto", "Lopes", "Victor", "Pedro"];
@@ -32,7 +31,7 @@ const Home = () => {
   ];
 
   return (
-    <LayoutPage>
+    <>
       <Title title="Visão Geral" />
       <Subtitle subtitle="Solicitações Gerais" />
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 pt-4">
@@ -48,7 +47,7 @@ const Home = () => {
           icon={table.icon}
         />
       ))}
-    </LayoutPage>
+    </>
   );
 };
 

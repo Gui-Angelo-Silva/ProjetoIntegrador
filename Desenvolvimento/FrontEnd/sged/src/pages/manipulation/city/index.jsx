@@ -12,7 +12,6 @@ import ButtonModal from "../../../components/Modal/ButtonModal";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import CustomTable from "../../../components/Table/Table";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import SearchBarTest from "../../../components/Search/SearchBarTest";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
@@ -244,7 +243,7 @@ export default function City() {
                     />
                 ))}
             </div>}
-            <LayoutPage>
+            <>
                 <LinkTitle pageName="Cidade" />
                 <div className="flex items-center">
                     <SearchBarTest handleSearch={handleSearch} handleSearchBy={handleSearchBy} />
@@ -385,7 +384,7 @@ export default function City() {
                         </div>
                     </ModalBody>
                 </Modal>
-            </LayoutPage>
+            </>
         </>
     );
 }

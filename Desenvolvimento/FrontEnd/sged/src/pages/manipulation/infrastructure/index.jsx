@@ -14,7 +14,6 @@ import SearchBar from "../../../components/Search/SearchBar";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
 import CancelButton from "../../../components/Button/CancelButton";
 import CustomTable from "../../../components/Table/Table";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
@@ -273,7 +272,7 @@ export default function Infrastructure() {
                     />
                 ))}
             </div>}
-            <LayoutPage>
+            <>
                 <LinkTitle pageName="Infraestrutura" />
                 <SearchBar
                     placeholder="Pesquisar Infraestrutura"
@@ -450,7 +449,7 @@ export default function Infrastructure() {
                     </ModalFooter>
                 </Modal>
 
-            </LayoutPage>
+            </>
         </>
     );
 }

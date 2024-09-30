@@ -12,7 +12,6 @@ import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
 import CancelButton from "../../../components/Button/CancelButton";
 import CustomTable from "../../../components/Table/Table";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
@@ -266,7 +265,7 @@ export default function State() {
                 ))}
             </div>}
 
-            <LayoutPage>
+            <>
                 <LinkTitle pageName="Estado" />
                 <MultiSearchBar
                     maxSearchBars={2}
@@ -433,7 +432,7 @@ export default function State() {
                     </ModalFooter>
                 </Modal>
 
-            </LayoutPage>
+            </>
         </>
     );
 }

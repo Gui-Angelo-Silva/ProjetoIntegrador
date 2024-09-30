@@ -3,8 +3,9 @@ import NavBar from '../NavBar';
 import { ThemeContextProvider } from '../../assets/provider/ThemeContext';
 import SideBarAdm from '../SidebarAdm.jsx/SideBarAdm';
 import { motion } from 'framer-motion';
+import { Outlet } from 'react-router-dom'; // Import do Outlet
 
-const LayoutPage = ({ children }) => {
+const LayoutPage = () => {
     return (
         <ThemeContextProvider>
             <div className="flex flex-col min-h-screen overflow-hidden">
@@ -35,7 +36,7 @@ const LayoutPage = ({ children }) => {
                         }}
                     >
                         <div className=''>
-                            {children}
+                            <Outlet /> {/* O conteúdo das páginas será renderizado aqui */}
                         </div>
                     </motion.div>
                 </div>

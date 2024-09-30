@@ -14,7 +14,6 @@ import SearchBar from "../../../components/Search/SearchBar";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
 import CancelButton from "../../../components/Button/CancelButton";
 import CustomTable from "../../../components/Table/Table";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
@@ -315,7 +314,7 @@ export default function Installation() {
                     />
                 ))}
             </div>}
-            <LayoutPage>
+            <>
                 <LinkTitle pageName="Instalacao" />
                 <SearchBar
                     placeholder="Pesquisar Instalacao"
@@ -585,7 +584,7 @@ export default function Installation() {
                     </ModalFooter>
                 </Modal>
 
-            </LayoutPage>
+            </>
         </>
     );
 }

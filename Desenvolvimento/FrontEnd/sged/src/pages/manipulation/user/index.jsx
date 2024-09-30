@@ -9,7 +9,6 @@ import LinkTitle from "../../../components/Title/LinkTitle";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import CustomTable from "../../../components/Table/Table";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
 
@@ -273,7 +272,7 @@ export default function User() {
                     />
                 ))}
             </div>}
-            <LayoutPage>
+            <>
                 <LinkTitle pageName="Usuário" />
                 <div className="flex items-center">
                     <div className="flex justify-center items-center mx-auto w-[450px]">
@@ -619,7 +618,7 @@ export default function User() {
                         </div>
                     </ModalBody>
                 </Modal>
-            </LayoutPage>
+            </>
         </>
     );
 }

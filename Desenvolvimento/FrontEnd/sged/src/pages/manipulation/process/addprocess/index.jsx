@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 // Importa o arquivo CSS
 import './styles.css';
 
-import LayoutPage from "../../../../components/Layout/LayoutPage";
 import LinkTitle from "../../../../components/Title/LinkTitle";
 
 import { useMontage } from "../../../../object/modules/montage";
@@ -520,7 +519,7 @@ const AddProcess = () => {
 
 
   return (
-    <LayoutPage>
+    <>
       <LinkTitle pageName="Cadastrar Processo" otherRoute="Processo" />
       <div className="mt-8">
         <ProcessForm
@@ -563,7 +562,7 @@ const AddProcess = () => {
           typeResponsible={typeResponsible}
         />
       </div>
-    </LayoutPage>
+    </>
   );
 };
 

@@ -13,7 +13,6 @@ import SearchBar from "../../../components/Search/SearchBar";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
 import CancelButton from "../../../components/Button/CancelButton";
 import CustomTable from "../../../components/Table/Table";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
@@ -244,7 +243,7 @@ export default function CurrentOccupation() {
                     />
                 ))}
             </div>}
-            <LayoutPage>
+            <>
                 <LinkTitle pageName="Ocupação Atual" />
                 <SearchBar
                     placeholder="Pesquisar Ocupação Atual"
@@ -388,7 +387,7 @@ export default function CurrentOccupation() {
                     </ModalFooter>
                 </Modal>
 
-            </LayoutPage>
+            </>
         </>
     );
 }

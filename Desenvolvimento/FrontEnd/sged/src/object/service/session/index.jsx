@@ -18,13 +18,18 @@ function SessionService() {
         return cookie.getCookie("token");
     };
 
-    const getUser = async () => {
+    const getUser = () => {
+        return storage.getLocal('user');
+        //return cookie.getCookie("user");
+    };
+
+    const setUser = async () => {
         const token = getToken();
 
         if (token) {
             try {
                 await connection.endpoint("Sessao").data(token).action("GetUser").get();
-                return connection.response.status? connection.response.data : null;
+                return connection.response.status ? storage.setLocal("user", connection.response.data) : null;
 
             } catch (error) {
                 return null;
@@ -38,12 +43,21 @@ function SessionService() {
     const setLogin = (object) => {
         const login = { persist: object.persistLogin, emailPessoa: object.personEmail, senhaUsuario: object.userPassword };
         //storage.setLocal('login', login);
-        cookie.setCookie("login", login, 1);
+
+        const expireDate = new Date();
+        expireDate.setFullYear(expireDate.getFullYear() + 1);
+
+        cookie.setCookie("login", login, { expires: expireDate });
     };
 
     const setToken = (token) => {
         //storage.setLocal('token', token);
-        cookie.setCookie("token", token, 1);
+        cookie.setCookie("token", token, 12);
+    };
+
+    const clearSession = () => {
+        defaultToken();
+        defaultUser();
     };
 
     const defaultLogin = () => {
@@ -54,6 +68,11 @@ function SessionService() {
     const defaultToken = () => {
         //storage.setLocal('token', null);
         cookie.setCookie("token", null);
+    };
+
+    const defaultUser = () => {
+        //storage.setLocal('user', null);
+        cookie.setCookie("user", null);
     };
 
     const createSession = async (object) => {
@@ -73,20 +92,22 @@ function SessionService() {
                 }
 
                 if (await validateToken()) {
+                    await setUser();
+
                     autentication = true;
                     return { validation: autentication, message: 'Entrada liberada.' };
                 }
 
-                defaultToken();
+                clearSession();
                 return { validation: autentication, message: 'Token inválido!' };
 
             } else {
-                defaultToken();
+                clearSession();
                 return { validation: autentication, message: connection.response.data };
             }
 
         } catch (error) {
-            defaultToken();
+            clearSession();
             return { validation: autentication, message: error.message };
 
         }
@@ -102,7 +123,7 @@ function SessionService() {
 
             try {
                 await connection.endpoint("Sessao").action("Close").put(data);
-                defaultToken();
+                clearSession();
 
                 return connection.response.status;
 
@@ -126,12 +147,12 @@ function SessionService() {
                 await connection.endpoint("Sessao").action("Validation").put(data);
 
                 if (connection.response.status) return true;
-                else defaultToken();
+                else clearSession();
 
                 return false;
 
             } catch (error) {
-                defaultToken();
+                clearSession();
                 return false;
             }
         } else {
@@ -145,17 +166,12 @@ function SessionService() {
 
     return {
         getLogin,
-        getToken,
         getUser,
 
-        setLogin,
-        setToken,
-        defaultLogin,
-        defaultToken,
+        setUser,
 
         createSession,
         closeSession,
-        validateToken,
         validateSession
     };
 };

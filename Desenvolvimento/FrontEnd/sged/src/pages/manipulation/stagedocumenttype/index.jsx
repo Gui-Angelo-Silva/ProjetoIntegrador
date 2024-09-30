@@ -8,7 +8,6 @@ import ConnectionService from "../../../object/service/connection";
 import ListModule from "../../../object/modules/list";
 import TypeDocumentStageClass from "../../../object/class/typedocumentstage";
 import SelectModule from '../../../object/modules/select';
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import LinkTitle from "../../../components/Title/LinkTitle";
 import Table from "../../../components/Table/Table";
 import Tooltip from "../../../components/Tooltip/Tooltip";
@@ -227,7 +226,7 @@ export default function StageDocumentType() {
     };
 
     return (
-        <LayoutPage>
+        <>
             <LinkTitle pageName="Tipo Documento p/ Etapa" />
             <div className="flex w-full gap-6 mt-6">
                 <div className="flex flex-col w-[350px]">
@@ -312,6 +311,6 @@ export default function StageDocumentType() {
                 </div>
             </div>
 
-        </LayoutPage>
+        </>
     );
 }

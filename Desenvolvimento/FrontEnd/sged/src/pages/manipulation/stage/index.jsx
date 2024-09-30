@@ -12,7 +12,6 @@ import { CaretLeft, CaretRight, PencilSimple, TrashSimple } from "@phosphor-icon
 // Component imports
 import LinkTitle from "../../../components/Title/LinkTitle";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import CustomTable from "../../../components/Table/Table";
 import PopUpManager from "../../../components/PopUpManager";
@@ -242,7 +241,7 @@ export default function Stage() {
                     />
                 ))}
             </div>}
-            <LayoutPage>
+            <>
                 <LinkTitle pageName="Etapa" />
                 <div className="flex items-center">
                     <div className="flex justify-center items-center mx-auto w-[450px]">
@@ -406,7 +405,7 @@ export default function Stage() {
                         </div>
                     </ModalBody>
                 </Modal>
-            </LayoutPage>
+            </>
         </>
     );
 }

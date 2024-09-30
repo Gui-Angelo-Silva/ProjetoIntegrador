@@ -9,8 +9,8 @@ function SessionService() {
     const cookie = CookieModule();
 
     const getLogin = () => {
-        //return storage.getLocal('login');
-        return cookie.getCookie("login");
+        return storage.getLocal('login');
+        //return cookie.getCookie("login");
     };
 
     const getToken = () => {
@@ -42,12 +42,12 @@ function SessionService() {
 
     const setLogin = (object) => {
         const login = { persist: object.persistLogin, emailPessoa: object.personEmail, senhaUsuario: object.userPassword };
-        //storage.setLocal('login', login);
+        storage.setLocal('login', login);
 
-        const expireDate = new Date();
+        /*const expireDate = new Date();
         expireDate.setFullYear(expireDate.getFullYear() + 1);
 
-        cookie.setCookie("login", login, { expires: expireDate });
+        cookie.setCookie("login", login, { expires: expireDate });*/
     };
 
     const setToken = (token) => {

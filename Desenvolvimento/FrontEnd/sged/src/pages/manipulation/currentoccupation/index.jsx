@@ -8,7 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FilePlus, Pen, Trash, Warning } from "@phosphor-icons/react";
 
 // Component imports
-import LinkTitle from "../../../components/Title/LinkTitle";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 import SearchBar from "../../../components/Search/SearchBar";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
 import CancelButton from "../../../components/Button/CancelButton";
@@ -27,9 +27,14 @@ import CompareModule from '../../../object/modules/compare';
 
 export default function CurrentOccupation() {
 
+    const pages = [
+        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Ocupação Atual', link: '', isEnabled: false }
+    ];
+
     // Marking the assembled component
     const montage = useMontage();
-    
+
     useEffect(() => {
         montage.componentMounted();
     }, []);
@@ -244,7 +249,7 @@ export default function CurrentOccupation() {
                 ))}
             </div>}
             <>
-                <LinkTitle pageName="Ocupação Atual" />
+                <Breadcrumb pages={pages} />
                 <SearchBar
                     placeholder="Pesquisar Ocupação Atual"
                     onSearchChange={(value) => list.handleSearch(value)}
@@ -315,7 +320,7 @@ export default function CurrentOccupation() {
                             <br />
                             <label className="text-[#444444]">Descrição: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation}  value={currentOccupation.currentOccupationDescription} onChange={(e) => currentOccupation.setCurrentOccupationDescription(e.target.value)} />
+                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation} value={currentOccupation.currentOccupationDescription} onChange={(e) => currentOccupation.setCurrentOccupationDescription(e.target.value)} />
                             <br />
                         </div>
                     </ModalBody>

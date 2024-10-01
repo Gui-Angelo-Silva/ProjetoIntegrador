@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import Select from 'react-select';
 import "bootstrap/dist/css/bootstrap.min.css";
-import LinkTitle from "../../../components/Title/LinkTitle";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 
 // Component imports
 import ButtonTable from "../../../components/Table/ButtonTable";
@@ -23,6 +23,11 @@ import UserClass from '../../../object/class/user';
 import SelectModule from '../../../object/modules/select';
 
 export default function User() {
+
+    const pages = [
+        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Usuário', link: '', isEnabled: false }
+    ];
 
     const { componentMounted } = useMontage();
 
@@ -273,7 +278,7 @@ export default function User() {
                 ))}
             </div>}
             <>
-                <LinkTitle pageName="Usuário" />
+                <Breadcrumb pages={pages} />
                 <div className="flex items-center">
                     <div className="flex justify-center items-center mx-auto w-[450px]">
                         <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">

@@ -8,7 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FilePlus, Pen, Trash, Warning } from "@phosphor-icons/react";
 
 // Component imports
-import LinkTitle from "../../../components/Title/LinkTitle";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 import SearchBar from "../../../components/Search/SearchBar";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
 import CancelButton from "../../../components/Button/CancelButton";
@@ -26,6 +26,11 @@ import ActionManager from '../../../object/modules/action';
 import CompareModule from '../../../object/modules/compare';
 
 export default function TypeInfrastructure() {
+
+    const pages = [
+        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Tipo de Infraestrutura', link: '', isEnabled: false }
+    ];
 
     // Marking the assembled component
     const montage = useMontage();
@@ -244,7 +249,7 @@ export default function TypeInfrastructure() {
                 ))}
             </div>}
             <>
-                <LinkTitle pageName="TipoInfraestrutura" />
+                <Breadcrumb pages={pages} />
                 <SearchBar
                     placeholder="Pesquisar Tipo Infraestrutura"
                     onSearchChange={(value) => list.handleSearch(value)}

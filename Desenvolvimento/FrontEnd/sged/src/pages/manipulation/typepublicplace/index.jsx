@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
-import LinkTitle from "../../../components/Title/LinkTitle";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 
 // Component imports
 import ButtonTable from "../../../components/Table/ButtonTable";
@@ -27,6 +27,11 @@ export default function TypePublicPlace() {
     useEffect(() => {
         componentMounted();
     }, [componentMounted]);
+
+    const pages = [
+        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Tipo Logradouro', link: '', isEnabled: false }
+    ];
 
     const connection = new ConnectionService();
     const managerPopUp = PopUpManager();
@@ -165,7 +170,7 @@ export default function TypePublicPlace() {
                 ))}
             </div>}
             <>
-                <LinkTitle pageName="Tipo Logradouro" />
+                <Breadcrumb pages={pages} />
                 <div className="flex items-center">
                     <div className="flex justify-center items-center mx-auto w-[450px]">
                         <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">

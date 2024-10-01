@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 // Importa o arquivo CSS
 import './styles.css';
 
-import LinkTitle from "../../../../components/Title/LinkTitle";
+import Breadcrumb from "../../../../components/Title/Breadcrumb";
 
 import { useMontage } from "../../../../object/modules/montage";
 import ConnectionService from "../../../../object/service/connection";
@@ -20,6 +20,11 @@ const AddProcess = () => {
     montage.componentMounted();
   }, []);
 
+  const pages = [
+    { name: 'Documentos', link: '/documentos', isEnabled: true },
+    { name: 'Processo', link: '/documentos/processo', isEnabled: true },
+    { name: 'Cadastro de Processo', link: '', isEnabled: false }, // Link desativado
+  ];
 
   // Services initialization --------------------------------------------------------------------------------------------------------------------------
   const connection = new ConnectionService();
@@ -182,7 +187,7 @@ const AddProcess = () => {
       reader.readAsArrayBuffer(file);
     });
   };
-  
+
   // Gera um hash SHA-256 dos bytes e o retorna como string hexadecimal
   async function generateSHA256(bytes) {
     const hashBuffer = await crypto.subtle.digest('SHA-256', bytes); // Gera o hash SHA-256
@@ -190,7 +195,7 @@ const AddProcess = () => {
     const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join(''); // Converte cada byte para hexadecimal e junta em uma string
     return hashHex;
   }
-  
+
   // Converte o Uint8Array em uma string Base64
   function uint8ArrayToBase64(uint8Array) {
     let binaryString = "";
@@ -199,14 +204,14 @@ const AddProcess = () => {
     }
     return btoa(binaryString);
   }
-  
+
   const PostAllDatas = async () => {
     const documentList = await Promise.all(
       documentsProcess.map(async (data) => {
         const bytes = data.arquive ? await convertFileToBytes(data.arquive) : null;
         const hash = bytes ? await generateSHA256(bytes) : null;
         const arquivoDocumentoBase64 = bytes ? uint8ArrayToBase64(bytes) : "";
-  
+
         return {
           identificacaoDocumento: data.identificationNumber || "",
           descricaoDocumento: data.documentDescription || "",
@@ -520,7 +525,7 @@ const AddProcess = () => {
 
   return (
     <>
-      <LinkTitle pageName="Cadastrar Processo" otherRoute="Processo" />
+      <Breadcrumb pages={pages}/>
       <div className="mt-8">
         <ProcessForm
           realstate={realstate}

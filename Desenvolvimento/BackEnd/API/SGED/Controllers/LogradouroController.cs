@@ -6,6 +6,7 @@ using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
 using Google.Protobuf;
 using SGED.Services.Entities;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -29,6 +30,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<LogradouroDTO>>> Get()
         {
             try
@@ -51,6 +53,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetLogradouro")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<LogradouroDTO>> Get(int id)
         {
             try
@@ -79,6 +82,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] LogradouroDTO logradouroDTO)
         {
             if (logradouroDTO is null)
@@ -135,6 +139,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] LogradouroDTO logradouroDTO)
         {
             if (logradouroDTO is null)
@@ -199,6 +204,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<LogradouroDTO>> Delete(int id)
         {
             try

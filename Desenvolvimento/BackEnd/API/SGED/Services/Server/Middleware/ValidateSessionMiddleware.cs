@@ -40,7 +40,7 @@ namespace SGED.Services.Server.Middleware
 
                     if (sessao is null)
                     {
-                        await ReturnUnauthorizedResponse(context, "Erro: Sessão não encontrada!");
+                        await ReturnUnauthorizedResponse(context, "Acesso Negado: Sessão não encontrada!");
                         return;
                     }
                     else if (!sessao.StatusSessao || !sessao.ValidateToken())
@@ -49,21 +49,29 @@ namespace SGED.Services.Server.Middleware
                         sessao.DataHoraEncerramento = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
                         await _sessaoRepository.Update(sessao);
 
-                        await ReturnUnauthorizedResponse(context, "Erro: Sessão expirada!");
+                        await ReturnUnauthorizedResponse(context, "Acesso Negado: Sessão expirada!");
                         return;
                     }
                 }
                 else
                 {
-                    await ReturnUnauthorizedResponse(context, "Erro: Token inválido!");
+                    await ReturnUnauthorizedResponse(context, "Acesso Negado: Token inválido!");
                     return;
                 }
             }
             else
             {
-                await ReturnUnauthorizedResponse(context, "Erro: Token não informado!");
+                await ReturnUnauthorizedResponse(context, "Acesso Negado: Token não informado!");
                 return;
             }
+
+            var _usuarioRepository = scope.ServiceProvider.GetRequiredService<IUsuarioRepository>();
+            var _tipoUsuarioRepository = scope.ServiceProvider.GetRequiredService<ITipoUsuarioRepository>();
+
+            var usuario = await _usuarioRepository.GetById(sessao.IdUsuario);
+            var tipoUsuario = await _tipoUsuarioRepository.GetById(usuario.IdTipoUsuario);
+
+            context.Items["NivelAcesso"] = tipoUsuario.NivelAcesso;
 
             await _next(context);
         }
@@ -73,7 +81,7 @@ namespace SGED.Services.Server.Middleware
             var _response = new Response
             {
                 Message = errorMessage,
-                Data = new { errorToken = errorMessage }
+                Data = new { error = errorMessage }
             }; _response.SetUnauthorized();
 
             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;

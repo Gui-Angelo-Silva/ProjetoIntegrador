@@ -6,6 +6,7 @@ using SGED.Objects.Utilities;
 using SGED.Services.Entities;
 using System.Dynamic;
 using SGED.Objects.Models.Entities;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -27,6 +28,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<UsuarioDTO>>> Get()
         {
             try
@@ -49,6 +51,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("GetAllNames")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetAllNames()
         {
             try
@@ -73,6 +76,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetUsuario")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<UsuarioDTO>> Get(int id)
         {
             try
@@ -101,6 +105,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] UsuarioDTO usuarioDTO)
         {
             if (usuarioDTO is null)
@@ -167,6 +172,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] UsuarioDTO usuarioDTO)
         {
             if (usuarioDTO is null || usuarioDTO.Id == 1)
@@ -241,6 +247,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<UsuarioDTO>> Delete(int id)
         {
             try

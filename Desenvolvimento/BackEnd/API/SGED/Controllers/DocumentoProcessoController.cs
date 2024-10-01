@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
 using System.Xml.Linq;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -25,6 +26,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet(Name = "GetAllProcessDocuments")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<DocumentoProcessoDTO>>> GetAll()
         {
             try
@@ -49,6 +51,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("GetByProcess/{id:int}", Name = "GetByProcess")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<DocumentoProcessoDTO>> GetByProcess(Guid idProcesso)
         {
             try
@@ -73,6 +76,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetProcessDocument")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<DocumentoProcessoDTO>> GetById(Guid id)
         {
             try
@@ -101,6 +105,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] DocumentoProcessoDTO documentoProcessoDTO)
         {
             if (documentoProcessoDTO is null)
@@ -147,6 +152,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] DocumentoProcessoDTO documentoProcessoDTO)
         {
             if (documentoProcessoDTO is null)
@@ -202,6 +208,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<DocumentoProcessoDTO>> Delete(Guid id)
         {
             try

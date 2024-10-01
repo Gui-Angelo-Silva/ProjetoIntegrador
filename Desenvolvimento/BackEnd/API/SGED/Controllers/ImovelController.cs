@@ -4,6 +4,7 @@ using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -27,6 +28,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<ImovelDTO>>> Get()
         {
             try
@@ -49,6 +51,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("GetAllEnrollmentRegistrations")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<ImovelDTO>>> GetAllEnrollmentRegistrations()
         {
             try
@@ -73,6 +76,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetImovel")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<ImovelDTO>> Get(int id)
         {
             try
@@ -101,6 +105,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("GetByEnrollment/{enrollment}", Name = "GetByEnrollment")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<ImovelDTO>> GetByEnrollment(string enrollment)
         {
             try
@@ -129,6 +134,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] ImovelDTO imovelDTO)
         {
             if (imovelDTO is null)
@@ -194,6 +200,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] ImovelDTO imovelDTO)
         {
             if (imovelDTO is null)
@@ -267,6 +274,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<ImovelDTO>> Delete(int id)
         {
             try

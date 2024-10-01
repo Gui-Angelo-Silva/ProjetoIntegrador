@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
 using SGED.Services.Entities;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -34,6 +35,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<ProcessoDTO>>> Get()
         {
             try
@@ -56,6 +58,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetProcesso")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<ProcessoDTO>> Get(Guid id)
         {
             try
@@ -84,6 +87,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] ProcessoDTO processoDTO)
         {
             if (processoDTO is null)
@@ -113,6 +117,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost("PostAllDatas")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> PostAllDatas([FromBody] ProcessoDTO processoDTO)
         {
             if (processoDTO is null)
@@ -161,6 +166,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] ProcessoDTO processoDTO)
         {
             if (processoDTO is null)
@@ -199,6 +205,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<ProcessoDTO>> Delete(Guid id)
         {
             try
@@ -225,16 +232,6 @@ namespace SGED.Controllers
                 _response.Message = "Não foi possível excluir o Processo!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
-            }
-        }
-
-        private async Task PercorrerEtapas(int idTipoProcesso, Guid idProcesso, int idResponsavel, ICollection<DocumentoProcessoDTO> documentosProcesso)
-        {
-            var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(idTipoProcesso);
-
-            foreach (var etapa in etapasDTO)
-            {
-                await PercorrerDocumentosEtapa(etapa.Id, idProcesso, idResponsavel, documentosProcesso);
             }
         }
 

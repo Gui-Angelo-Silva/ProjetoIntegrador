@@ -30,6 +30,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("GetAllSessions")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<SessaoDTO>>> GetAllSessions()
         {
             try
@@ -52,6 +53,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("GetAllOpenSessions")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<SessaoDTO>>> GetAllOpenSessions()
         {
             try
@@ -74,6 +76,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("GetAllCloseSessions")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<SessaoDTO>>> GetAllCloseSessions()
         {
             try
@@ -96,6 +99,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("GetOnlineUsers")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetOnlineUsers()
         {
             try
@@ -118,6 +122,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("GetOfflineUsers")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetOfflineUsers()
         {
             try
@@ -140,6 +145,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}/GetSession")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<SessaoDTO>> GetSession(int id)
         {
             try
@@ -168,6 +174,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{token}/GetUser")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<UsuarioDTO>> GetUser(string token)
         {
             if (token is null)
@@ -257,6 +264,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut("Validation")]
+        [AccessPermission("A", "B", "C")]
         public async Task<IActionResult> ValidateSession([FromBody] TokenAcess token)
         {
             try
@@ -299,6 +307,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut("Close")]
+        [AccessPermission("A", "B", "C")]
         public async Task<IActionResult> CloseSession([FromBody] TokenAcess token)
         {
             try
@@ -331,6 +340,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut("{idUsuario:int}/CloseUserSessions")]
+        [AccessPermission("A", "B", "C")]
         public async Task<IActionResult> CloseUserSession(int idUsuario)
         {
             try
@@ -367,6 +377,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<IActionResult> Delete(int id)
         {
             try

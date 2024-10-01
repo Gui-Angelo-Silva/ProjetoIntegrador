@@ -4,6 +4,7 @@ using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -23,6 +24,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<TopografiaDTO>>> Get()
         {
             try
@@ -44,6 +46,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetTopografia")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<TopografiaDTO>> Get(int id)
         {
             try
@@ -72,6 +75,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] TopografiaDTO topografiaDTO)
         {
             if (topografiaDTO is null)
@@ -110,6 +114,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] TopografiaDTO topografiaDTO)
         {
             if (topografiaDTO is null)
@@ -156,6 +161,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<TopografiaDTO>> Delete(int id)
         {
             try

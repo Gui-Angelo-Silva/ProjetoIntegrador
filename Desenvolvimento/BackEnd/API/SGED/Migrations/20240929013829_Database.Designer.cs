@@ -12,7 +12,7 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240911170919_Database")]
+    [Migration("20240929013829_Database")]
     partial class Database
     {
         /// <inheritdoc />
@@ -670,6 +670,12 @@ namespace SGED.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
                         .HasColumnName("descricaodocumento");
+
+                    b.Property<string>("HashDocumento")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("hashdocumento");
 
                     b.Property<int?>("IdAprovador")
                         .HasColumnType("integer")

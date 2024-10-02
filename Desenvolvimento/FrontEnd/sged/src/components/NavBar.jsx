@@ -23,7 +23,7 @@ import SessionService from '../object/service/session';
 import SettingsIcon from '@mui/icons-material/Settings';
 import UserClass from '../object/class/user';
 import LogoJales from '../assets/pages/LogoJales.png';
-import { ThemeContext } from '../assets/provider/ThemeContext'; 
+import { ThemeContext } from '../assets/provider/ThemeContext';
 
 export default function NavBar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -44,10 +44,8 @@ export default function NavBar() {
     const GetUser = async () => {
       getUser = false;
 
-      if (session.getToken()) {
-        const data = await session.getUser();
-        if (data) user.setData(data);
-      }
+      const data = await session.getUser();
+      if (data) user.setData(data);
     };
 
     if (getUser) GetUser();
@@ -113,19 +111,19 @@ export default function NavBar() {
             </Typography>
           </div>
         </div>
-  
+
         <IconButton onClick={toggleDrawer(false)} style={{ color: 'white' }}>
           <X size={24} />
         </IconButton>
       </Box>
       <List className='px-3'>
-        <ListItem className='cursor-pointer hover:bg-gray-200 hover:rounded-md'  onClick={() => server.clearSegment("perfil")}>
+        <ListItem className='cursor-pointer hover:bg-gray-200 hover:rounded-md' onClick={() => server.clearSegment("perfil")}>
           <ListItemIcon>
             <PersonIcon className='text-gray-600' />
           </ListItemIcon>
           <ListItemText primary={<Typography style={{ color: '#636262' }}>Perfil</Typography>} />
         </ListItem>
-        <ListItem className='cursor-pointer hover:bg-gray-200 hover:rounded-md'  onClick={() => server.clearSegment("configuracao")}>
+        <ListItem className='cursor-pointer hover:bg-gray-200 hover:rounded-md' onClick={() => server.clearSegment("configuracao")}>
           <ListItemIcon>
             <SettingsIcon className='text-gray-600' />
           </ListItemIcon>

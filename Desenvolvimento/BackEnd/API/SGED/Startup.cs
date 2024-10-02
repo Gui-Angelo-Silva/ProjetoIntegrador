@@ -230,7 +230,7 @@ namespace SGED
             services.AddHostedService<SessionCleanupService>();
 
             // Task: Remover Sessões
-            services.AddHostedService<RemoveSessionService>();
+            // services.AddHostedService<RemoveSessionService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -270,18 +270,30 @@ namespace SGED
 
             app.UseCors("MyPolicy");
 
-            /*app.UseWhen(context => context.Request.Path.StartsWithSegments("/api") && context.GetEndpoint()?.Metadata.GetMetadata<AnonymousAttribute>() == null,
-            appBuilder =>
-            {
-                appBuilder.UseValidateSessionMiddleware();
-            });
+            //app.UseWhen(context => context.Request.Path.StartsWithSegments("/api") && context.GetEndpoint()?.Metadata.GetMetadata<AnonymousAttribute>() == null,
+            //appBuilder =>
+            //{
+            //    // Middleware de validação de sessão
+            //    appBuilder.UseValidateSessionMiddleware();
 
-            app.Use(async (context, next) =>
-            {
-                if (context.Response.StatusCode == StatusCodes.Status401Unauthorized) return;
+            //    // Verificação de resposta Unauthorized
+            //    appBuilder.Use(async (context, next) =>
+            //    {
+            //        if (context.Response.StatusCode == StatusCodes.Status401Unauthorized) return;
+            //        await next(context);
+            //    });
 
-                await next(context);
-            });*/
+            //    // Middleware de validação de acesso
+            //    appBuilder.UseValidateAccessMiddleware();
+
+            //    // Verificação de resposta Unauthorized
+            //    appBuilder.Use(async (context, next) =>
+            //    {
+            //        if (context.Response.StatusCode == StatusCodes.Status403Forbidden) return;
+            //        await next(context);
+            //    });
+            //});
+
 
             app.UseEndpoints(endpoints =>
             {

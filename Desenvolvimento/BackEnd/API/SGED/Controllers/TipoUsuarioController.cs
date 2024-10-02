@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
 using SGED.Services.Entities;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -25,6 +26,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<TipoUsuarioDTO>>> Get()
         {
             try
@@ -47,6 +49,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetTipoUsuario")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<TipoUsuarioDTO>> Get(int id)
         {
             try
@@ -75,6 +78,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] TipoUsuarioDTO tipoUsuarioDTO)
         {
             if (tipoUsuarioDTO is null)
@@ -113,6 +117,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] TipoUsuarioDTO tipoUsuarioDTO)
         {
             if (tipoUsuarioDTO is null)
@@ -159,6 +164,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<TipoUsuarioDTO>> Delete(int id)
         {
             try

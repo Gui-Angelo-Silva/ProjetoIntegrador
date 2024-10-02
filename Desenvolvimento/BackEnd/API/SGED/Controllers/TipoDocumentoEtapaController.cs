@@ -8,6 +8,7 @@ using SGED.Objects.Utilities;
 using SGED.Objects.Models.Entities;
 using System.Collections;
 using SGED.Objects.Enums.Status;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -31,6 +32,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<TipoDocumentoDTO>>> GetAll()
         {
             try
@@ -53,6 +55,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("GetTypeDocumentStagesRelatedToStage/{idEtapa:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<TipoDocumentoEtapaDTO>>> GetTypeDocumentStagesRelatedToStage(int idEtapa)
         {
             try
@@ -85,6 +88,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("GetTypeDocumentsRelatedToStage/{idEtapa:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<TipoDocumentoDTO>>> GetTypeDocumentsRelatedToStage(int idEtapa)
         {
             try
@@ -117,6 +121,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("GetTypeDocumentsNoRelatedToStage/{idEtapa:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<TipoDocumentoDTO>> GetTypeDocumentsNoRelatedToStage(int idEtapa)
         {
             try
@@ -149,6 +154,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetTipoDocumentoEtapa")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<TipoDocumentoDTO>> Get(int id)
         {
             try
@@ -177,6 +183,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] TipoDocumentoEtapaDTO tipoDocumentoEtapaDTO)
         {
             if (tipoDocumentoEtapaDTO is null)
@@ -251,6 +258,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] TipoDocumentoEtapaDTO tipoDocumentoEtapaDTO)
         {
             if (tipoDocumentoEtapaDTO is null)
@@ -339,6 +347,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut("{id:int}/UpdatePosition/{position:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> UpdatePosition(int id, int position)
         {
             if (position <= 0)
@@ -434,6 +443,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut("{id:int}/Ativar")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<TipoDocumentoEtapaDTO>> Activity(int id)
         {
             try
@@ -474,6 +484,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut("{id:int}/Desativar")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<TipoProcessoDTO>> Desactivity(int id)
         {
             try
@@ -514,6 +525,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<TipoDocumentoEtapaDTO>> Delete(int id)
         {
             try

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
 using SGED.Services.Entities;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -25,6 +26,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<OcupacaoAtualDTO>>> Get()
         {
             try
@@ -47,6 +49,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetOcupacaoAtual")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<OcupacaoAtualDTO>> Get(int id)
         {
             try
@@ -75,6 +78,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] OcupacaoAtualDTO ocupacaoAtualDTO)
         {
             if (ocupacaoAtualDTO == null)
@@ -111,6 +115,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] OcupacaoAtualDTO ocupacaoAtualDTO)
         {
             if (ocupacaoAtualDTO == null)
@@ -157,6 +162,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<OcupacaoAtualDTO>> Delete(int id)
         {
             try
@@ -185,7 +191,7 @@ namespace SGED.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
-
+        
         private async Task<bool> OcupacaoAtualExists(OcupacaoAtualDTO ocupacaoAtualDTO)
         {
             var ocupacaoAtualsDTO = await _ocupacaoAtualService.GetAll();

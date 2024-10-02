@@ -8,12 +8,16 @@ import ConnectionService from "../../../object/service/connection";
 import ListModule from "../../../object/modules/list";
 import TypeDocumentStageClass from "../../../object/class/typedocumentstage";
 import SelectModule from '../../../object/modules/select';
-import LayoutPage from "../../../components/Layout/LayoutPage";
-import LinkTitle from "../../../components/Title/LinkTitle";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 import Table from "../../../components/Table/Table";
 import Tooltip from "../../../components/Tooltip/Tooltip";
 
 export default function StageDocumentType() {
+
+    const pages = [
+        { name: 'Documentos', link: '/documentos', isEnabled: true },
+        { name: 'Documentos das Etapas', link: '', isEnabled: false }
+    ];
 
     const montage = useMontage();
 
@@ -227,8 +231,8 @@ export default function StageDocumentType() {
     };
 
     return (
-        <LayoutPage>
-            <LinkTitle pageName="Tipo Documento p/ Etapa" />
+        <>
+            <Breadcrumb pages={pages} />
             <div className="flex w-full gap-6 mt-6">
                 <div className="flex flex-col w-[350px]">
                     <div className="text-gray-600 text-lg mb-1">Tipo Processo:</div>
@@ -312,6 +316,6 @@ export default function StageDocumentType() {
                 </div>
             </div>
 
-        </LayoutPage>
+        </>
     );
 }

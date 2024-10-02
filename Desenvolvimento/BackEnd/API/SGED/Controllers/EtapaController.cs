@@ -7,6 +7,7 @@ using SGED.Objects.Utilities;
 using SGED.Repositories.Entities;
 using SGED.Services.Entities;
 using SGED.Services.Interfaces;
+using SGED.Services.Server.Attributes;
 using System.Collections;
 
 namespace SGED.Controllers
@@ -28,6 +29,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<EtapaDTO>>> GetAll()
         {
             try
@@ -50,6 +52,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("GetRelatedToTypeProcess/{idTipoProcesso:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<EtapaDTO>>> GetStagesRelatedToTypeProcess(int idTipoProcesso)
         {
             try
@@ -82,6 +85,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetEtapa")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<EtapaDTO>> GetById(int id)
         {
             try
@@ -110,6 +114,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] EtapaDTO etapaDTO)
         {
             if (etapaDTO is null)
@@ -159,6 +164,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] EtapaDTO etapaDTO)
         {
             if (etapaDTO is null)
@@ -229,6 +235,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut("{id:int}/UpdatePosition/{position:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> UpdatePosition(int id, int position)
         {
             if (position <= 0)
@@ -326,6 +333,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut("{id:int}/Ativar")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<EtapaDTO>> Activity(int id)
         {
             try
@@ -366,6 +374,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut("{id:int}/Desativar")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<EtapaDTO>> Desactivity(int id)
         {
             try
@@ -406,6 +415,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<EtapaDTO>> Delete(int id)
         {
             try

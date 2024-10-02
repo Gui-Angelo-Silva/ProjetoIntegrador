@@ -16,7 +16,8 @@ export default class ConnectionService {
             NotFound: 3,
             Conflict: 4,
             Unauthorized: 5,
-            Error: 6
+            Forbidden: 6,
+            Error: 7
         };
 
         this.resetData();
@@ -49,6 +50,10 @@ export default class ConnectionService {
 
     isUnauthorized(status) {
         return status === this.responseStatus.Unauthorized;
+    }
+
+    isForbidden(status) {
+        return status === this.responseStatus.Forbidden;
     }
 
     isError(status) {

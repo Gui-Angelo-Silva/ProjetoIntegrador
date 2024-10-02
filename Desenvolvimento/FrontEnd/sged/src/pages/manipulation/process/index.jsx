@@ -2,11 +2,16 @@ import React, { useEffect } from 'react'
 import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import PopUpManager from '../../../components/PopUpManager';
-import LayoutPage from '../../../components/Layout/LayoutPage';
-import LinkTitle from '../../../components/Title/LinkTitle';
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 import { useServer } from '../../../routes/serverRoute';
 
 export default function Process() {
+
+    const pages = [
+        { name: 'Documentos', link: '/documentos', isEnabled: true },
+        { name: 'Processo', link: '', isEnabled: false }
+    ];
+
     const montage = useMontage();
     const server = useServer();
 
@@ -18,11 +23,11 @@ export default function Process() {
     const managerPopUp = PopUpManager();
 
     return (
-        <LayoutPage>
-            <LinkTitle pageName="Processo" otherRoute="Documentos" />
+        <>
+            <Breadcrumb pages={pages} />
             <div className='mt-6'>
                 <button className='btn btn-warning' onClick={() => server.addSegment("cadastrar-processo")}>Cadastrar Processo</button>
             </div>
-        </LayoutPage>
+        </>
     )
 }

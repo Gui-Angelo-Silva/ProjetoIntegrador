@@ -33,6 +33,11 @@ namespace SGED.Objects.Utilities
             this.Status = ResponseStatus.Unauthorized;
         }
 
+        public void SetForbidden()
+        {
+            this.Status = ResponseStatus.Forbidden;
+        }
+
         public void SetError()
         {
             this.Status = ResponseStatus.Error;

@@ -5,6 +5,7 @@ using SGED.Objects.DTO.Entities;
 using SGED.Services.Interfaces;
 using SGED.Objects.Utilities;
 using SGED.Services.Entities;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -24,6 +25,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<FiscalDTO>>> Get()
         {
             try
@@ -46,6 +48,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("GetAllNames")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<FiscalDTO>>> GetAllNames()
         {
             try
@@ -70,6 +73,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetFiscal")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<FiscalDTO>> Get(int id)
         {
             try
@@ -98,6 +102,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] FiscalDTO fiscalDTO)
         {
             if (fiscalDTO is null)
@@ -165,6 +170,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] FiscalDTO fiscalDTO)
         {
             if (fiscalDTO is null)
@@ -242,6 +248,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<FiscalDTO>> Delete(int id)
         {
             try
@@ -271,7 +278,7 @@ namespace SGED.Controllers
             }
         }
 
-        private void ValidateDocuments(FiscalDTO fiscalDTO, ref string email, ref string cpfcnpj, ref string rgie)
+        private static void ValidateDocuments(FiscalDTO fiscalDTO, ref string email, ref string cpfcnpj, ref string rgie)
         {
             if (!fiscalDTO.Email())
             {
@@ -311,7 +318,7 @@ namespace SGED.Controllers
             }
         }
 
-        private void CheckDuplicates(IEnumerable<FiscalDTO> fiscalsDTO, FiscalDTO fiscalDTO, ref string email, ref string cpfcnpj, ref string rgie)
+        private static void CheckDuplicates(IEnumerable<FiscalDTO> fiscalsDTO, FiscalDTO fiscalDTO, ref string email, ref string cpfcnpj, ref string rgie)
         {
             foreach (var fiscal in fiscalsDTO)
             {
@@ -332,7 +339,7 @@ namespace SGED.Controllers
             }
         }
 
-        private string GenerateErrorMessage(string email, string cpfcnpj, string rgie, FiscalDTO fiscalDTO)
+        private static string GenerateErrorMessage(string email, string cpfcnpj, string rgie, FiscalDTO fiscalDTO)
         {
             string error = "";
             if (!string.IsNullOrEmpty(email)) error += "e-mail";

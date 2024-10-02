@@ -7,12 +7,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FilePlus, Pen, Trash, Warning } from "@phosphor-icons/react";
 
 // Component imports
-import LinkTitle from "../../../components/Title/LinkTitle";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
 import CancelButton from "../../../components/Button/CancelButton";
 import CustomTable from "../../../components/Table/Table";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
@@ -26,6 +25,11 @@ import ActionManager from '../../../object/modules/action';
 import CompareModule from '../../../object/modules/compare';
 
 export default function State() {
+
+    const pages = [
+        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Estado', link: '', isEnabled: false }
+    ];
 
     // Marking the assembled component
     const montage = useMontage();
@@ -266,8 +270,8 @@ export default function State() {
                 ))}
             </div>}
 
-            <LayoutPage>
-                <LinkTitle pageName="Estado" />
+            <>
+                <Breadcrumb pages={pages} />
                 <MultiSearchBar
                     maxSearchBars={2}
                     searchOptions={[
@@ -415,7 +419,7 @@ export default function State() {
                     </ModalHeader>
                     <ModalBody className="text-center flex flex-col justify-center items-center">
                         <h3 className="pl-4 text-lg font-thin">
-                            O Estado  {lastRequisition === "buscar" ? "selecionado" : "informado" } não existe no banco de dados.
+                            O Estado  {lastRequisition === "buscar" ? "selecionado" : "informado"} não existe no banco de dados.
                             <br />
                             O sistema irá carregar os dados atuais após fechar a tela. Tempo restante: {timeLeft}s
                         </h3>
@@ -433,7 +437,7 @@ export default function State() {
                     </ModalFooter>
                 </Modal>
 
-            </LayoutPage>
+            </>
         </>
     );
 }

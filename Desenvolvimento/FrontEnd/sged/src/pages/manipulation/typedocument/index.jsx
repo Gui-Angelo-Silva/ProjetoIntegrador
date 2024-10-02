@@ -6,11 +6,10 @@ import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 // Component imports
-import LinkTitle from "../../../components/Title/LinkTitle";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import CustomTable from "../../../components/Table/Table";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
 
@@ -24,6 +23,11 @@ import ListModule from "../../../object/modules/list";
 import TypeDocumentClass from "../../../object/class/typedocument";
 
 export default function TypeDocument() {
+
+    const pages = [
+        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Tipo de Documento', link: '', isEnabled: false }
+    ];
 
     const { componentMounted } = useMontage();
 
@@ -203,8 +207,8 @@ export default function TypeDocument() {
                     />
                 ))}
             </div>}
-            <LayoutPage>
-                <LinkTitle pageName="Tipo Documento" />
+            <>
+                <Breadcrumb pages={pages} />
                 <div className="flex items-center">
                     <div className="flex justify-center items-center mx-auto w-[450px]">
                         <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
@@ -301,7 +305,7 @@ export default function TypeDocument() {
                         </div>
                     </ModalBody>
                 </Modal>
-            </LayoutPage>
+            </>
         </>
     );
 }

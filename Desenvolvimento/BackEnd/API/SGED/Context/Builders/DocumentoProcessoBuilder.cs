@@ -12,6 +12,7 @@ namespace SGED.Context.Builders
             modelBuilder.Entity<DocumentoProcesso>().Property(dp => dp.IdentificacaoDocumento).HasMaxLength(50).IsRequired();
             modelBuilder.Entity<DocumentoProcesso>().Property(dp => dp.DescricaoDocumento).HasMaxLength(500);
             modelBuilder.Entity<DocumentoProcesso>().Property(dp => dp.ObservacaoDocumento).HasMaxLength(300);
+            modelBuilder.Entity<DocumentoProcesso>().Property(dp => dp.HashDocumento).HasMaxLength(64);
             modelBuilder.Entity<DocumentoProcesso>().Property(dp => dp.ArquivoDocumento);
             modelBuilder.Entity<DocumentoProcesso>().Property(dp => dp.Status).IsRequired();
             modelBuilder.Entity<DocumentoProcesso>().Property(dp => dp.IdProcesso).IsRequired();

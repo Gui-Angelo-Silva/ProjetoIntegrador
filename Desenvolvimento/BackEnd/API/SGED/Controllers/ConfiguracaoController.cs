@@ -2,6 +2,7 @@
 using SGED.Objects.Utilities;
 using SGED.Services.Entities;
 using SGED.Services.Interfaces;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -19,7 +20,8 @@ namespace SGED.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ActionResult> GetAll()
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult> GetAll()
 		{
 			try
 			{
@@ -39,7 +41,8 @@ namespace SGED.Controllers
 		}
 
 		[HttpGet("{id:int}", Name = "GetConfiguracao")]
-		public async Task<ActionResult> GetById(int id)
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult> GetById(int id)
 		{
 			try
 			{
@@ -67,7 +70,8 @@ namespace SGED.Controllers
 		}
 
 		[HttpPut("{id:int}/Ativar")]
-		public async Task<ActionResult> Activate(int id)
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult> Activate(int id)
 		{
 			try
 			{
@@ -106,7 +110,8 @@ namespace SGED.Controllers
 		}
 
 		[HttpPut("{id:int}/Desativar")]
-		public async Task<ActionResult> Disable(int id)
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult> Disable(int id)
 		{
 			try
 			{

@@ -7,12 +7,11 @@ import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 // Component imports
-import LinkTitle from "../../../components/Title/LinkTitle";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 import ButtonModal from "../../../components/Modal/ButtonModal";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import CustomTable from "../../../components/Table/Table";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import SearchBarTest from "../../../components/Search/SearchBarTest";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
@@ -25,6 +24,11 @@ import CityClass from '../../../object/class/city';
 import SelectModule from '../../../object/modules/select';
 
 export default function City() {
+
+    const pages = [
+        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cidade', link: '', isEnabled: false }
+    ];
 
     const { componentMounted } = useMontage();
 
@@ -244,8 +248,8 @@ export default function City() {
                     />
                 ))}
             </div>}
-            <LayoutPage>
-                <LinkTitle pageName="Cidade" />
+            <>
+                <Breadcrumb pages={pages} />
                 <div className="flex items-center">
                     <SearchBarTest handleSearch={handleSearch} handleSearchBy={handleSearchBy} />
                     <div className="flex items-center">
@@ -385,7 +389,7 @@ export default function City() {
                         </div>
                     </ModalBody>
                 </Modal>
-            </LayoutPage>
+            </>
         </>
     );
 }

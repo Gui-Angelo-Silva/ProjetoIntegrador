@@ -1,12 +1,15 @@
-import Title from "../../../components/Title/Title";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 import { useMontage } from '../../../object/modules/montage';
 import Cards from '../../../components/Card/Cards';
 import CardRegistration from "../../../components/Card/CardRegistration";
 import React, { useState, useEffect } from "react";
 import Search from "../../../assets/pages/SearchImg";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 
 export default function Registrations() {
+
+    const pages = [
+        { name: 'Cadastros', link: '', isEnabled: false }
+    ];
 
     const { componentMounted } = useMontage();
 
@@ -72,8 +75,8 @@ export default function Registrations() {
     //const filteredCategory = selectedCategory === "Todos" ? dataCards : dataCards.filter(x => x.module == selectedCategory);
 
     return (
-        <LayoutPage>
-            <Title title="Cadastros" />
+        <>
+            <Breadcrumb pages={pages} />
             <div className="rounded-md mt-[15px]">
                 <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
                     <div className="pl-2">
@@ -115,6 +118,6 @@ export default function Registrations() {
                     </div>
                 ))}
             </div>
-        </LayoutPage>
+        </>
     );
 }

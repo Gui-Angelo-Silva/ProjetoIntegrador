@@ -22,8 +22,30 @@ docker-compose down --rmi all -v
 
 
 
-/* Executar o compose */
+/* Executar o compose, criar os containers/imagens e executar o ambiente */
 
 docker-compose up --build
+
+# Execute o comando onde está o docker compose
+
+
+
+/* Subir as imagens do projeto */
+
+docker-compose push
+
+* Alternativo: --------------
+
+docker-compose push database
+docker-compose push api
+docker-compose push frontend
+
+# Execute o comando onde está o docker compose
+
+
+
+/* Baixar as imagens do projeto */
+
+docker-compose pull
 
 # Execute o comando onde está o docker compose

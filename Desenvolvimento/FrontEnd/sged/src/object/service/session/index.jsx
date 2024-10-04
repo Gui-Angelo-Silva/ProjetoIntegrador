@@ -23,6 +23,11 @@ function SessionService() {
         //return cookie.getCookie("user");
     };
 
+    const getAcessLevel = () => {
+        //return storage.getLocal('acessLevel');
+        return cookie.getCookie("acessLevel");
+    };
+
     const setUser = async () => {
         const token = getToken();
 
@@ -55,8 +60,14 @@ function SessionService() {
         cookie.setCookie("token", token, 12);
     };
 
+    const setAcessLevel = (acessLevel) => {
+        //storage.setLocal('acessLevel', acessLevel);
+        cookie.setCookie("acessLevel", acessLevel, 12);
+    };
+
     const clearSession = () => {
         defaultToken();
+        defaultAcessLevel();
         defaultUser();
     };
 
@@ -75,6 +86,11 @@ function SessionService() {
         cookie.setCookie("user", null);
     };
 
+    const defaultAcessLevel = () => {
+        //storage.setLocal('acessLevel', null);
+        cookie.setCookie("acessLevel", null);
+    };
+
     const createSession = async (object) => {
 
         var autentication = false;
@@ -83,7 +99,8 @@ function SessionService() {
             await connection.endpoint("Sessao").action("Autentication").post(object.getData());
 
             if (connection.response.status) {
-                setToken(connection.response.data);
+                setToken(connection.response.data.tokenSessao);
+                setAcessLevel(connection.response.data.nivelAcesso);
 
                 if (object.persistLogin) {
                     setLogin(object);
@@ -167,6 +184,7 @@ function SessionService() {
     return {
         getLogin,
         getUser,
+        getAcessLevel,
 
         setUser,
 

@@ -245,7 +245,7 @@ namespace SGED.Controllers
 
                     _response.SetSuccess();
                     _response.Message = "Sessão aberta com sucesso!";
-                    _response.Data = sessaoDTO.TokenSessao;
+                    _response.Data = new { tokenSessao = sessaoDTO.TokenSessao, nivelAcesso = tipoUsuarioDTO.NivelAcesso };
                     return Ok(_response);
                 }
 

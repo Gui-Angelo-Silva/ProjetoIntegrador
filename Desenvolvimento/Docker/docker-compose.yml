@@ -1,65 +1,82 @@
-version: '3.8'
+# Define a rede a ser usada pelos serviços
+networks:
+  sged_network:
+    driver: bridge  # Utiliza o driver bridge, que é o padrão para comunicação entre containers
 
 services:
-  postgres:
-    image: postgres:latest
-    container_name: postgres_container
-    restart: always
+  # Serviço para o banco de dados PostgreSQL
+  database:
+    image: gabrielsantos578/sged_database:latest  # Define o repositório do Docker Hub onde a imagem do banco de dados será armazenada
+    build:
+      context: ../Database  # Diretório onde o Dockerfile do banco de dados está localizado
+    container_name: sged_database_container  # Nome do container para evitar conflitos entre projetos
+    restart: always  # Sempre reinicia o container em caso de falha
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
-      POSTGRES_DB: sgedDB
+      POSTGRES_USER: postgres  # Usuário padrão do PostgreSQL
+      POSTGRES_PASSWORD: 123456  # Senha para o usuário do PostgreSQL
+      POSTGRES_DB: sgedDB  # Nome do banco de dados a ser criado
     ports:
-      - "5432:5432" # Porta exposta para o banco de dados
+      - "5432:5432"  # Mapeia a porta 5432 do container para a porta 5432 da máquina host
     volumes:
-      - postgres_data:/var/lib/postgresql/data # Volume persistente para dados do PostgreSQL
-      - ../Database/sgedDB.sql:/docker-entrypoint-initdb.d/sgedDB.sql # Carrega o banco de dados inicial
+      - postgres_data:/var/lib/postgresql/data  # Volume persistente para os dados do PostgreSQL
+      - ../Database/sgedDB.sql:/docker-entrypoint-initdb.d/sgedDB.sql  # Carrega o banco de dados inicial a partir do arquivo SQL
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD-SHELL", "pg_isready -U postgres"]  # Comando para verificar se o banco de dados está pronto
+      interval: 10s  # Intervalo entre as verificações
+      timeout: 5s  # Tempo limite para a verificação
+      retries: 5  # Número de tentativas antes de considerar o serviço como não saudável
     logging:
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: "10m"  # Tamanho máximo dos logs
+        max-file: "3"  # Número máximo de arquivos de log a serem mantidos
+    networks:
+      - sged_network  # Conecta o serviço à rede definida anteriormente
 
+  # Serviço para a API
   api:
+    image: gabrielsantos578/sged_api:latest  # Define o repositório do Docker Hub onde a imagem da API será armazenada
     build:
-      context: ../BackEnd/API/SGED # Diretório onde está seu Dockerfile da API
-    container_name: api_container
-    restart: always
+      context: ../BackEnd/API/SGED  # Diretório onde o Dockerfile da API está localizado
+    container_name: sged_api_container  # Nome do container para evitar conflitos entre projetos
+    restart: always  # Sempre reinicia o container em caso de falha
     ports:
-      - "7096:80" # Mapeia a porta 5000 do contêiner para a porta 7096 da máquina
+      - "7096:80"  # Mapeia a porta 80 do container para a porta 7096 da máquina host
     depends_on:
-      postgres:
-        condition: service_healthy # Garante que o postgres esteja pronto antes de iniciar a API
+      database:
+        condition: service_healthy  # Garante que o banco de dados esteja saudável antes de iniciar a API
     environment:
-      DATABASE_URL: "Host=postgres_container;Port=5432;Database=sgedDB;Username=postgres;Password=123456;"
+      DATABASE_URL: "Host=sged_database_container;Port=5432;Database=sgedDB;Username=postgres;Password=123456;"  # URL de conexão ao banco de dados
     logging:
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: "10m"  # Tamanho máximo dos logs
+        max-file: "3"  # Número máximo de arquivos de log a serem mantidos
+    networks:
+      - sged_network  # Conecta o serviço à rede definida anteriormente
 
+  # Serviço para o Frontend
   frontend:
+    image: gabrielsantos578/sged_frontend:latest  # Define o repositório do Docker Hub onde a imagem do frontend será armazenada
     build:
-      context: ../FrontEnd/sged
+      context: ../FrontEnd/sged  # Diretório onde o Dockerfile do frontend está localizado
       args:
-        VITE_API_URL: http://localhost:7096/api/ # Passa a variável de ambiente no build
-    container_name: frontend_container
-    restart: always
+        VITE_API_URL: http://localhost:7096/api/  # Passa a variável de ambiente no build para configuração da API
+    container_name: sged_frontend_container  # Nome do container para evitar conflitos entre projetos
+    restart: always  # Sempre reinicia o container em caso de falha
     ports:
-      - "5173:80"
+      - "5173:80"  # Mapeia a porta 80 do container para a porta 5173 da máquina host
     depends_on:
       api:
-        condition: service_started
+        condition: service_started  # Garante que a API tenha iniciado antes de iniciar o frontend
     volumes:
-      - ../FrontEnd/sged:/app
+      - ../FrontEnd/sged:/app  # Monta o diretório do frontend no container para desenvolvimento
     logging:
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: "10m"  # Tamanho máximo dos logs
+        max-file: "3"  # Número máximo de arquivos de log a serem mantidos
+    networks:
+      - sged_network  # Conecta o serviço à rede definida anteriormente
 
+# Define os volumes a serem usados pelos serviços
 volumes:
   postgres_data:
-    driver: local # Volume local para persistência dos dados
+    driver: local  # Volume local para persistência dos dados do PostgreSQL

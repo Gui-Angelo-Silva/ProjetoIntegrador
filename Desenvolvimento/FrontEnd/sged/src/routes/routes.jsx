@@ -50,6 +50,7 @@ export default function AppRoutes() {
     const ProtectedRoute = ({ children, requiredAccess }) => {
         const userAccessLevel = getUserAccessLevel();
         if (!requiredAccess.includes(userAccessLevel) && requiredAccess !== 'undefined') {
+            sessionStorage.setItem("page: access denied", `/${window.location.pathname.split("/")[1]}`);
             return <Navigate to="/acesso-negado" replace />;
         }
         return children;
@@ -64,25 +65,25 @@ export default function AppRoutes() {
                 return <Navigate to="/secretario/principal" replace />;
             } else if (userAccessLevel === 'c') {
                 return <Navigate to="/estagiario/principal" replace />;
-            } else {
-                return <Navigate to="/acesso-negado" replace />;
             }
-        } else {
-            return <Login />;
         }
+        
+        session.closeSession();
+        return <Login />;
     };
 
-    const AdministratorRoutes = () => {
-        return <RoutesA />;
-    };
-
-    const SecretaryRoutes = () => {
-        return <RoutesB />;
-    };
-
-    const TraineeRoutes = () => {
-        return <RoutesC />;
-    };
+    const handleNotFound = () => {
+        const currentPath = window.location.pathname;
+        const storedPath = sessionStorage.getItem("page: non-existent");
+    
+        // Se a URL original ainda não estiver armazenada, armazene-a
+        if (!storedPath || currentPath !== "/pagina-inexistente") {
+            sessionStorage.setItem("page: non-existent", currentPath);
+        }
+    
+        // Redireciona para a página de erro
+        return <Navigate to="/pagina-inexistente" replace />;
+    };  
 
     return (
         <Router>
@@ -111,7 +112,7 @@ export default function AppRoutes() {
                     <Route path="/administrador/*" element={<RequireAuth><LayoutPage /></RequireAuth>}>
                         <Route path="*" element={
                             <ProtectedRoute requiredAccess={["a"]}>
-                                <AdministratorRoutes />
+                                <RoutesA />
                             </ProtectedRoute>
                         } />
                     </Route>
@@ -120,7 +121,7 @@ export default function AppRoutes() {
                     <Route path="/secretario/*" element={<RequireAuth><LayoutPage /></RequireAuth>}>
                         <Route path="*" element={
                             <ProtectedRoute requiredAccess={["b"]}>
-                                <SecretaryRoutes />
+                                <RoutesB />
                             </ProtectedRoute>
                         } />
                     </Route>
@@ -129,13 +130,13 @@ export default function AppRoutes() {
                     <Route path="/estagiario/*" element={<RequireAuth><LayoutPage /></RequireAuth>}>
                         <Route path="*" element={
                             <ProtectedRoute requiredAccess={["c"]}>
-                                <TraineeRoutes />
+                                <RoutesC />
                             </ProtectedRoute>
                         } />
                     </Route>
 
                     {/* Rota catch-all para páginas inexistentes */}
-                    <Route path="*" element={<Navigate to="/pagina-inexistente" replace />} />
+                    <Route path="*" element={handleNotFound()} />
                 </Routes>
             </ServerProvider>
         </Router>

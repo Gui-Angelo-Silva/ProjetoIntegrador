@@ -97,7 +97,7 @@ export const ServerProvider = ({ children }) => {
             return serverActions(newUrl);
         },
         notFound: (message) => {
-            sessionStorage.setItem("page: not found", message);
+            sessionStorage.setItem("page: non-existent", message);
             const newUrl = '/pagina-inexistente';
             dispatch(newUrl);
             return serverActions(newUrl);

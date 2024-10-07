@@ -37,7 +37,7 @@ export default function NavBar() {
 
   const encerateSession = () => {
     session.closeSession();
-    server.clearSegment("login");
+    server.clearUrl("login").dispatch();
   };
 
   useEffect(() => {

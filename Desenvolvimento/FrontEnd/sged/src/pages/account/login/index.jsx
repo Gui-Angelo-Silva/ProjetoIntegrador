@@ -62,7 +62,7 @@ export default function SignIn() {
 
       if (response.validation) {
         await delay(1000); setIsLoading('Liberando Entrada...');
-        await delay(1000); server.clearSegment("principal");
+        await delay(1000); server.typeRoute().addSegment("principal").dispatch();
       } else {
         setLoginError(typeof response.message?.errorLogin === 'string'? response.message.errorLogin : loginError);
       }

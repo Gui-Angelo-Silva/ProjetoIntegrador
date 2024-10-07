@@ -1,46 +1,106 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { ServerProvider } from './serverRoute';
+import { useMontage } from '../object/modules/montage';
+import SessionService from '../object/service/session';
 import CookieModule from '../object/modules/cookie';
 import LayoutPage from '../components/Layout/LayoutPage';
-import RoutesAdministrator from './acessRoute/routesAdministrator';
-import RoutesSecretary from './acessRoute/routesSecretary';
-import RoutesTrainee from './acessRoute/routesTrainee';
+import LoadingPage from '../pages/utility/loading';
+import RequireAuth from '../pages/utility/auth';
+import RoutesA from './acessRoute/routesAdministrator';
+import RoutesB from './acessRoute/routesSecretary';
+import RoutesC from './acessRoute/routesTrainee';
 import Login from '../pages/account/login';
 import Profile from '../pages/account/profile';
+import Setting from '../pages/account/setting';
+import Test from '../pages/dashboard/test';
 import Development from '../pages/utility/development';
 import NotFound from '../pages/utility/notfound';
 import NotPermission from '../pages/utility/notpermission';
 
 export default function AppRoutes() {
-
+    const session = SessionService();
     const cookie = CookieModule();
+    const montage = useMontage();
 
-    // Função para verificar o nível de acesso nos cookies
+    const [isLoading, setIsLoading] = useState(true);
+    const [authenticated, setAuthenticated] = useState(false);
+
+    useEffect(() => {
+        const checkMontageStatus = async () => {
+            setIsLoading(!montage.componentMontage);
+        };
+
+        checkMontageStatus();
+    }, [montage.componentMontage]);
+
+    useEffect(() => {
+        const validateSession = async () => {
+            const isAuth = await session.validateSession();
+            setAuthenticated(isAuth);
+        };
+
+        validateSession();
+    }, []);
+
     const getUserAccessLevel = () => {
         return cookie.getCookie('acessLevel') || 'undefined';
     };
 
-    // Função para proteger rotas
     const ProtectedRoute = ({ children, requiredAccess }) => {
         const userAccessLevel = getUserAccessLevel();
-        // Verifica se o nível de acesso do usuário está presente na lista de acessos permitidos
         if (!requiredAccess.includes(userAccessLevel) && requiredAccess !== 'undefined') {
             return <Navigate to="/acesso-negado" replace />;
         }
         return children;
     };
 
+    const RedirectRoute = () => {
+        const userAccessLevel = getUserAccessLevel();
+        if (authenticated && userAccessLevel !== 'undefined') {
+            if (userAccessLevel === 'a') {
+                return <Navigate to="/administrador/principal" replace />;
+            } else if (userAccessLevel === 'b') {
+                return <Navigate to="/secretario/principal" replace />;
+            } else if (userAccessLevel === 'c') {
+                return <Navigate to="/estagiario/principal" replace />;
+            } else {
+                return <Navigate to="/acesso-negado" replace />;
+            }
+        } else {
+            return <Login />;
+        }
+    };
+
+    const AdministratorRoutes = () => {
+        return <RoutesA />;
+    };
+
+    const SecretaryRoutes = () => {
+        return <RoutesB />;
+    };
+
+    const TraineeRoutes = () => {
+        return <RoutesC />;
+    };
+
     return (
         <Router>
             <ServerProvider>
-                <Routes>
-                    <Route path="/login" element={<Login />} />
+                {isLoading && <LoadingPage />}
 
-                    {/* Rotas protegidas com base no nível de acesso */}
-                    <Route element={<LayoutPage />}>
+                <Routes>
+                    <Route path="/" element={<Navigate to="/login" replace />} />
+                    <Route path="/login" element={<RedirectRoute />} />
+
+                    {/* Rotas protegidas */}
+                    <Route element={<RequireAuth><LayoutPage /></RequireAuth>}>
                         <Route path="/perfil" element={<Profile />} />
+                        <Route path="/configuracao" element={<Setting />} />
+                        <Route path="/teste" element={<Test />} />
                     </Route>
 
+                    {/* Rotas adicionais */}
                     <Route element={<LayoutPage />}>
                         <Route path="/em-desenvolvimento" element={<Development />} />
                         <Route path="/pagina-inexistente" element={<NotFound />} />
@@ -48,40 +108,34 @@ export default function AppRoutes() {
                     </Route>
 
                     {/* Rotas exclusivas para administradores */}
-                    <Route element={<LayoutPage />}>
-                        <Route
-                            path="/admin"
-                            element={
-                                <ProtectedRoute requiredAccess={["a"]}>
-                                    <RoutesAdministrator />
-                                </ProtectedRoute>
-                            }
-                        />
+                    <Route path="/administrador/*" element={<RequireAuth><LayoutPage /></RequireAuth>}>
+                        <Route path="*" element={
+                            <ProtectedRoute requiredAccess={["a"]}>
+                                <AdministratorRoutes />
+                            </ProtectedRoute>
+                        } />
                     </Route>
 
                     {/* Rotas exclusivas para funcionários */}
-                    <Route element={<LayoutPage />}>
-                        <Route
-                            path="/admin"
-                            element={
-                                <ProtectedRoute requiredAccess={["b"]}>
-                                    <RoutesSecretary />
-                                </ProtectedRoute>
-                            }
-                        />
+                    <Route path="/secretario/*" element={<RequireAuth><LayoutPage /></RequireAuth>}>
+                        <Route path="*" element={
+                            <ProtectedRoute requiredAccess={["b"]}>
+                                <SecretaryRoutes />
+                            </ProtectedRoute>
+                        } />
                     </Route>
 
                     {/* Rotas exclusivas para estagiários */}
-                    <Route element={<LayoutPage />}>
-                        <Route
-                            path="/admin"
-                            element={
-                                <ProtectedRoute requiredAccess={["c"]}>
-                                    <RoutesTrainee />
-                                </ProtectedRoute>
-                            }
-                        />
+                    <Route path="/estagiario/*" element={<RequireAuth><LayoutPage /></RequireAuth>}>
+                        <Route path="*" element={
+                            <ProtectedRoute requiredAccess={["c"]}>
+                                <TraineeRoutes />
+                            </ProtectedRoute>
+                        } />
                     </Route>
+
+                    {/* Rota catch-all para páginas inexistentes */}
+                    <Route path="*" element={<Navigate to="/pagina-inexistente" replace />} />
                 </Routes>
             </ServerProvider>
         </Router>

@@ -1,8 +1,8 @@
-import { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { createContext, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useMontage } from '../object/modules/montage';
-import Session from '../object/service/session';
 import PropTypes from 'prop-types';
+import CookieModule from '../object/modules/cookie';
+import SessionService from '../object/service/session';
 
 const ServerContext = createContext();
 
@@ -15,149 +15,107 @@ export const useServer = () => {
 };
 
 export const ServerProvider = ({ children }) => {
-
-    let inOperation = false;
-    const [verifyExistPage, setVerifyExistPage] = useState(false);
-    const [callFunctionRoute, setCallFunctionRoute] = useState(false);
-    const [liberateNavigate, setLiberateNavigate] = useState(false);
-    const montage = useMontage();
-    const session = Session();
     const navigate = useNavigate();
+    const session = SessionService();
+    const cookie = CookieModule();
 
-    const updateAuthentication = useCallback(async () => {
-        try {
-            return await session.validateSession();
-        } catch (error) {
-            return false;
-        }
-    }, []);
+    const typesRoute = { a: 'administrador', b: 'secretario', c: 'estagiario' };
 
-    const buildPath = useCallback((base, route) => {
-        setCallFunctionRoute(true);
-        setLiberateNavigate(true);
+    const dispatch = (url) => {
+        navigate(url);
+    };
 
-        const basePath = base.startsWith('/') ? base : `/${base}`;
-        const routePath = route !== null ? `/${route}` : "";
-        return `${basePath}${routePath}`;
-    }, []);
+    const serverActions = (url = '') => ({
+        url,
+        dispatch: () => {
+            dispatch(url);
+            return serverActions(url);
+        },
+        currentRoute: () => {
+            const newUrl = window.location.pathname;
+            return serverActions(newUrl);
+        },
+        typeRoute: () => {
+            const accessLevel = cookie.getCookie('acessLevel');
+            if (!accessLevel) {
+                session.closeSession();
+                const newUrl = '/login';
+                dispatch(newUrl);
+                return serverActions(newUrl);
+            }
 
-    const inDevelopment = useCallback((message) => {
-        sessionStorage.setItem("page: in development", message);
-        clearSegment("em-desenvolvimento");
-    }, []);
+            const baseRoute = typesRoute[accessLevel];
+            if (!baseRoute) {
+                session.closeSession();
+                const newUrl = '/login';
+                dispatch(newUrl);
+                return serverActions(newUrl);
+            }
 
-    const addSegment = useCallback((route) => {
-        const path = window.location.pathname;
-        const newPath = buildPath(path, route);
-        navigate(newPath);
-    }, []);
+            const newUrl = `/${baseRoute}`;
+            return serverActions(newUrl);
+        },
+        addSegment: (route) => {
+            const newUrl = `${url}/${route}`;
+            return serverActions(newUrl);
+        },
+        addData: (data) => {
+            const newUrl = `${url}/${String(data)}`;
+            return serverActions(newUrl);
+        },
+        removeSegment: (quantRemove) => {
+            const segments = url.split('/');
+            const numSegments = segments.length;
+            const index = numSegments - quantRemove;
 
-    const sendDataForSegment = useCallback((route, data) => {
-        const newPath = buildPath(route, null);
-        navigate(newPath, { state: data });
-    }, []);
-
-    const clearSegment = useCallback((route) => {
-        const newPath = buildPath(route, null);
-        navigate(newPath);
-    }, []);
-
-    const removeSegment = useCallback((quantRemove) => {
-        const path = window.location.pathname;
-        const segments = path.split('/');
-        const numSegments = segments.length;
-        const index = (numSegments - quantRemove);
-
-        if (index > 0) {
-            const newPath = buildPath(segments.slice(1, index).join('/'), null);
-            navigate(newPath);
-        } else {
-            clearSegment("pagina-inexistente");
-        }
-    }, []);
-
-    useEffect(() => {
-        const currentPathSegments = window.location.pathname.split('/');
-        const firstRoute = currentPathSegments[1]?.toLowerCase();
-
-        // Função para validar a rota e navegar
-        const validateAndNavigate = async () => {
-            inOperation = true;
-            const autenticate = await updateAuthentication();
-
-            if (callFunctionRoute) {
-
-                if (!autenticate && !["", "login", "pagina-inexistente", "acesso-negado", "em-desenvolvimento"].includes(firstRoute)) {
-                    clearSegment("login");
-                }
-                setCallFunctionRoute(false);
-
+            let newUrl;
+            if (index > 0) {
+                newUrl = `/${segments.slice(1, index).join('/')}`;
             } else {
-                setLiberateNavigate(false);
-
-                if (["", "pagina-inexistente", "acesso-negado", "em-desenvolvimento"].includes(firstRoute)) {
-                    clearSegment(autenticate ? "principal" : "login");
-
-                } else if (autenticate && ["login"].includes(firstRoute)) {
-                    clearSegment("principal");
-
-                } else if (!autenticate && !["login"].includes(firstRoute)) {
-                    clearSegment("login");
-                }
-
-                setLiberateNavigate(true);
+                newUrl = '/pagina-inexistente';
+                dispatch(newUrl);
             }
+            return serverActions(newUrl);
+        },
+        clearUrl: (route) => {
+            const newUrl = `/${route}`;
+            return serverActions(newUrl);
+        },
+    });
 
-            inOperation = false;
-            setVerifyExistPage(true);
-        };
+    const usefulActions = {
+        inDevelopment: (message) => {
+            sessionStorage.setItem("page: in development", message);
+            const newUrl = '/em-desenvolvimento';
+            dispatch(newUrl);
+            return serverActions(newUrl);
+        },
+        accessDenied: (message) => {
+            sessionStorage.setItem("page: access denied", message);
+            const newUrl = '/acesso-negado';
+            dispatch(newUrl);
+            return serverActions(newUrl);
+        },
+        notFound: (message) => {
+            sessionStorage.setItem("page: not found", message);
+            const newUrl = '/pagina-inexistente';
+            dispatch(newUrl);
+            return serverActions(newUrl);
+        },
+    };
 
-        if (!inOperation) validateAndNavigate();
-    }, []);
-
-    useEffect(() => {
-        const delay = (milliseconds) => {
-            return new Promise(resolve => setTimeout(resolve, milliseconds));
-        };
-
-        let isExecuting = true;
-
-        const verifyMontage = async () => {
-            try {
-                await delay(2000);
-
-                if (!isExecuting) {
-                    return;
-                } else {
-                    isExecuting = false;
-                }
-
-                if (!montage.componentMontage) {
-                    sessionStorage.setItem("page: non-existent", window.location.pathname);
-                    clearSegment("pagina-inexistente");
-                }
-            } catch (error) {
-                return;
-            }
-        }; if (verifyExistPage) verifyMontage();
-
-        return () => {
-            isExecuting = false;
-        };
-
-    }, [verifyExistPage]);
-
-    useEffect(() => {
-        setVerifyExistPage(false);
-    }, [montage.componentMontage]);
+    const contextValue = {
+        ...serverActions(),
+        ...usefulActions,
+    };
 
     return (
-        <ServerContext.Provider value={{ inDevelopment, addSegment, sendDataForSegment, clearSegment, removeSegment }}>
-            {liberateNavigate && children}
+        <ServerContext.Provider value={contextValue}>
+            {children}
         </ServerContext.Provider>
     );
 };
 
 ServerProvider.propTypes = {
-    children: PropTypes.node
+    children: PropTypes.node,
 };

@@ -366,7 +366,7 @@ namespace SGED.Controllers
                 hasErrors = true;
             }
 
-            return new { Errors = errors, HasErrors = hasErrors };
+            return new { errors = errors, hasErrors = hasErrors };
         }
     }
 }

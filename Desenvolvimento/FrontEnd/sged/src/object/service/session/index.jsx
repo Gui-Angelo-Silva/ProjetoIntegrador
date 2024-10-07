@@ -73,7 +73,7 @@ function SessionService() {
 
     const defaultLogin = () => {
         //storage.setLocal('login', null);
-        cookie.setCookie("login", null);
+        storage.setLocal("login", null);
     };
 
     const defaultToken = () => {
@@ -83,7 +83,7 @@ function SessionService() {
 
     const defaultUser = () => {
         //storage.setLocal('user', null);
-        cookie.setCookie("user", null);
+        storage.setLocal("user", null);
     };
 
     const defaultAcessLevel = () => {
@@ -100,7 +100,7 @@ function SessionService() {
 
             if (connection.response.status) {
                 setToken(connection.response.data.tokenSessao);
-                setAcessLevel(connection.response.data.nivelAcesso);
+                setAcessLevel(String(connection.response.data.nivelAcesso).toLowerCase());
 
                 if (object.persistLogin) {
                     setLogin(object);
@@ -132,6 +132,7 @@ function SessionService() {
 
     const closeSession = async () => {
         const tokenUser = getToken();
+        clearSession();
 
         if (tokenUser) {
             const data = {
@@ -140,8 +141,6 @@ function SessionService() {
 
             try {
                 await connection.endpoint("Sessao").action("Close").put(data);
-                clearSession();
-
                 return connection.response.status;
 
             } catch (error) {

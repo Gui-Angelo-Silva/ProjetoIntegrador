@@ -20,7 +20,7 @@ export default function SideBarAdm() {
     const [isSmallScreen, setIsSmallScreen] = useState(false);
     const sidebarRef = useRef(null);
 
-    const { clearSegment, inDevelopment } = useServer();
+    const server = useServer();
 
     useEffect(() => {
         const checkScreenSize = () => setIsSmallScreen(window.innerWidth <= 640);
@@ -88,7 +88,7 @@ export default function SideBarAdm() {
                 <MenuItem
                     icon={PersonalVideoIcon}
                     text="Página Inicial"
-                    onClick={() => clearSegment("principal")}
+                    onClick={() => server.typeRoute().addSegment("principal").dispatch()}
                     isSidebarExpanded={isSidebarExpanded}
                 />
                 <MenuItem
@@ -104,13 +104,13 @@ export default function SideBarAdm() {
                         <SubMenuItem
                             icon={SaveIcon}
                             text="Cadastros"
-                            onClick={() => clearSegment("cadastros")}
+                            onClick={() => server.typeRoute().addSegment("cadastros").dispatch()}
                             isSidebarExpanded={isSidebarExpanded}
                         />
                         <SubMenuItem
                             icon={DescriptionIcon}
                             text="Documentos"
-                            onClick={() => clearSegment("documentos")}
+                            onClick={() => server.typeRoute().addSegment("documentos").dispatch()}
                             isSidebarExpanded={isSidebarExpanded}
                         />
                     </div>
@@ -128,25 +128,25 @@ export default function SideBarAdm() {
                         <SubMenuItem
                             icon={GroupsIcon}
                             text="Munícipe"
-                            onClick={() => inDevelopment("Controle de Munícipe")}
+                            onClick={() => server.inDevelopment("Controle de Munícipe")}
                             isSidebarExpanded={isSidebarExpanded}
                         />
                         <SubMenuItem
                             icon={SupervisedUserCircleIcon}
                             text="Fiscal"
-                            onClick={() => inDevelopment("Controle de Fiscal")}
+                            onClick={() => server.inDevelopment("Controle de Fiscal")}
                             isSidebarExpanded={isSidebarExpanded}
                         />
                         <SubMenuItem
                             icon={EngineeringIcon}
                             text="Engenheiro"
-                            onClick={() => inDevelopment("Controle de Engenheiro")}
+                            onClick={() => server.inDevelopment("Controle de Engenheiro")}
                             isSidebarExpanded={isSidebarExpanded}
                         />
                         <SubMenuItem
                             icon={AssignmentIndIcon}
                             text="Estagiário"
-                            onClick={() => inDevelopment("Controle de Estagiário")}
+                            onClick={() => server.inDevelopment("Controle de Estagiário")}
                             isSidebarExpanded={isSidebarExpanded}
                         />
                     </div>

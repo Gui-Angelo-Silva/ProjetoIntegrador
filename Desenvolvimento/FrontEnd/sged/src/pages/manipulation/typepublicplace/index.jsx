@@ -29,7 +29,7 @@ export default function TypePublicPlace() {
     }, [componentMounted]);
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Tipo Logradouro', link: '', isEnabled: false }
     ];
 

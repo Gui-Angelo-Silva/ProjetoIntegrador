@@ -8,7 +8,7 @@ import { useServer } from '../../../routes/serverRoute';
 export default function Process() {
 
     const pages = [
-        { name: 'Documentos', link: '/documentos', isEnabled: true },
+        { name: 'Documentos', link: '/administrador/documentos', isEnabled: true },
         { name: 'Processo', link: '', isEnabled: false }
     ];
 
@@ -26,7 +26,7 @@ export default function Process() {
         <>
             <Breadcrumb pages={pages} />
             <div className='mt-6'>
-                <button className='btn btn-warning' onClick={() => server.addSegment("cadastrar-processo")}>Cadastrar Processo</button>
+                <button className='btn btn-warning' onClick={() => server.currentRoute().addSegment("cadastrar-processo").dispatch()}>Cadastrar Processo</button>
             </div>
         </>
     )

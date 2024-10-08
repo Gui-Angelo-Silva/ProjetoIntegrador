@@ -24,6 +24,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import UserClass from '../object/class/user';
 import LogoJales from '../assets/pages/LogoJales.png';
 import { ThemeContext } from '../assets/provider/ThemeContext';
+import ProfileBar from './ProfileBar';
 
 export default function NavBar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -57,88 +58,6 @@ export default function NavBar() {
     }
     setDrawerOpen(open);
   };
-
-  const drawer = (
-    <Box
-      sx={{
-        width: 350,
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: '#FFFFFF',
-        color: 'black',
-        borderLeft: '1px solid #2D636B',
-        borderBottom: '1px solid #2D636B',
-        borderTop: 'none',
-        borderRight: 'none'
-      }}
-      role="presentation"
-      onKeyDown={toggleDrawer(false)}
-    >
-      <Box
-        sx={{
-          backgroundColor: '#2D636B',
-          color: 'white',
-          padding: '8px 16px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          height: 64,
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', maxWidth: 'calc(100% - 48px)' }}>
-          <img
-            src={user.personPicture}
-            style={{
-              cursor: 'pointer',
-              borderRadius: '50%',
-              width: '35px',
-              height: '35px',
-              objectFit: 'cover',
-              border: '1px solid #2D636B',
-              boxShadow: '0 0 0 1px white',
-              backgroundColor: 'white',
-              marginRight: '8px'
-            }}
-            alt="User"
-          />
-          <div>
-            <Typography sx={{ fontSize: '20px', marginLeft: '8px', display: 'flex', alignItems: 'center' }}>
-              {user.personName.length > 20 ? user.personName.substring(0, 14) + '...' : user.personName}
-            </Typography>
-            <Typography sx={{ fontSize: '12px', marginLeft: '4px', marginTop: '-5px' }}>
-              {user.personEmail}
-            </Typography>
-          </div>
-        </div>
-
-        <IconButton onClick={toggleDrawer(false)} style={{ color: 'white' }}>
-          <X size={24} />
-        </IconButton>
-      </Box>
-      <List className='px-3'>
-        <ListItem className='cursor-pointer hover:bg-gray-200 hover:rounded-md' onClick={() => server.clearSegment("perfil")}>
-          <ListItemIcon>
-            <PersonIcon className='text-gray-600' />
-          </ListItemIcon>
-          <ListItemText primary={<Typography style={{ color: '#636262' }}>Perfil</Typography>} />
-        </ListItem>
-        <ListItem className='cursor-pointer hover:bg-gray-200 hover:rounded-md' onClick={() => server.clearSegment("configuracao")}>
-          <ListItemIcon>
-            <SettingsIcon className='text-gray-600' />
-          </ListItemIcon>
-          <ListItemText primary={<Typography style={{ color: '#636262' }}>Configurações</Typography>} />
-        </ListItem>
-        <Box sx={{ borderBottom: '1px solid #2D636B', margin: '8px 16px' }}></Box>
-        <ListItem className='cursor-pointer hover:bg-gray-200 hover:rounded-md' onClick={encerateSession}>
-          <ListItemIcon>
-            <LogoutIcon className='text-gray-600' />
-          </ListItemIcon>
-          <ListItemText primary={<Typography style={{ color: '#636262' }}>Sair</Typography>} />
-        </ListItem>
-      </List>
-    </Box>
-  );
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -224,12 +143,14 @@ export default function NavBar() {
           </Box>
         </Toolbar>
       </AppBar>
-      <Drawer
-        anchor="right"
-        open={drawerOpen}
-        onClose={toggleDrawer(false)}
-      >
-        {drawer}
+      <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
+        <ProfileBar
+          user={user}
+          toggleDrawer={toggleDrawer}
+          server={server}
+          setDrawerOpen={setDrawerOpen}
+          encerateSession={encerateSession}
+        />
       </Drawer>
     </Box>
   );

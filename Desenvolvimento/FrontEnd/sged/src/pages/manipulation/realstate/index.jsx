@@ -28,7 +28,7 @@ import SelectModule from "../../../object/modules/select";
 export default function RealState() {
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Imóvel', link: '', isEnabled: false }
     ];
 

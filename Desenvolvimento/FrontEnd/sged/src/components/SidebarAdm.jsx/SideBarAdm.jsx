@@ -75,7 +75,9 @@ export default function SideBarAdm() {
         }
     };
 
-    const toggleSidebar = () => setIsSidebarExpanded(!isSidebarExpanded);
+    const handleMenuItemClick = () => {
+        setIsSidebarExpanded(false);
+    };
 
     return (
         <div className="relative" ref={sidebarRef}>
@@ -88,7 +90,10 @@ export default function SideBarAdm() {
                 <MenuItem
                     icon={PersonalVideoIcon}
                     text="Página Inicial"
-                    onClick={() => server.typeRoute().addSegment("principal").dispatch()}
+                    onClick={() => {
+                        server.typeRoute().addSegment("principal").dispatch();
+                        handleMenuItemClick();
+                    }}
                     isSidebarExpanded={isSidebarExpanded}
                 />
                 <MenuItem
@@ -104,13 +109,19 @@ export default function SideBarAdm() {
                         <SubMenuItem
                             icon={SaveIcon}
                             text="Cadastros"
-                            onClick={() => server.typeRoute().addSegment("cadastros").dispatch()}
+                            onClick={() => {
+                                server.typeRoute().addSegment("cadastros").dispatch();
+                                handleMenuItemClick();
+                            }}
                             isSidebarExpanded={isSidebarExpanded}
                         />
                         <SubMenuItem
                             icon={DescriptionIcon}
                             text="Documentos"
-                            onClick={() => server.typeRoute().addSegment("documentos").dispatch()}
+                            onClick={() => {
+                                server.typeRoute().addSegment("documentos").dispatch();
+                                handleMenuItemClick();
+                            }}
                             isSidebarExpanded={isSidebarExpanded}
                         />
                     </div>
@@ -128,25 +139,37 @@ export default function SideBarAdm() {
                         <SubMenuItem
                             icon={GroupsIcon}
                             text="Munícipe"
-                            onClick={() => server.inDevelopment("Controle de Munícipe")}
+                            onClick={() => {
+                                server.inDevelopment("Controle de Munícipe");
+                                handleMenuItemClick();
+                            }}
                             isSidebarExpanded={isSidebarExpanded}
                         />
                         <SubMenuItem
                             icon={SupervisedUserCircleIcon}
                             text="Fiscal"
-                            onClick={() => server.inDevelopment("Controle de Fiscal")}
+                            onClick={() => {
+                                server.inDevelopment("Controle de Fiscal");
+                                handleMenuItemClick();
+                            }}
                             isSidebarExpanded={isSidebarExpanded}
                         />
                         <SubMenuItem
                             icon={EngineeringIcon}
                             text="Engenheiro"
-                            onClick={() => server.inDevelopment("Controle de Engenheiro")}
+                            onClick={() => {
+                                server.inDevelopment("Controle de Engenheiro");
+                                handleMenuItemClick();
+                            }}
                             isSidebarExpanded={isSidebarExpanded}
                         />
                         <SubMenuItem
                             icon={AssignmentIndIcon}
                             text="Estagiário"
-                            onClick={() => server.inDevelopment("Controle de Estagiário")}
+                            onClick={() => {
+                                server.inDevelopment("Controle de Estagiário");
+                                handleMenuItemClick();
+                            }}
                             isSidebarExpanded={isSidebarExpanded}
                         />
                     </div>

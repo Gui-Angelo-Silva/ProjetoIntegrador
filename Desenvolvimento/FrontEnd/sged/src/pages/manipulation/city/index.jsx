@@ -12,7 +12,7 @@ import ButtonModal from "../../../components/Modal/ButtonModal";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import CustomTable from "../../../components/Table/Table";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
-import SearchBarTest from "../../../components/Search/SearchBarTest";
+import SearchBar from "../../../components/Search/SearchBar";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
 
@@ -26,7 +26,7 @@ import SelectModule from '../../../object/modules/select';
 export default function City() {
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Cidade', link: '', isEnabled: false }
     ];
 
@@ -251,7 +251,7 @@ export default function City() {
             <>
                 <Breadcrumb pages={pages} />
                 <div className="flex items-center">
-                    <SearchBarTest handleSearch={handleSearch} handleSearchBy={handleSearchBy} />
+                    <SearchBar handleSearch={handleSearch} handleSearchBy={handleSearchBy} />
                     <div className="flex items-center">
                         <RegistrationButton action={() => openCloseModalInsert(true)} />
                     </div>

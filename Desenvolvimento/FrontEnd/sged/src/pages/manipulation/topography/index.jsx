@@ -28,7 +28,7 @@ import CompareModule from '../../../object/modules/compare';
 export default function Topography() {
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Topografia', link: '', isEnabled: false }
     ];
 

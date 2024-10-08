@@ -25,7 +25,7 @@ import TypeProcessClass from "../../../object/class/typeprocess";
 export default function TypeProcess() {
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Tipo de Processo', link: '', isEnabled: false }
     ];
 

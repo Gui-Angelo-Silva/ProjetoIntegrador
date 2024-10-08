@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import SearchBar from './SearchBar';
+import FlexSearchBar from './FlexSearchBar';
 
 const MultiSearchBar = ({ maxSearchBars, searchOptions, setSearchDictionary, button }) => {
     const [searchBars, setSearchBars] = useState([{ id: 1, selectedOption: searchOptions[0].value }]);
@@ -108,7 +108,7 @@ const MultiSearchBar = ({ maxSearchBars, searchOptions, setSearchDictionary, but
             <div className="flex items-center" style={{ width: multiSearchBarWidth }}>
                 {searchBars.map((bar, index) => (
                     <div key={bar.id} className="flex items-center">
-                        <SearchBar
+                        <FlexSearchBar
                             placeholder="Pesquisar..."
                             options={getAvailableOptions(bar.id)}
                             onSearchChange={(value) => handleSearchChange(bar.id, value)}

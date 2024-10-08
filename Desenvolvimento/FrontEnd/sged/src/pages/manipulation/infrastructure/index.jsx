@@ -29,7 +29,7 @@ import SelectModule from '../../../object/modules/select';
 export default function Infrastructure() {
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Infraestrutura', link: '', isEnabled: false }
     ];
 

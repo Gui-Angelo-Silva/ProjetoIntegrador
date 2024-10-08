@@ -40,7 +40,7 @@ export default function NotFound() {
         <br />
         <h3 className="text-3xl font-semibold text-gray-600">Página Inexistente</h3>
         <p className="pl-4" style={{ marginTop: '40px', textAlign: 'center' }}>
-          A página <span style={{ color: 'blue', fontWeight: 'bold' }}>{data}</span> informada não existe dentro do website.
+          A página <span style={{ color: 'blue', fontWeight: 'bold' }}>{data}</span> não existe.
           <br />
           Clique no botão abaixo para retornar para a página {cookie.getCookie("acessLevel") ? "principal" : "de autenticação"}.
         </p>

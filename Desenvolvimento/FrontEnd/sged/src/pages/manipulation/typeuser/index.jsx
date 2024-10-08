@@ -23,7 +23,7 @@ import TypeUserClass from '../../../object/class/typeuser';
 export default function TypeUser() {
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Tipo de Usuário', link: '', isEnabled: false }
     ];
 

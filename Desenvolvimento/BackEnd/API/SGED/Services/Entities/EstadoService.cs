@@ -22,8 +22,13 @@ public class EstadoService : IEstadoService
 		var estados = await _estadoRepository.GetAll();
 		return _mapper.Map<IEnumerable<EstadoDTO>>(estados);
 	}
+    public async Task<IEnumerable<EstadoDTO>> Search(string search)
+    {
+        var estados = await _estadoRepository.Search(search);
+        return _mapper.Map<IEnumerable<EstadoDTO>>(estados);
+    }
 
-	public async Task<EstadoDTO> GetById(int id)
+    public async Task<EstadoDTO> GetById(int id)
 	{
 		var estado = await _estadoRepository.GetById(id);
 		return _mapper.Map<EstadoDTO>(estado);

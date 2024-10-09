@@ -1,6 +1,5 @@
 // React imports
-import { useEffect, useState } from "react";
-import Select from 'react-select';
+import { useEffect, useState, useRef } from "react";
 
 // Reactstrap imports
 import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
@@ -21,7 +20,7 @@ import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
 import CityClass from '../../../object/class/city';
-import SelectModule from '../../../object/modules/select';
+import SelectComponent from '../../../components/SelectComponent';
 
 export default function City() {
 
@@ -41,30 +40,32 @@ export default function City() {
     const city = CityClass();
     const list = ListModule();
     const listState = ListModule();
-    const selectBox = SelectModule();
+    const selectRef = useRef();
 
     const [modalInsert, setModalInsert] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
     const [updateData, setUpdateData] = useState(true);
     const [inOperation, setInOperation] = useState(false);
+    const [searchState, setSearchState] = useState([]);
+    const [requestList, setRequestList] = useState(false);
 
     const openCloseModalInsert = (boolean) => {
         setModalInsert(boolean);
         city.clearError();
 
         if (!boolean) {
-            selectBox.setLastSelected(city.idState);
             city.clearData();
         }
     };
 
-    const openCloseModalEdit = (boolean) => {
+    const openCloseModalEdit = async (boolean, object) => {
         setModalEdit(boolean);
         city.clearError();
 
+        DispareSelectState(object.idEstado);
+
         if (!boolean) {
-            selectBox.setLastSelected(city.idState);
             city.clearData();
         }
     };
@@ -79,10 +80,9 @@ export default function City() {
 
     const SelectCity = (object, option) => {
         city.setData(object);
-        selectBox.selectOption(object.idEstado);
 
         if (option === "Editar") {
-            openCloseModalEdit(true);
+            openCloseModalEdit(true, object);
         }
         else {
             openCloseModalDelete(true);
@@ -92,6 +92,20 @@ export default function City() {
     const GetState = async () => {
         await connection.endpoint("Estado").get();
         listState.setList(connection.getList());
+    };
+
+    const SearchState = async (value) => {
+        await connection.endpoint("Estado").action("Search").data(value).get();
+        return connection.getList();
+    };
+
+    const SelectState = async (id) => {
+        await connection.endpoint("Estado").action(id).get();
+        return connection.getObject();
+    };
+
+    const DispareSelectState = async (id) => {
+        setSearchState(Object.values(await SelectState(id)));
     };
 
     const GetCity = async () => {
@@ -197,23 +211,15 @@ export default function City() {
         }
     }, [updateData]);
 
-    useEffect(() => { // Para atualizar as opções do Select bem como o valor padrão selecionado
-        if (listState.list.length !== 0) {
-            selectBox.updateOptions(listState.list, "id", "nomeEstado");
-
-            if (!city.idState) {
-                selectBox.selectOption(selectBox.lastSelected ? selectBox.lastSelected : listState.list[0]?.id);
-                selectBox.setLastSelected(0);
-            }
-        } else {
-            selectBox.updateOptions([]);
-            selectBox.selectOption(0);
+    useEffect(() => {
+        if (requestList) {
+            const fetchData = async () => {
+                setSearchState(await SearchState(selectRef.current.inputValue));
+                setRequestList(false);
+            };
+            fetchData();
         }
-    }, [listState.list]);
-
-    useEffect(() => { // Para atualizar o idEstao conforme o valor selecionado muda
-        city.setIdState(selectBox.selectedOption.value ? selectBox.selectedOption.value : 0);
-    }, [selectBox.selectedOption]);
+    }, [requestList]);
 
     const getUfEstado = (idEstado) => {
         const state = listState.list.find((estado) => estado.id === idEstado);
@@ -283,27 +289,18 @@ export default function City() {
                             <br />
                             <label className="text-[#444444]">Estado:</label>
                             <br />
-                            <Select
-                                value={selectBox.selectedOption}
-                                onChange={selectBox.handleChange}
-                                onInputChange={selectBox.delayedSearch}
-                                loadOptions={selectBox.loadOptions}
-                                options={selectBox.options}
-                                placeholder="Pesquisar estado . . ."
-                                isClearable
-                                isSearchable
-                                noOptionsMessage={() => {
-                                    if (listState.list.length === 0) {
-                                        return "Nenhum Estado cadastrado!";
-                                    } else {
-                                        return "Nenhuma opção encontrada!";
-                                    }
-                                }}
-                                className="style-select"
+                            <SelectComponent
+                                ref={selectRef}
+                                list={searchState}
+                                variableIdentifier="id"
+                                variableName="nomeEstado"
+                                id={city.idState}
+                                setId={city.setIdState}
+                                variableClass="estado"
+                                nameClass="Estado"
+                                isFemaleAdjective={false}
+                                setRequestList={setRequestList}
                             />
-                            <div className="text-sm text-red-600">
-                                {city.errorIdState}
-                            </div>
                             <br />
                         </div>
                     </ModalBody>
@@ -342,26 +339,18 @@ export default function City() {
                             <br />
                             <label className="text-[#444444]">Estado:</label>
                             <br />
-                            <Select
-                                value={selectBox.selectedOption}
-                                onChange={selectBox.handleChange}
-                                onInputChange={selectBox.delayedSearch}
-                                loadOptions={selectBox.loadOptions}
-                                options={selectBox.options}
-                                placeholder="Pesquisar estado . . ."
-                                isClearable
-                                isSearchable
-                                noOptionsMessage={() => {
-                                    if (listState.list.length === 0) {
-                                        return "Nenhum Estado cadastrado!";
-                                    } else {
-                                        return "Nenhuma opção encontrada!";
-                                    }
-                                }}
+                            <SelectComponent
+                                ref={selectRef}
+                                list={searchState}
+                                variableIdentifier="id"
+                                variableName="nomeEstado"
+                                id={city.idState}
+                                setId={city.setIdState}
+                                variableClass="estado"
+                                nameClass="Estado"
+                                isFemaleAdjective={false}
+                                setRequestList={setRequestList}
                             />
-                            <div className="text-sm text-red-600">
-                                {city.errorIdState}
-                            </div>
                             <br />
                         </div>
                     </ModalBody>

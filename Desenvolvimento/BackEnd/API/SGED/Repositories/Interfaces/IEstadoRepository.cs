@@ -4,6 +4,7 @@ namespace SGED.Repositories.Interfaces;
 public interface IEstadoRepository
 {
     Task<IEnumerable<Estado>> GetAll();
+    Task<IEnumerable<Estado>> Search(string search);
     Task<Estado> GetById(int id);
     Task<IEnumerable<Estado>> GetByName(string nome);
     Task<Estado> Create(Estado estado);

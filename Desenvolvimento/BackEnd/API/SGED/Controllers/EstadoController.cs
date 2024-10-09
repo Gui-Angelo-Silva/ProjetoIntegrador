@@ -6,6 +6,7 @@ using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
 using System.Dynamic;
 using SGED.Services.Server.Attributes;
+using Microsoft.IdentityModel.Tokens;
 
 namespace SGED.Controllers
 {
@@ -30,6 +31,37 @@ namespace SGED.Controllers
             try
             {
                 var estadosDTO = await _estadoService.GetAll();
+                _response.SetSuccess();
+                _response.Message = estadosDTO.Any() ?
+                    "Lista do(s) Estado(s) obtida com sucesso." :
+                    "Nenhum Estado encontrado.";
+                _response.Data = estadosDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista do(s) Estado(s)!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpGet("Search/{search}", Name = "SearchEstado")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult<EstadoDTO>> SearchState(string search)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    _response.SetNotFound();
+                    _response.Message = "Informe o nome do Estado para pesquisa!";
+                    _response.Data = Enumerable.Empty<EstadoDTO>();
+                    return NotFound(_response);
+                }
+
+                var estadosDTO = await _estadoService.Search(search);
                 _response.SetSuccess();
                 _response.Message = estadosDTO.Any() ?
                     "Lista do(s) Estado(s) obtida com sucesso." :

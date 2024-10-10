@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 function CityClass() {
   const [cityName, setCityName] = useState('');
-  const [idState, setIdState] = useState('');
+  const [idState, setIdState] = useState(0);
   const [cityId, setCityId] = useState(0);
 
   const [errorCityName, setErrorCityName] = useState('');

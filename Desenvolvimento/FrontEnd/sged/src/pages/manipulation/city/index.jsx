@@ -100,7 +100,7 @@ export default function City() {
     };
 
     const SelectState = async (id) => {
-        await connection.endpoint("Estado").action(id).get();
+        await connection.endpoint("Estado").data(id).get();
         return connection.getObject();
     };
 

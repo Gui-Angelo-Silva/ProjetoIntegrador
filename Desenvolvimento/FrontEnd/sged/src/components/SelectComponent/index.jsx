@@ -39,27 +39,36 @@ const SelectComponent = forwardRef(({
         if (selectBox.selectedOption && selectBox.selectedOption.value > 0) {
             setId(selectBox.selectedOption.value);
         }
-    }, [selectBox.selectedOption, setId]);
-
-    useEffect(() => {
-        if (id && !selectBox.options.some(option => option.value === id)) {
-            setErrorId(`O ID ${id} não está disponível nas opções.`);
-        } else {
-            setErrorId('');
-        }
-    }, [id, selectBox.options]);
+    }, [selectBox.selectedOption]);
 
     useEffect(() => {
         setValid(!errorId && selectBox.selectedOption && selectBox.selectedOption.value >= 0);
     }, [errorId, selectBox.selectedOption]);
 
-    const handleInputChange = (newValue) => {
-        setInputValue(newValue);
-        delayedSearch(newValue);
+    useEffect(() => {
+        if ((!id || id === 0) && selectBox.options.length >= 0) {
+            selectBox.handleChange(selectBox.options[0]);
+        }
+    }, [selectBox.options]);
+
+    useEffect(() => {
+        if ((id || id === 0) && selectBox.options.length > 0) {
+            const matchingOption = selectBox.options.find(option => option.value === id);
+            if (matchingOption) {
+                selectBox.handleChange(matchingOption);
+            }
+        }
+    }, [id, selectBox.options]);    
+
+    const handleInputChange = (newValue, { action }) => {
+        if (action !== 'input-blur' && action !== 'menu-close') {
+            setInputValue(newValue);
+            delayedSearch(newValue);
+        }
     };
 
     const handleSearchRequest = () => {
-        if (inputValue.trim() !== '') {
+        if (inputValue !== '') {
             enableRequestList();
         }
     };
@@ -88,7 +97,6 @@ const SelectComponent = forwardRef(({
                 placeholder={`Pesquisar ${variableClass} . . .`}
                 isClearable
                 isSearchable
-                onKeyDown={handleKeyPress}
                 noOptionsMessage={() =>
                     list.length === 0
                         ? `Nenhum${isFemaleAdjective ? 'a' : ''} ${nameClass} cadastrad${isFemaleAdjective ? 'a' : 'o'}!`
@@ -98,7 +106,6 @@ const SelectComponent = forwardRef(({
             />
             <button
                 onClick={handleSearchRequest}
-                disabled={inputValue.trim() === ''}
                 className="search-button"
                 style={{ marginLeft: '10px' }}
             >

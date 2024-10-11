@@ -1,12 +1,12 @@
 import React from 'react'
 
-const InputText = ({ 
-  onChange, 
-  value, 
+const InputText = ({
+  onChange,
+  value,
   maxLength = null,
-  disabled = false, 
-  onKeyDown = () => { }, 
-  onBlur = () => { }, 
+  disabled = false,
+  onKeyDown = () => { },
+  onBlur = () => { },
 }) => {
   return (
     <input

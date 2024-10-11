@@ -25,6 +25,7 @@ import ActionManager from '../../../object/modules/action';
 import CompareModule from '../../../object/modules/compare';
 import InputText from "../../../components/Input/InputText";
 import Label from "../../../components/Label/Label";
+import FormField from "../../../components/FormField/FormField";
 
 export default function State() {
 
@@ -300,26 +301,32 @@ export default function State() {
                         </div>
                     </ModalHeader>
                     <ModalBody>
-                        <div className="form-group">
-                            <Label subject="Estado" required />
-                            <br />
-                            <InputText disabled={inOperation} onBlur={() => state.verifyName()} onChange={(e) => state.setStateName(e.target.value)} />
-                            {state.errorStateName.map((error, index) => (
-                                <div key={index} className="flex items-center">
-                                    <span className="text-sm text-red-600">- {error}</span>
-                                </div>
-                            ))}
-                            <br />
-                            <label className="text-[#444444]">Sigla: <span className="text-red-600">*</span></label>
-                            <br />
-                            <InputText disabled={inOperation} onBlur={() => state.verifyUf()} value={state.stateUf} onChange={(e) => state.setStateUf(e.target.value.toUpperCase())} maxLength={2}/>
-                            {state.errorStateUf.map((error, index) => (
-                                <div key={index} className="flex items-center">
-                                    <span className="text-sm text-red-600">- {error}</span>
-                                </div>
-                            ))}
-                            <br />
+                        <div>
+                            <FormField
+                                label="Estado"
+                                isRequired
+                                inputProps={{
+                                    disabled: inOperation,
+                                    onBlur: () => state.verifyName(),
+                                    onChange: (e) => state.setStateName(e.target.value),
+                                }}
+                                errors={state.errorStateName}
+                            />
+
+                            <FormField
+                                label="Sigla"
+                                isRequired
+                                inputProps={{
+                                    disabled: inOperation,
+                                    value: state.stateUf,
+                                    onBlur: () => state.verifyUf(),
+                                    onChange: (e) => state.setStateUf(e.target.value.toUpperCase()),
+                                    maxLength: 2,
+                                }}
+                                errors={state.errorStateUf}
+                            />
                         </div>
+
                     </ModalBody>
                     <ModalFooter>
                         <div className="flex justify-center gap-4 ">

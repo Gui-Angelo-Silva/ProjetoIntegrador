@@ -23,6 +23,7 @@ import ListModule from '../../../object/modules/list';
 import StateClass from '../../../object/class/state';
 import ActionManager from '../../../object/modules/action';
 import CompareModule from '../../../object/modules/compare';
+import InputText from "../../../components/Input/InputText";
 
 export default function State() {
 
@@ -301,7 +302,7 @@ export default function State() {
                         <div className="form-group">
                             <label className="text-[#444444]">Nome: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} onBlur={() => state.verifyName()} onChange={(e) => state.setStateName(e.target.value)} />
+                            <InputText disabled={inOperation} onBlur={() => state.verifyName()} onChange={(e) => state.setStateName(e.target.value)} />
                             {state.errorStateName.map((error, index) => (
                                 <div key={index} className="flex items-center">
                                     <span className="text-sm text-red-600">- {error}</span>
@@ -310,7 +311,7 @@ export default function State() {
                             <br />
                             <label className="text-[#444444]">Sigla: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation} onBlur={() => state.verifyUf()} value={state.stateUf} onChange={(e) => state.setStateUf(e.target.value.toUpperCase())} maxLength={2} />
+                            <InputText disabled={inOperation} onBlur={() => state.verifyUf()} value={state.stateUf} onChange={(e) => state.setStateUf(e.target.value.toUpperCase())} maxLength={2}/>
                             {state.errorStateUf.map((error, index) => (
                                 <div key={index} className="flex items-center">
                                     <span className="text-sm text-red-600">- {error}</span>

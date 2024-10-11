@@ -28,6 +28,7 @@ import Setting from '../../pages/account/setting';
 import Process from '../../pages/manipulation/process';
 import AddProcess from '../../pages/manipulation/process/addprocess';
 import LayoutPage from '../../components/Layout/LayoutPage';
+import NextRealstate from '../../pages/[nextfeatures]/nextRealstate';
 
 export default function RouteA() {
     return (
@@ -61,6 +62,8 @@ export default function RouteA() {
                 <Route path="/documentos" element={<Document />}></Route>
                 <Route path="/documentos/processo" element={<Process />}></Route>
                 <Route path="/documentos/processo/cadastrar-processo" element={<AddProcess />}></Route>
+                
+                <Route path="/prefeatures/nextrealstate" element={<NextRealstate />}></Route>
 
                 <Route path="/configuracao" element={<Setting />}></Route>
                 

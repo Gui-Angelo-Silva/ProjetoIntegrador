@@ -386,7 +386,7 @@ export default function RealState() {
 
                 <CustomTable
                     totalColumns={6}
-                    headers={["Inscrição Cadastral", "Nome Proprietário", "Nome Contribuinte", "CEP", "Número Imóvel", "Ações"]}
+                    headers={["Inscrição Cadastral", "Proprietário", "Contribuinte", "CEP", "Número Imóvel", "Ações"]}
                     data={dataForTable}
                     onPageChange={(page) => list.goToPage(page)}
                     currentPage={list.currentPage}

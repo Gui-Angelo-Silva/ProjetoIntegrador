@@ -27,6 +27,7 @@ function RealStateClass() {
     function getData() {
         return {
             id: realStateId,
+            imagemImovel: realStateImage,
             inscricaoCadastral: cadastralRegistration,
             numeroImovel: realStateNumber,
             areaTerreno: realStateLandArea,
@@ -117,6 +118,8 @@ function RealStateClass() {
     return {
         // Atributos
         realStateId,
+        realStateImage,
+        setRealStateImage,
         cadastralRegistration,
         setCadastralRegistration,
         realStateNumber,

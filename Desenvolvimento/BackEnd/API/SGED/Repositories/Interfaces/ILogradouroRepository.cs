@@ -7,7 +7,8 @@ namespace SGED.Repositories.Interfaces
 		Task<IEnumerable<Logradouro>> GetAll();
         Task<IEnumerable<Logradouro>> GetByNeighbourhood(int idBairro);
         Task<Logradouro> GetById(int id);
-		Task<Logradouro> Create(Logradouro logradouro);
+        Task<Logradouro> GetByCEP(string cep);
+        Task<Logradouro> Create(Logradouro logradouro);
 		Task<Logradouro> Update(Logradouro logradouro);
 		Task<Logradouro> Delete(int id);
 	}

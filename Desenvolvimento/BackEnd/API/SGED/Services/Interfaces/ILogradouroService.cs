@@ -1,4 +1,5 @@
 ﻿using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTO.Searchs;
 
 namespace SGED.Services.Interfaces
 {
@@ -7,7 +8,8 @@ namespace SGED.Services.Interfaces
 		Task<IEnumerable<LogradouroDTO>> GetAll();
         Task<IEnumerable<LogradouroDTO>> GetByNeighbourhood(int idBairro);
         Task<LogradouroDTO> GetById(int id);
-		Task Create(LogradouroDTO logradouroDTO);
+        Task<LogradouroSearch> GetByCEP(string cep);
+        Task Create(LogradouroDTO logradouroDTO);
 		Task Update(LogradouroDTO logradouroDTO);
 		Task Remove(int id);
 	}

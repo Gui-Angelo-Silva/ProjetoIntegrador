@@ -29,7 +29,12 @@ namespace SGED.Repositories.Entities
 			return await _dbContext.Logradouro.AsNoTracking().FirstOrDefaultAsync(l => l.Id == id);
 		}
 
-		public async Task<Logradouro> Create(Logradouro logradouro)
+        public async Task<Logradouro> GetByCEP(string cep)
+        {
+            return await _dbContext.Logradouro.Where(l => l.Cep == cep).AsNoTracking().Include(l => l.Bairro).ThenInclude(b => b.Cidade).ThenInclude(c => c.Estado).FirstOrDefaultAsync();
+        }
+
+        public async Task<Logradouro> Create(Logradouro logradouro)
 		{
 			_dbContext.Logradouro.Add(logradouro);
 			await _dbContext.SaveChangesAsync();

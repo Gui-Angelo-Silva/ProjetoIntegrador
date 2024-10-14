@@ -28,13 +28,13 @@ namespace SGED.Objects.DTO.Entities
         public string NumeroFinal { get; set; }
 
         [JsonIgnore]
-        public Bairro? Bairro { get; set; }
+        public BairroDTO? BairroDTO { get; set; }
 
         [Required(ErrorMessage = "O Bairro é requerido!")]
         public int IdBairro { get; set; }
 
         [JsonIgnore]
-        public TipoLogradouro? TipoLogradouro { get; set; }
+        public TipoLogradouroDTO? TipoLogradouroDTO { get; set; }
 
         [Required(ErrorMessage = "O Tipo de Logradouro é requerido!")]
         public int IdTipoLogradouro { get; set; }

@@ -105,6 +105,8 @@ export default class ConnectionService {
             this.typeMethod = type;
             const result = await method();
 
+            // console.clear();
+
             // Verifica se o objeto retornado possui as mesmas propriedades e tipos do modelo
             if (result && JSON.stringify(Object.keys(result.data)) === JSON.stringify(Object.keys(this.responseModel))) {
                 this.responseModel = result.data;

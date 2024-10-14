@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTO.Searchs;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
@@ -35,7 +36,21 @@ namespace SGED.Services.Entities
 			return _mapper.Map<LogradouroDTO>(logradouro);
 		}
 
-		public async Task Create(LogradouroDTO logradouroDTO)
+        public async Task<LogradouroSearch> GetByCEP(string cep)
+        {
+            var logradouro = await _logradouroRepository.GetByCEP(cep);
+
+            if (logradouro == null)  return _mapper.Map<LogradouroSearch>(logradouro);
+
+            var logradouroSearch = _mapper.Map<LogradouroSearch>(logradouro);
+            logradouroSearch.Bairro = _mapper.Map<BairroSearch>(logradouro.Bairro);
+            logradouroSearch.Bairro.Cidade = _mapper.Map<CidadeSearch>(logradouro.Bairro.Cidade);
+            logradouroSearch.Bairro.Cidade.Estado = _mapper.Map<EstadoSearch>(logradouro.Bairro.Cidade.Estado);
+
+            return logradouroSearch;
+        }
+
+        public async Task Create(LogradouroDTO logradouroDTO)
 		{
 			var logradouro = _mapper.Map<Logradouro>(logradouroDTO);
 			await _logradouroRepository.Create(logradouro);

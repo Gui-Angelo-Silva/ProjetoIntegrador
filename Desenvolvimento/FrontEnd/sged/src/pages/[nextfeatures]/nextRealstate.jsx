@@ -2,9 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { useMontage } from '../../object/modules/montage';
 import Breadcrumb from '../../components/Title/Breadcrumb';
 import Tabs from '../../components/Tabs/Tabs';
+import SelectModule from "../../object/modules/select"
+import ConnectionService from '../../object/service/connection';
+import ListModule from '../../object/modules/list';
+import RealStateClass from '../../object/class/realstate';
 
 const NextRealstate = () => {
     const { componentMounted } = useMontage();
+
+    const selectBoxOwner = SelectModule();
+    const selectBoxTaxpayer = SelectModule();
+    const connection = new ConnectionService();
+    const listOwner = ListModule();
+    const listTaxpayer = ListModule();
+    const realstate = RealStateClass();
+    const [updateData, setUpdateData] = useState(true);
     const [realState, setRealState] = useState({
         cadastralRegistration: '',
         realStateNumber: '',
@@ -31,6 +43,16 @@ const NextRealstate = () => {
         { name: 'Imóvel', link: '/cadastros/imovel', isEnabled: true },
         { name: 'Cadastro de Imóvel', link: '', isEnabled: false },
     ];
+
+    const GetOwner = async () => {
+        await connection.endpoint("Municipe").get();
+        listOwner.setList(connection.getList());
+    };
+
+    const GetTaxpayer = async () => {
+        await connection.endpoint("Municipe").get();
+        listTaxpayer.setList(connection.getList());
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -99,6 +121,18 @@ const NextRealstate = () => {
             setRealState((prev) => ({ ...prev, [name]: value }));
         }
     };
+
+    useEffect(() => {
+        if (updateData) {
+            GetOwner();
+            GetTaxpayer();
+
+            // realstate.setIdOwner(listOwner.list[0]?.id);
+            // realstate.setIdTaxpayer(listTaxpayer.list[0]?.id);
+
+            setUpdateData(false);
+        }
+    }, [updateData]);
 
     return (
         <>

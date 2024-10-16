@@ -1,38 +1,26 @@
 import React, { useEffect, useState, useImperativeHandle, forwardRef } from 'react';
-import Select from 'react-select';
 import debounce from 'lodash.debounce';
 import ControlModule from '../../object/modules/select';
 
-const SelectComponent = forwardRef(({
+const CustomSelectComponent = forwardRef(({
     list,
     variableIdentifier,
     variableName,
     id,
     setId,
-    variableClass,
-    nameClass,
-    isFemaleAdjective = false,
+    variable,
     setRequestList
 }, ref) => {
     const selectBox = ControlModule();
     const [errorId, setErrorId] = useState('');
-    const [inputValue, setInputValue] = useState(''); // Mantém o inputValue ao sair
+    const [inputValue, setInputValue] = useState(''); // Mantém o valor do input ao sair
     const [valid, setValid] = useState(false);
+    const [showDropdown, setShowDropdown] = useState(false);
 
     const enableRequestList = () => setRequestList(true);
 
-    // Debounce para melhorar a performance da busca
-    const delayedSearch = debounce((value) => {
-        setInputValue(value);
-        selectBox.loadOptions(value, (options) => {
-            selectBox.setOptions(options); // Adiciona a função para atualizar as opções
-        });
-    }, 300);
-
     useEffect(() => {
-        if (list && list.length > 0) {
-            selectBox.updateOptions(list, variableIdentifier, variableName);
-        }
+        selectBox.updateOptions(list, variableIdentifier, variableName);
     }, [list]);
 
     useEffect(() => {
@@ -45,39 +33,37 @@ const SelectComponent = forwardRef(({
         setValid(!errorId && selectBox.selectedOption && selectBox.selectedOption.value >= 0);
     }, [errorId, selectBox.selectedOption]);
 
-    useEffect(() => {
-        if ((!id || id === 0) && selectBox.options.length >= 0) {
-            selectBox.handleChange(selectBox.options[0]);
-        }
-    }, [selectBox.options]);
-
-    useEffect(() => {
-        if ((id || id === 0) && selectBox.options.length > 0) {
-            const matchingOption = selectBox.options.find(option => option.value === id);
-            if (matchingOption) {
-                selectBox.handleChange(matchingOption);
-            }
-        }
-    }, [id, selectBox.options]);    
-
-    const handleInputChange = (newValue, { action }) => {
-        if (action !== 'input-blur' && action !== 'menu-close') {
-            setInputValue(newValue);
-            delayedSearch(newValue);
-        }
-    };
-
-    const handleSearchRequest = () => {
-        if (inputValue !== '') {
-            enableRequestList();
-        }
+    const handleInputChange = (event) => {
+        const { value } = event.target;
+        setInputValue(value);
+        setShowDropdown(true);
     };
 
     const handleKeyPress = (event) => {
+        // Desativado: Não faz mais nada com as teclas
         if (event.key === 'Enter' && inputValue.trim() !== '') {
-            setRequestList(true);
-        } else if (event.key === 'Enter') {
-            event.preventDefault();
+            enableRequestList();
+            setShowDropdown(true);
+        }
+    };
+
+    const handleOptionSelect = (option) => {
+        console.log('1');
+        console.log(option);
+        
+        setInputValue(option.label);
+        selectBox.selectedOption(option); // Correção para definir a opção selecionada
+        setId(option.value);
+        setShowDropdown(false);
+    };
+
+    const handleBlur = () => {
+        setShowDropdown(false);
+        // Se selectedOption existir e for maior que 0, usa sua label
+        if (selectBox.selectedOption && selectBox.selectedOption.value > 0) {
+            setInputValue(selectBox.selectedOption.label);
+        } else {
+            setInputValue(inputValue);
         }
     };
 
@@ -88,34 +74,47 @@ const SelectComponent = forwardRef(({
     }));
 
     return (
-        <div style={{ display: 'flex', alignItems: 'center' }}> {/* Flex container para alinhar os itens */}
-            <Select
-                value={selectBox.selectedOption}
-                onChange={selectBox.handleChange}
-                onInputChange={handleInputChange}
-                options={selectBox.options}
-                placeholder={`Pesquisar ${variableClass} . . .`}
-                isClearable
-                isSearchable
-                noOptionsMessage={() =>
-                    list.length === 0
-                        ? `Nenhum${isFemaleAdjective ? 'a' : ''} ${nameClass} cadastrad${isFemaleAdjective ? 'a' : 'o'}!`
-                        : 'Nenhuma opção encontrada!'
-                }
-                className="style-select"
-            />
-            <button
-                onClick={handleSearchRequest}
-                className="search-button"
-                style={{ marginLeft: '10px' }}
-            >
-                Pesquisar
-            </button>
-            <div className="text-sm text-red-600" style={{ marginLeft: '10px' }}>
-                {errorId}
+        <div className="relative w-full max-w-md" onClick={() => setShowDropdown(true)}>
+            <div className="flex items-center">
+                <input
+                    type="text"
+                    value={selectBox.selectedOption.value > 0 ? selectBox.selectedOption.label : inputValue}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyPress}
+                    onBlur={handleBlur}
+                    placeholder={`Pesquisar ${variable} . . .`}
+                    className="flex-grow border border-gray-300 p-2 rounded-l focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                    onClick={() => {
+                        enableRequestList();
+                        setShowDropdown(true);
+                    }}
+                    className="p-2 bg-blue-500 text-white rounded-r hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    Pesquisar
+                </button>
             </div>
+            {showDropdown && selectBox.options.length > 0 && (
+                <ul className="absolute w-full bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-[50vh] overflow-y-auto scrollbar-hide">
+                    {selectBox.options.map((option, index) => (
+                        <li
+                            key={`${option.value}-${index}`} // Garantindo que a key seja única
+                            onClick={() => handleOptionSelect(option)} // Corrigido: função chamada ao clicar
+                            className={`cursor-pointer px-4 py-2 hover:bg-blue-500 hover:text-white`}
+                        >
+                            {option.label}
+                        </li>
+                    ))}
+                </ul>
+            )}
+            {errorId && (
+                <div className="text-sm text-red-600 mt-2">
+                    {errorId}
+                </div>
+            )}
         </div>
     );
 });
 
-export default SelectComponent;
+export default CustomSelectComponent;

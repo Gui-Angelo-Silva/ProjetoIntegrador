@@ -63,7 +63,7 @@ export default function City() {
         setModalEdit(boolean);
         city.clearError();
 
-        DispareSelectState(object.idEstado);
+        if (boolean) DispareSelectState(object.idEstado);
 
         if (!boolean) {
             city.clearData();
@@ -105,7 +105,7 @@ export default function City() {
     };
 
     const DispareSelectState = async (id) => {
-        setSearchState(Object.values(await SelectState(id)));
+        setSearchState([await SelectState(id)]);
     };
 
     const GetCity = async () => {
@@ -296,9 +296,7 @@ export default function City() {
                                 variableName="nomeEstado"
                                 id={city.idState}
                                 setId={city.setIdState}
-                                variableClass="estado"
-                                nameClass="Estado"
-                                isFemaleAdjective={false}
+                                variable="estado"
                                 setRequestList={setRequestList}
                             />
                             <br />

@@ -43,6 +43,11 @@ function ControlModule() {
         );
     };
 
+    const clearData = () => {
+        setOptions([]);
+        setSelectedOption({});
+    };
+
     return {
         options,
         selectedOption,
@@ -50,6 +55,7 @@ function ControlModule() {
         updateOptions,
         handleChange,
         loadOptions,
+        clearData,
     };
 }
 

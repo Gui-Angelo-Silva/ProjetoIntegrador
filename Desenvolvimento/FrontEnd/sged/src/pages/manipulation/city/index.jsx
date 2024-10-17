@@ -55,6 +55,7 @@ export default function City() {
         city.clearError();
 
         if (!boolean) {
+            selectRef.current.clearData();
             city.clearData();
         }
     };
@@ -66,6 +67,7 @@ export default function City() {
         if (boolean) DispareSelectState(object.idEstado);
 
         if (!boolean) {
+            selectRef.current.clearData();
             city.clearData();
         }
     };
@@ -280,7 +282,7 @@ export default function City() {
                             <br />
                             <input
                                 type="text"
-                                className="form-control rounded-md border-[#BCBCBC]"
+                                className="form-control rounded-md border-gray-400"
                                 onChange={(e) => city.setCityName(e.target.value)}
                             />
                             <div className="text-sm text-red-600">
@@ -318,7 +320,7 @@ export default function City() {
                             <br />
                             <input
                                 type="text"
-                                className="form-control rounded-md border-[#BCBCBC]"
+                                className="form-control rounded-md border-gray-400"
                                 readOnly
                                 value={city.cityId}
                             />
@@ -326,7 +328,7 @@ export default function City() {
                             <label className="text-[#444444]">Nome:</label>
                             <input
                                 type="text"
-                                className="form-control rounded-md border-[#BCBCBC]"
+                                className="form-control rounded-md border-gray-400"
                                 name="nomeCidade"
                                 onChange={(e) => city.setCityName(e.target.value)}
                                 value={city.cityName}
@@ -344,9 +346,7 @@ export default function City() {
                                 variableName="nomeEstado"
                                 id={city.idState}
                                 setId={city.setIdState}
-                                variableClass="estado"
-                                nameClass="Estado"
-                                isFemaleAdjective={false}
+                                variable="estado"
                                 setRequestList={setRequestList}
                             />
                             <br />

@@ -11,7 +11,7 @@ const data = ["Guilherme", "Gabriel", "Neto", "Lopes", "Victor", "Pedro"];
 const Home = () => {
 
   const pages = [
-    { name: 'Visao Geral', link: '', isEnabled: false }
+    { name: 'Visão Geral', link: '', isEnabled: false }
 ];
 
   const { componentMounted } = useMontage();

@@ -234,8 +234,16 @@ export default function RealState() {
 
                 list.setListToRender(filtered);
             } else {
-                list.setSearchTerm(searchTerm);
-                list.setSearchBy(searchBy);
+                const filtered = list.list.filter((realstate) => {
+                    const realStateFilter = realstate[searchBy]
+                        .normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, '')
+                        .toLowerCase();
+                    
+                    return realStateFilter.includes(searchTermNormalized.toLowerCase());
+                });
+                
+                list.setListToRender(filtered);
             }
         }
     };

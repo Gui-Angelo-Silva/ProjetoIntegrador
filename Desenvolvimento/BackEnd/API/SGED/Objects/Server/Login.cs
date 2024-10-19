@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using SGED.Objects.Utilities;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.IdentityModel.Tokens.Jwt;
@@ -16,7 +17,16 @@ namespace SGED.Objects.Server
 
         [Required(ErrorMessage = "A senha é requerida!")]
         [MinLength(6)]
-        [MaxLength(50)]
-        public string Senha { get; set; }
+        public string Senha
+        {
+            get => senha;
+            set
+            {
+                senha = value.GenerateHash();
+            }
+        }
+
+        // Propriedade que armazena a senha em texto claro
+        private string senha;
     }
 }

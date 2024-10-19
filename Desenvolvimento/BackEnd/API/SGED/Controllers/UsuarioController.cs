@@ -222,6 +222,7 @@ namespace SGED.Controllers
 
                 if (hasErrors)
                 {
+                    usuarioDTO.SenhaUsuario = existingUsuario.SenhaUsuario;
                     await _usuarioService.Update(usuarioDTO);
 
                     _response.SetSuccess();

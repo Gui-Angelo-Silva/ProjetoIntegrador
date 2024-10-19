@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using SGED.Objects.Interfaces.Pessoa;
+using SGED.Objects.Utilities;
 
 namespace SGED.Objects.DTOs.Entities
 {
@@ -38,8 +38,17 @@ namespace SGED.Objects.DTOs.Entities
 
         [Required(ErrorMessage = "A senha é requerida!")]
         [MinLength(6)]
-        [MaxLength(50)]
-        public string SenhaUsuario { get; set; }
+        public string SenhaUsuario
+        {
+            get => senhaUsuario;
+            set
+            {
+                senhaUsuario = value.GenerateHash();
+            }
+        }
+
+        // Propriedade que armazena a senha em texto claro
+        private string senhaUsuario;
 
         [Required(ErrorMessage = "O cargo é requerido!")]
         [MinLength(3)]
@@ -76,6 +85,5 @@ namespace SGED.Objects.DTOs.Entities
         public bool Email() => IPessoaExtensions.VerificarEmail(this.EmailPessoa);
         public int CpfCnpj() => IPessoaExtensions.CpfCnpj(this);
         public int RgIe() => IPessoaExtensions.RgIe(this);
-
     }
 }

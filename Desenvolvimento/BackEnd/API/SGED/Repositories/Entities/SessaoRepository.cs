@@ -51,7 +51,17 @@ public class SessaoRepository : ISessaoRepository
 
     public async Task<UsuarioModel> GetUser(string token)
     {
-        var sessao = await _dbContext.Sessao.Where(s => s.TokenSessao == token).Include(s => s.Usuario).ThenInclude(u => u.TipoUsuario).AsNoTracking().FirstOrDefaultAsync();
+        var sessao = await _dbContext.Sessao
+            .Where(s => s.TokenSessao == token)
+            .Include(s => s.Usuario)
+            .ThenInclude(u => u.TipoUsuario)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+
+        if (sessao?.Usuario != null)
+        {
+            sessao.Usuario.SenhaUsuario = string.Empty;
+        }
 
         return sessao?.Usuario;
     }
@@ -81,22 +91,46 @@ public class SessaoRepository : ISessaoRepository
 
     public async Task<IEnumerable<UsuarioModel>> GetOnlineUsers()
     {
-        return await _dbContext.Usuario.GroupJoin(
-            _dbContext.Sessao,
-            u => u.Id,
-            s => s.IdUsuario,
-            (u, sessoes) => new { Usuario = u, UltimaSessao = sessoes.OrderByDescending(s => s.Id).FirstOrDefault() }
-        ).Where(s => /*s.Usuario.Id != 1 &&*/ (s.UltimaSessao != null && s.UltimaSessao.StatusSessao)).AsNoTracking().Select(s => s.Usuario).ToListAsync();
+        var onlineUsers = await _dbContext.Usuario
+            .GroupJoin(
+                _dbContext.Sessao,
+                u => u.Id,
+                s => s.IdUsuario,
+                (u, sessoes) => new { Usuario = u, UltimaSessao = sessoes.OrderByDescending(s => s.Id).FirstOrDefault() }
+            )
+            .Where(s => (s.UltimaSessao != null && s.UltimaSessao.StatusSessao))
+            .AsNoTracking()
+            .Select(s => s.Usuario)
+            .ToListAsync();
+
+        foreach (var user in onlineUsers)
+        {
+            user.SenhaUsuario = string.Empty;
+        }
+
+        return onlineUsers;
     }
 
     public async Task<IEnumerable<UsuarioModel>> GetOfflineUsers()
     {
-        return await _dbContext.Usuario.GroupJoin(
-            _dbContext.Sessao,
-            u => u.Id,
-            s => s.IdUsuario,
-            (u, sessoes) => new { Usuario = u, UltimaSessao = sessoes.OrderByDescending(s => s.Id).FirstOrDefault() }
-        ).Where(s => /*s.Usuario.Id != 1 &&*/ (s.UltimaSessao == null || !s.UltimaSessao.StatusSessao)).AsNoTracking().Select(s => s.Usuario).ToListAsync();
+        var offlineUsers = await _dbContext.Usuario
+            .GroupJoin(
+                _dbContext.Sessao,
+                u => u.Id,
+                s => s.IdUsuario,
+                (u, sessoes) => new { Usuario = u, UltimaSessao = sessoes.OrderByDescending(s => s.Id).FirstOrDefault() }
+            )
+            .Where(s => (s.UltimaSessao == null || !s.UltimaSessao.StatusSessao))
+            .AsNoTracking()
+            .Select(s => s.Usuario)
+            .ToListAsync();
+
+        foreach (var user in offlineUsers)
+        {
+            user.SenhaUsuario = string.Empty;
+        }
+
+        return offlineUsers;
     }
 
     public async Task<IEnumerable<SessaoModel>> GetOpenSessionByUser(int id)

@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -7,6 +8,15 @@ namespace SGED.Objects.Utilities
 {
     public static class Operator
     {
+        public static string GenerateHash(this string password)
+        {
+            if (string.IsNullOrEmpty(password)) return "";
+
+            var bytes = Encoding.UTF8.GetBytes(password);
+            var hash = SHA256.HashData(bytes);
+            return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant(); // Retorna o hash em formato hexadecimal
+        }
+
         public static string RemoveDiacritics(this string text)
         {
             if (string.IsNullOrWhiteSpace(text))

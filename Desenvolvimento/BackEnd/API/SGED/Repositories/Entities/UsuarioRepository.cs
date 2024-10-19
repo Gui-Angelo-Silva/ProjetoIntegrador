@@ -20,28 +20,70 @@ public class UsuarioRepository : IUsuarioRepository
 
     public async Task<IEnumerable<UsuarioModel>> GetAll()
     {
-        return await _dbContext.Usuario.Where(u => u.Id != 1).AsNoTracking().ToListAsync();
+        var usuarios = await _dbContext.Usuario
+            .Where(u => u.Id != 1)
+            .AsNoTracking()
+            .ToListAsync();
+
+        foreach (var user in usuarios)
+        {
+            user.SenhaUsuario = string.Empty;
+        }
+
+        return usuarios;
     }
 
     public async Task<UsuarioModel> GetById(int id)
     {
-        return await _dbContext.Usuario.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
+        var usuario = await _dbContext.Usuario
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (usuario != null)
+        {
+            usuario.SenhaUsuario = string.Empty;
+        }
+
+        return usuario;
     }
 
     public async Task<IEnumerable<UsuarioModel>> GetByEmail(int id, string email)
     {
-        return await _dbContext.Usuario.Where(u => u.EmailPessoa.Contains(email)).AsNoTracking().ToListAsync();
+        var usuarios = await _dbContext.Usuario
+            .Where(u => u.EmailPessoa.Contains(email))
+            .AsNoTracking()
+            .ToListAsync();
+
+        foreach (var user in usuarios)
+        {
+            user.SenhaUsuario = string.Empty;
+        }
+
+        return usuarios;
     }
 
     public async Task<UsuarioModel> Login(Login login)
     {
-        return await _dbContext.Usuario.Where(u => u.EmailPessoa == login.Email && u.SenhaUsuario == login.Senha).Include(u => u.TipoUsuario).AsNoTracking().FirstOrDefaultAsync();
+        var usuario = await _dbContext.Usuario
+            .Where(u => u.EmailPessoa == login.Email && u.SenhaUsuario == login.Senha)
+            .Include(u => u.TipoUsuario)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+
+        if (usuario != null)
+        {
+            usuario.SenhaUsuario = string.Empty;
+        }
+
+        return usuario;
     }
 
     public async Task<UsuarioModel> Create(UsuarioModel usuario)
     {
         _dbContext.Usuario.Add(usuario);
         await _dbContext.SaveChangesAsync();
+
+        usuario.SenhaUsuario = string.Empty;
         return usuario;
     }
 
@@ -50,14 +92,21 @@ public class UsuarioRepository : IUsuarioRepository
         _dbContext.ChangeTracker.Clear();
         _dbContext.Entry(usuario).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
+
+        usuario.SenhaUsuario = string.Empty;
         return usuario;
     }
 
     public async Task<UsuarioModel> Delete(int id)
     {
         var usuario = await GetById(id);
-        _dbContext.Usuario.Remove(usuario);
-        await _dbContext.SaveChangesAsync();
+        if (usuario != null)
+        {
+            _dbContext.Usuario.Remove(usuario);
+            await _dbContext.SaveChangesAsync();
+
+            usuario.SenhaUsuario = string.Empty;
+        }
         return usuario;
     }
 

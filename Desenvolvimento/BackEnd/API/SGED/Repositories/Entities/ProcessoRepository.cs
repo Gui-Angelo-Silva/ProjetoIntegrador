@@ -1,5 +1,5 @@
 ﻿using SGED.Context;
-using SGED.DTO.Entities;
+using SGED.DTOs.Entities;
 using SGED.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -17,31 +17,31 @@ public class ProcessoRepository : IProcessoRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Processo>> GetAll()
+    public async Task<IEnumerable<ProcessoModel>> GetAll()
     {
         return await _dbContext.Processo.AsNoTracking().ToListAsync();
     }
 
-    public async Task<Processo> GetById(Guid id)
+    public async Task<ProcessoModel> GetById(Guid id)
     {
         return await _dbContext.Processo.AsNoTracking().FirstOrDefaultAsync(b => b.Id == id);
     }
 
-    public async Task<Processo> Create(Processo Processo)
+    public async Task<ProcessoModel> Create(ProcessoModel Processo)
     {
         _dbContext.Processo.Add(Processo);
         await _dbContext.SaveChangesAsync();
         return Processo;
     }
 
-    public async Task<Processo> Update(Processo Processo)
+    public async Task<ProcessoModel> Update(ProcessoModel Processo)
     {
         _dbContext.Entry(Processo).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
         return Processo;
     }
 
-    public async Task<Processo> Delete(Guid id)
+    public async Task<ProcessoModel> Delete(Guid id)
     {
         var Processo = await GetById(id);
         _dbContext.Processo.Remove(Processo);

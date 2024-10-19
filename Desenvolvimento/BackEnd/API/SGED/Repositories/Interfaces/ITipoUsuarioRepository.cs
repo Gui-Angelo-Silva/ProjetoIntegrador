@@ -4,10 +4,10 @@ namespace SGED.Repositories.Interfaces
 {
     public interface ITipoUsuarioRepository
 	{
-		Task<IEnumerable<TipoUsuario>> GetAll();
-		Task<TipoUsuario> GetById(int id);
-		Task<TipoUsuario> Create(TipoUsuario tipousuario);
-		Task<TipoUsuario> Update(TipoUsuario tipousuario);
-		Task<TipoUsuario> Delete(int id);
+		Task<IEnumerable<TipoUsuarioModel>> GetAll();
+		Task<TipoUsuarioModel> GetById(int id);
+		Task<TipoUsuarioModel> Create(TipoUsuarioModel tipousuario);
+		Task<TipoUsuarioModel> Update(TipoUsuarioModel tipousuario);
+		Task<TipoUsuarioModel> Delete(int id);
 	}
 }

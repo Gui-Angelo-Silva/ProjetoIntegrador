@@ -3,9 +3,9 @@
 namespace SGED.Repositories.Interfaces;
 public interface IEngenheiroRepository
 {
-    Task<IEnumerable<Engenheiro>> GetAll();
-    Task<Engenheiro> GetById(int id);
-    Task<Engenheiro> Create(Engenheiro engenheiro);
-    Task<Engenheiro> Update(Engenheiro engenheiro);
-    Task<Engenheiro> Delete(int id);
+    Task<IEnumerable<EngenheiroModel>> GetAll();
+    Task<EngenheiroModel> GetById(int id);
+    Task<EngenheiroModel> Create(EngenheiroModel engenheiro);
+    Task<EngenheiroModel> Update(EngenheiroModel engenheiro);
+    Task<EngenheiroModel> Delete(int id);
 }

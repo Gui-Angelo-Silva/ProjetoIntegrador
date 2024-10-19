@@ -17,16 +17,16 @@ public class EstadoRepository : IEstadoRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Estado>> GetAll()
+    public async Task<IEnumerable<EstadoModel>> GetAll()
     {
         return await _dbContext.Estado.AsNoTracking().ToListAsync();
     }
 
-    public async Task<IEnumerable<Estado>> Search(string search)
+    public async Task<IEnumerable<EstadoModel>> Search(string search)
     {
         if (string.IsNullOrWhiteSpace(search))
         {
-            return new List<Estado>();
+            return new List<EstadoModel>();
         }
 
         // Carregar todos os estados do banco de dados
@@ -64,31 +64,31 @@ public class EstadoRepository : IEstadoRepository
         return stringBuilder.ToString().Replace(" ", "").Replace("ç", "c"); // Remove espaços e substitui "ç"
     }
 
-    public async Task<Estado> GetById(int id)
+    public async Task<EstadoModel> GetById(int id)
     {
         return await _dbContext.Estado.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
     }
 
-    public async Task<IEnumerable<Estado>> GetByName(string nome)
+    public async Task<IEnumerable<EstadoModel>> GetByName(string nome)
     {
         return await _dbContext.Estado.Where(e => e.NomeEstado.ToUpper().Contains(nome.ToUpper())).AsNoTracking().ToListAsync();
     }
 
-    public async Task<Estado> Create(Estado estado)
+    public async Task<EstadoModel> Create(EstadoModel estado)
     {
         _dbContext.Estado.Add(estado);
         await _dbContext.SaveChangesAsync();
         return estado;
     }
 
-    public async Task<Estado> Update(Estado estado)
+    public async Task<EstadoModel> Update(EstadoModel estado)
     {
         _dbContext.Entry(estado).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
         return estado;
     }
 
-    public async Task<Estado> Delete(int id)
+    public async Task<EstadoModel> Delete(int id)
     {
         var estado = await GetById(id);
         _dbContext.Estado.Remove(estado);

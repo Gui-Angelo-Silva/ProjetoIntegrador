@@ -18,36 +18,36 @@ public class DocumentoProcessoRepository : IDocumentoProcessoRepository
 		_remove = new RemoveContext(dbContext);
 	}
 
-	public async Task<IEnumerable<DocumentoProcesso>> GetAll()
+	public async Task<IEnumerable<DocumentoProcessoModel>> GetAll()
 	{
 		return await _dbContext.DocumentoProcesso.AsNoTracking().ToListAsync();
 	}
 
-    public async Task<IEnumerable<DocumentoProcesso>> GetByProcess(Guid idProcesso)
+    public async Task<IEnumerable<DocumentoProcessoModel>> GetByProcess(Guid idProcesso)
     {
         return await _dbContext.DocumentoProcesso.AsNoTracking().Where(dp => dp.IdProcesso == idProcesso).ToListAsync();
     }
 
-    public async Task<DocumentoProcesso> GetById(Guid id)
+    public async Task<DocumentoProcessoModel> GetById(Guid id)
 	{
 		return await _dbContext.DocumentoProcesso.AsNoTracking().FirstOrDefaultAsync(dp => dp.Id == id);
 	}
 
-	public async Task<DocumentoProcesso> Create(DocumentoProcesso DocumentoProcesso)
+	public async Task<DocumentoProcessoModel> Create(DocumentoProcessoModel DocumentoProcesso)
 	{
 		_dbContext.DocumentoProcesso.Add(DocumentoProcesso);
 		await _dbContext.SaveChangesAsync();
 		return DocumentoProcesso;
 	}
 
-	public async Task<DocumentoProcesso> Update(DocumentoProcesso DocumentoProcesso)
+	public async Task<DocumentoProcessoModel> Update(DocumentoProcessoModel DocumentoProcesso)
 	{
 		_dbContext.Entry(DocumentoProcesso).State = EntityState.Modified;
 		await _dbContext.SaveChangesAsync();
 		return DocumentoProcesso;
 	}
 
-	public async Task<DocumentoProcesso> Delete(Guid id)
+	public async Task<DocumentoProcessoModel> Delete(Guid id)
 	{
 		var DocumentoProcesso = await GetById(id);
 		_dbContext.DocumentoProcesso.Remove(DocumentoProcesso);
@@ -55,7 +55,7 @@ public class DocumentoProcessoRepository : IDocumentoProcessoRepository
 		return DocumentoProcesso;
 	}
 
-	public async Task<IEnumerable<DocumentoProcesso>> GetDocumentProcessRelatedToTypeDocument(int IdTipoDocumento)
+	public async Task<IEnumerable<DocumentoProcessoModel>> GetDocumentProcessRelatedToTypeDocument(int IdTipoDocumento)
 	{
 		return await _dbContext.DocumentoProcesso.Where(tde => tde.IdTipoDocumentoEtapa == IdTipoDocumento).AsNoTracking().ToListAsync();
 	}

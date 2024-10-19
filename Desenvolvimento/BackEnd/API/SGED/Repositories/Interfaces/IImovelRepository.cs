@@ -4,11 +4,11 @@ namespace SGED.Repositories.Interfaces
 {
     public interface IImovelRepository
 	{
-		Task<IEnumerable<Imovel>> GetAll();
-		Task<Imovel> GetById(int id);
-		Task<Imovel> GetByProperty(string propertyName, string data);
-        Task<Imovel> Create(Imovel imovel);
-		Task<Imovel> Update(Imovel imovel);
-		Task<Imovel> Delete(int id);
+		Task<IEnumerable<ImovelModel>> GetAll();
+		Task<ImovelModel> GetById(int id);
+		Task<ImovelModel> GetByProperty(string propertyName, string data);
+        Task<ImovelModel> Create(ImovelModel imovel);
+		Task<ImovelModel> Update(ImovelModel imovel);
+		Task<ImovelModel> Delete(int id);
 	}
 }

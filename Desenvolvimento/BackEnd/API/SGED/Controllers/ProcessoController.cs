@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Authorization;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Utilities;
 using SGED.Services.Entities;
 using SGED.Services.Server.Attributes;
@@ -139,7 +139,7 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                if (processoDTO.DocumentosProcessoDTOs.Any() || processoDTO.IdResponsavel.HasValue) processoDTO.PutInProgress();
+                if (processoDTO.DocumentosProcessoDTO.Any() || processoDTO.IdResponsavel.HasValue) processoDTO.PutInProgress();
                 else processoDTO.AssignDefaultState();
 
                 await _processoService.Create(processoDTO);
@@ -148,7 +148,7 @@ namespace SGED.Controllers
                     tipoProcessoDTO.Id, // ID da Etapa (int)
                     processoDTO.Id, // ID do Processo (Guid)
                     processoDTO.IdResponsavel.HasValue ? processoDTO.IdResponsavel.Value : (int?)null, // ID do Responsável (int?)
-                    processoDTO.DocumentosProcessoDTOs // Coleção de Documentos (ICollection<DocumentoProcessoDTO>
+                    processoDTO.DocumentosProcessoDTO // Coleção de Documentos (ICollection<DocumentoProcessoDTO>
                 );
 
                 _response.SetSuccess();

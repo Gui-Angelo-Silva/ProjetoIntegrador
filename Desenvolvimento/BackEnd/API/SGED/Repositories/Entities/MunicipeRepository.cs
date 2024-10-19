@@ -14,25 +14,25 @@ public class MunicipeRepository : IMunicipeRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Municipe>> GetAll()
+    public async Task<IEnumerable<MunicipeModel>> GetAll()
     {
         return await _dbContext.Municipe.AsNoTracking().ToListAsync();
     }
 
-    public async Task<Municipe> GetById(int id)
+    public async Task<MunicipeModel> GetById(int id)
     {
         return await _dbContext.Municipe.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
     }
 
 
-    public async Task<Municipe> Create(Municipe municipe)
+    public async Task<MunicipeModel> Create(MunicipeModel municipe)
     {
         _dbContext.Municipe.Add(municipe);
         await _dbContext.SaveChangesAsync();
         return municipe;
     }
 
-    public async Task<Municipe> Update(Municipe municipe)
+    public async Task<MunicipeModel> Update(MunicipeModel municipe)
     {
         _dbContext.ChangeTracker.Clear();
         _dbContext.Entry(municipe).State = EntityState.Modified;
@@ -40,7 +40,7 @@ public class MunicipeRepository : IMunicipeRepository
         return municipe;
     }
 
-    public async Task<Municipe> Delete(int id)
+    public async Task<MunicipeModel> Delete(int id)
     {
         var municipe = await GetById(id);
         _dbContext.Municipe.Remove(municipe);

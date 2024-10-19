@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
@@ -31,14 +31,14 @@ public class FiscalService : IFiscalService
 
     public async Task Create(FiscalDTO fiscalDTO)
     {
-        var fiscal = _mapper.Map<Fiscal>(fiscalDTO);
+        var fiscal = _mapper.Map<FiscalModel>(fiscalDTO);
         await _fiscalRepository.Create(fiscal);
         fiscalDTO.Id = fiscal.Id;
     }
 
     public async Task Update(FiscalDTO  fiscalDTO)
     {
-        var fiscal = _mapper.Map<Fiscal>(fiscalDTO);
+        var fiscal = _mapper.Map<FiscalModel>(fiscalDTO);
         await _fiscalRepository.Update(fiscal);
     }
 

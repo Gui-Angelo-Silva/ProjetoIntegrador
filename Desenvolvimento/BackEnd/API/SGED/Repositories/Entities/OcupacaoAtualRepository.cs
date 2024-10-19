@@ -15,31 +15,31 @@ public class OcupacaoAtualRepository : IOcupacaoAtualRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<OcupacaoAtual>> GetAll()
+    public async Task<IEnumerable<OcupacaoAtualModel>> GetAll()
     {
         return await _dbContext.OcupacaoAtual.AsNoTracking().ToListAsync();
     }
 
-    public async Task<OcupacaoAtual> GetById(int id)
+    public async Task<OcupacaoAtualModel> GetById(int id)
     {
         return await _dbContext.OcupacaoAtual.AsNoTracking().FirstOrDefaultAsync(oa => oa.Id == id);
     }
 
-    public async Task<OcupacaoAtual> Create(OcupacaoAtual ocupacaoatual)
+    public async Task<OcupacaoAtualModel> Create(OcupacaoAtualModel ocupacaoatual)
     {
         _dbContext.OcupacaoAtual.Add(ocupacaoatual);
         await _dbContext.SaveChangesAsync();
         return ocupacaoatual;
     }
 
-    public async Task<OcupacaoAtual> Update(OcupacaoAtual ocupacaoatual)
+    public async Task<OcupacaoAtualModel> Update(OcupacaoAtualModel ocupacaoatual)
     {
         _dbContext.Entry(ocupacaoatual).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
         return ocupacaoatual;
     }
 
-    public async Task<OcupacaoAtual> Delete(int id)
+    public async Task<OcupacaoAtualModel> Delete(int id)
     {
         var ocupacaoatual = await GetById(id);
         _dbContext.OcupacaoAtual.Remove(ocupacaoatual);

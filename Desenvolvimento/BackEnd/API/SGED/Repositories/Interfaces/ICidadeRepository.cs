@@ -1,13 +1,13 @@
-﻿using SGED.DTO.Entities;
+﻿using SGED.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 
 namespace SGED.Repositories.Interfaces;
 public interface ICidadeRepository
 {
-    Task<IEnumerable<Cidade>> GetAll();
-    Task<IEnumerable<Cidade>> GetByState(int idEstado);
-    Task<Cidade> GetById(int id);
-    Task<Cidade> Create(Cidade cidade);
-    Task<Cidade> Update(Cidade cidade);
-    Task<Cidade> Delete(int id);
+    Task<IEnumerable<CidadeModel>> GetAll();
+    Task<IEnumerable<CidadeModel>> GetByState(int idEstado);
+    Task<CidadeModel> GetById(int id);
+    Task<CidadeModel> Create(CidadeModel cidade);
+    Task<CidadeModel> Update(CidadeModel cidade);
+    Task<CidadeModel> Delete(int id);
 }

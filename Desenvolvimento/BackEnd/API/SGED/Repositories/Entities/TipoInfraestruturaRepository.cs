@@ -15,31 +15,31 @@ public class TipoInfraestruturaRepository : ITipoInfraestruturaRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<TipoInfraestrutura>> GetAll()
+    public async Task<IEnumerable<TipoInfraestruturaModel>> GetAll()
     {
         return await _dbContext.TipoInfraestrutura.AsNoTracking().ToListAsync();
     }
 
-    public async Task<TipoInfraestrutura> GetById(int id)
+    public async Task<TipoInfraestruturaModel> GetById(int id)
     {
         return await _dbContext.TipoInfraestrutura.AsNoTracking().FirstOrDefaultAsync(ti => ti.Id == id);
     }
 
-    public async Task<TipoInfraestrutura> Create(TipoInfraestrutura tipoinfraestrutura)
+    public async Task<TipoInfraestruturaModel> Create(TipoInfraestruturaModel tipoinfraestrutura)
     {
         _dbContext.TipoInfraestrutura.Add(tipoinfraestrutura);
         await _dbContext.SaveChangesAsync();
         return tipoinfraestrutura;
     }
 
-    public async Task<TipoInfraestrutura> Update(TipoInfraestrutura tipoinfraestrutura)
+    public async Task<TipoInfraestruturaModel> Update(TipoInfraestruturaModel tipoinfraestrutura)
     {
         _dbContext.Entry(tipoinfraestrutura).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
         return tipoinfraestrutura;
     }
 
-    public async Task<TipoInfraestrutura> Delete(int id)
+    public async Task<TipoInfraestruturaModel> Delete(int id)
     {
         var tipoinfraestrutura = await GetById(id);
         _dbContext.TipoInfraestrutura.Remove(tipoinfraestrutura);

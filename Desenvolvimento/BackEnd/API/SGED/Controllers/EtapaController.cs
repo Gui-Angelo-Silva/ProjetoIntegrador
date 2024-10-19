@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Enums.Status;
 using SGED.Objects.Interfaces;
 using SGED.Objects.Models.Entities;

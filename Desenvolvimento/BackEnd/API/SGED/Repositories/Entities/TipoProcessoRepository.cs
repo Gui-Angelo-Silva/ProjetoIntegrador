@@ -15,31 +15,31 @@ public class TipoProcessoRepository : ITipoProcessoRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<TipoProcesso>> GetAll()
+    public async Task<IEnumerable<TipoProcessoModel>> GetAll()
     {
         return await _dbContext.TipoProcesso.AsNoTracking().ToListAsync();
     }
 
-    public async Task<TipoProcesso> GetById(int id)
+    public async Task<TipoProcessoModel> GetById(int id)
     {
         return await _dbContext.TipoProcesso.AsNoTracking().FirstOrDefaultAsync(tp => tp.Id == id);
     }
 
-    public async Task<TipoProcesso> Create(TipoProcesso tipoProcesso)
+    public async Task<TipoProcessoModel> Create(TipoProcessoModel tipoProcesso)
     {
         _dbContext.TipoProcesso.Add(tipoProcesso);
         await _dbContext.SaveChangesAsync();
         return tipoProcesso;
     }
 
-    public async Task<TipoProcesso> Update(TipoProcesso tipoProcesso)
+    public async Task<TipoProcessoModel> Update(TipoProcessoModel tipoProcesso)
     {
         _dbContext.Entry(tipoProcesso).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
         return tipoProcesso;
     }
 
-    public async Task<TipoProcesso> Remove(int id)
+    public async Task<TipoProcessoModel> Remove(int id)
     {
         var tipoProcesso = await GetById(id);
         if (tipoProcesso != null)

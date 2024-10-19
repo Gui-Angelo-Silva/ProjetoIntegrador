@@ -22,7 +22,71 @@ namespace SGED.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Bairro", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.AuditoriaModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("idauditoria");
+
+                    b.Property<string>("AcaoAuditoria")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("acaoauditoria");
+
+                    b.Property<string>("DataAuditoria")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("dataauditoria");
+
+                    b.Property<string>("DescricaoAuditoria")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("descricaoauditoria");
+
+                    b.Property<string>("EndpointAuditoria")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("endpointauditoria");
+
+                    b.Property<string>("HoraAuditoria")
+                        .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("character varying(12)")
+                        .HasColumnName("horaauditoria");
+
+                    b.Property<Guid>("IdSessao")
+                        .HasColumnType("uuid")
+                        .HasColumnName("idsessao");
+
+                    b.Property<int>("RegistroAuditoria")
+                        .HasColumnType("integer")
+                        .HasColumnName("registroauditoria");
+
+                    b.Property<string>("StatusRequisicao")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("statusrequisicao");
+
+                    b.Property<string>("TabelaAuditoria")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("tabelaauditoria");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdSessao");
+
+                    b.ToTable("auditoria");
+                });
+
+            modelBuilder.Entity("SGED.Objects.Models.Entities.BairroModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -518,7 +582,7 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Cidade", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.CidadeModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -606,7 +670,7 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Configuracao", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.ConfiguracaoModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -650,7 +714,7 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.DocumentoProcesso", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.DocumentoProcessoModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -719,7 +783,7 @@ namespace SGED.Migrations
                     b.ToTable("documentoprocesso");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Engenheiro", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.EngenheiroModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -830,7 +894,7 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Estado", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.EstadoModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1020,7 +1084,7 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Etapa", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.EtapaModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1350,7 +1414,7 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Fiscal", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.FiscalModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1420,7 +1484,7 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Imovel", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.ImovelModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1554,7 +1618,7 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Infraestrutura", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.InfraestruturaModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1630,7 +1694,7 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Instalacao", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.InstalacaoModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1673,7 +1737,7 @@ namespace SGED.Migrations
                     b.ToTable("instalacao");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Logradouro", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.LogradouroModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1965,7 +2029,7 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Municipe", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.MunicipeModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2135,7 +2199,7 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.OcupacaoAtual", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.OcupacaoAtualModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2192,7 +2256,7 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Processo", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.ProcessoModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -2268,14 +2332,12 @@ namespace SGED.Migrations
                     b.ToTable("processo");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Sessao", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.SessaoModel", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("idsessao");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("DataHoraEncerramento")
                         .HasColumnType("text")
@@ -2290,6 +2352,18 @@ namespace SGED.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("emailpessoa");
+
+                    b.Property<string>("IPv4")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("ipv4");
+
+                    b.Property<string>("IPv6")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("ipv6");
 
                     b.Property<int>("IdUsuario")
                         .HasColumnType("integer")
@@ -2316,179 +2390,7 @@ namespace SGED.Migrations
                     b.ToTable("sessao");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoDocumento", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("idTipoDocumento");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DescricaoTipoDocumento")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("descricaoTipoDocumento");
-
-                    b.Property<string>("NomeTipoDocumento")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("nomeTipoDocumento");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer")
-                        .HasColumnName("statustipoprocesso");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tipodocumento");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DescricaoTipoDocumento = "Documento que autoriza o início da obra",
-                            NomeTipoDocumento = "Alvará de Construção",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            DescricaoTipoDocumento = "Certificado de conclusão de obra e habitabilidade",
-                            NomeTipoDocumento = "Habite-se",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            DescricaoTipoDocumento = "Autorização para atividades de impacto ambiental",
-                            NomeTipoDocumento = "Licença Ambiental",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 4,
-                            DescricaoTipoDocumento = "Documento que atesta a conformidade do uso do solo com a legislação",
-                            NomeTipoDocumento = "Certidão de Uso de Solo",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 5,
-                            DescricaoTipoDocumento = "Documento que comprova a inexistência de débitos tributários",
-                            NomeTipoDocumento = "Certidão Negativa de Débitos",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 6,
-                            DescricaoTipoDocumento = "Projeto aprovado pelos órgãos competentes",
-                            NomeTipoDocumento = "Projeto Arquitetônico Aprovado",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 7,
-                            DescricaoTipoDocumento = "Projeto detalhado da estrutura do imóvel",
-                            NomeTipoDocumento = "Projeto Estrutural",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 8,
-                            DescricaoTipoDocumento = "Documento contendo o projeto das instalações elétricas",
-                            NomeTipoDocumento = "Projeto Elétrico",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 9,
-                            DescricaoTipoDocumento = "Documento contendo o projeto de instalações de água e esgoto",
-                            NomeTipoDocumento = "Projeto Hidrossanitário",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 10,
-                            DescricaoTipoDocumento = "Plano de paisagismo do imóvel",
-                            NomeTipoDocumento = "Projeto de Paisagismo",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 11,
-                            DescricaoTipoDocumento = "Documento que autoriza a realização de reformas no imóvel",
-                            NomeTipoDocumento = "Alvará de Reforma",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 12,
-                            DescricaoTipoDocumento = "Documento detalhando todas as características da obra",
-                            NomeTipoDocumento = "Memorial Descritivo",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 13,
-                            DescricaoTipoDocumento = "Autorização para uso e ocupação do imóvel",
-                            NomeTipoDocumento = "Licença de Ocupação",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 14,
-                            DescricaoTipoDocumento = "Documento que atesta a conformidade do imóvel com as normas de acessibilidade",
-                            NomeTipoDocumento = "Laudo de Acessibilidade",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 15,
-                            DescricaoTipoDocumento = "Documento que autoriza a demolição de estruturas existentes",
-                            NomeTipoDocumento = "Autorização para Demolição",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 16,
-                            DescricaoTipoDocumento = "Documento que atesta a regularização de uma construção perante as autoridades",
-                            NomeTipoDocumento = "Certificado de Regularização de Construção",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 17,
-                            DescricaoTipoDocumento = "Certificação emitida para construções que atendem a critérios de sustentabilidade",
-                            NomeTipoDocumento = "Certificado de Sustentabilidade",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 18,
-                            DescricaoTipoDocumento = "Documento que detalha as medidas de segurança contra incêndio de um imóvel",
-                            NomeTipoDocumento = "Plano de Segurança Contra Incêndio",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 19,
-                            DescricaoTipoDocumento = "Relatório que descreve as condições técnicas da construção",
-                            NomeTipoDocumento = "Relatório de Vistoria Técnica",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 20,
-                            DescricaoTipoDocumento = "Documento detalhando os cálculos estruturais realizados para o projeto",
-                            NomeTipoDocumento = "Memorial de Cálculo Estrutural",
-                            Status = 1
-                        });
-                });
-
-            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoDocumentoEtapa", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoDocumentoEtapaModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2932,7 +2834,179 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoInfraestrutura", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoDocumentoModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("idTipoDocumento");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DescricaoTipoDocumento")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("descricaoTipoDocumento");
+
+                    b.Property<string>("NomeTipoDocumento")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("nomeTipoDocumento");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("statustipoprocesso");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tipodocumento");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DescricaoTipoDocumento = "Documento que autoriza o início da obra",
+                            NomeTipoDocumento = "Alvará de Construção",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DescricaoTipoDocumento = "Certificado de conclusão de obra e habitabilidade",
+                            NomeTipoDocumento = "Habite-se",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DescricaoTipoDocumento = "Autorização para atividades de impacto ambiental",
+                            NomeTipoDocumento = "Licença Ambiental",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DescricaoTipoDocumento = "Documento que atesta a conformidade do uso do solo com a legislação",
+                            NomeTipoDocumento = "Certidão de Uso de Solo",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            DescricaoTipoDocumento = "Documento que comprova a inexistência de débitos tributários",
+                            NomeTipoDocumento = "Certidão Negativa de Débitos",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            DescricaoTipoDocumento = "Projeto aprovado pelos órgãos competentes",
+                            NomeTipoDocumento = "Projeto Arquitetônico Aprovado",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            DescricaoTipoDocumento = "Projeto detalhado da estrutura do imóvel",
+                            NomeTipoDocumento = "Projeto Estrutural",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            DescricaoTipoDocumento = "Documento contendo o projeto das instalações elétricas",
+                            NomeTipoDocumento = "Projeto Elétrico",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            DescricaoTipoDocumento = "Documento contendo o projeto de instalações de água e esgoto",
+                            NomeTipoDocumento = "Projeto Hidrossanitário",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            DescricaoTipoDocumento = "Plano de paisagismo do imóvel",
+                            NomeTipoDocumento = "Projeto de Paisagismo",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 11,
+                            DescricaoTipoDocumento = "Documento que autoriza a realização de reformas no imóvel",
+                            NomeTipoDocumento = "Alvará de Reforma",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            DescricaoTipoDocumento = "Documento detalhando todas as características da obra",
+                            NomeTipoDocumento = "Memorial Descritivo",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            DescricaoTipoDocumento = "Autorização para uso e ocupação do imóvel",
+                            NomeTipoDocumento = "Licença de Ocupação",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 14,
+                            DescricaoTipoDocumento = "Documento que atesta a conformidade do imóvel com as normas de acessibilidade",
+                            NomeTipoDocumento = "Laudo de Acessibilidade",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 15,
+                            DescricaoTipoDocumento = "Documento que autoriza a demolição de estruturas existentes",
+                            NomeTipoDocumento = "Autorização para Demolição",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 16,
+                            DescricaoTipoDocumento = "Documento que atesta a regularização de uma construção perante as autoridades",
+                            NomeTipoDocumento = "Certificado de Regularização de Construção",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 17,
+                            DescricaoTipoDocumento = "Certificação emitida para construções que atendem a critérios de sustentabilidade",
+                            NomeTipoDocumento = "Certificado de Sustentabilidade",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 18,
+                            DescricaoTipoDocumento = "Documento que detalha as medidas de segurança contra incêndio de um imóvel",
+                            NomeTipoDocumento = "Plano de Segurança Contra Incêndio",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 19,
+                            DescricaoTipoDocumento = "Relatório que descreve as condições técnicas da construção",
+                            NomeTipoDocumento = "Relatório de Vistoria Técnica",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 20,
+                            DescricaoTipoDocumento = "Documento detalhando os cálculos estruturais realizados para o projeto",
+                            NomeTipoDocumento = "Memorial de Cálculo Estrutural",
+                            Status = 1
+                        });
+                });
+
+            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoInfraestruturaModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2990,7 +3064,7 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoLogradouro", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoLogradouroModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -4086,7 +4160,7 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoProcesso", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoProcessoModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -4230,7 +4304,7 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoUsuario", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoUsuarioModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -4292,7 +4366,7 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Topografia", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.TopografiaModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -4334,7 +4408,7 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Uso", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.UsoModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -4391,7 +4465,7 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Usuario", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.UsuarioModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -4491,9 +4565,20 @@ namespace SGED.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Bairro", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.AuditoriaModel", b =>
                 {
-                    b.HasOne("SGED.Objects.Models.Entities.Cidade", "Cidade")
+                    b.HasOne("SGED.Objects.Models.Entities.SessaoModel", "Sessao")
+                        .WithMany("Auditorias")
+                        .HasForeignKey("IdSessao")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Sessao");
+                });
+
+            modelBuilder.Entity("SGED.Objects.Models.Entities.BairroModel", b =>
+                {
+                    b.HasOne("SGED.Objects.Models.Entities.CidadeModel", "Cidade")
                         .WithMany("Bairros")
                         .HasForeignKey("IdCidade")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4502,9 +4587,9 @@ namespace SGED.Migrations
                     b.Navigation("Cidade");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Cidade", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.CidadeModel", b =>
                 {
-                    b.HasOne("SGED.Objects.Models.Entities.Estado", "Estado")
+                    b.HasOne("SGED.Objects.Models.Entities.EstadoModel", "Estado")
                         .WithMany("Cidades")
                         .HasForeignKey("IdEstado")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4513,25 +4598,25 @@ namespace SGED.Migrations
                     b.Navigation("Estado");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.DocumentoProcesso", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.DocumentoProcessoModel", b =>
                 {
-                    b.HasOne("SGED.Objects.Models.Entities.Usuario", "Aprovador")
+                    b.HasOne("SGED.Objects.Models.Entities.UsuarioModel", "Aprovador")
                         .WithMany("DocumentosAprovados")
                         .HasForeignKey("IdAprovador")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SGED.Objects.Models.Entities.Processo", "Processo")
+                    b.HasOne("SGED.Objects.Models.Entities.ProcessoModel", "Processo")
                         .WithMany("DocumentosProcesso")
                         .HasForeignKey("IdProcesso")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SGED.Objects.Models.Entities.Usuario", "Responsavel")
+                    b.HasOne("SGED.Objects.Models.Entities.UsuarioModel", "Responsavel")
                         .WithMany("DocumentosAdicionados")
                         .HasForeignKey("IdResponsavel")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SGED.Objects.Models.Entities.TipoDocumentoEtapa", "TipoDocumentoEtapa")
+                    b.HasOne("SGED.Objects.Models.Entities.TipoDocumentoEtapaModel", "TipoDocumentoEtapa")
                         .WithMany("DocumentosProcesso")
                         .HasForeignKey("IdTipoDocumentoEtapa")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4546,9 +4631,9 @@ namespace SGED.Migrations
                     b.Navigation("TipoDocumentoEtapa");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Etapa", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.EtapaModel", b =>
                 {
-                    b.HasOne("SGED.Objects.Models.Entities.TipoProcesso", "TipoProcesso")
+                    b.HasOne("SGED.Objects.Models.Entities.TipoProcessoModel", "TipoProcesso")
                         .WithMany("Etapas")
                         .HasForeignKey("IdTipoProcesso")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4557,39 +4642,39 @@ namespace SGED.Migrations
                     b.Navigation("TipoProcesso");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Imovel", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.ImovelModel", b =>
                 {
-                    b.HasOne("SGED.Objects.Models.Entities.Municipe", "Contribuinte")
+                    b.HasOne("SGED.Objects.Models.Entities.MunicipeModel", "Contribuinte")
                         .WithMany("ImoveisContribuinte")
                         .HasForeignKey("IdContribuinte")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SGED.Objects.Models.Entities.Logradouro", "Logradouro")
+                    b.HasOne("SGED.Objects.Models.Entities.LogradouroModel", "Logradouro")
                         .WithMany("Imoveis")
                         .HasForeignKey("IdLogradouro")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SGED.Objects.Models.Entities.OcupacaoAtual", "OcupacaoAtual")
+                    b.HasOne("SGED.Objects.Models.Entities.OcupacaoAtualModel", "OcupacaoAtual")
                         .WithMany("Imoveis")
                         .HasForeignKey("IdOcupacaoAtual")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SGED.Objects.Models.Entities.Municipe", "Proprietario")
+                    b.HasOne("SGED.Objects.Models.Entities.MunicipeModel", "Proprietario")
                         .WithMany("ImoveisProprietario")
                         .HasForeignKey("IdProprietario")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SGED.Objects.Models.Entities.Topografia", "Topografia")
+                    b.HasOne("SGED.Objects.Models.Entities.TopografiaModel", "Topografia")
                         .WithMany("Imoveis")
                         .HasForeignKey("IdTopografia")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SGED.Objects.Models.Entities.Uso", "Uso")
+                    b.HasOne("SGED.Objects.Models.Entities.UsoModel", "Uso")
                         .WithMany("Imoveis")
                         .HasForeignKey("IdUso")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4608,9 +4693,9 @@ namespace SGED.Migrations
                     b.Navigation("Uso");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Infraestrutura", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.InfraestruturaModel", b =>
                 {
-                    b.HasOne("SGED.Objects.Models.Entities.TipoInfraestrutura", "TipoInfraestrutura")
+                    b.HasOne("SGED.Objects.Models.Entities.TipoInfraestruturaModel", "TipoInfraestrutura")
                         .WithMany("Infraestruturas")
                         .HasForeignKey("IdTipoInfraestrutura")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4619,20 +4704,20 @@ namespace SGED.Migrations
                     b.Navigation("TipoInfraestrutura");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Instalacao", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.InstalacaoModel", b =>
                 {
-                    b.HasOne("SGED.Objects.Models.Entities.Engenheiro", "Engenheiro")
+                    b.HasOne("SGED.Objects.Models.Entities.EngenheiroModel", "Engenheiro")
                         .WithMany("Instalacoes")
                         .HasForeignKey("IdEngenheiro")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SGED.Objects.Models.Entities.Imovel", "Imovel")
+                    b.HasOne("SGED.Objects.Models.Entities.ImovelModel", "Imovel")
                         .WithMany("Instalacoes")
                         .HasForeignKey("IdImovel")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SGED.Objects.Models.Entities.Infraestrutura", "Infraestrutura")
+                    b.HasOne("SGED.Objects.Models.Entities.InfraestruturaModel", "Infraestrutura")
                         .WithMany("Instalacoes")
                         .HasForeignKey("IdInfraestrutura")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4645,15 +4730,15 @@ namespace SGED.Migrations
                     b.Navigation("Infraestrutura");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Logradouro", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.LogradouroModel", b =>
                 {
-                    b.HasOne("SGED.Objects.Models.Entities.Bairro", "Bairro")
+                    b.HasOne("SGED.Objects.Models.Entities.BairroModel", "Bairro")
                         .WithMany("Logradouros")
                         .HasForeignKey("IdBairro")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SGED.Objects.Models.Entities.TipoLogradouro", "TipoLogradouro")
+                    b.HasOne("SGED.Objects.Models.Entities.TipoLogradouroModel", "TipoLogradouro")
                         .WithMany("Logradouros")
                         .HasForeignKey("IdTipoLogradouro")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4664,35 +4749,35 @@ namespace SGED.Migrations
                     b.Navigation("TipoLogradouro");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Processo", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.ProcessoModel", b =>
                 {
-                    b.HasOne("SGED.Objects.Models.Entities.Usuario", "Aprovador")
+                    b.HasOne("SGED.Objects.Models.Entities.UsuarioModel", "Aprovador")
                         .WithMany("ProcessosAprovados")
                         .HasForeignKey("IdAprovador")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SGED.Objects.Models.Entities.Engenheiro", "Engenheiro")
+                    b.HasOne("SGED.Objects.Models.Entities.EngenheiroModel", "Engenheiro")
                         .WithMany("Processos")
                         .HasForeignKey("IdEngenheiro")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SGED.Objects.Models.Entities.Fiscal", "Fiscal")
+                    b.HasOne("SGED.Objects.Models.Entities.FiscalModel", "Fiscal")
                         .WithMany("Processos")
                         .HasForeignKey("IdFiscal")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SGED.Objects.Models.Entities.Imovel", "Imovel")
+                    b.HasOne("SGED.Objects.Models.Entities.ImovelModel", "Imovel")
                         .WithMany("Processos")
                         .HasForeignKey("IdImovel")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SGED.Objects.Models.Entities.Usuario", "Responsavel")
+                    b.HasOne("SGED.Objects.Models.Entities.UsuarioModel", "Responsavel")
                         .WithMany("ProcessosAdicionados")
                         .HasForeignKey("IdResponsavel")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SGED.Objects.Models.Entities.TipoProcesso", "TipoProcesso")
+                    b.HasOne("SGED.Objects.Models.Entities.TipoProcessoModel", "TipoProcesso")
                         .WithMany("Processos")
                         .HasForeignKey("IdTipoProcesso")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4711,9 +4796,9 @@ namespace SGED.Migrations
                     b.Navigation("TipoProcesso");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Sessao", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.SessaoModel", b =>
                 {
-                    b.HasOne("SGED.Objects.Models.Entities.Usuario", "Usuario")
+                    b.HasOne("SGED.Objects.Models.Entities.UsuarioModel", "Usuario")
                         .WithMany("Sessoes")
                         .HasForeignKey("IdUsuario")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4722,15 +4807,15 @@ namespace SGED.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoDocumentoEtapa", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoDocumentoEtapaModel", b =>
                 {
-                    b.HasOne("SGED.Objects.Models.Entities.Etapa", "Etapa")
+                    b.HasOne("SGED.Objects.Models.Entities.EtapaModel", "Etapa")
                         .WithMany("TipoDocumentoEtapas")
                         .HasForeignKey("IdEtapa")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SGED.Objects.Models.Entities.TipoDocumento", "TipoDocumento")
+                    b.HasOne("SGED.Objects.Models.Entities.TipoDocumentoModel", "TipoDocumento")
                         .WithMany("TipoDocumentoEtapas")
                         .HasForeignKey("IdTipoDocumento")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4741,9 +4826,9 @@ namespace SGED.Migrations
                     b.Navigation("TipoDocumento");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Usuario", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.UsuarioModel", b =>
                 {
-                    b.HasOne("SGED.Objects.Models.Entities.TipoUsuario", "TipoUsuario")
+                    b.HasOne("SGED.Objects.Models.Entities.TipoUsuarioModel", "TipoUsuario")
                         .WithMany("Usuarios")
                         .HasForeignKey("IdTipoUsuario")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4752,115 +4837,120 @@ namespace SGED.Migrations
                     b.Navigation("TipoUsuario");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Bairro", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.BairroModel", b =>
                 {
                     b.Navigation("Logradouros");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Cidade", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.CidadeModel", b =>
                 {
                     b.Navigation("Bairros");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Engenheiro", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.EngenheiroModel", b =>
                 {
                     b.Navigation("Instalacoes");
 
                     b.Navigation("Processos");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Estado", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.EstadoModel", b =>
                 {
                     b.Navigation("Cidades");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Etapa", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.EtapaModel", b =>
                 {
                     b.Navigation("TipoDocumentoEtapas");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Fiscal", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.FiscalModel", b =>
                 {
                     b.Navigation("Processos");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Imovel", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.ImovelModel", b =>
                 {
                     b.Navigation("Instalacoes");
 
                     b.Navigation("Processos");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Infraestrutura", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.InfraestruturaModel", b =>
                 {
                     b.Navigation("Instalacoes");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Logradouro", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.LogradouroModel", b =>
                 {
                     b.Navigation("Imoveis");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Municipe", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.MunicipeModel", b =>
                 {
                     b.Navigation("ImoveisContribuinte");
 
                     b.Navigation("ImoveisProprietario");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.OcupacaoAtual", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.OcupacaoAtualModel", b =>
                 {
                     b.Navigation("Imoveis");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Processo", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.ProcessoModel", b =>
                 {
                     b.Navigation("DocumentosProcesso");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoDocumento", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.SessaoModel", b =>
+                {
+                    b.Navigation("Auditorias");
+                });
+
+            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoDocumentoEtapaModel", b =>
+                {
+                    b.Navigation("DocumentosProcesso");
+                });
+
+            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoDocumentoModel", b =>
                 {
                     b.Navigation("TipoDocumentoEtapas");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoDocumentoEtapa", b =>
-                {
-                    b.Navigation("DocumentosProcesso");
-                });
-
-            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoInfraestrutura", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoInfraestruturaModel", b =>
                 {
                     b.Navigation("Infraestruturas");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoLogradouro", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoLogradouroModel", b =>
                 {
                     b.Navigation("Logradouros");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoProcesso", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoProcessoModel", b =>
                 {
                     b.Navigation("Etapas");
 
                     b.Navigation("Processos");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoUsuario", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.TipoUsuarioModel", b =>
                 {
                     b.Navigation("Usuarios");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Topografia", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.TopografiaModel", b =>
                 {
                     b.Navigation("Imoveis");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Uso", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.UsoModel", b =>
                 {
                     b.Navigation("Imoveis");
                 });
 
-            modelBuilder.Entity("SGED.Objects.Models.Entities.Usuario", b =>
+            modelBuilder.Entity("SGED.Objects.Models.Entities.UsuarioModel", b =>
                 {
                     b.Navigation("DocumentosAdicionados");
 

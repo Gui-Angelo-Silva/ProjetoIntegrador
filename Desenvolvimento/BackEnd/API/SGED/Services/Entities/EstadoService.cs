@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
@@ -42,14 +42,14 @@ public class EstadoService : IEstadoService
 
     public async Task Create(EstadoDTO estadoDTO)
 	{
-		var estado = _mapper.Map<Estado>(estadoDTO);
+		var estado = _mapper.Map<EstadoModel>(estadoDTO);
 		await _estadoRepository.Create(estado);
 		estadoDTO.Id = estado.Id;
 	}
 
 	public async Task Update(EstadoDTO estadoDTO)
 	{
-		var estado = _mapper.Map<Estado>(estadoDTO);
+		var estado = _mapper.Map<EstadoModel>(estadoDTO);
 		await _estadoRepository.Update(estado);
 	}
 

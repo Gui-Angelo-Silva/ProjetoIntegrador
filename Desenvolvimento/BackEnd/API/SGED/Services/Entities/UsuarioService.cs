@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
+using SGED.Objects.Server;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
 
@@ -53,9 +54,8 @@ public class UsuarioService : IUsuarioService
         return usuarios.Select(u => u.EmailPessoa).ToList();
     }
 
-    public async Task<UsuarioDTO> Login(LoginDTO loginDTO)
+    public async Task<UsuarioDTO> Login(Login login)
     {
-        var login = _mapper.Map<Login>(loginDTO);
         var usuario = await _usuarioRepository.Login(login);
 
         UsuarioDTO usuarioDTO = _mapper.Map<UsuarioDTO>(usuario);
@@ -66,14 +66,14 @@ public class UsuarioService : IUsuarioService
 
     public async Task Create(UsuarioDTO usuarioDTO)
     {
-        var usuario = _mapper.Map<Usuario>(usuarioDTO);
+        var usuario = _mapper.Map<UsuarioModel>(usuarioDTO);
         await _usuarioRepository.Create(usuario);
         usuarioDTO.Id = usuario.Id;
     }
 
     public async Task Update(UsuarioDTO usuarioDTO)
     {
-        var usuario = _mapper.Map<Usuario>(usuarioDTO);
+        var usuario = _mapper.Map<UsuarioModel>(usuarioDTO);
         await _usuarioRepository.Update(usuario);
     }
 

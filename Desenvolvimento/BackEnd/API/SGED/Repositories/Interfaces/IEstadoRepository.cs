@@ -3,11 +3,11 @@
 namespace SGED.Repositories.Interfaces;
 public interface IEstadoRepository
 {
-    Task<IEnumerable<Estado>> GetAll();
-    Task<IEnumerable<Estado>> Search(string search);
-    Task<Estado> GetById(int id);
-    Task<IEnumerable<Estado>> GetByName(string nome);
-    Task<Estado> Create(Estado estado);
-    Task<Estado> Update(Estado estado);
-    Task<Estado> Delete(int id);
+    Task<IEnumerable<EstadoModel>> GetAll();
+    Task<IEnumerable<EstadoModel>> Search(string search);
+    Task<EstadoModel> GetById(int id);
+    Task<IEnumerable<EstadoModel>> GetByName(string nome);
+    Task<EstadoModel> Create(EstadoModel estado);
+    Task<EstadoModel> Update(EstadoModel estado);
+    Task<EstadoModel> Delete(int id);
 }

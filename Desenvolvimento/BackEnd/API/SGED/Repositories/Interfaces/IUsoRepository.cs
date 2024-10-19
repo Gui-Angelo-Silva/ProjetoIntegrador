@@ -3,9 +3,9 @@
 namespace SGED.Repositories.Interfaces;
 public interface IUsoRepository
 {
-    Task<IEnumerable<Uso>> GetAll();
-    Task<Uso> GetById(int id);
-    Task<Uso> Create(Uso uso);
-    Task<Uso> Update(Uso uso);
-    Task<Uso> Delete(int id);
+    Task<IEnumerable<UsoModel>> GetAll();
+    Task<UsoModel> GetById(int id);
+    Task<UsoModel> Create(UsoModel uso);
+    Task<UsoModel> Update(UsoModel uso);
+    Task<UsoModel> Delete(int id);
 }

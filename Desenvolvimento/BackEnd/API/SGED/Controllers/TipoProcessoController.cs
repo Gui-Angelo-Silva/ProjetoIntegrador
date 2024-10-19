@@ -2,7 +2,7 @@
 using SGED.Services.Interfaces;
 using SGED.Objects.Interfaces;
 using SGED.Objects.Models.Entities;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Utilities;
 using SGED.Services.Entities;
 using SGED.Objects.Enums.Status;

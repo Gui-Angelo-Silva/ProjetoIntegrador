@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Entities;
 using SGED.Repositories.Interfaces;
@@ -38,14 +38,14 @@ namespace SGED.Services.Entities
 
         public async Task Create(ImovelDTO imovelDTO)
 		{
-			var imovel = _mapper.Map<Imovel>(imovelDTO);
+			var imovel = _mapper.Map<ImovelModel>(imovelDTO);
 			await _imovelRepository.Create(imovel);
 			imovelDTO.Id = imovel.Id;
 		}
 
 		public async Task Update(ImovelDTO imovelDTO)
 		{
-			var imovel = _mapper.Map<Imovel>(imovelDTO);
+			var imovel = _mapper.Map<ImovelModel>(imovelDTO);
 			await _imovelRepository.Update(imovel);
 		}
 

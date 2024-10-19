@@ -15,17 +15,17 @@ namespace SGED.Repositories.Entities
 			_dbContext = dbContext;
 		}
 
-		public async Task<IEnumerable<Imovel>> GetAll()
+		public async Task<IEnumerable<ImovelModel>> GetAll()
 		{
 			return await _dbContext.Imovel.AsNoTracking().ToListAsync();
 		}
 
-        public async Task<Imovel> GetById(int id)
+        public async Task<ImovelModel> GetById(int id)
 		{
 			return await _dbContext.Imovel.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
 		}
 
-        public async Task<Imovel> GetByProperty(string propertyName, string data)
+        public async Task<ImovelModel> GetByProperty(string propertyName, string data)
         {
             // Use reflexão para acessar a propriedade dinamicamente
             var imovels = await _dbContext.Imovel.AsNoTracking().ToListAsync();
@@ -45,21 +45,21 @@ namespace SGED.Repositories.Entities
             return imovel;
         }
 
-        public async Task<Imovel> Create(Imovel imovel)
+        public async Task<ImovelModel> Create(ImovelModel imovel)
 		{
 			_dbContext.Imovel.Add(imovel);
 			await _dbContext.SaveChangesAsync();
 			return imovel;
 		}
 
-		public async Task<Imovel> Update(Imovel imovel)
+		public async Task<ImovelModel> Update(ImovelModel imovel)
 		{
 			_dbContext.Entry(imovel).State = EntityState.Modified;
 			await _dbContext.SaveChangesAsync();
 			return imovel;
 		}
 
-		public async Task<Imovel> Delete(int id)
+		public async Task<ImovelModel> Delete(int id)
 		{
 			var imovel = await GetById(id);
 			_dbContext.Imovel.Remove(imovel);

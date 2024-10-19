@@ -4,11 +4,11 @@ namespace SGED.Repositories.Interfaces
 {
     public interface IEtapaRepository
 	{
-		Task<IEnumerable<Etapa>> GetAll();
-		Task<Etapa> GetById(int id);
-		Task<Etapa> Create(Etapa etapa);
-		Task<Etapa> Update(Etapa etapa);
-		Task<Etapa> Delete(int id);
-		Task<IEnumerable<Etapa>> GetStagesRelatedToTypeProcess(int idTipoProcesso);
+		Task<IEnumerable<EtapaModel>> GetAll();
+		Task<EtapaModel> GetById(int id);
+		Task<EtapaModel> Create(EtapaModel etapa);
+		Task<EtapaModel> Update(EtapaModel etapa);
+		Task<EtapaModel> Delete(int id);
+		Task<IEnumerable<EtapaModel>> GetStagesRelatedToTypeProcess(int idTipoProcesso);
 	}
 }

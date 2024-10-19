@@ -1,5 +1,5 @@
 ﻿using SGED.Context;
-using SGED.DTO.Entities;
+using SGED.DTOs.Entities;
 using SGED.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -17,41 +17,41 @@ public class BairroRepository : IBairroRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Bairro>> GetAll()
+    public async Task<IEnumerable<BairroModel>> GetAll()
     {
         return await _dbContext.Bairro.AsNoTracking().ToListAsync();
     }
 
-    public async Task<IEnumerable<Bairro>> GetByCity(int idCidade)
+    public async Task<IEnumerable<BairroModel>> GetByCity(int idCidade)
     {
         return await _dbContext.Bairro.Where(b => b.IdCidade == idCidade).AsNoTracking().ToListAsync();
     }
 
-    public async Task<Bairro> GetById(int id)
+    public async Task<BairroModel> GetById(int id)
     {
         return await _dbContext.Bairro.AsNoTracking().FirstOrDefaultAsync(b => b.Id == id);
     }
 
-    public async Task<Bairro> Create(Bairro Bairro)
+    public async Task<BairroModel> Create(BairroModel bairro)
     {
-        _dbContext.Bairro.Add(Bairro);
+        _dbContext.Bairro.Add(bairro);
         await _dbContext.SaveChangesAsync();
-        return Bairro;
+        return bairro;
     }
 
-    public async Task<Bairro> Update(Bairro Bairro)
+    public async Task<BairroModel> Update(BairroModel bairro)
     {
-        _dbContext.Entry(Bairro).State = EntityState.Modified;
+        _dbContext.Entry(bairro).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
-        return Bairro;
+        return bairro;
     }
 
-    public async Task<Bairro> Delete(int id)
+    public async Task<BairroModel> Delete(int id)
     {
-        var Bairro = await GetById(id);
-        _dbContext.Bairro.Remove(Bairro);
+        var bairro = await GetById(id);
+        _dbContext.Bairro.Remove(bairro);
         await _dbContext.SaveChangesAsync();
-        return Bairro;
+        return bairro;
     }
 
 }

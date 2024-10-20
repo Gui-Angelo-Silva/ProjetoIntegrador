@@ -36,10 +36,11 @@ namespace SGED.Objects.DTOs.Entities
         [MaxLength(15)]
         public string RgIePessoa { get; set; }
 
+
         [JsonIgnore]
-        public ICollection<ImovelDTO> ImoveisProprietarioDTO { get; set; }
+        public ICollection<ImovelDTO>? ImoveisProprietarioDTO { get; set; }
         [JsonIgnore]
-        public ICollection<ImovelDTO> ImoveisContribuinteDTO { get; set; }
+        public ICollection<ImovelDTO>? ImoveisContribuinteDTO { get; set; }
 
 
         public bool Email() => IPessoaExtensions.VerificarEmail(this.EmailPessoa);

@@ -216,7 +216,7 @@ const AddProcess = () => {
           identificacaoDocumento: data.identificationNumber || "",
           descricaoDocumento: data.documentDescription || "",
           observacaoDocumento: data.documentObservation || "",
-          arquivoDocumentoBase64: arquivoDocumentoBase64,
+          arquivoDocumento: arquivoDocumentoBase64,
           hashDocumento: hash || "",
           status: data.documentStatus || 0,
           idTipoDocumentoEtapa: data.idTypeDocumentStage || 0,

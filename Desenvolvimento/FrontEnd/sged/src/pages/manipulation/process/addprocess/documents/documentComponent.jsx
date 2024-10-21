@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Paperclip, Files, FileText, FileArchive, CaretDown, CaretRight, Circle, ArrowSquareOut, DownloadSimple, PencilSimpleLine, Trash } from "@phosphor-icons/react";
+
 import DocumentModal from './documentModal';
 import DocumentView from './documentView';
 
@@ -91,19 +93,43 @@ const DocumentComponent = ({
   const currentTypeDocument = typeDocumentsData[currentDocumentId] || null;
 
   return (
-    <div className='flex gap-x-5'>
-      <ul className="w-full">
+    <div className='w-full'>
+      <ul className="space-y-4">
         {stages.map((stage) => {
           const typeDocumentStages = typeDocumentStagesData[stage.id] || [];
+          const progress = documentsProcess.filter(doc => typeDocumentStages.find(td => td.idTipoDocumento === doc.documentId)).length;
+          const totalDocs = typeDocumentStages.length;
+
           return (
-            <li key={stage.id} className="border-b border-gray-200 mb-4">
-              <div className="flex justify-between items-center p-4 bg-gray-300 cursor-pointer" onClick={() => toggleRow(stage.id)}>
-                <span>Etapa {stage.posicao} - {stage.nomeEtapa}</span>
-                <button className="text-blue-600">{expandedRows.includes(stage.id) ? 'Recolher' : 'Expandir'}</button>
+            <li key={stage.id} className="border border-gray-200 rounded-lg shadow-md">
+              <div className="flex justify-between items-center p-4 bg-gray-300 rounded-t-lg cursor-pointer" onClick={() => toggleRow(stage.id)}>
+                <span className="gap-x-2 text-lg font-semibold flex items-center"><Files size={30} /> Etapa {stage.posicao} - {stage.nomeEtapa}</span>
+                <div className="flex items-center gap-x-10">
+                  <div className="flex items-center gap-x-5">
+                    <span className="text-lg font-semibold text-gray-600">{progress} / {totalDocs}</span>
+                    <div className="relative w-64 h-2 bg-white rounded">
+                      <div
+                        className="h-full bg-gradient-to-r from-[#65EBFF] to-[#00CEED] rounded"
+                        style={{ width: `${(progress / totalDocs) * 100}%` }}
+                      ></div>
+                      <div
+                        className="absolute top-1/2 transform -translate-y-1/2 text-[#65EBFF]"
+                        style={{
+                          left: `${(progress / totalDocs) * 100}%`,
+                          transform: 'translate(-50%, -50%)', // Ajuste para centralizar o ícone
+                        }}
+                      >
+                        <Circle size={20} weight="fill" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <button className="text-black">{expandedRows.includes(stage.id) ? <CaretDown size={30} /> : <CaretRight size={30} />}</button>
+                </div>
               </div>
 
               {expandedRows.includes(stage.id) && (
-                <div className="bg-gray-100 p-4">
+                <div className="bg-white p-4">
                   <ul>
                     {typeDocumentStages.map((typeDocumentStage) => {
                       const typeDocument = typeDocumentsData[typeDocumentStage.idTipoDocumento];
@@ -115,46 +141,47 @@ const DocumentComponent = ({
                         const data = documentsProcess.find(d => d.documentId === typeDocument.id);
 
                         return (
-                          <li key={typeDocument.id} className="p-2 border-b border-gray-200 cursor-pointer">
-                            <span>Documento {typeDocumentStage.posicao} - {typeDocument.nomeTipoDocumento}</span>
+                          <li key={typeDocument.id} className="p-2 flex justify-between items-center border-b hover:bg-gray-100 ">
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-700 gap-x-2 font-semibold flex items-center mr-2">
+                                <FileText size={20} /> Documento {typeDocumentStage.posicao} - {typeDocument.nomeTipoDocumento}
+                              </span>
+
+                              {data && data.saved && (
+                                <span className="text-[#00CF1F] font-semibold flex items-center space-x-1 ml-auto">
+                                  <Paperclip size={20} />
+                                  <span>Anexado</span>
+                                </span>
+                              )}
+                            </div>
+
                             {data && data.saved ? (
-                              <>
-                                <span className="text-green-600 ml-4">Anexado</span>
-                                <div className="flex gap-2 float-right">
-                                  <button
-                                    className="text-red-500"
-                                    onClick={() => handleRemove(typeDocument.id)}
-                                  >
-                                    Remover
-                                  </button>
-                                  <button
-                                    className="text-blue-500"
-                                    onClick={() => handleModify(typeDocument.id)}
-                                  >
-                                    Alterar
-                                  </button>
-                                  <button
-                                    className="text-gray-500"
-                                    onClick={() => handleView(typeDocument.id)}
-                                  >
+                              <div className="flex items-center space-x-2">
+                                <div className="flex space-x-3">
+                                  <button className="bg-[#da8aff] hover:bg-[#c549ff] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleView(typeDocument.id)}>
+                                    <ArrowSquareOut size={20} />
                                     Visualizar
                                   </button>
-                                  <button
-                                    className="text-blue-600"
-                                    onClick={() => handleOpenInNewTab(typeDocument.id)}
-                                  >
-                                    Abrir Documento
+                                  <button className="bg-[#8cff9d] hover:bg-[#00FF26] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleOpenInNewTab(typeDocument.id)}>
+                                    <DownloadSimple size={20} />
+                                    Baixar
+                                  </button>
+                                  <button className="bg-[#5db6ff] hover:bg-[#1C99FF] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleModify(typeDocument.id)}>
+                                    <PencilSimpleLine size={20} />
+                                    Alterar
+                                  </button>
+                                  <button className="bg-[#ff6f6f] hover:bg-[#ff4f4f] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleRemove(typeDocument.id)}>
+                                    <Trash size={20} />
+                                    Remover
                                   </button>
                                 </div>
-                              </>
+                              </div>
                             ) : (
-                              <button
-                                className="text-blue-600 float-right"
-                                onClick={() => handleAttach(typeDocument.id)}
-                              >
-                                Anexar
+                              <button className="bg-[#65EBFF] hover:bg-[#00CEED] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleAttach(typeDocument.id)}>
+                                <Paperclip size={20} /> Anexar
                               </button>
                             )}
+
                           </li>
                         );
                       }

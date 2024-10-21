@@ -26,31 +26,7 @@ namespace SGED.Objects.DTOs.Entities
         public string HashDocumento { get; set; }
 
         // Propriedade interna para armazenar o array de bytes
-        [JsonIgnore]
         public byte[]? ArquivoDocumento { get; set; }
-
-        // Propriedade Base64 que faz a conversão automaticamente
-        public string? ArquivoDocumentoBase64
-        {
-            get
-            {
-                if (ArquivoDocumento == null || ArquivoDocumento.Length == 0)
-                    return null;
-
-                return Convert.ToBase64String(ArquivoDocumento);
-            }
-            set
-            {
-                if (string.IsNullOrEmpty(value))
-                {
-                    ArquivoDocumento = null;
-                }
-                else
-                {
-                    ArquivoDocumento = Convert.FromBase64String(value);
-                }
-            }
-        }
 
         [Required(ErrorMessage = "O status é requerido!")]
         public StatusDocumentProcess Status { get; set; }

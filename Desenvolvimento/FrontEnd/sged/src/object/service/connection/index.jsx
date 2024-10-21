@@ -105,6 +105,8 @@ export default class ConnectionService {
             this.typeMethod = type;
             const result = await method();
 
+            //console.log(result.data);
+
             // Verifica se o objeto retornado possui as mesmas propriedades e tipos do modelo
             if (result && JSON.stringify(Object.keys(result.data)) === JSON.stringify(Object.keys(this.responseModel))) {
                 this.responseModel = result.data;
@@ -116,6 +118,8 @@ export default class ConnectionService {
                 return { status: false, data: null };
             }
         } catch (error) {
+
+            //console.log(error.response.data);
 
             if ('status' in error.response.data) {
                 this.messageRequest = { type: this.identifyStatus(this.responseModel.status), content: error.response.data.message };

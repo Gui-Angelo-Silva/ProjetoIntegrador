@@ -5,6 +5,7 @@ import ControlModule from '../../object/modules/select';
 
 const CustomSelectComponent = forwardRef(({
     list,
+    setList,
     variableIdentifier,
     variableName,
     id,
@@ -36,10 +37,6 @@ const CustomSelectComponent = forwardRef(({
     }, [errorId, selectBox.selectedOption]);
 
     useEffect(() => {
-        console.log(id);
-        console.log(selectBox.options);
-        console.log(selectBox.options[0]);
-
         if ((id && id > 0) && id !== selectBox.selectedOption.value) {
             selectBox.handleChange(selectBox.options[0]);
         }
@@ -69,6 +66,13 @@ const CustomSelectComponent = forwardRef(({
         }
     };
 
+    const clearData = () => {
+        selectBox.clearData();
+        setInputValue("");
+        setList([]);
+        setRequestList(false);
+    };
+
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
@@ -80,7 +84,7 @@ const CustomSelectComponent = forwardRef(({
     useImperativeHandle(ref, () => ({
         valid,
         inputValue,
-        clearData: () => selectBox.clearData()
+        clearData
     }));
 
     return (

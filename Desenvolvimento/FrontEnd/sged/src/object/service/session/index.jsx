@@ -96,7 +96,7 @@ function SessionService() {
         var autentication = false;
 
         try {
-            await connection.endpoint("Sessao").action("Autentication").post(object.getData());
+            await connection.endpoint("Sessao").action("Authentication").post(object.getData());
 
             if (connection.response.status) {
                 setToken(connection.response.data.tokenSessao);

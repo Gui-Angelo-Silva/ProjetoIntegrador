@@ -294,6 +294,7 @@ export default function City() {
                             <SelectComponent
                                 ref={selectRef}
                                 list={searchState}
+                                setList={setSearchState}
                                 variableIdentifier="id"
                                 variableName="nomeEstado"
                                 id={city.idState}
@@ -342,6 +343,7 @@ export default function City() {
                             <SelectComponent
                                 ref={selectRef}
                                 list={searchState}
+                                setList={setSearchState}
                                 variableIdentifier="id"
                                 variableName="nomeEstado"
                                 id={city.idState}

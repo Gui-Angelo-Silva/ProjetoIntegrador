@@ -269,12 +269,12 @@ const AddProcess = () => {
       selectBox_Realstate.updateOptions(list_Realstate.list, "id", "inscricaoCadastral");
 
       /*if (!city.idState) {
-          selectBox_Realstate.selectOption(selectBox_Realstate.lastSelected ? selectBox_Realstate.lastSelected : listState.list[0]?.id);
+          selectBox_Realstate.handleChange(selectBox_Realstate.lastSelected ? selectBox_Realstate.lastSelected : listState.list[0]?.id);
           selectBox_Realstate.setLastSelected(0);
       }*/
     } else {
       selectBox_Realstate.updateOptions([]);
-      selectBox_Realstate.selectOption(0);
+      selectBox_Realstate.handleChange(0);
     }
   }, [list_Realstate.list]);
 
@@ -300,12 +300,12 @@ const AddProcess = () => {
       selectBox_TypesProcess.updateOptions(list_TypesProcess.list, "id", "nomeTipoProcesso");
 
       /*if (!city.idState) {
-          selectBox_TypesProcess.selectOption(selectBox_TypesProcess.lastSelected ? selectBox_TypesProcess.lastSelected : listState.list[0]?.id);
+          selectBox_TypesProcess.handleChange(selectBox_TypesProcess.lastSelected ? selectBox_TypesProcess.lastSelected : listState.list[0]?.id);
           selectBox_TypesProcess.setLastSelected(0);
       }*/
     } else {
       selectBox_TypesProcess.updateOptions([]);
-      selectBox_TypesProcess.selectOption(0);
+      selectBox_TypesProcess.handleChange(0);
     }
   }, [list_TypesProcess.list]);
 
@@ -329,10 +329,10 @@ const AddProcess = () => {
 
     } else {
       selectBox_UserResponsible.updateOptions([]);
-      selectBox_UserResponsible.selectOption(0);
+      selectBox_UserResponsible.handleChange(0);
 
       selectBox_UserApprover.updateOptions([]);
-      selectBox_UserApprover.selectOption(0);
+      selectBox_UserApprover.handleChange(0);
     }
   }, [list_Users.list]);
 
@@ -391,7 +391,7 @@ const AddProcess = () => {
       selectBox_Engineer.updateOptions(list_Engineers.list, "id", "nomePessoa");
     } else {
       selectBox_Engineer.updateOptions([]);
-      selectBox_Engineer.selectOption(0);
+      selectBox_Engineer.handleChange(0);
     }
   }, [list_Engineers.list]);
 
@@ -407,7 +407,7 @@ const AddProcess = () => {
       selectBox_Supervisor.updateOptions(list_Supervisors.list, "id", "nomePessoa");
     } else {
       selectBox_Supervisor.updateOptions([]);
-      selectBox_Supervisor.selectOption(0);
+      selectBox_Supervisor.handleChange(0);
     }
   }, [list_Supervisors.list]);
 

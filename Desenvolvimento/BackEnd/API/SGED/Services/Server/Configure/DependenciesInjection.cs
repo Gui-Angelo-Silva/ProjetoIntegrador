@@ -1,5 +1,4 @@
-﻿using SGED.Objects.Models.Entities;
-using SGED.Repositories.Entities;
+﻿using SGED.Repositories.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Entities;
 using SGED.Services.Interfaces;

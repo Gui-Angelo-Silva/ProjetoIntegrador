@@ -1,8 +1,8 @@
 ﻿using Jose;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using Newtonsoft.Json;
 using SGED.Objects.Server;
+using System.Text.Json.Serialization;
 
 namespace SGED.Objects.DTOs.Entities
 {
@@ -76,7 +76,7 @@ namespace SGED.Objects.DTOs.Entities
                 string decodedToken = Encoding.UTF8.GetString(Base64Url.Decode(tokenParts[1]));
 
                 // Passo 3: Verificar iss, aud e sub
-                var payload = JsonConvert.DeserializeObject<Dictionary<string, object>>(decodedToken);
+                var payload = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(decodedToken);
                 if (!payload.TryGetValue("iss", out object issuerClaim) ||
                     !payload.TryGetValue("aud", out object audienceClaim) ||
                     !payload.TryGetValue("sub", out object subjectClaim))
@@ -130,7 +130,7 @@ namespace SGED.Objects.DTOs.Entities
                 string decodedToken = Encoding.UTF8.GetString(Base64Url.Decode(tokenParts[1]));
 
                 // Passo 3: Verificar iss, aud e sub
-                var payload = JsonConvert.DeserializeObject<Dictionary<string, object>>(decodedToken);
+                var payload = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(decodedToken);
                 if (!payload.TryGetValue("sub", out object subjectClaim))
                 {
                     return false;

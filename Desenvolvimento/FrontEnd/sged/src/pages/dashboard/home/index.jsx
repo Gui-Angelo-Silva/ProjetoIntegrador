@@ -24,12 +24,12 @@ const Home = () => {
   }, [componentMounted]);
 
   const cardData = [
-    { title: "NOVOS", total: 2, color: "#057BFF" },
-    { title: "EM ANDAMENTO", total: 2, color: "#19A2B4" },
-    { title: "PENDENTE", total: 0, color: "#FFBD07" },
-    { title: "ATRASADO", total: 0, color: "#D93442" },
-    { title: "PRAZO HOJE", total: 0, color: "#26A242" }
-  ];
+    { title: "NOVOS", total: 3, lastTotal: 2, color: "#057BFF" },
+    { title: "EM ANDAMENTO", total: 1, lastTotal: 1, color: "#19A2B4" },
+    { title: "PENDENTE", total: 3, lastTotal: 1, color: "#FFBD07" },
+    { title: "ATRASADO", total: 0, lastTotal: 0, color: "#D93442" },
+    { title: "PRAZO HOJE", total: 0, lastTotal: 0, color: "#26A242" }
+  ];  
 
   const tableData = [
     { title: "Últimos Andamentos", icon: <FaTableCellsLarge /> },

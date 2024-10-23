@@ -7,13 +7,13 @@ const CardDashboard = ({ title, total, onClick, lastTotal }) => {
 
   useEffect(() => {
     if (total > lastTotal) {
-      setUpdated(true); 
+      setUpdated(true);
     }
   }, [total, lastTotal]);
 
   const handleCardClick = () => {
-    setUpdated(false); 
-    onClick(); 
+    setUpdated(false);
+    onClick();
   };
 
   const getIconAndColor = (title) => {
@@ -37,7 +37,10 @@ const CardDashboard = ({ title, total, onClick, lastTotal }) => {
           {icon}
         </p>
         {updated && (
-          <span className="absolute top-2 right-2 bg-red-600 h-3 w-3 rounded-full"></span>
+          <>
+            <span className="absolute animate-ping top-1 right-1 bg-red-600 h-3 w-3 rounded-full"></span>
+            <span className="absolute top-1 right-1 bg-red-600 h-3 w-3 rounded-full"></span>
+          </>
         )}
       </div>
       <p className="pl-5 text-sm pb-[18px]">Total: {total}</p>

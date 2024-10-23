@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 
 // Importa o arquivo CSS
-import './styles.css';
+import "./styles.css";
 
 import Breadcrumb from "../../../../components/Title/Breadcrumb";
+import ProgressBar from "../../../../components/ProgressBar";
 
 import { useMontage } from "../../../../object/modules/montage";
 import ConnectionService from "../../../../object/service/connection";
 import ListModule from "../../../../object/modules/list";
-import SelectModule from '../../../../object/modules/select';
+import SelectModule from "../../../../object/modules/select";
 
-import ProcessForm from './form/processForm';
-import DocumentComponent from './documents/documentComponent';
+import ProcessForm from "./form/processForm";
+import DocumentComponent from "./documents/documentComponent";
 
 const AddProcess = () => {
   const montage = useMontage();
@@ -21,9 +22,9 @@ const AddProcess = () => {
   }, []);
 
   const pages = [
-    { name: 'Documentos', link: '/administrador/documentos', isEnabled: true },
-    { name: 'Processo', link: '/administrador/documentos/processo', isEnabled: true },
-    { name: 'Cadastro de Processo', link: '', isEnabled: false }, // Link desativado
+    { name: "Documentos", link: "/administrador/documentos", isEnabled: true },
+    { name: "Processo", link: "/administrador/documentos/processo", isEnabled: true },
+    { name: "Cadastro de Processo", link: "", isEnabled: false }, // Link desativado
   ];
 
   // Services initialization --------------------------------------------------------------------------------------------------------------------------
@@ -190,9 +191,9 @@ const AddProcess = () => {
 
   // Gera um hash SHA-256 dos bytes e o retorna como string hexadecimal
   async function generateSHA256(bytes) {
-    const hashBuffer = await crypto.subtle.digest('SHA-256', bytes); // Gera o hash SHA-256
+    const hashBuffer = await crypto.subtle.digest("SHA-256", bytes); // Gera o hash SHA-256
     const hashArray = Array.from(new Uint8Array(hashBuffer)); // Converte o buffer para array de bytes
-    const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join(''); // Converte cada byte para hexadecimal e junta em uma string
+    const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, "0")).join(""); // Converte cada byte para hexadecimal e junta em uma string
     return hashHex;
   }
 
@@ -522,53 +523,123 @@ const AddProcess = () => {
     });
   }, [stages]);
 
+  const [totalAttachDocuments, setTotalAttachDocuments] = useState(0); // Estado para o total de documentos anexados
+  const [totalExpectedDocuments, setTotalExpectedDocuments] = useState(0); // Estado para o total de documentos anexados
+  const [completedStages, setCompletedStages] = useState(0); // Estado para o total de etapas concluídas
 
-  return (
-    <>
-      <Breadcrumb pages={pages}/>
-      <div className="mt-8">
-        <ProcessForm
-          realstate={realstate}
-          selectBox_Realstate={selectBox_Realstate}
-          list_Realstate={list_Realstate}
-          owner={owner}
-          taxpayer={taxpayer}
-          use={use}
-          occupation={occupation}
-          selectBox_TypesProcess={selectBox_TypesProcess}
-          list_TypesProcess={list_TypesProcess}
-          typeProcess={typeProcess}
-          process={process}
-          setProcess={setProcess}
-          engineer={engineer}
-          selectBox_Engineer={selectBox_Engineer}
-          list_Users={list_Users}
-          supervisor={supervisor}
-          selectBox_Supervisor={selectBox_Supervisor}
-          userResponsible={userResponsible}
-          selectBox_UserResponsible={selectBox_UserResponsible}
-          typeResponsible={typeResponsible}
-          userApprover={userApprover}
-          typeApprover={typeApprover}
-          PostAllDatas={PostAllDatas}
-        />
+  // Chame a função para buscar os documentos das etapas, conforme necessário
+  useEffect(() => {
+    console.log("Total Etapas: ", stages.length);
+    console.log("Etapas Concluídas: ", completedStages);
+    console.log("Total Documentos: ", totalExpectedDocuments);
+    console.log("Documentos Concluídos: ", totalAttachDocuments);
+  }, [stages, completedStages, totalExpectedDocuments, totalAttachDocuments]);
 
-        <hr className="my-10" />
-
-        <DocumentComponent
-          stages={stages}
-          typeDocumentStagesData={typeDocumentStagesData}
-          typeDocumentsData={typeDocumentsData}
-          fetchTypeDocument={fetchTypeDocument}
-          setDocumentsProcess={setDocumentsProcess}
-          documentsProcess={documentsProcess}
-
-          userResponsible={userResponsible}
-          typeResponsible={typeResponsible}
+  // Componente ProgressRow para as linhas de progresso
+const ProgressRow = ({ title, completed, total }) => (
+  <div className="grid grid-cols-4 items-center mt-2">
+    <p className="font-bold text-left">{title}</p> {/* Título da etapa */}
+    {["", "approved", "rejected"].map((type, index) => (
+      <div key={index} className="flex items-center justify-start gap-x-5"> {/* Alterado para justify-center */}
+        <div className="text-left"> {/* Removido w-16 para ser responsivo */}
+          <p>{completed} / {total}</p> {/* Contagem alinhada à direita */}
+        </div>
+        <ProgressBar
+          width={32}
+          backgroundColor="bg-gray-200"
+          primaryColor={type === "approved" ? "from-[#2BFF00]" : (type === "rejected" ? "from-[#FF000D]" : "from-[#65EBFF]")}
+          secondaryColor={type === "approved" ? "to-[#1BA100]" : (type === "rejected" ? "to-[#B20009]" : "to-[#00A9C2]")}
+          iconColor={type === "approved" ? "text-[#2BFF00]" : (type === "rejected" ? "text-[#FF000D]" : "text-[#65EBFF]")}
+          totalValue={total}
+          partialValue={completed}
         />
       </div>
-    </>
-  );
+    ))}
+
+<hr className="border-t-2 border-gray-300 my-1 col-span-4" /> {/* Risco horizontal */}
+  </div>
+);
+
+return (
+  <>
+    <Breadcrumb pages={pages} />
+    <div className="mt-8">
+      <ProcessForm
+        realstate={realstate}
+        selectBox_Realstate={selectBox_Realstate}
+        list_Realstate={list_Realstate}
+        owner={owner}
+        taxpayer={taxpayer}
+        use={use}
+        occupation={occupation}
+        selectBox_TypesProcess={selectBox_TypesProcess}
+        list_TypesProcess={list_TypesProcess}
+        typeProcess={typeProcess}
+        process={process}
+        setProcess={setProcess}
+        engineer={engineer}
+        selectBox_Engineer={selectBox_Engineer}
+        list_Users={list_Users}
+        supervisor={supervisor}
+        selectBox_Supervisor={selectBox_Supervisor}
+        userResponsible={userResponsible}
+        selectBox_UserResponsible={selectBox_UserResponsible}
+        typeResponsible={typeResponsible}
+        userApprover={userApprover}
+        typeApprover={typeApprover}
+        PostAllDatas={PostAllDatas}
+      />
+
+      <hr className="my-10" />
+
+      {stages?.length > 0 && (
+        <div className="bg-white shadow-md rounded-lg mb-4">
+          <div className="bg-gray-300 rounded-t-lg p-4">
+            <h3 className="text-xl font-semibold">Progresso do Processo:</h3>
+          </div>
+
+          <div className="px-20 py-4">
+            {/* Título das colunas */}
+            <div className="grid grid-cols-4 text-left">
+              <p className="font-bold"></p> {/* Título da primeira coluna */}
+              <p className="font-bold">Concluído</p>
+              <p className="font-bold">Aprovado</p>
+              <p className="font-bold">Recusado</p>
+            </div>
+
+            {/* Linhas de progresso */}
+            <ProgressRow
+              title="Etapas"
+              completed={completedStages}
+              total={stages.length}
+            />
+            <ProgressRow
+              title="Documentos"
+              completed={totalAttachDocuments}
+              total={totalExpectedDocuments}
+            />
+          </div>
+        </div>
+      )}
+
+      <DocumentComponent
+        stages={stages}
+        typeDocumentStagesData={typeDocumentStagesData}
+        typeDocumentsData={typeDocumentsData}
+        fetchTypeDocument={fetchTypeDocument}
+        setDocumentsProcess={setDocumentsProcess}
+        documentsProcess={documentsProcess}
+        userResponsible={userResponsible}
+        typeResponsible={typeResponsible}
+        setTotalAttachDocuments={setTotalAttachDocuments}
+        setTotalExpectedDocuments={setTotalExpectedDocuments}
+        setCompletedStages={setCompletedStages}
+      />
+    </div>
+  </>
+);
+
+
 };
 
 export default AddProcess;

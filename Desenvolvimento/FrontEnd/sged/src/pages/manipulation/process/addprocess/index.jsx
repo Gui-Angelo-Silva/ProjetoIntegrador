@@ -536,108 +536,110 @@ const AddProcess = () => {
   }, [stages, completedStages, totalExpectedDocuments, totalAttachDocuments]);
 
   // Componente ProgressRow para as linhas de progresso
-const ProgressRow = ({ title, completed, total }) => (
-  <div className="grid grid-cols-4 items-center mt-2">
-    <p className="font-bold text-left">{title}</p> {/* Título da etapa */}
-    {["", "approved", "rejected"].map((type, index) => (
-      <div key={index} className="flex items-center justify-start gap-x-5"> {/* Alterado para justify-center */}
-        <div className="text-left"> {/* Removido w-16 para ser responsivo */}
-          <p>{completed} / {total}</p> {/* Contagem alinhada à direita */}
-        </div>
-        <ProgressBar
-          width={32}
-          backgroundColor="bg-gray-200"
-          primaryColor={type === "approved" ? "from-[#2BFF00]" : (type === "rejected" ? "from-[#FF000D]" : "from-[#65EBFF]")}
-          secondaryColor={type === "approved" ? "to-[#1BA100]" : (type === "rejected" ? "to-[#B20009]" : "to-[#00A9C2]")}
-          iconColor={type === "approved" ? "text-[#2BFF00]" : (type === "rejected" ? "text-[#FF000D]" : "text-[#65EBFF]")}
-          totalValue={total}
-          partialValue={completed}
-        />
-      </div>
-    ))}
-
-<hr className="border-t-2 border-gray-300 my-1 col-span-4" /> {/* Risco horizontal */}
-  </div>
-);
-
-return (
-  <>
-    <Breadcrumb pages={pages} />
-    <div className="mt-8">
-      <ProcessForm
-        realstate={realstate}
-        selectBox_Realstate={selectBox_Realstate}
-        list_Realstate={list_Realstate}
-        owner={owner}
-        taxpayer={taxpayer}
-        use={use}
-        occupation={occupation}
-        selectBox_TypesProcess={selectBox_TypesProcess}
-        list_TypesProcess={list_TypesProcess}
-        typeProcess={typeProcess}
-        process={process}
-        setProcess={setProcess}
-        engineer={engineer}
-        selectBox_Engineer={selectBox_Engineer}
-        list_Users={list_Users}
-        supervisor={supervisor}
-        selectBox_Supervisor={selectBox_Supervisor}
-        userResponsible={userResponsible}
-        selectBox_UserResponsible={selectBox_UserResponsible}
-        typeResponsible={typeResponsible}
-        userApprover={userApprover}
-        typeApprover={typeApprover}
-        PostAllDatas={PostAllDatas}
-      />
-
-      <hr className="my-10" />
-
-      {stages?.length > 0 && (
-        <div className="bg-white shadow-md rounded-lg mb-4">
-          <div className="bg-gray-300 rounded-t-lg p-4">
-            <h3 className="text-xl font-semibold">Progresso do Processo:</h3>
+  const ProgressRow = ({ title, completed, total }) => (
+    <div className="grid grid-cols-4 items-center mt-2">
+      <p className="font-bold text-left">{title}</p> {/* Título da etapa */}
+      {["", "approved", "rejected"].map((type, index) => (
+        <div key={index} className="flex items-center justify-start gap-x-5"> {/* Alterado para justify-center */}
+          <div className="text-left"> {/* Removido w-16 para ser responsivo */}
+            <p style={{ textAlign: 'right' }}>
+              {String(completed).padStart(3, '0')} / {String(total).padStart(3, '0')}
+            </p>
           </div>
+          <ProgressBar
+            width={32}
+            backgroundColor="bg-gray-200"
+            primaryColor={type === "approved" ? "from-[#2BFF00]" : (type === "rejected" ? "from-[#FF000D]" : "from-[#65EBFF]")}
+            secondaryColor={type === "approved" ? "to-[#1BA100]" : (type === "rejected" ? "to-[#B20009]" : "to-[#00A9C2]")}
+            iconColor={type === "approved" ? "text-[#2BFF00]" : (type === "rejected" ? "text-[#FF000D]" : "text-[#65EBFF]")}
+            totalValue={total}
+            partialValue={completed}
+          />
+        </div>
+      ))}
 
-          <div className="px-20 py-4">
-            {/* Título das colunas */}
-            <div className="grid grid-cols-4 text-left">
-              <p className="font-bold"></p> {/* Título da primeira coluna */}
-              <p className="font-bold">Concluído</p>
-              <p className="font-bold">Aprovado</p>
-              <p className="font-bold">Recusado</p>
+      <hr className="border-t-2 border-gray-300 my-1 col-span-4" /> {/* Risco horizontal */}
+    </div>
+  );
+
+  return (
+    <>
+      <Breadcrumb pages={pages} />
+      <div className="mt-8">
+        <ProcessForm
+          realstate={realstate}
+          selectBox_Realstate={selectBox_Realstate}
+          list_Realstate={list_Realstate}
+          owner={owner}
+          taxpayer={taxpayer}
+          use={use}
+          occupation={occupation}
+          selectBox_TypesProcess={selectBox_TypesProcess}
+          list_TypesProcess={list_TypesProcess}
+          typeProcess={typeProcess}
+          process={process}
+          setProcess={setProcess}
+          engineer={engineer}
+          selectBox_Engineer={selectBox_Engineer}
+          list_Users={list_Users}
+          supervisor={supervisor}
+          selectBox_Supervisor={selectBox_Supervisor}
+          userResponsible={userResponsible}
+          selectBox_UserResponsible={selectBox_UserResponsible}
+          typeResponsible={typeResponsible}
+          userApprover={userApprover}
+          typeApprover={typeApprover}
+          PostAllDatas={PostAllDatas}
+        />
+
+        <hr className="my-10" />
+
+        {stages?.length > 0 && (
+          <div className="bg-white shadow-md rounded-lg mb-4">
+            <div className="bg-gray-300 rounded-t-lg p-4">
+              <h3 className="text-xl font-semibold">Progresso do Processo:</h3>
             </div>
 
-            {/* Linhas de progresso */}
-            <ProgressRow
-              title="Etapas"
-              completed={completedStages}
-              total={stages.length}
-            />
-            <ProgressRow
-              title="Documentos"
-              completed={totalAttachDocuments}
-              total={totalExpectedDocuments}
-            />
-          </div>
-        </div>
-      )}
+            <div className="px-20 py-4">
+              {/* Título das colunas */}
+              <div className="grid grid-cols-4 text-left">
+                <p className="font-bold"></p> {/* Título da primeira coluna */}
+                <p className="font-bold">Concluído</p>
+                <p className="font-bold">Aprovado</p>
+                <p className="font-bold">Recusado</p>
+              </div>
 
-      <DocumentComponent
-        stages={stages}
-        typeDocumentStagesData={typeDocumentStagesData}
-        typeDocumentsData={typeDocumentsData}
-        fetchTypeDocument={fetchTypeDocument}
-        setDocumentsProcess={setDocumentsProcess}
-        documentsProcess={documentsProcess}
-        userResponsible={userResponsible}
-        typeResponsible={typeResponsible}
-        setTotalAttachDocuments={setTotalAttachDocuments}
-        setTotalExpectedDocuments={setTotalExpectedDocuments}
-        setCompletedStages={setCompletedStages}
-      />
-    </div>
-  </>
-);
+              {/* Linhas de progresso */}
+              <ProgressRow
+                title="Etapas"
+                completed={completedStages}
+                total={stages.length}
+              />
+              <ProgressRow
+                title="Documentos"
+                completed={totalAttachDocuments}
+                total={totalExpectedDocuments}
+              />
+            </div>
+          </div>
+        )}
+
+        <DocumentComponent
+          stages={stages}
+          typeDocumentStagesData={typeDocumentStagesData}
+          typeDocumentsData={typeDocumentsData}
+          fetchTypeDocument={fetchTypeDocument}
+          setDocumentsProcess={setDocumentsProcess}
+          documentsProcess={documentsProcess}
+          userResponsible={userResponsible}
+          typeResponsible={typeResponsible}
+          setTotalAttachDocuments={setTotalAttachDocuments}
+          setTotalExpectedDocuments={setTotalExpectedDocuments}
+          setCompletedStages={setCompletedStages}
+        />
+      </div>
+    </>
+  );
 
 
 };

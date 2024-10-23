@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
-
 import { User } from '@phosphor-icons/react';
 
 const DocumentModal = ({
@@ -9,7 +8,7 @@ const DocumentModal = ({
   onSave,
   formMode,
   documentId,
-
+  stageId,
   typeDocumentStage,
   typeDocument,
   userResponsible,
@@ -26,18 +25,17 @@ const DocumentModal = ({
 
   const prepareDataForSave = async () => {
     const documentData = {
-      documentId,
       identificationNumber: identificationNumber || "",
       documentDescription: documentDescription || "",
       documentObservation: documentObservation || "",
-      arquive: arquive ? arquive : null, // arquivo salvo
-      status: 2,
+      arquive: arquive ? arquive : null, // Arquivo do documento
+      status: documentStatus || 2,
       idTypeDocumentStage: idTypeDocument || 0,
       idUserResponsible: idUserResponsible || null,
     };
-
-    await onSave(documentId, documentData);
-  };
+  
+    await onSave(documentId, stageId, documentData); // Enviando dados corretos
+  };  
 
   useEffect(() => {
     if (userResponsible?.id) {

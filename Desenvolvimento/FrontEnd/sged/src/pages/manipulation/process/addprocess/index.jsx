@@ -523,42 +523,87 @@ const AddProcess = () => {
     });
   }, [stages]);
 
-  const [totalAttachDocuments, setTotalAttachDocuments] = useState(0); // Estado para o total de documentos anexados
-  const [totalExpectedDocuments, setTotalExpectedDocuments] = useState(0); // Estado para o total de documentos anexados
-  const [completedStages, setCompletedStages] = useState(0); // Estado para o total de etapas concluídas
+  const [stagesMap, setStagesMap] = useState({ total: stages.length, pending: 0, attach: 0, analysis: 0, approved: 0, reject: 0 });
+  const [documentsMap, setDocumentsMap] = useState({ total: 0, pending: 0, attach: 0, analysis: 0, approved: 0, reject: 0 });
+
+  useEffect(() => {
+    // Mapeamento dos status dos documentos
+    const newDocumentsMap = documentsProcess.reduce((acc, doc) => {
+      switch (doc.status) {
+        case 4: // Attached
+          acc.attach += 1;
+          break;
+        case 5: // InAnalysis
+          acc.analysis += 1;
+          break;
+        case 6: // Approved
+          acc.approved += 1;
+          break;
+        case 7: // Disapproved
+          acc.reject += 1;
+          break;
+        default:
+          break; // Adicione uma cláusula padrão, se necessário
+      }
+
+      return acc;
+    }, { total: 0, pending: 0, attach: 0, analysis: 0, approved: 0, reject: 0 });
+
+    // Atualiza o estado mantendo total e pending
+    setDocumentsMap(prevState => ({
+      ...prevState,
+      attach: newDocumentsMap.attach,
+      analysis: newDocumentsMap.analysis,
+      approved: newDocumentsMap.approved,
+      reject: newDocumentsMap.reject
+    }));
+  }, [documentsProcess]);  // Atualiza sempre que documentsProcess mudar
+
+  useEffect(() => {
+    setDocumentsMap(prevState => ({
+      ...prevState,
+      pending: prevState.total - (prevState.attach + prevState.analysis + prevState.approved + prevState.reject)
+    }));
+  }, [documentsMap.total, documentsMap.attach, documentsMap.analysis, documentsMap.approved, documentsMap.reject]);
+
+  // UseEffect to reset data whenever typeProcess.id changes
+  useEffect(() => {
+    if (typeProcess.id) {
+      setDocumentsProcess([]);
+      setStagesMap({ total: 0, pending: 0, attach: 0, analysis: 0, approved: 0, reject: 0 });
+      setDocumentsMap({ total: 0, pending: 0, attach: 0, analysis: 0, approved: 0, reject: 0 });
+    }
+  }, [typeProcess.id]);
 
   // Chame a função para buscar os documentos das etapas, conforme necessário
   useEffect(() => {
-    console.log("Total Etapas: ", stages.length);
-    console.log("Etapas Concluídas: ", completedStages);
-    console.log("Total Documentos: ", totalExpectedDocuments);
-    console.log("Documentos Concluídos: ", totalAttachDocuments);
-  }, [stages, completedStages, totalExpectedDocuments, totalAttachDocuments]);
+    console.log("Etapas: ", stagesMap);
+    console.log("Documentos: ", documentsMap);
+  }, [stagesMap, documentsMap]);
 
   // Componente ProgressRow para as linhas de progresso
-  const ProgressRow = ({ title, completed, total }) => (
-    <div className="grid grid-cols-4 items-center mt-2">
-      <p className="font-bold text-left">{title}</p> {/* Título da etapa */}
-      {["", "approved", "rejected"].map((type, index) => (
-        <div key={index} className="flex items-center justify-start gap-x-5"> {/* Alterado para justify-center */}
-          <div className="text-left"> {/* Removido w-16 para ser responsivo */}
+  const ProgressRow = ({ title, data }) => (
+    <div className="grid grid-cols-5 items-center mt-2">
+      <p className="font-bold text-left">{title}</p>
+      {["pending", "attach", "approved", "reject"].map((type, index) => (
+        <div key={index} className="flex items-center justify-start gap-x-5">
+          <div className="text-left">
             <p style={{ textAlign: 'right' }}>
-              {String(completed).padStart(3, '0')} / {String(total).padStart(3, '0')}
+              {String(data[type]).padStart(3, '_')} / {String(data.total).padStart(3, '_')}
             </p>
           </div>
           <ProgressBar
-            width={32}
+            width={24}
             backgroundColor="bg-gray-200"
-            primaryColor={type === "approved" ? "from-[#2BFF00]" : (type === "rejected" ? "from-[#FF000D]" : "from-[#65EBFF]")}
-            secondaryColor={type === "approved" ? "to-[#1BA100]" : (type === "rejected" ? "to-[#B20009]" : "to-[#00A9C2]")}
-            iconColor={type === "approved" ? "text-[#2BFF00]" : (type === "rejected" ? "text-[#FF000D]" : "text-[#65EBFF]")}
-            totalValue={total}
-            partialValue={completed}
+            primaryColor={type === "approved" ? "from-[#2BFF00]" : (type === "reject" ? "from-[#FF000D]" : (type === "pending" ? "from-[#A3A3A3]" : "from-[#65EBFF]"))}
+            secondaryColor={type === "approved" ? "to-[#1BA100]" : (type === "reject" ? "to-[#B20009]" : (type === "pending" ? "to-[#585858]" : "to-[#00A9C2]"))}
+            iconColor={type === "approved" ? "text-[#2BFF00]" : (type === "reject" ? "text-[#FF000D]" : (type === "pending" ? "text-[#A3A3A3]" : "text-[#65EBFF]"))}
+            totalValue={data.total}
+            partialValue={(type === "attach" ? data[type] + data.analysis : data[type])}
           />
         </div>
       ))}
-
-      <hr className="border-t-2 border-gray-300 my-1 col-span-4" /> {/* Risco horizontal */}
+      <hr className="border-t-2 border-gray-300 my-1 col-span-4" />
     </div>
   );
 
@@ -595,48 +640,48 @@ const AddProcess = () => {
         <hr className="my-10" />
 
         {stages?.length > 0 && (
-          <div className="bg-white shadow-md rounded-lg mb-4">
-            <div className="bg-gray-300 rounded-t-lg p-4">
-              <h3 className="text-xl font-semibold">Progresso do Processo:</h3>
-            </div>
-
-            <div className="px-20 py-4">
-              {/* Título das colunas */}
-              <div className="grid grid-cols-4 text-left">
-                <p className="font-bold"></p> {/* Título da primeira coluna */}
-                <p className="font-bold">Concluído</p>
-                <p className="font-bold">Aprovado</p>
-                <p className="font-bold">Recusado</p>
+          <>
+            <div className="bg-white shadow-md rounded-lg mb-4">
+              <div className="bg-gray-300 rounded-t-lg p-4">
+                <h3 className="text-xl font-semibold">Progresso do Processo:</h3>
               </div>
 
-              {/* Linhas de progresso */}
-              <ProgressRow
-                title="Etapas"
-                completed={completedStages}
-                total={stages.length}
-              />
-              <ProgressRow
-                title="Documentos"
-                completed={totalAttachDocuments}
-                total={totalExpectedDocuments}
-              />
-            </div>
-          </div>
-        )}
+              <div className="px-20 py-4">
+                {/* Título das colunas */}
+                <div className="grid grid-cols-5 text-left">
+                  <p className="font-bold"></p> {/* Título da primeira coluna */}
+                  <p className="font-bold">Pendente</p>
+                  <p className="font-bold">Concluído</p>
+                  <p className="font-bold">Aprovado</p>
+                  <p className="font-bold">Recusado</p>
+                </div>
 
-        <DocumentComponent
-          stages={stages}
-          typeDocumentStagesData={typeDocumentStagesData}
-          typeDocumentsData={typeDocumentsData}
-          fetchTypeDocument={fetchTypeDocument}
-          setDocumentsProcess={setDocumentsProcess}
-          documentsProcess={documentsProcess}
-          userResponsible={userResponsible}
-          typeResponsible={typeResponsible}
-          setTotalAttachDocuments={setTotalAttachDocuments}
-          setTotalExpectedDocuments={setTotalExpectedDocuments}
-          setCompletedStages={setCompletedStages}
-        />
+                {/* Linhas de progresso */}
+                <ProgressRow
+                  title="Etapas"
+                  data={stagesMap}
+                />
+                <ProgressRow
+                  title="Documentos"
+                  data={documentsMap}
+                />
+              </div>
+            </div>
+
+            <DocumentComponent
+              stages={stages}
+              typeDocumentStagesData={typeDocumentStagesData}
+              typeDocumentsData={typeDocumentsData}
+              fetchTypeDocument={fetchTypeDocument}
+              setDocumentsProcess={setDocumentsProcess}
+              documentsProcess={documentsProcess}
+              userResponsible={userResponsible}
+              typeResponsible={typeResponsible}
+              setStagesMap={setStagesMap}
+              setDocumentsMap={setDocumentsMap}
+            />
+          </>
+        )}
       </div>
     </>
   );

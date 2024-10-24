@@ -7,20 +7,16 @@ const DocumentModal = ({
   onClose,
   onSave,
   formMode,
-  documentId,
-  stageId,
-  typeDocumentStage,
-  typeDocument,
+  idTypeDocumentStage, // Alterado para idTypeDocumentStage
   userResponsible,
+  typeDocument,
   typeResponsible
 }) => {
-  const [idDocumentProcess, setIdDocumentProcess] = useState("");
   const [identificationNumber, setIdentificationNumber] = useState("");
   const [documentDescription, setDocumentDescription] = useState("");
   const [documentObservation, setDocumentObservation] = useState("");
   const [arquive, setArquive] = useState(null);
-  const [documentStatus, setDocumentStatus] = useState(0);
-  const [idTypeDocument, setIdTypeDocument] = useState(0);
+  const [documentStatus, setDocumentStatus] = useState(4);
   const [idUserResponsible, setIdUserResponsible] = useState(0);
 
   const prepareDataForSave = async () => {
@@ -29,13 +25,13 @@ const DocumentModal = ({
       documentDescription: documentDescription || "",
       documentObservation: documentObservation || "",
       arquive: arquive ? arquive : null, // Arquivo do documento
-      status: documentStatus || 2,
-      idTypeDocumentStage: idTypeDocument || 0,
+      status: documentStatus || 4,
+      idTypeDocumentStage: idTypeDocumentStage || 0, // Usando o idTypeDocumentStage correto
       idUserResponsible: idUserResponsible || null,
     };
-  
-    await onSave(documentId, stageId, documentData); // Enviando dados corretos
-  };  
+
+    await onSave(idTypeDocumentStage, documentData); // Passando idTypeDocumentStage e dados
+  };
 
   useEffect(() => {
     if (userResponsible?.id) {
@@ -44,10 +40,15 @@ const DocumentModal = ({
   }, [userResponsible]);
 
   useEffect(() => {
-    if (typeDocumentStage?.id) {
-      setIdTypeDocument(typeDocumentStage.id);
+    if (!isOpen) {
+      setIdentificationNumber("");
+      setDocumentDescription("");
+      setDocumentObservation("");
+      setArquive(null);
+      setDocumentStatus(0);
+      setIdUserResponsible(0);
     }
-  }, [typeDocumentStage]);
+  }, [isOpen]);
 
   return (
     <Modal isOpen={isOpen} toggle={onClose}>
@@ -56,9 +57,6 @@ const DocumentModal = ({
       </ModalHeader>
       <ModalBody>
         <div className="mt-2">
-          <h1 className="text-lg text-gray-700">Id:</h1>
-          <input type="text" className="rounded-sm border-[#e5e7eb]" value={idDocumentProcess} disabled />
-
           <h1 className="text-lg text-gray-700">Número de Identificação: <span className="text-red-600">*</span></h1>
           <input
             type="text"
@@ -108,7 +106,7 @@ const DocumentModal = ({
 
           {/* Funcionário Responsável */}
           <h1 className="text-lg text-gray-700">Responsável:</h1>
-          {userResponsible.imagemPessoa ? (
+          {userResponsible?.imagemPessoa ? (
             <img className="h-[50px] w-[50px]" src={userResponsible.imagemPessoa} alt="Responsável" />
           ) : (
             <User size={50} />
@@ -117,19 +115,19 @@ const DocumentModal = ({
             type="text"
             disabled
             className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
-            value={userResponsible.nomePessoa || ''}
+            value={userResponsible?.nomePessoa || ''}
           />
           <input
             type="text"
             disabled
             className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
-            value={userResponsible.emailPessoa || ''}
+            value={userResponsible?.emailPessoa || ''}
           />
           <input
             type="text"
             disabled
             className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
-            value={typeResponsible.nomeTipoUsuario || ''}
+            value={typeResponsible?.nomeTipoUsuario || ''}
           />
         </div>
       </ModalBody>

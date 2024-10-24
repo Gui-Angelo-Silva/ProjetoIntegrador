@@ -26,6 +26,7 @@ import InstallationClass from '../../../object/class/installation';
 import ActionManager from '../../../object/modules/action';
 import CompareModule from '../../../object/modules/compare';
 import SelectModule from '../../../object/modules/select';
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function Installation() {
 
@@ -83,8 +84,6 @@ export default function Installation() {
 
             setUpdateData(false);
         }
-
-        list.searchBy ? null : list.setSearchBy('dataInstalacao');
     }, [updateData]);
 
     useEffect(() => {
@@ -321,14 +320,13 @@ export default function Installation() {
             </div>}
             <>
                 <Breadcrumb pages={pages} />
-                <SearchBar
-                    placeholder="Pesquisar Instalacao"
-                    onSearchChange={(value) => list.handleSearch(value)}
-                    onSearchByChange={(value) => list.handleSearchBy(value)}
-                    options={[
+                <MultiSearchBar
+                    maxSearchBars={2}
+                    searchOptions={[
                         { label: 'Data', value: 'dataInstalacao' },
                         { label: 'Situação', value: 'situacaoInstalacao' },
                     ]}
+                    setSearchDictionary={list.setSearchDictionary}
                     button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
                 />
                 <CustomTable

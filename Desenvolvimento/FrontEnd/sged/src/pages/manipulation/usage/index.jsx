@@ -24,6 +24,7 @@ import ListModule from '../../../object/modules/list';
 import UsageClass from '../../../object/class/usage';
 import ActionManager from '../../../object/modules/action';
 import CompareModule from '../../../object/modules/compare';
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function Usage() {
 
@@ -67,8 +68,6 @@ export default function Usage() {
             openCloseModalEdit(false);
             openCloseModalDelete(false);
         }
-
-        list.searchBy ? null : list.setSearchBy('nomeUso');
     }, [updateData]);
 
     /*useEffect(() => {
@@ -250,14 +249,13 @@ export default function Usage() {
             </div>}
             <>
                 <Breadcrumb pages={pages} />
-                <SearchBar
-                    placeholder="Pesquisar Uso"
-                    onSearchChange={(value) => list.handleSearch(value)}
-                    onSearchByChange={(value) => list.handleSearchBy(value)}
-                    options={[
+                <MultiSearchBar
+                    maxSearchBars={2}
+                    searchOptions={[
                         { label: 'Nome', value: 'nomeUso' },
                         { label: 'Descrição', value: 'descricaoUso' },
                     ]}
+                    setSearchDictionary={list.setSearchDictionary}
                     button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
                 />
                 <CustomTable

@@ -24,6 +24,7 @@ import ListModule from '../../../object/modules/list';
 import TypeInfrastructureClass from '../../../object/class/typeinfrastructure';
 import ActionManager from '../../../object/modules/action';
 import CompareModule from '../../../object/modules/compare';
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function TypeInfrastructure() {
 
@@ -68,7 +69,6 @@ export default function TypeInfrastructure() {
             openCloseModalDelete(false);
         }
 
-        list.searchBy ? null : list.setSearchBy('nomeTipoInfraestrutura');
     }, [updateData]);
 
     /*useEffect(() => {
@@ -250,16 +250,16 @@ export default function TypeInfrastructure() {
             </div>}
             <>
                 <Breadcrumb pages={pages} />
-                <SearchBar
-                    placeholder="Pesquisar Tipo Infraestrutura"
-                    onSearchChange={(value) => list.handleSearch(value)}
-                    onSearchByChange={(value) => list.handleSearchBy(value)}
-                    options={[
+                <MultiSearchBar
+                    maxSearchBars={2}
+                    searchOptions={[
                         { label: 'Nome', value: 'nomeTipoInfraestrutura' },
                         { label: 'Descrição', value: 'descricaoTipoInfraestrutura' },
                     ]}
+                    setSearchDictionary={list.setSearchDictionary}
                     button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
                 />
+                
                 <CustomTable
                     totalColumns={3}
                     headers={["Nome", "Descrição", "Ações"]}

@@ -41,8 +41,6 @@ export default function Citizen() {
     const [modalDelete, setModalDelete] = useState(false);
     const [updateData, setUpdateData] = useState(true);
     const [inOperation, setInOperation] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(0);
-    const [scheduleRequest, setScheduleRequest] = useState(false);
 
     const pages = [
         { name: 'Cadastros', link: '/cadastros', isEnabled: true },

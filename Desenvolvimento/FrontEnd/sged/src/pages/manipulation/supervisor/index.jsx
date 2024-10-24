@@ -22,6 +22,7 @@ import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
 import SupervisorClass from '../../../object/class/supervisor';
 import SelectModule from '../../../object/modules/select';
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function Supervisor() {
 
@@ -143,8 +144,6 @@ export default function Supervisor() {
             GetSupervisor();
             setUpdateData(false);
         }
-
-        if (!list.searchBy) list.setSearchBy('nomePessoa');
     }, [updateData]);
 
     const dataForTable = list.currentList.map((fiscal) => {
@@ -186,7 +185,19 @@ export default function Supervisor() {
             </div>}
             <>
                 <Breadcrumb pages={pages} />
-                <div className="flex items-center">
+
+                <MultiSearchBar 
+                    maxSearchBars={2}
+                    searchOptions={[
+                        { label: 'Nome', value: 'nomePessoa' },
+                        { label: 'Email', value: 'emailPessoa' },
+                        { label: 'CPF / CNPJ', value: 'cpfCnpjPessoa' },
+                        { label: 'RG / IE', value: 'rgIePessoa' },
+                    ]}
+                    setSearchDictionary={list.setSearchDictionary}
+                    button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
+                />
+                {/* <div className="flex items-center">
                     <div className="flex justify-center items-center mx-auto w-[450px]">
                         <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
                             <div className="pl-2">
@@ -212,7 +223,7 @@ export default function Supervisor() {
                     <div className="flex items-center">
                         <RegistrationButton action={() => openCloseModalInsert(true)} />
                     </div>
-                </div>
+                </div> */}
 
                 <CustomTable
                     totalColumns={6}

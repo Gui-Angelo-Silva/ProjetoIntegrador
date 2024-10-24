@@ -25,6 +25,8 @@ import InfrastructureClass from '../../../object/class/infrastructure';
 import ActionManager from '../../../object/modules/action';
 import CompareModule from '../../../object/modules/compare';
 import SelectModule from '../../../object/modules/select';
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 
 export default function Infrastructure() {
 
@@ -35,7 +37,7 @@ export default function Infrastructure() {
 
     // Marking the assembled component
     const montage = useMontage();
-    
+
     useEffect(() => {
         montage.componentMounted();
     }, []);
@@ -74,8 +76,6 @@ export default function Infrastructure() {
 
             setUpdateData(false);
         }
-
-        list.searchBy ? null : list.setSearchBy('nomeInfraestrutura');
     }, [updateData]);
 
     useEffect(() => {
@@ -277,14 +277,13 @@ export default function Infrastructure() {
                 ))}
             </div>}
             <>
-            <Breadcrumb pages={pages} />
-                <SearchBar
-                    placeholder="Pesquisar Infraestrutura"
-                    onSearchChange={(value) => list.handleSearch(value)}
-                    onSearchByChange={(value) => list.handleSearchBy(value)}
-                    options={[
+                <Breadcrumb pages={pages} />
+                <MultiSearchBar
+                    maxSearchBars={2}
+                    searchOptions={[
                         { label: 'Nome', value: 'nomeInfraestrutura' }
                     ]}
+                    setSearchDictionary={list.setSearchDictionary}
                     button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
                 />
                 <CustomTable

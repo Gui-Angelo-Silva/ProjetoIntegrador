@@ -6,7 +6,7 @@ import TableHeader from './TableHeader';
 
 const CustomTable = ({ totalColumns, headers, data, onPageChange, currentPage, totalPages, enableSpacing }) => {
   return (
-    <div className={`min-w-[900px] rounded-[20px] border-1 border-[#C8E5E5] ${enableSpacing ? 'mt-0' : 'mt-10'}`}>
+    <div className={`w-full rounded-[20px] border-1 border-[#C8E5E5] ${enableSpacing ? 'mt-0' : 'mt-10'}`}>
       <TableHeader headers={headers} totalColumns={totalColumns} />
       <ul className="w-full">
         {data.map((item, index) => (

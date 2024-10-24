@@ -24,6 +24,7 @@ import ListModule from '../../../object/modules/list';
 import TopographyClass from '../../../object/class/topography';
 import ActionManager from '../../../object/modules/action';
 import CompareModule from '../../../object/modules/compare';
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function Topography() {
 
@@ -67,8 +68,6 @@ export default function Topography() {
             openCloseModalEdit(false);
             openCloseModalDelete(false);
         }
-
-        list.searchBy ? null : list.setSearchBy('nomeTopografia');
     }, [updateData]);
 
     /*useEffect(() => {
@@ -249,13 +248,12 @@ export default function Topography() {
             </div>}
             <>
                 <Breadcrumb pages={pages} />
-                <SearchBar
-                    placeholder="Pesquisar Topografia"
-                    onSearchChange={(value) => list.handleSearch(value)}
-                    onSearchByChange={(value) => list.handleSearchBy(value)}
-                    options={[
+                <MultiSearchBar
+                    maxSearchBars={2}
+                    searchOptions={[
                         { label: 'Nome', value: 'nomeTopografia' }
                     ]}
+                    setSearchDictionary={list.setSearchDictionary}
                     button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
                 />
                 <CustomTable

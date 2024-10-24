@@ -21,6 +21,7 @@ import { useMontage } from "../../../object/modules/montage";
 import ConnectionService from "../../../object/service/connection";
 import ListModule from "../../../object/modules/list";
 import TypeProcessClass from "../../../object/class/typeprocess";
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function TypeProcess() {
 
@@ -134,8 +135,6 @@ export default function TypeProcess() {
             GetTypeProcess();
             setUpdateData(false);
         }
-
-        list.searchBy ? null : list.setSearchBy('nomeTipoProcesso');
     }, [updateData]);
 
     const dataForTable = list.currentList.map((tipoprocesso) => {
@@ -168,27 +167,15 @@ export default function TypeProcess() {
             </div>}
             <>
                 <Breadcrumb pages={pages} />
-                <div className="flex items-center">
-                    <div className="flex justify-center items-center mx-auto w-[450px]">
-                        <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
-                            <div className="pl-2">
-                                <Search />
-                            </div>
-                            <input type="search" id="default-search" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar tipo processo" required onChange={(e) => list.handleSearch(e.target.value)} />
-                            <select className="form-control w-28 text-gray-800 h-full cursor-pointer" onChange={(e) => list.handleSearchBy(e.target.value)} >
-                                <option key="nomeTipoProcesso" value="nomeTipoProcesso">
-                                    Tipo Processo
-                                </option>
-                                <option key="descricaoTipoProcesso" value="descricaoTipoProcesso">
-                                    Descrição
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="flex items-center">
-                        <RegistrationButton action={() => openCloseModalInsert(true)} />
-                    </div>
-                </div>
+                <MultiSearchBar
+                    maxSearchBars={2}
+                    searchOptions={[
+                        { label: 'Nome', value: 'nomeTipoProcesso' },
+                        { label: 'Descrição', value: 'descricaoTipoProcesso' },
+                    ]}
+                    setSearchDictionary={list.setSearchDictionary}
+                    button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
+                />
                 <CustomTable
                     totalColumns={3}
                     headers={["Tipo Processo", "Descrição", "Ações"]}

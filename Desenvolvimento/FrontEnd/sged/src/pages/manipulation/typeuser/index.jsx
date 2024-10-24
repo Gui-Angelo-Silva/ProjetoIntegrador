@@ -19,6 +19,7 @@ import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
 import TypeUserClass from '../../../object/class/typeuser';
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function TypeUser() {
 
@@ -137,8 +138,6 @@ export default function TypeUser() {
             GetTypeUser();
             setUpdateData(false);
         }
-
-        list.searchBy ? null : list.setSearchBy('nomeTipoUsuario');
     }, [updateData]);
 
     const dataForTable = list.currentList.map((tipousuario) => {
@@ -172,7 +171,17 @@ export default function TypeUser() {
             </div>}
             <>
                 <Breadcrumb pages={pages} />
-                <div className="flex items-center">
+                <MultiSearchBar 
+                    maxSearchBars={2}
+                    searchOptions={[
+                        { label: 'Tipo de Usuário', value: 'nomeTipoUsuario'},
+                        { label: 'Nível de Acesso', value: 'nivelAcesso'},
+                        { label: 'Descrição', value: 'descricaoTipoUsuario'}
+                    ]}
+                    setSearchDictionary={list.setSearchDictionary}
+                    button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
+                />
+                {/* <div className="flex items-center">
                     <div className="flex justify-center items-center mx-auto w-[450px]">
                         <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
                             <div className="pl-2">
@@ -195,7 +204,7 @@ export default function TypeUser() {
                     <div className="flex items-center">
                         <RegistrationButton action={() => openCloseModalInsert(true)} />
                     </div>
-                </div>
+                </div> */}
                 <CustomTable
                     totalColumns={4}
                     headers={["Tipo Usuário", "Nível de Acesso", "Descrição", "Ações"]}

@@ -24,6 +24,7 @@ import ListModule from '../../../object/modules/list';
 import CurrentOccupationClass from '../../../object/class/currentoccupation';
 import ActionManager from '../../../object/modules/action';
 import CompareModule from '../../../object/modules/compare';
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function CurrentOccupation() {
 
@@ -67,8 +68,6 @@ export default function CurrentOccupation() {
             openCloseModalEdit(false);
             openCloseModalDelete(false);
         }
-
-        list.searchBy ? null : list.setSearchBy('nomeOcupacaoAtual');
     }, [updateData]);
 
     /*useEffect(() => {
@@ -250,14 +249,13 @@ export default function CurrentOccupation() {
             </div>}
             <>
                 <Breadcrumb pages={pages} />
-                <SearchBar
-                    placeholder="Pesquisar Ocupação Atual"
-                    onSearchChange={(value) => list.handleSearch(value)}
-                    onSearchByChange={(value) => list.handleSearchBy(value)}
-                    options={[
+                <MultiSearchBar
+                    maxSearchBars={2}
+                    searchOptions={[
                         { label: 'Nome', value: 'nomeOcupacaoAtual' },
                         { label: 'Descrição', value: 'descricaoOcupacaoAtual' },
                     ]}
+                    setSearchDictionary={list.setSearchDictionary}
                     button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
                 />
                 <CustomTable

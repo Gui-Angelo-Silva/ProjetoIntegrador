@@ -19,6 +19,7 @@ import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
 import TypePublicPlaceClass from "../../../object/class/typepublicplace";
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function TypePublicPlace() {
 
@@ -137,8 +138,6 @@ export default function TypePublicPlace() {
             GetTypePublicPlace();
             setUpdateData(false);
         }
-
-        list.searchBy ? null : list.setSearchBy('codigoInformativo');
     }, [updateData]);
 
     const dataForTable = list.currentList.map((tipologradouro) => {
@@ -171,27 +170,15 @@ export default function TypePublicPlace() {
             </div>}
             <>
                 <Breadcrumb pages={pages} />
-                <div className="flex items-center">
-                    <div className="flex justify-center items-center mx-auto w-[450px]">
-                        <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
-                            <div className="pl-2">
-                                <Search />
-                            </div>
-                            <input type="search" id="default-search" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar tipo logradouro" required onChange={(e) => list.handleSearch(e.target.value)} />
-                            <select className="form-control w-28 text-gray-800 h-full cursor-pointer" onChange={(e) => list.handleSearchBy(e.target.value)} >
-                                <option key="codigoInformativo" value="codigoInformativo">
-                                    Código
-                                </option>
-                                <option key="descricao" value="descricao">
-                                    Descrição
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="flex items-center">
-                        <RegistrationButton action={() => openCloseModalInsert(true)} />
-                    </div>
-                </div>
+                <MultiSearchBar
+                    maxSearchBars={2}
+                    searchOptions={[
+                        { label: 'Código', value: 'codigoInformativo' },
+                        { label: 'Descrição', value: 'descricao' },
+                    ]}
+                    setSearchDictionary={list.setSearchDictionary}
+                    button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
+                />
                 <CustomTable
                     totalColumns={3}
                     headers={["Codigo Informativo", "Descrição", "Ações"]}

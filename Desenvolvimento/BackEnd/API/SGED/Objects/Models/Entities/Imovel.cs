@@ -66,6 +66,10 @@ namespace SGED.Objects.Models.Entities
         [Column("idocupacaoatual")]
         public int IdOcupacaoAtual { get; set; }
 
+        //public CondicaoSolo? CondicaoSolo { get; set; }
+        
+        //[Column("idcondicaosolo")]
+        //public int IdCondicaoSolo { get; set; }
 
         public ICollection<Processo>? Processos { get; set; }
         public ICollection<Instalacao>? Instalacoes { get; set; }

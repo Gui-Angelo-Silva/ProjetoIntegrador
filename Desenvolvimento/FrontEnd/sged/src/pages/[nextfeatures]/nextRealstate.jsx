@@ -278,7 +278,7 @@ const NextRealstate = () => {
             <div className='grid grid-cols-10 mt-8 gap-x-2 text-gray-500 border-gray-500'>
                 <div className='flex flex-col col-span-2 rounded-md'>
                     {realstate.realStateImage.length > 0 ? (
-                        <div className='relative'>
+                        <div className='relative max-h-[400px]'>
                             <img
                                 src={realstate.realStateImage[currentIndex]}
                                 alt={`Imagem ${currentIndex + 1}`}
@@ -308,7 +308,7 @@ const NextRealstate = () => {
                             )}
                         </div>
                     ) : (
-                        <div className='flex items-center justify-center h-full'>
+                        <div className='flex items-center justify-center h-full max-h-[400px]'>
                             <HouseLine size={48} />
                         </div>
                     )}

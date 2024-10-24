@@ -71,6 +71,9 @@ namespace SGED.Objects.DTO.Mappings
             CreateMap<InstalacaoDTO, Instalacao>();
             CreateMap<Instalacao, InstalacaoDTO>().ReverseMap();
 
+            CreateMap<CondicaoSoloDTO, CondicaoSolo>();
+            CreateMap<CondicaoSolo, CondicaoSoloDTO>().ReverseMap();
+
 
             // Objetos de Processo:
 

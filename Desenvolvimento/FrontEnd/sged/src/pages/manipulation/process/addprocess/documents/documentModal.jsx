@@ -7,7 +7,7 @@ const DocumentModal = ({
   onClose,
   onSave,
   formMode,
-  idTypeDocumentStage, // Alterado para idTypeDocumentStage
+  idTypeDocumentStage,
   userResponsible,
   typeDocument,
   typeResponsible
@@ -19,18 +19,24 @@ const DocumentModal = ({
   const [documentStatus, setDocumentStatus] = useState(4);
   const [idUserResponsible, setIdUserResponsible] = useState(0);
 
+  // Verificação se o formulário é válido
+  const isFormValid = identificationNumber.trim() !== "" &&
+                      documentDescription.trim() !== "" &&
+                      documentObservation.trim() !== "" &&
+                      arquive !== null;
+
   const prepareDataForSave = async () => {
     const documentData = {
       identificationNumber: identificationNumber || "",
       documentDescription: documentDescription || "",
       documentObservation: documentObservation || "",
-      arquive: arquive ? arquive : null, // Arquivo do documento
+      arquive: arquive ? arquive : null,
       status: documentStatus || 4,
-      idTypeDocumentStage: idTypeDocumentStage || 0, // Usando o idTypeDocumentStage correto
+      idTypeDocumentStage: idTypeDocumentStage || 0,
       idUserResponsible: idUserResponsible || null,
     };
 
-    await onSave(idTypeDocumentStage, documentData); // Passando idTypeDocumentStage e dados
+    await onSave(idTypeDocumentStage, documentData);
   };
 
   useEffect(() => {
@@ -69,7 +75,7 @@ const DocumentModal = ({
           <h1 className="text-lg text-gray-700">Documento:</h1>
           <input type="text" className="rounded-sm border-[#e5e7eb]" value={typeDocument?.nomeTipoDocumento} disabled />
 
-          <h1 className="text-lg text-gray-700">Descrição do Documento:</h1>
+          <h1 className="text-lg text-gray-700">Descrição do Documento: <span className="text-red-600">*</span></h1>
           <input
             type="text"
             className="rounded-sm border-[#e5e7eb]"
@@ -78,7 +84,7 @@ const DocumentModal = ({
             required
           />
 
-          <h1 className="text-lg text-gray-700">Observação do Documento:</h1>
+          <h1 className="text-lg text-gray-700">Observação do Documento: <span className="text-red-600">*</span></h1>
           <input
             type="text"
             className="rounded-sm border-[#e5e7eb]"
@@ -141,7 +147,8 @@ const DocumentModal = ({
         </button>
         <button
           onClick={prepareDataForSave}
-          className="w-[100px] px-2 py-2 rounded-md border border-[#b1b7b9] text-[#333] bg-[#58AFAE]"
+          className={`w-[100px] px-2 py-2 rounded-md border border-[#b1b7b9] text-[#333] ${isFormValid ? 'bg-[#58AFAE]' : 'bg-gray-300 cursor-not-allowed'}`}
+          disabled={!isFormValid} // Desabilitar se o formulário não for válido
         >
           {formMode === 'modifying' ? 'Alterar' : 'Salvar'}
         </button>

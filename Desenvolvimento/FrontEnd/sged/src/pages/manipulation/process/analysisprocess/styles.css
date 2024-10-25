@@ -1,0 +1,36 @@
+@keyframes slide-in-right {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slide-out-left {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+  
+  .slide-in {
+    animation: slide-in-right 3s forwards;
+  }
+  
+  .slide-out {
+    animation: slide-out-left 3s forwards;
+  }
+  
+  .image-container {
+    position: relative;
+    overflow: hidden;
+    width: 200px; /* Defina a largura conforme sua necessidade */
+    border: 2px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from 'react-router-dom';
 
 // Importa o arquivo CSS
 import "./styles.css";
@@ -24,8 +25,10 @@ const AddProcess = () => {
   const pages = [
     { name: "Documentos", link: "/administrador/documentos", isEnabled: true },
     { name: "Processo", link: "/administrador/documentos/processo", isEnabled: true },
-    { name: "Cadastro de Processo", link: "", isEnabled: false }, // Link desativado
+    { name: "Análise Processo", link: "", isEnabled: false }, // Link desativado
   ];
+
+  const { id } = useParams();
 
   // Services initialization --------------------------------------------------------------------------------------------------------------------------
   const connection = new ConnectionService();
@@ -54,6 +57,7 @@ const AddProcess = () => {
     approvationDate: "",
     processStatus: 0,
   });
+  const [processo, setProcesso] = useState({});
   const [documentsProcess, setDocumentsProcess] = useState([]);
 
   const [realstate, setRealstate] = useState({});
@@ -78,6 +82,67 @@ const AddProcess = () => {
 
 
   // Functions ----------------------------------------------------------------------------------------------------------------------------------------
+
+  // Imóvel
+  const GetProcess = async () => {
+    await connection.endpoint("Processo").data(id).get();
+    setProcesso(connection.getObject());
+  };
+
+  // Função para converter Base64 de volta para Uint8Array
+  function base64ToUint8Array(base64) {
+    const binaryString = atob(base64);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes;
+  }
+
+  // Função para recriar o arquivo a partir dos bytes
+  function recreateFileFromBytes(bytes, fileName, mimeType = "application/octet-stream") {
+    return new File([new Blob([bytes], { type: mimeType })], fileName);
+  }
+
+  // Função para traduzir e processar o documento
+  function translateDocument(document) {
+    return {
+      id: document.id || "",
+      documentIdentification: document.identificacaoDocumento || "NOT ATTACHED",
+      documentDescription: document.descricaoDocumento || "",
+      documentObservation: document.observacaoDocumento || "",
+      documentHash: document.hashDocumento || "",
+      arquive: document.arquivoDocumento ? base64ToUint8Array(document.arquivoDocumento) : null,
+      status: document.status || 0,
+      idProcess: document.idProcesso || "",
+      idTypeDocumentStage: document.idTipoDocumentoEtapa || 0,
+      idResponsible: document.idResponsavel || null,
+      idApprover: document.idAprovador || null,
+      fileName: document.fileName || "document",  // Nome do arquivo, se disponível
+      mimeType: document.mimeType || "application/octet-stream",  // Tipo MIME, se disponível
+    };
+  }
+
+  const GetDocuments = async (idProcess) => {
+    await connection.endpoint("DocumentoProcesso").action("GetByProcess").data(idProcess).get();
+    const documents = connection.getList();
+
+    const translatedDocuments = documents.map((document) => {
+      // Traduz as propriedades e recria o arquivo do documento
+      const translatedDoc = translateDocument(document);
+      if (translatedDoc.arquive) {
+        translatedDoc.file = recreateFileFromBytes(
+          translatedDoc.arquive,
+          translatedDoc.fileName,         // Nome do arquivo
+          translatedDoc.mimeType          // Tipo MIME
+        );
+      }
+      return translatedDoc;
+    });
+
+    setDocumentsProcess(translatedDocuments);
+  };
 
   // Imóvel
   const GetAllEnrollmentRegistrations = async () => {
@@ -207,6 +272,8 @@ const AddProcess = () => {
   }
 
   const PostAllDatas = async () => {
+    console.log(1);
+
     const documentList = await Promise.all(
       documentsProcess.map(async (data) => {
         const bytes = data.arquive ? await convertFileToBytes(data.arquive) : null;
@@ -227,6 +294,8 @@ const AddProcess = () => {
       })
     );
 
+    console.log(2);
+
     // Constrói o objeto de dados do processo
     const dataProcess = {
       identificacaoProcesso: process.identificationNumber,
@@ -242,19 +311,21 @@ const AddProcess = () => {
       idResponsavel: selectBox_UserResponsible.selectedOption.value || null,
       idAprovador: selectBox_UserApprover.selectedOption.value || null,
 
-      documentosProcessoDTO: documentList.length > 0 ? documentList : []
+      documentosProcessoDTOs: documentList.length > 0 ? documentList : []
     };
 
     console.log(dataProcess);
 
-    await connection.endpoint("Processo").action("PostAllDatas").post(dataProcess);
+    //await connection.endpoint("Processo").action("PostAllDatas").post(dataProcess);
   };
 
 
 
   // UseEffets ----------------------------------------------------------------------------------------------------------------------------------------
   useEffect(() => {
-    if (updateData) {
+    if (updateData && id) {
+      GetProcess();
+
       GetAllEnrollmentRegistrations();
       GetAllTypes();
       GetAllNamesUsers();
@@ -263,8 +334,54 @@ const AddProcess = () => {
 
       setUpdateData(false);
     }
-  }, [updateData]);
+  }, [updateData, id]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      setProcess({
+        identificationNumber: processo.identificacaoProcesso,
+        processSituation: processo.situacaoProcesso,
+        processDescription: processo.descricaoProcesso,
+        approvationDate: processo.dataAprovacao,
+        processStatus: processo.status
+      });
+
+      GetRealstate(processo.idImovel);
+      GetTypeProcess(processo.idTipoProcesso);
+
+      if (processo.idEngenheiro) GetEngineer(processo.idEngenheiro);
+      if (processo.idFiscal) GetSupervisor(processo.idFiscal);
+
+      // Funções que requerem await
+      try {
+        if (processo.idResponsavel) {
+          const userR = await GetUser(processo.idResponsavel);
+          setUserResponsible(userR);
+        }
+
+        if (processo.idAprovador) {
+          const userA = await GetUser(processo.idAprovador);
+          setUserApprover(userA);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar dados dos usuários:", error);
+      }
+    };
+
+    if (processo.id) fetchData();
+  }, [processo]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      GetDocuments(processo.id);
+    };
+
+    if (processo.id) fetchData();
+  }, [processo, typeProcess]);
+
+  useEffect(() => {
+    console.log(documentsProcess);
+  }, [documentsProcess]);
 
   // Imóvel
   useEffect(() => { // Para atualizar as opções do Select bem como o valor padrão selecionado
@@ -584,10 +701,16 @@ const AddProcess = () => {
     }
   }, [typeProcess.id]);
 
+  // UseEffect to reset data whenever typeProcess.id changes
+  useEffect(() => {
+    console.log("Etapas: ", stagesMap);
+    console.log("Documentos: ", documentsMap);
+  }, [stagesMap, documentsMap]);
+
   const ProgressRow = ({ title, data }) => (
-    <div className="grid grid-cols-5 items-center mt-2">
+    <div className="grid grid-cols-6 items-center mt-2">
       <p className="font-bold text-left">{title}</p>
-      {["pending", "attach", "approved", "reject"].map((type, index) => (
+      {["pending", "attach", "analysis", "approved", "reject"].map((type, index) => (
         <div key={index} className="flex items-center justify-start gap-x-5">
           <div className="text-left">
             <p style={{ textAlign: 'right' }}>
@@ -605,17 +728,17 @@ const AddProcess = () => {
           <ProgressBar
             width={24}
             backgroundColor="bg-gray-200"
-            primaryColor={type === "approved" ? "from-[#2BFF00]" : (type === "reject" ? "from-[#FF000D]" : (type === "pending" ? "from-[#A3A3A3]" : "from-[#65EBFF]"))}
-            secondaryColor={type === "approved" ? "to-[#1BA100]" : (type === "reject" ? "to-[#B20009]" : (type === "pending" ? "to-[#585858]" : "to-[#00A9C2]"))}
-            iconColor={type === "approved" ? "text-[#2BFF00]" : (type === "reject" ? "text-[#FF000D]" : (type === "pending" ? "text-[#A3A3A3]" : "text-[#65EBFF]"))}
+            primaryColor={type === "approved" ? "from-[#2BFF00]" : (type === "reject" ? "from-[#FF000D]" : (type === "pending" ? "from-[#A3A3A3]" : (type === "analysis" ? "from-[#CA87FF]" : "from-[#65EBFF]")))}
+            secondaryColor={type === "approved" ? "to-[#1BA100]" : (type === "reject" ? "to-[#B20009]" : (type === "pending" ? "to-[#585858]" : (type === "analysis" ? "to-[#7D00DF]" : "to-[#00A9C2]")))}
+            iconColor={type === "approved" ? "text-[#2BFF00]" : (type === "reject" ? "text-[#FF000D]" : (type === "pending" ? "text-[#A3A3A3]" : (type === "analysis" ? "text-[#CA87FF]" : "text-[#65EBFF]")))}
             totalValue={data.total}
-            partialValue={(type === "attach" ? data[type] + data.analysis : data[type])}
+            partialValue={data[type]}
           />
         </div>
       ))}
-      <hr className="border-t-2 border-gray-300 my-1 col-span-4" />
+      <hr className="border-t-2 border-gray-300 my-1 col-span-6" />
     </div>
-  );  
+  );
 
   return (
     <>
@@ -658,10 +781,11 @@ const AddProcess = () => {
 
               <div className="px-20 py-4">
                 {/* Título das colunas */}
-                <div className="grid grid-cols-5 text-left">
+                <div className="grid grid-cols-6 text-left">
                   <p className="font-bold"></p> {/* Título da primeira coluna */}
                   <p className="font-bold">Pendente</p>
                   <p className="font-bold">Concluído</p>
+                  <p className="font-bold">Em Análise</p>
                   <p className="font-bold">Aprovado</p>
                   <p className="font-bold">Recusado</p>
                 </div>

@@ -57,7 +57,7 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpGet("{id:int}", Name = "GetProcesso")]
+        [HttpGet("{id:Guid}", Name = "GetProcesso")]
         [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<ProcessoDTO>> Get(Guid id)
         {
@@ -145,7 +145,7 @@ namespace SGED.Controllers
                 await _processoService.Create(processoDTO);
 
                 await PercorrerDocumentosEtapa(
-                    tipoProcessoDTO.Id, // ID da Etapa (int)
+                    tipoProcessoDTO.Id, // ID da TipoProcesso (int)
                     processoDTO.Id, // ID do Processo (Guid)
                     processoDTO.IdResponsavel.HasValue ? processoDTO.IdResponsavel.Value : (int?)null, // ID do Responsável (int?)
                     processoDTO.DocumentosProcessoDTO // Coleção de Documentos (ICollection<DocumentoProcessoDTO>
@@ -204,7 +204,7 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:Guid}")]
         [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<ProcessoDTO>> Delete(Guid id)
         {
@@ -235,71 +235,76 @@ namespace SGED.Controllers
             }
         }
 
-        private async Task PercorrerDocumentosEtapa(int idEtapa, Guid idProcesso, int? idResponsavel, ICollection<DocumentoProcessoDTO> documentosProcesso)
+        private async Task PercorrerDocumentosEtapa(int idTipoProcesso, Guid idProcesso, int? idResponsavel, ICollection<DocumentoProcessoDTO> documentosProcesso)
         {
-            var documentosEtapaDTO = await _tipoDocumentoEtapaService.GetTypeDocumentStagesRelatedToStage(idEtapa);
+            var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(idTipoProcesso);
 
-            foreach (var documentoEtapa in documentosEtapaDTO)
+            foreach (var etapa in etapasDTO)
             {
-                var documentoProcesso = documentosProcesso.FirstOrDefault(dp => dp.IdTipoDocumentoEtapa == documentoEtapa.Id);
+                var documentosEtapaDTO = await _tipoDocumentoEtapaService.GetTypeDocumentStagesRelatedToStage(etapa.Id);
 
-                if (documentoProcesso != null) // Se o documento foi declarado
+                foreach (var documentoEtapa in documentosEtapaDTO)
                 {
-                    documentoProcesso.IdProcesso = idProcesso;
-                    documentoProcesso.IdResponsavel = idResponsavel;
+                    var documentoProcesso = documentosProcesso.FirstOrDefault(dp => dp.IdTipoDocumentoEtapa == documentoEtapa.Id);
 
-                    // Verifica se ArquivoDocumento não está vazio e se o tipo é PDF
-                    if (documentoProcesso.ArquivoDocumento != null && documentoProcesso.ArquivoDocumento.Length > 0)
+                    if (documentoProcesso != null) // Se o documento foi declarado
                     {
-                        // Verifica se é PDF
-                        bool isPDF = documentoProcesso.IsPDF();
+                        documentoProcesso.IdProcesso = idProcesso;
+                        documentoProcesso.IdResponsavel = idResponsavel;
 
-                        if (isPDF) // Se for PDF
+                        // Verifica se ArquivoDocumento não está vazio e se o tipo é PDF
+                        if (documentoProcesso.ArquivoDocumento != null && documentoProcesso.ArquivoDocumento.Length > 0)
                         {
-                            // Gera o hash do arquivo para comparação
-                            if (documentoProcesso.GenerateHashSHA256() == documentoProcesso.HashDocumento)
+                            // Verifica se é PDF
+                            bool isPDF = documentoProcesso.IsPDF();
+
+                            if (isPDF) // Se for PDF
                             {
-                                documentoProcesso.MarkAsAttached(); // O arquivo está íntegro
+                                // Gera o hash do arquivo para comparação
+                                if (documentoProcesso.GenerateHashSHA256() == documentoProcesso.HashDocumento)
+                                {
+                                    documentoProcesso.MarkAsAttached(); // O arquivo está íntegro
+                                }
+                                else
+                                {
+
+                                    documentoProcesso.MarkAsNotIntact(); // O arquivo não está íntegro
+                                    documentoProcesso.ArquivoDocumento = new byte[0]; // Define o arquivo como vazio
+                                    documentoProcesso.HashDocumento = "";
+                                }
                             }
                             else
                             {
-
-                                documentoProcesso.MarkAsNotIntact(); // O arquivo não está íntegro
-                                documentoProcesso.ArquivoDocumento = new byte[0]; // Define o arquivo como vazio
+                                // Se não for PDF, marca como não anexado e define o arquivo como vazio
+                                documentoProcesso.MarkAsNotAttached();
                                 documentoProcesso.HashDocumento = "";
+                                documentoProcesso.ArquivoDocumento = new byte[0];
                             }
                         }
                         else
                         {
-                            // Se não for PDF, marca como não anexado e define o arquivo como vazio
+                            // Se o ArquivoDocumento estiver vazio, marca como não anexado
                             documentoProcesso.MarkAsNotAttached();
                             documentoProcesso.HashDocumento = "";
-                            documentoProcesso.ArquivoDocumento = new byte[0];
                         }
                     }
-                    else
+                    else // Se nenhum documento foi declarado
                     {
-                        // Se o ArquivoDocumento estiver vazio, marca como não anexado
-                        documentoProcesso.MarkAsNotAttached();
+                        documentoProcesso = new DocumentoProcessoDTO();
+
+                        documentoProcesso.IdentificacaoDocumento = "NÃO ANEXADO";
+                        documentoProcesso.DescricaoDocumento = "";
+                        documentoProcesso.ObservacaoDocumento = "";
                         documentoProcesso.HashDocumento = "";
+                        documentoProcesso.IdProcesso = idProcesso;
+                        documentoProcesso.IdTipoDocumentoEtapa = documentoEtapa.Id;
+
+                        if (idResponsavel.HasValue) { documentoProcesso.PutOnPending(); documentoProcesso.IdResponsavel = idResponsavel; } // Existir um responsavel pelo processo
+                        else documentoProcesso.AssignDefaultState();
                     }
+
+                    await _documentoProcessoService.Create(documentoProcesso);
                 }
-                else // Se nenhum documento foi declarado
-                {
-                    documentoProcesso = new DocumentoProcessoDTO();
-
-                    documentoProcesso.IdentificacaoDocumento = "NÃO ANEXADO";
-                    documentoProcesso.DescricaoDocumento = "";
-                    documentoProcesso.ObservacaoDocumento = "";
-                    documentoProcesso.HashDocumento = "";
-                    documentoProcesso.IdProcesso = idProcesso;
-                    documentoProcesso.IdTipoDocumentoEtapa = documentoEtapa.Id;
-
-                    if (idResponsavel.HasValue) { documentoProcesso.PutOnPending(); documentoProcesso.IdResponsavel = idResponsavel; } // Existir um responsavel pelo processo
-                    else documentoProcesso.AssignDefaultState();
-                }
-
-                await _documentoProcessoService.Create(documentoProcesso);
             }
         }
     }

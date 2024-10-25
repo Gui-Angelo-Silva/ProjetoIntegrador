@@ -50,7 +50,7 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpGet("GetByProcess/{id:int}", Name = "GetByProcess")]
+        [HttpGet("GetByProcess/{idProcesso:Guid}", Name = "GetByProcess")]
         [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<DocumentoProcessoDTO>> GetByProcess(Guid idProcesso)
         {
@@ -75,7 +75,7 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpGet("{id:int}", Name = "GetProcessDocument")]
+        [HttpGet("{id:Guid}", Name = "GetProcessDocument")]
         [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<DocumentoProcessoDTO>> GetById(Guid id)
         {
@@ -207,7 +207,135 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpPut("PutOnPending")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult> PutOnPending([FromBody] Guid id)
+        {
+            try
+            {
+                var documentoProcessoDTO = await _documentoProcessoService.GetById(id);
+                if (documentoProcessoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "A DocumentoProcesso informada não existe!";
+                    _response.Data = new { errorId = "A DocumentoProcesso informada não existe!" };
+                    return NotFound(_response);
+                }
+
+                documentoProcessoDTO.MarkAsAttached();
+                await _documentoProcessoService.Update(documentoProcessoDTO);
+
+                _response.SetSuccess();
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " alterada com sucesso.";
+                _response.Data = documentoProcessoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível colocar DocumentoProcesso em Análise!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpPut("SendForAnalysis")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult> SendForAnalysis([FromBody] Guid id)
+        {
+            try
+            {
+                var documentoProcessoDTO = await _documentoProcessoService.GetById(id);
+                if (documentoProcessoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "A DocumentoProcesso informada não existe!";
+                    _response.Data = new { errorId = "A DocumentoProcesso informada não existe!" };
+                    return NotFound(_response);
+                }
+
+                documentoProcessoDTO.MoveToAnalysis();
+                await _documentoProcessoService.Update(documentoProcessoDTO);
+
+                _response.SetSuccess();
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " alterada com sucesso.";
+                _response.Data = documentoProcessoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível colocar DocumentoProcesso em Análise!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpPut("Approve")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult> Approve([FromBody] Guid id)
+        {
+            try
+            {
+                var documentoProcessoDTO = await _documentoProcessoService.GetById(id);
+                if (documentoProcessoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "A DocumentoProcesso informada não existe!";
+                    _response.Data = new { errorId = "A DocumentoProcesso informada não existe!" };
+                    return NotFound(_response);
+                }
+
+                documentoProcessoDTO.Approve();
+                await _documentoProcessoService.Update(documentoProcessoDTO);
+
+                _response.SetSuccess();
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " alterada com sucesso.";
+                _response.Data = documentoProcessoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível colocar DocumentoProcesso em Análise!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpPut("Disapprove")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult> Disapprove([FromBody] Guid id)
+        {
+            try
+            {
+                var documentoProcessoDTO = await _documentoProcessoService.GetById(id);
+                if (documentoProcessoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "A DocumentoProcesso informada não existe!";
+                    _response.Data = new { errorId = "A DocumentoProcesso informada não existe!" };
+                    return NotFound(_response);
+                }
+
+                documentoProcessoDTO.Disapprove();
+                await _documentoProcessoService.Update(documentoProcessoDTO);
+
+                _response.SetSuccess();
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " alterada com sucesso.";
+                _response.Data = documentoProcessoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível colocar DocumentoProcesso em Análise!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpDelete("{id:Guid}")]
         [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<DocumentoProcessoDTO>> Delete(Guid id)
         {

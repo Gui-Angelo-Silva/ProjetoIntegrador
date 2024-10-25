@@ -527,6 +527,13 @@ const AddProcess = () => {
   const [documentsMap, setDocumentsMap] = useState({ total: 0, pending: 0, attach: 0, analysis: 0, approved: 0, reject: 0 });
 
   useEffect(() => {
+    setStagesMap(prevState => ({
+      ...prevState,
+      total: stages.length
+    }));
+  }, [stages]);
+
+  useEffect(() => {
     // Mapeamento dos status dos documentos
     const newDocumentsMap = documentsProcess.reduce((acc, doc) => {
       switch (doc.status) {
@@ -581,7 +588,6 @@ const AddProcess = () => {
     console.log("Documentos: ", documentsMap);
   }, [stagesMap, documentsMap]);
 
-  // Componente ProgressRow para as linhas de progresso
   const ProgressRow = ({ title, data }) => (
     <div className="grid grid-cols-5 items-center mt-2">
       <p className="font-bold text-left">{title}</p>
@@ -589,7 +595,15 @@ const AddProcess = () => {
         <div key={index} className="flex items-center justify-start gap-x-5">
           <div className="text-left">
             <p style={{ textAlign: 'right' }}>
-              {String(data[type]).padStart(3, '_')} / {String(data.total).padStart(3, '_')}
+              {String(data[type]).padStart(2, '_').split('').map((char, i) => (
+                <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                  {char}
+                </span>
+              ))} / {String(data.total).padStart(2, '_').split('').map((char, i) => (
+                <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                  {char}
+                </span>
+              ))}
             </p>
           </div>
           <ProgressBar
@@ -605,7 +619,7 @@ const AddProcess = () => {
       ))}
       <hr className="border-t-2 border-gray-300 my-1 col-span-4" />
     </div>
-  );
+  );  
 
   return (
     <>

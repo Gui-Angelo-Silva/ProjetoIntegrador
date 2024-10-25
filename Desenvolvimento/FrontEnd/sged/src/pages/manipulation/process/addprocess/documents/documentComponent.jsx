@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Paperclip, Files, FileText, FileArchive, CaretDown, CaretRight, Circle, ArrowSquareOut, DownloadSimple, PencilSimpleLine, Trash } from "@phosphor-icons/react";
+import { Paperclip, Files, FileText, FileArchive, CaretDown, CaretRight, Circle, ArrowSquareOut, DownloadSimple, PencilSimpleLine, Trash, WarningCircle } from "@phosphor-icons/react";
 
 import ProgressBar from '../../../../../components/ProgressBar';
 
@@ -26,6 +26,9 @@ const DocumentComponent = ({
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [currentDocumentData, setCurrentDocumentData] = useState(null);
   const [idDocumentProcess, setIdDocumentProcess] = useState(1);
+
+  const [previousStagesDictionary, setPreviousStagesDictionary] = useState({}); // Estado para armazenar a versão anterior do dicionário
+  const stagesDictionary = {};
 
   const toggleRow = (rowId) => {
     setExpandedRows((prevRows) =>
@@ -117,6 +120,50 @@ const DocumentComponent = ({
     }));
   }, [stages, typeDocumentStagesData, setDocumentsMap]);
 
+  // Novo useEffect para atualizar o status das etapas
+  useEffect(() => {
+    // Verifica se há diferença no dicionário anterior e no atual
+    const isDifferent =
+      JSON.stringify(previousStagesDictionary) !== JSON.stringify(stagesDictionary) ||
+      Object.keys(previousStagesDictionary).length !== Object.keys(stagesDictionary).length;
+
+    // Verifica se algum atributo de algum dos estágios mudou
+    const attributesChanged = Object.keys(stagesDictionary).some((key) => {
+      const previousStage = previousStagesDictionary[key];
+      const newStage = stagesDictionary[key];
+      return previousStage && newStage && (previousStage.someAttribute !== newStage.someAttribute); // Altere `someAttribute` para o atributo real que você deseja comparar
+    });
+
+    // Se houver diferença ou mudança de atributos
+    if (isDifferent || attributesChanged) {
+      // Criar um novo estado para armazenar as contagens
+      const newState = { attach: 0, analysis: 0, approved: 0, reject: 0, pending: 0 };
+
+      // Itera sobre cada entrada do dicionário
+      Object.values(stagesDictionary).forEach(({ attachs, analysis, approveds, rejecteds, pendings }) => {
+        // Incrementa os valores correspondentes
+        if (pendings > 0) {newState.pending += 1;}
+        else if (analysis > 0) {newState.analysis += 1;}
+        else if (rejecteds > 0) {newState.reject += 1;}
+        else if (attachs > 0) {newState.attach += 1;}
+        else if (approveds > 0) {newState.approved += 1;}
+      });
+
+      // Atualiza o estado de stagesMap ou qualquer outra lógica que você precise
+      setStagesMap(prevState => ({
+        ...prevState,
+        attach: newState.attach,
+        analysis: newState.analysis,
+        approved: newState.approved,
+        reject: newState.reject,
+        pending: newState.pending,
+      }));
+
+      // Atualiza a versão anterior do stagesDictionary
+      setPreviousStagesDictionary(stagesDictionary);
+    }
+  }, [stagesDictionary, previousStagesDictionary]);
+
   useEffect(() => {
     console.log('Documents process updated:', documentsProcess);
   }, [documentsProcess]);
@@ -125,10 +172,7 @@ const DocumentComponent = ({
     <div className='w-full'>
       <ul className="space-y-4">
         {stages.map((stage) => {
-          const typeDocumentStages = typeDocumentStagesData[stage.id] || []; 
-          const progress = documentsProcess.filter(doc =>
-            typeDocumentStages.find(td => td.id === doc.idTypeDocumentStage)
-          ).length;
+          const typeDocumentStages = typeDocumentStagesData[stage.id] || [];
           const totalDocs = typeDocumentStages.length;
 
           // Inicializando contadores para cada status
@@ -163,6 +207,15 @@ const DocumentComponent = ({
           // Cálculo do total pendente
           const totalPendings = totalDocs - (totalAttach + totalAnalysis + totalApproveds + totalRejecteds);
 
+          // Atualizando o dicionário
+          stagesDictionary[stage.id] = {
+            attachs: totalAttach,
+            analysis: totalAnalysis,
+            approveds: totalApproveds,
+            rejecteds: totalRejecteds,
+            pendings: totalPendings
+          };
+
           return (
             <li key={stage.id} className="border border-gray-200 rounded-lg shadow-md">
               <div className="flex justify-between items-center p-4 bg-gray-200 rounded-t-lg cursor-pointer" onClick={() => toggleRow(stage.id)}>
@@ -170,19 +223,62 @@ const DocumentComponent = ({
                 <div className="flex items-center gap-x-10">
                   <div className="flex items-center gap-x-10">
                     <div className="flex items-center gap-x-5">
-                      <span className="text-lg text-gray-600">{String(totalPendings).padStart(2, '_')} / {String(totalDocs).padStart(2, '_')}</span>
+                      <span className="text-lg text-gray-600">
+                        {String(totalPendings).padStart(2, '_').split('').map((char, i) => (
+                          <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                            {char}
+                          </span>
+                        ))} / {String(totalDocs).padStart(2, '_').split('').map((char, i) => (
+                          <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                            {char}
+                          </span>
+                        ))}
+                      </span>
                       <ProgressBar width={10} primaryColor={"from-[#A3A3A3]"} secondaryColor={"to-[#585858]"} iconColor={"text-[#A3A3A3]"} totalValue={totalDocs} partialValue={totalPendings} />
                     </div>
+
                     <div className="flex items-center gap-x-5">
-                      <span className="text-lg text-gray-600">{String((totalAttach + totalAnalysis)).padStart(2, '_')} / {String(totalDocs).padStart(2, '_')}</span>
-                      <ProgressBar width={10} totalValue={totalDocs} partialValue={(totalAttach + totalAnalysis)} />
+                      <span className="text-lg text-gray-600">
+                        {String(totalAttach + totalAnalysis).padStart(2, '_').split('').map((char, i) => (
+                          <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                            {char}
+                          </span>
+                        ))} / {String(totalDocs).padStart(2, '_').split('').map((char, i) => (
+                          <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                            {char}
+                          </span>
+                        ))}
+                      </span>
+                      <ProgressBar width={10} totalValue={totalDocs} partialValue={totalAttach + totalAnalysis} />
                     </div>
+
                     <div className="flex items-center gap-x-5">
-                      <span className="text-lg text-gray-600">{String(totalApproveds).padStart(2, '_')} / {String(totalDocs).padStart(2, '_')}</span>
+                      <span className="text-lg text-gray-600">
+                        {String(totalApproveds).padStart(2, '_').split('').map((char, i) => (
+                          <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                            {char}
+                          </span>
+                        ))} / {String(totalDocs).padStart(2, '_').split('').map((char, i) => (
+                          <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                            {char}
+                          </span>
+                        ))}
+                      </span>
                       <ProgressBar width={10} primaryColor={"from-[#2BFF00]"} secondaryColor={"to-[#1BA100]"} iconColor={"text-[#2BFF00]"} totalValue={totalDocs} partialValue={totalApproveds} />
                     </div>
+
                     <div className="flex items-center gap-x-5">
-                      <span className="text-lg text-gray-600">{String(totalRejecteds).padStart(2, '_')} / {String(totalDocs).padStart(2, '_')}</span>
+                      <span className="text-lg text-gray-600">
+                        {String(totalRejecteds).padStart(2, '_').split('').map((char, i) => (
+                          <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                            {char}
+                          </span>
+                        ))} / {String(totalDocs).padStart(2, '_').split('').map((char, i) => (
+                          <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                            {char}
+                          </span>
+                        ))}
+                      </span>
                       <ProgressBar width={10} primaryColor={"from-[#FF000D]"} secondaryColor={"to-[#B20009]"} iconColor={"text-[#FF000D]"} totalValue={totalDocs} partialValue={totalRejecteds} />
                     </div>
                   </div>
@@ -192,72 +288,79 @@ const DocumentComponent = ({
               </div>
 
               {expandedRows.includes(stage.id) && (
-                <div className="bg-white p-4">
-                  <ul>
-                    {typeDocumentStages.map((typeDocumentStage) => {
-                      const typeDocument = typeDocumentsData[typeDocumentStage.idTipoDocumento];
-                      if (!typeDocument && !typeDocumentsData[typeDocumentStage.idTipoDocumento]) {
-                        fetchTypeDocument(typeDocumentStage.idTipoDocumento);
-                      }
+                typeDocumentStages.length === 0 ? (
+                  <div className="flex items-center space-x-2 p-4">
+                    <WarningCircle size={20} />
+                    <span className="text-gray-700">Não há documentos vinculados a esta etapa.</span>
+                  </div>
+                ) : (
+                  <div className="bg-white p-4">
+                    <ul>
+                      {typeDocumentStages.map((typeDocumentStage) => {
+                        const typeDocument = typeDocumentsData[typeDocumentStage.idTipoDocumento];
+                        if (!typeDocument && !typeDocumentsData[typeDocumentStage.idTipoDocumento]) {
+                          fetchTypeDocument(typeDocumentStage.idTipoDocumento);
+                        }
 
-                      if (typeDocument) {
-                        const data = documentsProcess.find(
-                          (d) => d.idTypeDocumentStage === typeDocumentStage.id
-                        );
+                        if (typeDocument) {
+                          const data = documentsProcess.find(
+                            (d) => d.idTypeDocumentStage === typeDocumentStage.id
+                          );
 
-                        return (
-                          <li key={typeDocumentStage.id} className="p-2 flex justify-between items-center border-b hover:bg-gray-100 ">
-                            <div className="flex justify-between items-center">
-                              <span className="text-gray-700 gap-x-2 flex items-center mr-2">
-                                <FileText size={20} /> Documento {typeDocumentStage.posicao} - {typeDocument.nomeTipoDocumento}
-                              </span>
-
-                              {data && data.saved && (
-                                <span className="text-[#00A9C2] flex items-center space-x-1 ml-auto">
-                                  <Paperclip size={20} />
-                                  <span>Anexado</span>
+                          return (
+                            <li key={typeDocumentStage.id} className="p-2 flex justify-between items-center border-b hover:bg-gray-100 ">
+                              <div className="flex justify-between items-center">
+                                <span className="text-gray-700 gap-x-2 flex items-center mr-2">
+                                  <FileText size={20} /> Documento {typeDocumentStage.posicao} - {typeDocument.nomeTipoDocumento}
                                 </span>
-                              )}
-                            </div>
 
-                            {data && data.saved ? (
-                              <div className="flex items-center space-x-2">
-                                <div className="flex space-x-20">
-                                  <div className="flex items-center space-x-3">
-                                    <button className="border-2 border-[#da8aff] hover:bg-[#da8aff] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleView(typeDocumentStage.id)}>
-                                      <ArrowSquareOut size={20} />
-                                      Visualizar
-                                    </button>
-                                    <button className="border-2 border-[#8cff9d] hover:bg-[#8cff9d] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleOpenInNewTab(typeDocumentStage.id)}>
-                                      <DownloadSimple size={20} />
-                                      Baixar
-                                    </button>
-                                  </div>
-                                  <div className="flex items-center space-x-3">
-                                    <button className="border-2 border-[#5db6ff] hover:bg-[#5db6ff] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleModify(typeDocumentStage.id)}>
-                                      <PencilSimpleLine size={20} />
-                                      Alterar
-                                    </button>
-                                    <button className="border-2 border-[#ff6969] hover:bg-[#ff6969] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleRemove(typeDocumentStage.id)}>
-                                      <Trash size={20} />
-                                      Excluir
-                                    </button>
+                                {data && data.saved && (
+                                  <span className="text-[#00A9C2] flex items-center space-x-1 ml-auto">
+                                    <Paperclip size={20} />
+                                    <span>Anexado</span>
+                                  </span>
+                                )}
+                              </div>
+
+                              {data && data.saved ? (
+                                <div className="flex items-center space-x-2">
+                                  <div className="flex space-x-20">
+                                    <div className="flex items-center space-x-3">
+                                      <button className="border-2 border-[#da8aff] hover:bg-[#da8aff] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleView(typeDocumentStage.id)}>
+                                        <ArrowSquareOut size={20} />
+                                        Visualizar
+                                      </button>
+                                      <button className="border-2 border-[#8cff9d] hover:bg-[#8cff9d] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleOpenInNewTab(typeDocumentStage.id)}>
+                                        <DownloadSimple size={20} />
+                                        Baixar
+                                      </button>
+                                    </div>
+                                    <div className="flex items-center space-x-3">
+                                      <button className="border-2 border-[#5db6ff] hover:bg-[#5db6ff] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleModify(typeDocumentStage.id)}>
+                                        <PencilSimpleLine size={20} />
+                                        Alterar
+                                      </button>
+                                      <button className="border-2 border-[#ff6969] hover:bg-[#ff6969] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleRemove(typeDocumentStage.id)}>
+                                        <Trash size={20} />
+                                        Excluir
+                                      </button>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            ) : (
-                              <button className="border-2 border-[#65EBFF] hover:bg-[#65EBFF] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleAttach(typeDocumentStage.id, typeDocument)}>
-                                <Paperclip size={20} />
-                                Anexar
-                              </button>
-                            )}
-                          </li>
-                        );
-                      }
-                      return null;
-                    })}
-                  </ul>
-                </div>
+                              ) : (
+                                <button className="border-2 border-[#65EBFF] hover:bg-[#65EBFF] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleAttach(typeDocumentStage.id, typeDocument)}>
+                                  <Paperclip size={20} />
+                                  Anexar
+                                </button>
+                              )}
+                            </li>
+                          );
+                        }
+                        return null;
+                      })}
+                    </ul>
+                  </div>
+                )
               )}
             </li>
           );

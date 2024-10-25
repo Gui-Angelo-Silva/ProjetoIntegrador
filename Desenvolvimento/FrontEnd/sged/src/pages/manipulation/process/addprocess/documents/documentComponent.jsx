@@ -68,37 +68,59 @@ const DocumentComponent = ({
     setFormMode(null);
     setModalOpen(false);
     setViewModalOpen(false);
+    setCurrentTypeDocument(null);
+    setCurrentDocumentData(null);
+    setCurrentIdTypeDocumentStage(0);
   };
 
   const handleRemove = (idTypeDocumentStage) => {
     setDocumentsProcess((prevState) =>
-      prevState.filter((data) => data.id !== idTypeDocumentStage)
+      prevState.filter((data) => data.idTypeDocumentStage !== idTypeDocumentStage)
     );
   };
 
-  const handleModify = (idTypeDocumentStage) => {
-    setCurrentIdTypeDocumentStage(idTypeDocumentStage);  // Usando idTypeDocumentStage diretamente
-    setFormMode('modifying');
-    setModalOpen(true);
-  };
-
-  const handleView = (idTypeDocumentStage) => {
+  const handleModify = (idTypeDocumentStage, tyeDocument) => {
     const documentData = documentsProcess.find(
-      (d) => d.id === idTypeDocumentStage
+      (d) => d.idTypeDocumentStage === idTypeDocumentStage
     );
+
+    setCurrentDocumentData(documentData);
+    setCurrentIdTypeDocumentStage(idTypeDocumentStage);
+    setCurrentTypeDocument(tyeDocument);
+    setFormMode('modifying');
+  };
+
+  const handleView = (idTypeDocumentStage, tyeDocument) => {
+    const documentData = documentsProcess.find(
+      (d) => d.idTypeDocumentStage === idTypeDocumentStage
+    );
+
     setCurrentIdTypeDocumentStage(idTypeDocumentStage);  // Usando idTypeDocumentStage diretamente
     setCurrentDocumentData(documentData);
+    setCurrentTypeDocument(tyeDocument);
     setViewModalOpen(true);
   };
 
-  const handleOpenInNewTab = (idTypeDocumentStage) => {
+  const handleDownload = (idTypeDocumentStage) => {
     const documentData = documentsProcess.find(
-      (d) => d.id === idTypeDocumentStage
+      (d) => d.idTypeDocumentStage === idTypeDocumentStage
     );
+    
     if (documentData?.arquive) {
-      window.open(URL.createObjectURL(documentData.arquive), '_blank');
+      const url = URL.createObjectURL(documentData.arquive);
+
+      if (url) {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = documentData.arquive.name; // Define o nome do arquivo para download
+        link.click();
+      }
     }
   };
+
+  useEffect(() => {
+    if (formMode === "modifying" && currentDocumentData) setModalOpen(true);
+  }, [currentDocumentData, formMode]);
 
   useEffect(() => {
     setExpandedRows([]);
@@ -142,11 +164,11 @@ const DocumentComponent = ({
       // Itera sobre cada entrada do dicionário
       Object.values(stagesDictionary).forEach(({ attachs, analysis, approveds, rejecteds, pendings }) => {
         // Incrementa os valores correspondentes
-        if (pendings > 0) {newState.pending += 1;}
-        else if (analysis > 0) {newState.analysis += 1;}
-        else if (rejecteds > 0) {newState.reject += 1;}
-        else if (attachs > 0) {newState.attach += 1;}
-        else if (approveds > 0) {newState.approved += 1;}
+        if (pendings > 0) { newState.pending += 1; }
+        else if (analysis > 0) { newState.analysis += 1; }
+        else if (rejecteds > 0) { newState.reject += 1; }
+        else if (attachs > 0) { newState.attach += 1; }
+        else if (approveds > 0) { newState.approved += 1; }
       });
 
       // Atualiza o estado de stagesMap ou qualquer outra lógica que você precise
@@ -163,10 +185,6 @@ const DocumentComponent = ({
       setPreviousStagesDictionary(stagesDictionary);
     }
   }, [stagesDictionary, previousStagesDictionary]);
-
-  useEffect(() => {
-    console.log('Documents process updated:', documentsProcess);
-  }, [documentsProcess]);
 
   return (
     <div className='w-full'>
@@ -326,17 +344,17 @@ const DocumentComponent = ({
                                 <div className="flex items-center space-x-2">
                                   <div className="flex space-x-20">
                                     <div className="flex items-center space-x-3">
-                                      <button className="border-2 border-[#da8aff] hover:bg-[#da8aff] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleView(typeDocumentStage.id)}>
+                                      <button className="border-2 border-[#da8aff] hover:bg-[#da8aff] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleView(typeDocumentStage.id, typeDocument)}>
                                         <ArrowSquareOut size={20} />
                                         Visualizar
                                       </button>
-                                      <button className="border-2 border-[#8cff9d] hover:bg-[#8cff9d] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleOpenInNewTab(typeDocumentStage.id)}>
+                                      <button className="border-2 border-[#8cff9d] hover:bg-[#8cff9d] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleDownload(typeDocumentStage.id)}>
                                         <DownloadSimple size={20} />
                                         Baixar
                                       </button>
                                     </div>
                                     <div className="flex items-center space-x-3">
-                                      <button className="border-2 border-[#5db6ff] hover:bg-[#5db6ff] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleModify(typeDocumentStage.id)}>
+                                      <button className="border-2 border-[#5db6ff] hover:bg-[#5db6ff] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleModify(typeDocumentStage.id, typeDocument)}>
                                         <PencilSimpleLine size={20} />
                                         Alterar
                                       </button>
@@ -374,15 +392,16 @@ const DocumentComponent = ({
         onSave={handleSave}
         idTypeDocumentStage={currentIdTypeDocumentStage}
         typeDocument={currentTypeDocument}
+        documentData={currentDocumentData}
         userResponsible={userResponsible}
         typeResponsible={typeResponsible}
       />
 
       <DocumentView
-        open={viewModalOpen}
-        idTypeDocumentStage={currentIdTypeDocumentStage}
-        documentData={currentDocumentData}
+        isOpen={viewModalOpen}
         onClose={handleCancel}
+        typeDocument={currentTypeDocument}
+        data={currentDocumentData}
       />
     </div>
   );

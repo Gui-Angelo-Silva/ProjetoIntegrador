@@ -582,12 +582,6 @@ const AddProcess = () => {
     }
   }, [typeProcess.id]);
 
-  // Chame a função para buscar os documentos das etapas, conforme necessário
-  useEffect(() => {
-    console.log("Etapas: ", stagesMap);
-    console.log("Documentos: ", documentsMap);
-  }, [stagesMap, documentsMap]);
-
   const ProgressRow = ({ title, data }) => (
     <div className="grid grid-cols-5 items-center mt-2">
       <p className="font-bold text-left">{title}</p>

@@ -15,7 +15,7 @@ namespace SGED.Objects.DTO.Entities
 
         [Required(ErrorMessage = "A descrição da condição do solo é requerida!")]
         [MinLength(5)]
-        [MaxLength(60)]
+        [MaxLength(200)]
         public string Descricao { get; set; }
 
         [JsonIgnore]

@@ -110,11 +110,13 @@ namespace SGED
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            // Injeção de dependências
+			// Injeção de dependências
 
-            // Dependência: Configuração
+			services.AddSingleton<Response>();
 
-            services.AddScoped<IConfiguracaoRepository, ConfiguracaoRepository>();
+			// Dependência: Configuração
+
+			services.AddScoped<IConfiguracaoRepository, ConfiguracaoRepository>();
             services.AddScoped<IConfiguracaoService, ConfiguracaoService>();
 
             // Conjunto: Pessoa
@@ -170,7 +172,6 @@ namespace SGED
             services.AddScoped<IImovelRepository, ImovelRepository>();
             services.AddScoped<IImovelService, ImovelService>();
 
-
             // Conjunto: Aliemntação do Imóvel
 
             // Dependência: Topografia
@@ -197,11 +198,15 @@ namespace SGED
             services.AddScoped<IInstalacaoRepository, InstalacaoRepository>();
             services.AddScoped<IInstalacaoService, InstalacaoService>();
 
+			// Dependência: Condição do Solo
+			services.AddScoped<ICondicaoSoloRepository, CondicaoSoloRepository>();
+			services.AddScoped<ICondicaoSoloService, CondicaoSoloService>();
 
-            // Conjunto: Processo
 
-            // Dependência: TipoProcesso
-            services.AddScoped<ITipoProcessoRepository, TipoProcessoRepository>();
+			// Conjunto: Processo
+
+			// Dependência: TipoProcesso
+			services.AddScoped<ITipoProcessoRepository, TipoProcessoRepository>();
             services.AddScoped<ITipoProcessoService, TipoProcessoService>();
 
             // Dependência: Etapa

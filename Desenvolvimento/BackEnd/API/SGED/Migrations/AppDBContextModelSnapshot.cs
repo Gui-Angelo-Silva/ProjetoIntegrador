@@ -606,6 +606,82 @@ namespace SGED.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SGED.Objects.Models.Entities.CondicaoSolo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("idcondicaosolo");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Condicao")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("condicaosolo");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("ufestado");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("condicaosolo");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Condicao = "Solo Arenoso",
+                            Descricao = "Boa drenagem, mas pode ser instável se não compactado adequadamente."
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Condicao = "Solo Argiloso",
+                            Descricao = "Retém água, pode ser muito expansivo e causar problemas de fissuras."
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Condicao = "Solo Siltoso",
+                            Descricao = "Tem características intermediárias entre a areia e a argila, pode ser propenso à erosão."
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Condicao = "Solo Rocha",
+                            Descricao = "Geralmente estável e resistente, mas pode ser difícil de escavar."
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Condicao = "Solo Orgânico",
+                            Descricao = "Contém matéria orgânica, geralmente menos estável e deve ser removido ou tratado."
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Condicao = "Solo de Aluvião",
+                            Descricao = "Solo fértil, geralmente encontrado em áreas de inundações, pode ser muito variável."
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Condicao = "Solo Compactado",
+                            Descricao = "Solo que foi comprimido, geralmente mais estável, mas precisa ser verificado para garantir que não esteja excessivamente compactado."
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Condicao = "Solo Saturado",
+                            Descricao = "Solo que retém água, pode causar problemas de estabilidade e drenagem."
+                        });
+                });
+
             modelBuilder.Entity("SGED.Objects.Models.Entities.Configuracao", b =>
                 {
                     b.Property<int>("Id")
@@ -1439,6 +1515,9 @@ namespace SGED.Migrations
                         .HasColumnType("text")
                         .HasColumnName("areaterreno");
 
+                    b.Property<int?>("CondicaoSoloId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("CondicoesSolo")
                         .IsRequired()
                         .HasColumnType("text")
@@ -1498,6 +1577,8 @@ namespace SGED.Migrations
                         .HasColumnName("valorvenal");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CondicaoSoloId");
 
                     b.HasIndex("IdContribuinte");
 
@@ -4559,6 +4640,10 @@ namespace SGED.Migrations
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.Imovel", b =>
                 {
+                    b.HasOne("SGED.Objects.Models.Entities.CondicaoSolo", null)
+                        .WithMany("Imoveis")
+                        .HasForeignKey("CondicaoSoloId");
+
                     b.HasOne("SGED.Objects.Models.Entities.Municipe", "Contribuinte")
                         .WithMany("ImoveisContribuinte")
                         .HasForeignKey("IdContribuinte")
@@ -4760,6 +4845,11 @@ namespace SGED.Migrations
             modelBuilder.Entity("SGED.Objects.Models.Entities.Cidade", b =>
                 {
                     b.Navigation("Bairros");
+                });
+
+            modelBuilder.Entity("SGED.Objects.Models.Entities.CondicaoSolo", b =>
+                {
+                    b.Navigation("Imoveis");
                 });
 
             modelBuilder.Entity("SGED.Objects.Models.Entities.Engenheiro", b =>

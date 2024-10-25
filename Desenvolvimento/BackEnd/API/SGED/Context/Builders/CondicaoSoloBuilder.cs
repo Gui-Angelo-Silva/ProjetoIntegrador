@@ -9,7 +9,7 @@ namespace SGED.Context.Builders
         {
             modelBuilder.Entity<CondicaoSolo>().HasKey(cs => cs.Id);
             modelBuilder.Entity<CondicaoSolo>().Property(cs => cs.Condicao).HasMaxLength(30).IsRequired();
-            modelBuilder.Entity<CondicaoSolo>().Property(cs => cs.Descricao).HasMaxLength(60).IsRequired();
+            modelBuilder.Entity<CondicaoSolo>().Property(cs => cs.Descricao).HasMaxLength(200).IsRequired();
 
             modelBuilder.Entity<CondicaoSolo>().HasKey(cs => cs.Id);
 

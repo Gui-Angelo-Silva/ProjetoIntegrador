@@ -42,14 +42,15 @@ namespace SGED.Services.Entities
             condicaosoloDTO.Id = condicaosolo.Id;
         }
 
-        public Task Update(CondicaoSoloDTO condicaosoloDTO)
+        public async Task Update(CondicaoSoloDTO condicaosoloDTO)
         {
-            throw new NotImplementedException();
+            var condicao = _mapper.Map<CondicaoSolo>(condicaosoloDTO);
+            await _condicaosoloRepository.Update(condicao);
         }
 
-        public Task Remove(int id)
+        public async Task Remove(int id)
         {
-            throw new NotImplementedException();
+            await _condicaosoloRepository.Delete(id);
         }
     }
 }

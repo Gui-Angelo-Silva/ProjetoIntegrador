@@ -5,11 +5,11 @@ using SGED.Repositories.Interfaces;
 
 namespace SGED.Repositories.Entities
 {
-    public class CondicaoRepository : ICondicaoSoloRepository
+    public class CondicaoSoloRepository : ICondicaoSoloRepository
     {
         private readonly AppDBContext _dbContext;
 
-        public CondicaoRepository(AppDBContext dBContext)
+        public CondicaoSoloRepository(AppDBContext dBContext)
         {
             _dbContext = dBContext;
         }

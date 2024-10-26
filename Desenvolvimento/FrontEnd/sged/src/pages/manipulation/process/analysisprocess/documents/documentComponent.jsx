@@ -188,287 +188,294 @@ const DocumentComponent = ({
 
   return (
     <div className='w-full'>
-      <ul className="space-y-4">
-        {stages.map((stage) => {
-          const typeDocumentStages = typeDocumentStagesData[stage.id] || [];
-          const totalDocs = typeDocumentStages.length;
+      {stages.length === 0 ? (
+        <div className="flex items-center space-x-2 p-4 bg-gray-200 rounded-lg">
+          <WarningCircle size={20} />
+          <span className="text-gray-700">Não há Etapas vinculadas a este Tipo Processo.</span>
+        </div>
+      ) : (
+        <ul className="space-y-4">
+          {stages.map((stage) => {
+            const typeDocumentStages = typeDocumentStagesData[stage.id] || [];
+            const totalDocs = typeDocumentStages.length;
 
-          // Inicializando contadores para cada status
-          let totalAttach = 0;
-          let totalAnalysis = 0;
-          let totalApproveds = 0;
-          let totalRejecteds = 0;
+            // Inicializando contadores para cada status
+            let totalAttach = 0;
+            let totalAnalysis = 0;
+            let totalApproveds = 0;
+            let totalRejecteds = 0;
 
-          // Contando documentos por status
-          documentsProcess.forEach(doc => {
-            const isInStage = typeDocumentStages.some(td => td.id === doc.idTypeDocumentStage);
+            // Contando documentos por status
+            documentsProcess.forEach(doc => {
+              const isInStage = typeDocumentStages.some(td => td.id === doc.idTypeDocumentStage);
 
-            if (isInStage) {
-              switch (doc.status) {
-                case 4: // Attached
-                  totalAttach += 1;
-                  break;
-                case 5: // InAnalysis
-                  totalAnalysis += 1;
-                  break;
-                case 6: // Approved
-                  totalApproveds += 1;
-                  break;
-                case 7: // Disapproved
-                  totalRejecteds += 1;
-                  break;
-                default:
-                  break;
+              if (isInStage) {
+                switch (doc.status) {
+                  case 4: // Attached
+                    totalAttach += 1;
+                    break;
+                  case 5: // InAnalysis
+                    totalAnalysis += 1;
+                    break;
+                  case 6: // Approved
+                    totalApproveds += 1;
+                    break;
+                  case 7: // Disapproved
+                    totalRejecteds += 1;
+                    break;
+                  default:
+                    break;
+                }
               }
-            }
-          });
+            });
 
-          // Cálculo do total pendente
-          const totalPendings = totalDocs - (totalAttach + totalAnalysis + totalApproveds + totalRejecteds);
+            // Cálculo do total pendente
+            const totalPendings = totalDocs - (totalAttach + totalAnalysis + totalApproveds + totalRejecteds);
 
-          // Atualizando o dicionário
-          stagesDictionary[stage.id] = {
-            attachs: totalAttach,
-            analysis: totalAnalysis,
-            approveds: totalApproveds,
-            rejecteds: totalRejecteds,
-            pendings: totalPendings
-          };
+            // Atualizando o dicionário
+            stagesDictionary[stage.id] = {
+              attachs: totalAttach,
+              analysis: totalAnalysis,
+              approveds: totalApproveds,
+              rejecteds: totalRejecteds,
+              pendings: totalPendings
+            };
 
-          return (
-            <li key={stage.id} className="border border-gray-200 rounded-lg shadow-md">
-              <div className="flex justify-between items-center p-4 bg-gray-200 rounded-t-lg cursor-pointer" onClick={() => toggleRow(stage.id)}>
-                <span className="gap-x-2 text-lg flex items-center">
-                  <Files size={30} />
-                  Etapa {stage.posicao} - {stage.nomeEtapa}
-                  {stagesDictionary[stage.id] && (
-                    <>
-                      {stagesDictionary[stage.id].analysis > 0 ? (
-                        <span className="text-[#00A9C2] flex items-center space-x-1 ml-auto">
-                          <Paperclip size={20} />
-                          <span>Anexado</span>
-                        </span>
-                      ) : stagesDictionary[stage.id].rejecteds > 0 ? (
-                        <span className="text-[#B20009] flex items-center space-x-1 ml-auto">
-                          <X size={20} />
-                          <span>Desaprovado</span>
-                        </span>
-                      ) : stagesDictionary[stage.id].pendings > 0 ? (
-                        <span className="text-[#585858] flex items-center space-x-1 ml-auto">
-                          <Warning size={20} />
-                          <span>Pendente</span>
-                        </span>
-                      ) : stagesDictionary[stage.id].approveds > 0 ? (
-                        <span className="text-[#1BA100] flex items-center space-x-1 ml-auto">
-                          <Check size={20} />
-                          <span>Aprovado</span>
-                        </span>
-                      ) : stagesDictionary[stage.id].attachs > 0 ? (
-                        <span className="text-[#7D00DF] flex items-center space-x-1 ml-auto">
-                          <FileMagnifyingGlass size={20} />
-                          <span>Em Análise</span>
-                        </span>
-                      ) : null}
-                    </>
-                  )}
-                </span>
+            return (
+              <li key={stage.id} className="border border-gray-200 rounded-lg shadow-md">
+                <div className="flex justify-between items-center p-4 bg-gray-200 rounded-t-lg cursor-pointer" onClick={() => toggleRow(stage.id)}>
+                  <span className="gap-x-2 text-lg flex items-center">
+                    <Files size={30} />
+                    Etapa {stage.posicao} - {stage.nomeEtapa}
+                    {stagesDictionary[stage.id] && (
+                      <>
+                        {stagesDictionary[stage.id].analysis > 0 ? (
+                          <span className="text-[#00A9C2] flex items-center space-x-1 ml-auto">
+                            <Paperclip size={20} />
+                            <span>Anexado</span>
+                          </span>
+                        ) : stagesDictionary[stage.id].rejecteds > 0 ? (
+                          <span className="text-[#B20009] flex items-center space-x-1 ml-auto">
+                            <X size={20} />
+                            <span>Desaprovado</span>
+                          </span>
+                        ) : stagesDictionary[stage.id].pendings > 0 ? (
+                          <span className="text-[#585858] flex items-center space-x-1 ml-auto">
+                            <Warning size={20} />
+                            <span>Pendente</span>
+                          </span>
+                        ) : stagesDictionary[stage.id].approveds > 0 ? (
+                          <span className="text-[#1BA100] flex items-center space-x-1 ml-auto">
+                            <Check size={20} />
+                            <span>Aprovado</span>
+                          </span>
+                        ) : stagesDictionary[stage.id].attachs > 0 ? (
+                          <span className="text-[#7D00DF] flex items-center space-x-1 ml-auto">
+                            <FileMagnifyingGlass size={20} />
+                            <span>Em Análise</span>
+                          </span>
+                        ) : null}
+                      </>
+                    )}
+                  </span>
 
-                <div className="flex items-center gap-x-10">
                   <div className="flex items-center gap-x-10">
-                    <div className="flex items-center gap-x-5">
-                      <span className="text-lg text-gray-600">
-                        {String(totalPendings).padStart(2, '_').split('').map((char, i) => (
-                          <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
-                            {char}
-                          </span>
-                        ))} / {String(totalDocs).padStart(2, '_').split('').map((char, i) => (
-                          <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
-                            {char}
-                          </span>
-                        ))}
-                      </span>
-                      <ProgressBar width={10} primaryColor={"from-[#A3A3A3]"} secondaryColor={"to-[#585858]"} iconColor={"text-[#A3A3A3]"} totalValue={totalDocs} partialValue={totalPendings} />
+                    <div className="flex items-center gap-x-10">
+                      <div className="flex items-center gap-x-5">
+                        <span className="text-lg text-gray-600">
+                          {String(totalPendings).padStart(2, '_').split('').map((char, i) => (
+                            <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                              {char}
+                            </span>
+                          ))} / {String(totalDocs).padStart(2, '_').split('').map((char, i) => (
+                            <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                              {char}
+                            </span>
+                          ))}
+                        </span>
+                        <ProgressBar width={10} primaryColor={"from-[#A3A3A3]"} secondaryColor={"to-[#585858]"} iconColor={"text-[#A3A3A3]"} totalValue={totalDocs} partialValue={totalPendings} />
+                      </div>
+
+                      <div className="flex items-center gap-x-5">
+                        <span className="text-lg text-gray-600">
+                          {String(totalAttach + totalAnalysis).padStart(2, '_').split('').map((char, i) => (
+                            <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                              {char}
+                            </span>
+                          ))} / {String(totalDocs).padStart(2, '_').split('').map((char, i) => (
+                            <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                              {char}
+                            </span>
+                          ))}
+                        </span>
+                        <ProgressBar width={10} totalValue={totalDocs} partialValue={totalAttach + totalAnalysis} />
+                      </div>
+
+                      <div className="flex items-center gap-x-5">
+                        <span className="text-lg text-gray-600">
+                          {String(totalAnalysis).padStart(2, '_').split('').map((char, i) => (
+                            <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                              {char}
+                            </span>
+                          ))} / {String(totalDocs).padStart(2, '_').split('').map((char, i) => (
+                            <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                              {char}
+                            </span>
+                          ))}
+                        </span>
+                        <ProgressBar width={10} primaryColor={"from-[#CA87FF]"} secondaryColor={"to-[#7D00DF]"} iconColor={"text-[#CA87FF]"} totalValue={totalDocs} partialValue={totalAnalysis} />
+                      </div>
+
+                      <div className="flex items-center gap-x-5">
+                        <span className="text-lg text-gray-600">
+                          {String(totalApproveds).padStart(2, '_').split('').map((char, i) => (
+                            <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                              {char}
+                            </span>
+                          ))} / {String(totalDocs).padStart(2, '_').split('').map((char, i) => (
+                            <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                              {char}
+                            </span>
+                          ))}
+                        </span>
+                        <ProgressBar width={10} primaryColor={"from-[#2BFF00]"} secondaryColor={"to-[#1BA100]"} iconColor={"text-[#2BFF00]"} totalValue={totalDocs} partialValue={totalApproveds} />
+                      </div>
+
+                      <div className="flex items-center gap-x-5">
+                        <span className="text-lg text-gray-600">
+                          {String(totalRejecteds).padStart(2, '_').split('').map((char, i) => (
+                            <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                              {char}
+                            </span>
+                          ))} / {String(totalDocs).padStart(2, '_').split('').map((char, i) => (
+                            <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
+                              {char}
+                            </span>
+                          ))}
+                        </span>
+                        <ProgressBar width={10} primaryColor={"from-[#FF000D]"} secondaryColor={"to-[#B20009]"} iconColor={"text-[#FF000D]"} totalValue={totalDocs} partialValue={totalRejecteds} />
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-x-5">
-                      <span className="text-lg text-gray-600">
-                        {String(totalAttach + totalAnalysis).padStart(2, '_').split('').map((char, i) => (
-                          <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
-                            {char}
-                          </span>
-                        ))} / {String(totalDocs).padStart(2, '_').split('').map((char, i) => (
-                          <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
-                            {char}
-                          </span>
-                        ))}
-                      </span>
-                      <ProgressBar width={10} totalValue={totalDocs} partialValue={totalAttach + totalAnalysis} />
-                    </div>
-
-                    <div className="flex items-center gap-x-5">
-                      <span className="text-lg text-gray-600">
-                        {String(totalAnalysis).padStart(2, '_').split('').map((char, i) => (
-                          <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
-                            {char}
-                          </span>
-                        ))} / {String(totalDocs).padStart(2, '_').split('').map((char, i) => (
-                          <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
-                            {char}
-                          </span>
-                        ))}
-                      </span>
-                      <ProgressBar width={10} primaryColor={"from-[#CA87FF]"} secondaryColor={"to-[#7D00DF]"} iconColor={"text-[#CA87FF]"} totalValue={totalDocs} partialValue={totalAnalysis} />
-                    </div>
-
-                    <div className="flex items-center gap-x-5">
-                      <span className="text-lg text-gray-600">
-                        {String(totalApproveds).padStart(2, '_').split('').map((char, i) => (
-                          <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
-                            {char}
-                          </span>
-                        ))} / {String(totalDocs).padStart(2, '_').split('').map((char, i) => (
-                          <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
-                            {char}
-                          </span>
-                        ))}
-                      </span>
-                      <ProgressBar width={10} primaryColor={"from-[#2BFF00]"} secondaryColor={"to-[#1BA100]"} iconColor={"text-[#2BFF00]"} totalValue={totalDocs} partialValue={totalApproveds} />
-                    </div>
-
-                    <div className="flex items-center gap-x-5">
-                      <span className="text-lg text-gray-600">
-                        {String(totalRejecteds).padStart(2, '_').split('').map((char, i) => (
-                          <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
-                            {char}
-                          </span>
-                        ))} / {String(totalDocs).padStart(2, '_').split('').map((char, i) => (
-                          <span key={i} style={{ visibility: char === '_' ? 'hidden' : 'visible' }}>
-                            {char}
-                          </span>
-                        ))}
-                      </span>
-                      <ProgressBar width={10} primaryColor={"from-[#FF000D]"} secondaryColor={"to-[#B20009]"} iconColor={"text-[#FF000D]"} totalValue={totalDocs} partialValue={totalRejecteds} />
-                    </div>
+                    <button className="text-black">{expandedRows.includes(stage.id) ? <CaretDown size={30} /> : <CaretRight size={30} />}</button>
                   </div>
-
-                  <button className="text-black">{expandedRows.includes(stage.id) ? <CaretDown size={30} /> : <CaretRight size={30} />}</button>
                 </div>
-              </div>
 
-              {expandedRows.includes(stage.id) && (
-                typeDocumentStages.length === 0 ? (
-                  <div className="flex items-center space-x-2 p-4">
-                    <WarningCircle size={20} />
-                    <span className="text-gray-700">Não há documentos vinculados a esta etapa.</span>
-                  </div>
-                ) : (
-                  <div className="bg-white p-4">
-                    <ul>
-                      {typeDocumentStages.map((typeDocumentStage) => {
-                        const typeDocument = typeDocumentsData[typeDocumentStage.idTipoDocumento];
-                        if (!typeDocument && !typeDocumentsData[typeDocumentStage.idTipoDocumento]) {
-                          fetchTypeDocument(typeDocumentStage.idTipoDocumento);
-                        }
+                {expandedRows.includes(stage.id) && (
+                  typeDocumentStages.length === 0 ? (
+                    <div className="flex items-center space-x-2 p-4">
+                      <WarningCircle size={20} />
+                      <span className="text-gray-700">Não há Documentos vinculados a esta Etapa.</span>
+                    </div>
+                  ) : (
+                    <div className="bg-white p-4">
+                      <ul>
+                        {typeDocumentStages.map((typeDocumentStage) => {
+                          const typeDocument = typeDocumentsData[typeDocumentStage.idTipoDocumento];
+                          if (!typeDocument && !typeDocumentsData[typeDocumentStage.idTipoDocumento]) {
+                            fetchTypeDocument(typeDocumentStage.idTipoDocumento);
+                          }
 
-                        if (typeDocument) {
-                          const data = documentsProcess.find(
-                            (d) => d.idTypeDocumentStage === typeDocumentStage.id
-                          );
+                          if (typeDocument) {
+                            const data = documentsProcess.find(
+                              (d) => d.idTypeDocumentStage === typeDocumentStage.id
+                            );
 
-                          return (
-                            <li key={typeDocumentStage.id} className="p-2 flex justify-between items-center border-b hover:bg-gray-100 ">
-                              <div className="flex justify-between items-center">
-                                <span className="text-gray-700 gap-x-2 flex items-center mr-2">
-                                  <FileText size={20} /> Documento {typeDocumentStage.posicao} - {typeDocument.nomeTipoDocumento}
-                                </span>
+                            return (
+                              <li key={typeDocumentStage.id} className="p-2 flex justify-between items-center border-b hover:bg-gray-100 ">
+                                <div className="flex justify-between items-center">
+                                  <span className="text-gray-700 gap-x-2 flex items-center mr-2">
+                                    <FileText size={20} /> Documento {typeDocumentStage.posicao} - {typeDocument.nomeTipoDocumento}
+                                  </span>
 
-                                {data && (
-                                  data.status === 4 ? (
-                                    <span className="text-[#00A9C2] flex items-center space-x-1 ml-auto">
-                                      <Paperclip size={20} />
-                                      <span>Anexado</span>
-                                    </span>
-                                  ) : data.status === 5 ? (
-                                    <span className="text-[#7D00DF] flex items-center space-x-1 ml-auto">
-                                      <FileMagnifyingGlass size={20} />
-                                      <span>Em Análise</span>
-                                    </span>
-                                  ) : data.status === 6 ? (
-                                    <span className="text-[#1BA100] flex items-center space-x-1 ml-auto">
-                                      <Check size={20} />
-                                      <span>Aprovado</span>
-                                    </span>
-                                  ) : data.status === 7 ? (
-                                    <span className="text-[#B20009] flex items-center space-x-1 ml-auto">
-                                      <X size={20} />
-                                      <span>Desaprovado</span>
-                                    </span>
-                                  ) : (
-                                    <span className="text-[#585858] flex items-center space-x-1 ml-auto">
-                                      <Warning size={20} />
-                                      <span>Pendente</span>
-                                    </span>
-                                  )
-                                )}
-                              </div>
-
-                              {data ? (
-                                <div className="flex items-center space-x-2">
-                                  <div className="flex space-x-20">
-                                    <div className="flex items-center space-x-3">
-                                      <button className="border-2 border-[#da8aff] hover:bg-[#da8aff] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleView(typeDocumentStage.id, typeDocument)}>
-                                        <ArrowSquareOut size={20} />
-                                        Visualizar
-                                      </button>
-                                      <button
-                                        className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${data.arquive ? 'border-[#8cff9d] hover:bg-[#8cff9d] text-black' : 'bg-gray-200 cursor-not-allowed'}`}
-                                        onClick={() => data.arquive ? handleDownload(typeDocumentStage.id) : null}
-                                        disabled={!data.arquive}
-                                        >
-                                        <DownloadSimple size={20} />
-                                        Baixar
-                                      </button>
-                                    </div>
-
-                                    <div className="flex items-center space-x-3">
-                                      <button
-                                        className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${data.status === 5 || data.status === 7 ? 'border-[#5db6ff] hover:bg-[#5db6ff] text-black' : 'bg-gray-200 cursor-not-allowed'}`}
-                                        onClick={data.status === 5 || data.status === 7 ? () => handleModify(typeDocumentStage.id, typeDocument) : null}
-                                        disabled={data.status !== 5 && data.status !== 7}
-                                      >
+                                  {data && (
+                                    data.status === 4 ? (
+                                      <span className="text-[#00A9C2] flex items-center space-x-1 ml-auto">
+                                        <Paperclip size={20} />
+                                        <span>Anexado</span>
+                                      </span>
+                                    ) : data.status === 5 ? (
+                                      <span className="text-[#7D00DF] flex items-center space-x-1 ml-auto">
+                                        <FileMagnifyingGlass size={20} />
+                                        <span>Em Análise</span>
+                                      </span>
+                                    ) : data.status === 6 ? (
+                                      <span className="text-[#1BA100] flex items-center space-x-1 ml-auto">
                                         <Check size={20} />
-                                        Aprovar
-                                      </button>
-                                      <button
-                                        className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${data.status === 5 || data.status === 6 ? 'border-[#ff6969] hover:bg-[#ff6969] text-black' : 'bg-gray-200 cursor-not-allowed'}`}
-                                        onClick={data.status === 5 || data.status === 7 ? () => handleRemove(typeDocumentStage.id) : null}
-                                        disabled={data.status !== 5 && data.status !== 7}
-                                      >
+                                        <span>Aprovado</span>
+                                      </span>
+                                    ) : data.status === 7 ? (
+                                      <span className="text-[#B20009] flex items-center space-x-1 ml-auto">
                                         <X size={20} />
-                                        Desaprovar
-                                      </button>
+                                        <span>Desaprovado</span>
+                                      </span>
+                                    ) : (
+                                      <span className="text-[#585858] flex items-center space-x-1 ml-auto">
+                                        <Warning size={20} />
+                                        <span>Pendente</span>
+                                      </span>
+                                    )
+                                  )}
+                                </div>
+
+                                {data ? (
+                                  <div className="flex items-center space-x-2">
+                                    <div className="flex space-x-20">
+                                      <div className="flex items-center space-x-3">
+                                        <button className="border-2 border-[#da8aff] hover:bg-[#da8aff] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleView(typeDocumentStage.id, typeDocument)}>
+                                          <ArrowSquareOut size={20} />
+                                          Visualizar
+                                        </button>
+                                        <button
+                                          className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${data.arquive ? 'border-[#8cff9d] hover:bg-[#8cff9d] text-black' : 'bg-gray-200 cursor-not-allowed'}`}
+                                          onClick={() => data.arquive ? handleDownload(typeDocumentStage.id) : null}
+                                          disabled={!data.arquive}
+                                        >
+                                          <DownloadSimple size={20} />
+                                          Baixar
+                                        </button>
+                                      </div>
+
+                                      <div className="flex items-center space-x-3">
+                                        <button
+                                          className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${data.status === 5 || data.status === 7 ? 'border-[#5db6ff] hover:bg-[#5db6ff] text-black' : 'bg-gray-200 cursor-not-allowed'}`}
+                                          onClick={data.status === 5 || data.status === 7 ? () => handleModify(typeDocumentStage.id, typeDocument) : null}
+                                          disabled={data.status !== 5 && data.status !== 7}
+                                        >
+                                          <Check size={20} />
+                                          Aprovar
+                                        </button>
+                                        <button
+                                          className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${data.status === 5 || data.status === 6 ? 'border-[#ff6969] hover:bg-[#ff6969] text-black' : 'bg-gray-200 cursor-not-allowed'}`}
+                                          onClick={data.status === 5 || data.status === 7 ? () => handleRemove(typeDocumentStage.id) : null}
+                                          disabled={data.status !== 5 && data.status !== 7}
+                                        >
+                                          <X size={20} />
+                                          Desaprovar
+                                        </button>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              ) : (
-                                <button className="border-2 border-[#65EBFF] hover:bg-[#65EBFF] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleAttach(typeDocumentStage.id, typeDocument)}>
-                                  <Paperclip size={20} />
-                                  Anexar
-                                </button>
-                              )}
-                            </li>
-                          );
-                        }
-                        return null;
-                      })}
-                    </ul>
-                  </div>
-                )
-              )}
-            </li>
-          );
-        })}
-      </ul>
+                                ) : (
+                                  <button className="border-2 border-[#65EBFF] hover:bg-[#65EBFF] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => handleAttach(typeDocumentStage.id, typeDocument)}>
+                                    <Paperclip size={20} />
+                                    Anexar
+                                  </button>
+                                )}
+                              </li>
+                            );
+                          }
+                          return null;
+                        })}
+                      </ul>
+                    </div>
+                  )
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
       <DocumentModal
         isOpen={modalOpen}

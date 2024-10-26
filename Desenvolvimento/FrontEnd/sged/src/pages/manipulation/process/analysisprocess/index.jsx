@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
 
+import { ListChecks, Check, X, Hourglass, ListMagnifyingGlass } from "@phosphor-icons/react";
+
 // Importa o arquivo CSS
 import "./styles.css";
 
@@ -772,50 +774,79 @@ const AddProcess = () => {
 
         <hr className="my-10" />
 
-        {stages?.length > 0 && (
-          <>
-            <div className="bg-white shadow-md rounded-lg mb-4">
-              <div className="bg-gray-300 rounded-t-lg p-4">
+        <>
+          <div className="bg-white shadow-md rounded-lg mb-4">
+            <div className={`rounded-t-lg p-4 bg-gradient-to-tr ${(processo.status === 0 ? "from-[#A3A3A3] to-[#585858]" : (processo.status === 1 ? "from-[#65EBFF] to-[#00A9C2] " : (processo.status === 2 ? "from-[#CA87FF] to-[#7D00DF]" : (processo.status === 3 ? "from-[#2BFF00] to-[#1BA100]" : (processo.status === 4 ? "from-[#FF000D] to-[#B20009]" : "")))))}`}>
+              <div className="flex items-center rounded-lg bg-white p-3">
                 <h3 className="text-xl font-semibold">Progresso do Processo:</h3>
-              </div>
 
-              <div className="px-20 py-4">
-                {/* Título das colunas */}
-                <div className="grid grid-cols-6 text-left">
-                  <p className="font-bold"></p> {/* Título da primeira coluna */}
-                  <p className="font-bold">Pendente</p>
-                  <p className="font-bold">Concluído</p>
-                  <p className="font-bold">Em Análise</p>
-                  <p className="font-bold">Aprovado</p>
-                  <p className="font-bold">Recusado</p>
-                </div>
-
-                {/* Linhas de progresso */}
-                <ProgressRow
-                  title="Etapas"
-                  data={stagesMap}
-                />
-                <ProgressRow
-                  title="Documentos"
-                  data={documentsMap}
-                />
+                {processo && (
+                  processo.status === 1 ? (
+                    <span className="text-[#00A9C2] flex items-center ml-5">
+                      <ListChecks size={20} />
+                      <span className="ml-1">Em Progresso</span>
+                    </span>
+                  ) : processo.status === 2 ? (
+                    <span className="text-[#7D00DF] flex items-center ml-5">
+                      <ListMagnifyingGlass size={20} />
+                      <span className="ml-1">Em Análise</span>
+                    </span>
+                  ) : processo.status === 3 ? (
+                    <span className="text-[#1BA100] flex items-center ml-5">
+                      <Check size={20} />
+                      <span className="ml-1">Aprovado</span>
+                    </span>
+                  ) : processo.status === 4 ? (
+                    <span className="text-[#B20009] flex items-center ml-5">
+                      <X size={20} />
+                      <span className="ml-1">Desaprovado</span>
+                    </span>
+                  ) : (
+                    <span className="text-[#585858] flex items-center ml-5">
+                      <Hourglass size={20} />
+                      <span className="ml-1">Em Espera</span>
+                    </span>
+                  )
+                )}
               </div>
             </div>
 
-            <DocumentComponent
-              stages={stages}
-              typeDocumentStagesData={typeDocumentStagesData}
-              typeDocumentsData={typeDocumentsData}
-              fetchTypeDocument={fetchTypeDocument}
-              setDocumentsProcess={setDocumentsProcess}
-              documentsProcess={documentsProcess}
-              userResponsible={userResponsible}
-              typeResponsible={typeResponsible}
-              setStagesMap={setStagesMap}
-              setDocumentsMap={setDocumentsMap}
-            />
-          </>
-        )}
+            <div className="px-20 py-4">
+              {/* Título das colunas */}
+              <div className="grid grid-cols-6 text-left">
+                <p className="font-bold"></p> {/* Título da primeira coluna */}
+                <p className="font-bold">Pendente</p>
+                <p className="font-bold">Concluído</p>
+                <p className="font-bold">Em Análise</p>
+                <p className="font-bold">Aprovado</p>
+                <p className="font-bold">Recusado</p>
+              </div>
+
+              {/* Linhas de progresso */}
+              <ProgressRow
+                title="Etapas"
+                data={stagesMap}
+              />
+              <ProgressRow
+                title="Documentos"
+                data={documentsMap}
+              />
+            </div>
+          </div>
+
+          <DocumentComponent
+            stages={stages}
+            typeDocumentStagesData={typeDocumentStagesData}
+            typeDocumentsData={typeDocumentsData}
+            fetchTypeDocument={fetchTypeDocument}
+            setDocumentsProcess={setDocumentsProcess}
+            documentsProcess={documentsProcess}
+            userResponsible={userResponsible}
+            typeResponsible={typeResponsible}
+            setStagesMap={setStagesMap}
+            setDocumentsMap={setDocumentsMap}
+          />
+        </>
       </div>
     </>
   );

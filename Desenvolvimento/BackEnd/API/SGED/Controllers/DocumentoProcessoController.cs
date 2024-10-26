@@ -50,9 +50,34 @@ namespace SGED.Controllers
             }
         }
 
+        [HttpGet("GetByStatus/{status:int}")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult<IEnumerable<DocumentoProcessoDTO>>> GetByStatus(int status)
+        {
+            try
+            {
+                var documentoProcessosDTO = await _documentoProcessoService.GetByStatus(status);
+
+                _response.SetSuccess();
+                _response.Message = documentoProcessosDTO.Any() ?
+                    "Lista do(s) Documento(s) obtida com sucesso." :
+                    "Nenhum Documento encontrado.";
+                _response.Data = documentoProcessosDTO;
+
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista do(s) Documento(s)!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
         [HttpGet("GetByProcess/{idProcesso:Guid}", Name = "GetByProcess")]
         [AccessPermission("A", "B", "C")]
-        public async Task<ActionResult<DocumentoProcessoDTO>> GetByProcess(Guid idProcesso)
+        public async Task<ActionResult<IEnumerable<DocumentoProcessoDTO>>> GetByProcess(Guid idProcesso)
         {
             try
             {
@@ -169,8 +194,8 @@ namespace SGED.Controllers
                 if (existingDocumentoProcessoDTO is null)
                 {
                     _response.SetNotFound();
-                    _response.Message = "A DocumentoProcesso informada não existe!";
-                    _response.Data = new { errorId = "A DocumentoProcesso informada não existe!" };
+                    _response.Message = "O Documento Processo informado não existe!";
+                    _response.Data = new { errorId = "O Documento Processo informado não existe!" };
                     return NotFound(_response);
                 }
 
@@ -217,8 +242,40 @@ namespace SGED.Controllers
                 if (documentoProcessoDTO is null)
                 {
                     _response.SetNotFound();
-                    _response.Message = "A DocumentoProcesso informada não existe!";
-                    _response.Data = new { errorId = "A DocumentoProcesso informada não existe!" };
+                    _response.Message = "O Documento Processo informado não existe!";
+                    _response.Data = new { errorId = "O Documento Processo informado não existe!" };
+                    return NotFound(_response);
+                }
+
+                documentoProcessoDTO.PutOnPending();
+                await _documentoProcessoService.Update(documentoProcessoDTO);
+
+                _response.SetSuccess();
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " colocado em pendente.";
+                _response.Data = documentoProcessoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível atualizar o status do Documento Processo!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpPut("MarkAsAttached")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult> MarkAsAttached([FromBody] Guid id)
+        {
+            try
+            {
+                var documentoProcessoDTO = await _documentoProcessoService.GetById(id);
+                if (documentoProcessoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "O Documento Processo informado não existe!";
+                    _response.Data = new { errorId = "O Documento Processo informado não existe!" };
                     return NotFound(_response);
                 }
 
@@ -226,14 +283,14 @@ namespace SGED.Controllers
                 await _documentoProcessoService.Update(documentoProcessoDTO);
 
                 _response.SetSuccess();
-                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " alterada com sucesso.";
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " marcado como anexado.";
                 _response.Data = documentoProcessoDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
                 _response.SetError();
-                _response.Message = "Não foi possível colocar DocumentoProcesso em Análise!";
+                _response.Message = "Não foi possível atualizar o status do Documento Processo!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -249,23 +306,23 @@ namespace SGED.Controllers
                 if (documentoProcessoDTO is null)
                 {
                     _response.SetNotFound();
-                    _response.Message = "A DocumentoProcesso informada não existe!";
-                    _response.Data = new { errorId = "A DocumentoProcesso informada não existe!" };
+                    _response.Message = "O Documento Processo informado não existe!";
+                    _response.Data = new { errorId = "O Documento Processo informado não existe!" };
                     return NotFound(_response);
                 }
 
-                documentoProcessoDTO.MoveToAnalysis();
+                documentoProcessoDTO.SendForAnalysis();
                 await _documentoProcessoService.Update(documentoProcessoDTO);
 
                 _response.SetSuccess();
-                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " alterada com sucesso.";
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " enviado para análise.";
                 _response.Data = documentoProcessoDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
                 _response.SetError();
-                _response.Message = "Não foi possível colocar DocumentoProcesso em Análise!";
+                _response.Message = "Não foi possível atualizar o status do Documento Processo!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -281,8 +338,8 @@ namespace SGED.Controllers
                 if (documentoProcessoDTO is null)
                 {
                     _response.SetNotFound();
-                    _response.Message = "A DocumentoProcesso informada não existe!";
-                    _response.Data = new { errorId = "A DocumentoProcesso informada não existe!" };
+                    _response.Message = "O Documento Processo informado não existe!";
+                    _response.Data = new { errorId = "O Documento Processo informado não existe!" };
                     return NotFound(_response);
                 }
 
@@ -290,14 +347,14 @@ namespace SGED.Controllers
                 await _documentoProcessoService.Update(documentoProcessoDTO);
 
                 _response.SetSuccess();
-                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " alterada com sucesso.";
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " aprovado.";
                 _response.Data = documentoProcessoDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
                 _response.SetError();
-                _response.Message = "Não foi possível colocar DocumentoProcesso em Análise!";
+                _response.Message = "Não foi possível atualizar o status do Documento Processo!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
@@ -313,8 +370,8 @@ namespace SGED.Controllers
                 if (documentoProcessoDTO is null)
                 {
                     _response.SetNotFound();
-                    _response.Message = "A DocumentoProcesso informada não existe!";
-                    _response.Data = new { errorId = "A DocumentoProcesso informada não existe!" };
+                    _response.Message = "O Documento Processo informado não existe!";
+                    _response.Data = new { errorId = "O Documento Processo informado não existe!" };
                     return NotFound(_response);
                 }
 
@@ -322,14 +379,14 @@ namespace SGED.Controllers
                 await _documentoProcessoService.Update(documentoProcessoDTO);
 
                 _response.SetSuccess();
-                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " alterada com sucesso.";
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " desaprovado.";
                 _response.Data = documentoProcessoDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
                 _response.SetError();
-                _response.Message = "Não foi possível colocar DocumentoProcesso em Análise!";
+                _response.Message = "Não foi possível atualizar o status do Documento Processo!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }

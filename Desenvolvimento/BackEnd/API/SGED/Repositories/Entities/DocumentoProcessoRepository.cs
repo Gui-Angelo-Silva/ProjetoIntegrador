@@ -3,7 +3,7 @@ using SGED.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SGED.Objects.Utilities;
 using SGED.Objects.Models.Entities;
-using SGED.Objects.Utilities.StatusState;
+using SGED.Objects.Enums.Status;
 
 namespace SGED.Repositories.Entities;
 public class DocumentoProcessoRepository : IDocumentoProcessoRepository
@@ -22,6 +22,17 @@ public class DocumentoProcessoRepository : IDocumentoProcessoRepository
 	{
 		return await _dbContext.DocumentoProcesso.AsNoTracking().ToListAsync();
 	}
+
+    public async Task<IEnumerable<DocumentoProcessoModel>> GetByStatus(int status)
+    {
+        // Convertendo o valor numérico para o enum
+        StatusDocumentProcess statusEnum = (StatusDocumentProcess)status;
+
+        return await _dbContext.DocumentoProcesso
+            .AsNoTracking()
+            .Where(dp => dp.Status == statusEnum) // Comparando com o enum
+            .ToListAsync();
+    }
 
     public async Task<IEnumerable<DocumentoProcessoModel>> GetByProcess(Guid idProcesso)
     {

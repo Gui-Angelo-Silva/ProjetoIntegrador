@@ -19,7 +19,7 @@
         public static StatusDocumentProcess MarkAsNotAttached() => StatusDocumentProcess.NotAttached;
         public static StatusDocumentProcess MarkAsNotIntact() => StatusDocumentProcess.NotIntact;
         public static StatusDocumentProcess MarkAsAttached() => StatusDocumentProcess.Attached;
-        public static StatusDocumentProcess MoveToAnalysis() => StatusDocumentProcess.InAnalysis;
+        public static StatusDocumentProcess SendForAnalysis() => StatusDocumentProcess.InAnalysis;
         public static StatusDocumentProcess Approve() => StatusDocumentProcess.Approved;
         public static StatusDocumentProcess Disapprove() => StatusDocumentProcess.Disapproved;
     }

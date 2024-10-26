@@ -57,6 +57,31 @@ namespace SGED.Controllers
             }
         }
 
+        [HttpGet("GetByStatus/{status:int}")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult<IEnumerable<ProcessoDTO>>> GetByStatus(int status)
+        {
+            try
+            {
+                var processosDTO = await _processoService.GetByStatus(status);
+
+                _response.SetSuccess();
+                _response.Message = processosDTO.Any() ?
+                    "Lista do(s) Processo(s) obtida com sucesso." :
+                    "Nenhum Processo encontrado.";
+                _response.Data = processosDTO;
+
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista do(s) Processo(s)!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
         [HttpGet("{id:Guid}", Name = "GetProcesso")]
         [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<ProcessoDTO>> Get(Guid id)
@@ -140,7 +165,7 @@ namespace SGED.Controllers
                 }
 
                 if (processoDTO.DocumentosProcessoDTO.Any() || processoDTO.IdResponsavel.HasValue) processoDTO.PutInProgress();
-                else processoDTO.AssignDefaultState();
+                else processoDTO.PutOnHold();
 
                 await _processoService.Create(processoDTO);
 
@@ -199,6 +224,166 @@ namespace SGED.Controllers
             {
                 _response.SetError();
                 _response.Message = "Não foi possível alterar o Processo!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpPut("PutOnHold")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult> PutOnHold(Guid id)
+        {
+            try
+            {
+                var documentoProcessoDTO = await _processoService.GetById(id);
+                if (documentoProcessoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "O Processo informado não existe!";
+                    _response.Data = new { errorId = "O Processo informado não existe!" };
+                    return NotFound(_response);
+                }
+
+                documentoProcessoDTO.PutOnHold();
+                await _processoService.Update(documentoProcessoDTO);
+
+                _response.SetSuccess();
+                _response.Message = "Processo " + documentoProcessoDTO.IdentificacaoProcesso + " colocado em espera.";
+                _response.Data = documentoProcessoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível atualizar o status do Processo!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpPut("PutInProgress")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult> PutInProgress(Guid id)
+        {
+            try
+            {
+                var documentoProcessoDTO = await _processoService.GetById(id);
+                if (documentoProcessoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "O Processo informado não existe!";
+                    _response.Data = new { errorId = "O Processo informado não existe!" };
+                    return NotFound(_response);
+                }
+
+                documentoProcessoDTO.PutInProgress();
+                await _processoService.Update(documentoProcessoDTO);
+
+                _response.SetSuccess();
+                _response.Message = "Processo " + documentoProcessoDTO.IdentificacaoProcesso + " em progresso.";
+                _response.Data = documentoProcessoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível atualizar o status do Processo!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpPut("SendForAnalysis")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult> SendForAnalysis(Guid id)
+        {
+            try
+            {
+                var documentoProcessoDTO = await _processoService.GetById(id);
+                if (documentoProcessoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "O Processo informado não existe!";
+                    _response.Data = new { errorId = "O Processo informado não existe!" };
+                    return NotFound(_response);
+                }
+
+                documentoProcessoDTO.SendForAnalysis();
+                await _processoService.Update(documentoProcessoDTO);
+
+                _response.SetSuccess();
+                _response.Message = "Processo " + documentoProcessoDTO.IdentificacaoProcesso + " enviado para análise.";
+                _response.Data = documentoProcessoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível atualizar o status do Processo!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpPut("Approve")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult> Approve(Guid id)
+        {
+            try
+            {
+                var documentoProcessoDTO = await _processoService.GetById(id);
+                if (documentoProcessoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "O Processo informado não existe!";
+                    _response.Data = new { errorId = "O Processo informado não existe!" };
+                    return NotFound(_response);
+                }
+
+                documentoProcessoDTO.Approve();
+                await _processoService.Update(documentoProcessoDTO);
+
+                _response.SetSuccess();
+                _response.Message = "Processo " + documentoProcessoDTO.IdentificacaoProcesso + " aprovado.";
+                _response.Data = documentoProcessoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível atualizar o status do Processo!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpPut("Disapprove")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult> Disapprove(Guid id)
+        {
+            try
+            {
+                var documentoProcessoDTO = await _processoService.GetById(id);
+                if (documentoProcessoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "O Processo informado não existe!";
+                    _response.Data = new { errorId = "O Processo informado não existe!" };
+                    return NotFound(_response);
+                }
+
+                documentoProcessoDTO.Disapprove();
+                await _processoService.Update(documentoProcessoDTO);
+
+                _response.SetSuccess();
+                _response.Message = "Processo " + documentoProcessoDTO.IdentificacaoProcesso + " desaprovado.";
+                _response.Data = documentoProcessoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível atualizar o status do Processo!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }

@@ -23,6 +23,12 @@ public class DocumentoProcessoService : IDocumentoProcessoService
         return _mapper.Map<IEnumerable<DocumentoProcessoDTO>>(documentoProcessos);
     }
 
+    public async Task<IEnumerable<DocumentoProcessoDTO>> GetByStatus(int status)
+    {
+        var processos = await _documentoProcessoRepository.GetByStatus(status);
+        return _mapper.Map<IEnumerable<DocumentoProcessoDTO>>(processos);
+    }
+
     public async Task<IEnumerable<DocumentoProcessoDTO>> GetByProcess(Guid idProcesso)
     {
         var documentoProcessos = await _documentoProcessoRepository.GetByProcess(idProcesso);

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Collections.Generic;
 using SGED.Objects.Models.Entities;
+using SGED.Objects.Enums.Status;
 
 namespace SGED.Repositories.Entities;
 public class ProcessoRepository : IProcessoRepository
@@ -20,6 +21,17 @@ public class ProcessoRepository : IProcessoRepository
     public async Task<IEnumerable<ProcessoModel>> GetAll()
     {
         return await _dbContext.Processo.AsNoTracking().ToListAsync();
+    }
+
+    public async Task<IEnumerable<ProcessoModel>> GetByStatus(int status)
+    {
+        // Convertendo o valor numérico para o enum
+        StatusProcess statusEnum = (StatusProcess)status;
+
+        return await _dbContext.Processo
+            .AsNoTracking()
+            .Where(p => p.Status == statusEnum) // Comparando com o enum
+            .ToListAsync();
     }
 
     public async Task<ProcessoModel> GetById(Guid id)

@@ -57,7 +57,7 @@ namespace SGED.Objects.DTOs.Entities
         public void MarkAsNotAttached() => Status = StatusDocumentProcessExtensions.MarkAsNotAttached();
         public void MarkAsNotIntact() => Status = StatusDocumentProcessExtensions.MarkAsNotIntact();
         public void MarkAsAttached() => Status = StatusDocumentProcessExtensions.MarkAsAttached();
-        public void MoveToAnalysis() => Status = StatusDocumentProcessExtensions.MoveToAnalysis();
+        public void SendForAnalysis() => Status = StatusDocumentProcessExtensions.SendForAnalysis();
         public void Approve() => Status = StatusDocumentProcessExtensions.Approve();
         public void Disapprove() => Status = StatusDocumentProcessExtensions.Disapprove();
 

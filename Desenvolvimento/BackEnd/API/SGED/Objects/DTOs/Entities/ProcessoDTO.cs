@@ -56,9 +56,9 @@ namespace SGED.Objects.DTOs.Entities
         public ICollection<DocumentoProcessoDTO>? DocumentosProcessoDTO { get; set; }
 
 
-        public void AssignDefaultState() => Status = StatusProcessExtensions.AssignDefaultState();
+        public void PutOnHold() => Status = StatusProcessExtensions.PutOnHold();
         public void PutInProgress() => Status = StatusProcessExtensions.PutInProgress();
-        public void MoveToAnalysis() => Status = StatusProcessExtensions.MoveToAnalysis();
+        public void SendForAnalysis() => Status = StatusProcessExtensions.SendForAnalysis();
         public void Approve() => Status = StatusProcessExtensions.Approve();
         public void Disapprove() => Status = StatusProcessExtensions.Disapprove();
     }

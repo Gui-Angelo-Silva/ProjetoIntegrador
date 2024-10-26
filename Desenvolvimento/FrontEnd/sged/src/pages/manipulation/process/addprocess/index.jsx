@@ -7,6 +7,7 @@ import Breadcrumb from "../../../../components/Title/Breadcrumb";
 import ProgressBar from "../../../../components/ProgressBar";
 
 import { useMontage } from "../../../../object/modules/montage";
+import { useServer } from '../../../../routes/serverRoute';
 import ConnectionService from "../../../../object/service/connection";
 import ListModule from "../../../../object/modules/list";
 import SelectModule from "../../../../object/modules/select";
@@ -28,6 +29,7 @@ const AddProcess = () => {
   ];
 
   // Services initialization --------------------------------------------------------------------------------------------------------------------------
+  const server = useServer();
   const connection = new ConnectionService();
   const list_Realstate = ListModule();
   const selectBox_Realstate = SelectModule();
@@ -248,6 +250,8 @@ const AddProcess = () => {
     console.log(dataProcess);
 
     await connection.endpoint("Processo").action("PostAllDatas").post(dataProcess);
+
+    if (connection.getObject()) server.removeSegment(1).dispatch();
   };
 
 

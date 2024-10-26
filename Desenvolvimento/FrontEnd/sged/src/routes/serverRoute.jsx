@@ -64,7 +64,7 @@ export const ServerProvider = ({ children }) => {
             return serverActions(newUrl);
         },
         removeSegment: (quantRemove) => {
-            const segments = url.split('/');
+            const segments = window.location.pathname.split('/');
             const numSegments = segments.length;
             const index = numSegments - quantRemove;
 

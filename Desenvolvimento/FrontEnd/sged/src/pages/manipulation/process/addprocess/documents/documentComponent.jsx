@@ -62,6 +62,8 @@ const DocumentComponent = ({
     setIdDocumentProcess((prevId) => prevId + 1);
     setFormMode(null);
     setModalOpen(false);
+
+    () => server.currentRoute().addSegment("cadastrar-processo").dispatch()
   };
 
   const handleCancel = () => {

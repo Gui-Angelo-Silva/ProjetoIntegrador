@@ -422,7 +422,9 @@ const DocumentComponent = ({
                                       </button>
                                       <button
                                         className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${data.arquive ? 'border-[#8cff9d] hover:bg-[#8cff9d] text-black' : 'bg-gray-200 cursor-not-allowed'}`}
-                                        onClick={() => handleDownload(typeDocumentStage.id)}>
+                                        onClick={() => data.arquive ? handleDownload(typeDocumentStage.id) : null}
+                                        disabled={!data.arquive}
+                                        >
                                         <DownloadSimple size={20} />
                                         Baixar
                                       </button>

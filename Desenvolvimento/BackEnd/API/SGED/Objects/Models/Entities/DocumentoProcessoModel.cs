@@ -19,11 +19,8 @@ namespace SGED.Objects.Models.Entities
         [Column("observacaodocumento")]
         public string ObservacaoDocumento { get; set; }
 
-        [Column("hashdocumento")]
-        public string HashDocumento { get; set; }
-
-        [Column("arquivodocumento")]
-        public byte[] ArquivoDocumento { get; set; }
+        [Column("arquivo")]
+        public string Arquivo { get; set; }
 
         [Column("statusdocumentoprocesso")]
         public StatusDocumentProcess Status { get; set; }

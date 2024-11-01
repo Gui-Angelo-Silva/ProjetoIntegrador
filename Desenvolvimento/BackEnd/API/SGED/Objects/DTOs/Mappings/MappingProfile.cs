@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
+using Newtonsoft.Json;
 using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
-using SGED.Objects.Server;
+using SGED.Objects.Utilities;
 
 namespace SGED.Objects.DTOs.Mappings
 {
@@ -89,11 +90,19 @@ namespace SGED.Objects.DTOs.Mappings
             CreateMap<ProcessoDTO, ProcessoModel>();
             CreateMap<ProcessoModel, ProcessoDTO>().ReverseMap();
 
-            CreateMap<DocumentoProcessoDTO, DocumentoProcessoModel>();
-			CreateMap<DocumentoProcessoModel, DocumentoProcessoDTO>().ReverseMap();
+            // Mapeamento de DocumentoProcessoDTO para DocumentoProcessoModel - converte o objeto Arquivo em JSON
+            CreateMap<DocumentoProcessoDTO, DocumentoProcessoModel>()
+                .ForMember(dest => dest.Arquivo,
+                           opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Arquivo)));
+
+            // Mapeamento de DocumentoProcessoModel para DocumentoProcessoDTO - converte JSON para o objeto Arquivo
+            CreateMap<DocumentoProcessoModel, DocumentoProcessoDTO>()
+                .ForMember(dest => dest.Arquivo,
+                           opt => opt.MapFrom(src => JsonConvert.DeserializeObject<Archive>(src.Arquivo)))
+                .ReverseMap();  // Permite a conversão reversa automática
 
 
-			// Objetos do Servidor:
+            // Objetos do Servidor:
 
             CreateMap<SessaoDTO, SessaoModel>();
             CreateMap<SessaoModel, SessaoDTO>().ReverseMap();

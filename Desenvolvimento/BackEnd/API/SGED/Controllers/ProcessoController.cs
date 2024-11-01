@@ -438,39 +438,28 @@ namespace SGED.Controllers
                         documentoProcesso.IdResponsavel = idResponsavel;
 
                         // Verifica se ArquivoDocumento não está vazio e se o tipo é PDF
-                        if (documentoProcesso.ArquivoDocumento != null && documentoProcesso.ArquivoDocumento.Length > 0)
+                        if (documentoProcesso.Arquivo != null && documentoProcesso.Arquivo.Bytes.Length > 0)
                         {
-                            // Verifica se é PDF
-                            bool isPDF = documentoProcesso.IsPDF();
-
-                            if (isPDF) // Se for PDF
+                            // Gera o hash do arquivo para comparação
+                            if (documentoProcesso.Arquivo.CompareHashs())
                             {
-                                // Gera o hash do arquivo para comparação
-                                if (documentoProcesso.GenerateHashSHA256() == documentoProcesso.HashDocumento)
-                                {
-                                    documentoProcesso.MarkAsAttached(); // O arquivo está íntegro
-                                }
-                                else
-                                {
-
-                                    documentoProcesso.MarkAsNotIntact(); // O arquivo não está íntegro
-                                    documentoProcesso.ArquivoDocumento = new byte[0]; // Define o arquivo como vazio
-                                    documentoProcesso.HashDocumento = "";
-                                }
+                                documentoProcesso.MarkAsAttached(); // O arquivo está íntegro
                             }
                             else
                             {
-                                // Se não for PDF, marca como não anexado e define o arquivo como vazio
-                                documentoProcesso.MarkAsNotAttached();
-                                documentoProcesso.HashDocumento = "";
-                                documentoProcesso.ArquivoDocumento = new byte[0];
+
+                                documentoProcesso.MarkAsNotIntact(); // O arquivo não está íntegro
+                                documentoProcesso.Arquivo.Bytes = Array.Empty<byte>(); // Define o arquivo como vazio
+                                documentoProcesso.Arquivo.Hash = "";
+                                documentoProcesso.Arquivo.FileName = "";
+                                documentoProcesso.Arquivo.MimeType = "";
                             }
                         }
                         else
                         {
                             // Se o ArquivoDocumento estiver vazio, marca como não anexado
                             documentoProcesso.MarkAsNotAttached();
-                            documentoProcesso.HashDocumento = "";
+                            documentoProcesso.Arquivo = new Archive();
                         }
                     }
                     else // Se nenhum documento foi declarado
@@ -480,7 +469,7 @@ namespace SGED.Controllers
                         documentoProcesso.IdentificacaoDocumento = "NÃO ANEXADO";
                         documentoProcesso.DescricaoDocumento = "";
                         documentoProcesso.ObservacaoDocumento = "";
-                        documentoProcesso.HashDocumento = "";
+                        documentoProcesso.Arquivo = new Archive();
                         documentoProcesso.IdProcesso = idProcesso;
                         documentoProcesso.IdTipoDocumentoEtapa = documentoEtapa.Id;
 

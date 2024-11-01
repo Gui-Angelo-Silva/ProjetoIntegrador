@@ -1,6 +1,7 @@
 ﻿using SGED.DTOs.Entities;
 using SGED.Objects.Enums.Status;
 using SGED.Objects.Models.Entities;
+using SGED.Objects.Utilities;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography;
@@ -22,11 +23,8 @@ namespace SGED.Objects.DTOs.Entities
 		[MaxLength(300)]
 		public string ObservacaoDocumento { get; set; }
 
-        [MaxLength(64)]
-        public string HashDocumento { get; set; }
-
-        // Propriedade interna para armazenar o array de bytes
-        public byte[]? ArquivoDocumento { get; set; }
+        [Required(ErrorMessage = "O arquivo é requerido!")]
+        public Archive Arquivo { get; set; }
 
         [Required(ErrorMessage = "O status é requerido!")]
         public StatusDocumentProcess Status { get; set; }
@@ -60,49 +58,6 @@ namespace SGED.Objects.DTOs.Entities
         public void SendForAnalysis() => Status = StatusDocumentProcessExtensions.SendForAnalysis();
         public void Approve() => Status = StatusDocumentProcessExtensions.Approve();
         public void Disapprove() => Status = StatusDocumentProcessExtensions.Disapprove();
-
-        public string GenerateHashSHA256()
-        {
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                byte[] hashBytes = sha256.ComputeHash(this.ArquivoDocumento);
-                return BitConverter.ToString(hashBytes).Replace("-", "").ToLower(); // Converte para string hexadecimal
-            }
-        }
-
-        // Método para determinar o tipo MIME do arquivo
-        public bool IsPDF()
-        {
-            var fileBytes = this.ArquivoDocumento;
-
-            // Checa se o arquivo tem ao menos o tamanho mínimo para um PDF (mágico + EOF)
-            if (fileBytes.Length < 1024) // Escolha um tamanho mínimo razoável
-            {
-                return false;
-            }
-
-            // Verifica se começa com a assinatura de um PDF (%PDF)
-            if (fileBytes[0] == 0x25 && fileBytes[1] == 0x50 && fileBytes[2] == 0x44 && fileBytes[3] == 0x46)
-            {
-                // Verifica se termina com a assinatura de um PDF (%%EOF)
-                string pdfEndSignature = "%%EOF";
-                byte[] pdfEndBytes = System.Text.Encoding.ASCII.GetBytes(pdfEndSignature);
-                int length = fileBytes.Length;
-
-                for (int i = 0; i < pdfEndBytes.Length; i++)
-                {
-                    if (fileBytes[length - pdfEndBytes.Length + i] != pdfEndBytes[i])
-                    {
-                        return false; // Se qualquer byte não corresponder, não é um PDF válido
-                    }
-                }
-
-                // Se passou nas duas checagens, o arquivo tem estrutura básica de um PDF
-                return true;
-            }
-
-            return false; // Não tem a assinatura correta
-        }
 
     }
 

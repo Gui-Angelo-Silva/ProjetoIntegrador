@@ -26,9 +26,10 @@ const ModalDetails = ({ isOpen, onClose, title, total, color }) => {
     const getTotalMessage = () => {
         const formattedTitle = formatTitle(title).toLowerCase();
         const isInAndamento = formattedTitle === 'em andamento';
+        const isNew = formattedTitle === 'novos';
 
         if (total === 1) return `Total de item ${formattedTitle}: ${total}`;
-        if (total > 1) return `Total de itens ${isInAndamento ? formattedTitle : `${formattedTitle}s`}: ${total}`;
+        if (total > 1) return `Total de itens ${isInAndamento || isNew ? formattedTitle : `${formattedTitle}s`}: ${total}`;
         return `Nenhum item ${formattedTitle}`;
     };
 

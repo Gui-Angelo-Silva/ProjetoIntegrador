@@ -16,7 +16,7 @@ const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
   const [cardUpdates, setCardUpdates] = useState([
-    { title: "NOVOS", total: 4, lastTotal: 3, color: "#057BFF" },
+    { title: "NOVOS", total: 4, lastTotal: 0, color: "#057BFF" },
     { title: "EM ANDAMENTO", total: 1, lastTotal: 1, color: "#19A2B4" },
     { title: "PENDENTE", total: 3, lastTotal: 1, color: "#FFBD07" },
     { title: "ATRASADO", total: 0, lastTotal: 0, color: "#D93442" },
@@ -47,13 +47,20 @@ const Home = () => {
   const openModal = useCallback((card) => {
     setSelectedCard(card);
     setIsModalOpen(true);
-
-    setCardUpdates((prev) =>
-      prev.map((c) =>
-        c.title === card.title ? { ...c, updated: false } : c
-      )
-    );
   }, []);
+
+  const closeModal = useCallback(() => {
+    if (selectedCard) {
+      setCardUpdates((prev) =>
+        prev.map((card) =>
+          card.title === selectedCard.title
+            ? { ...card, lastTotal: card.total, updated: false }
+            : card
+        )
+      );
+    }
+    setIsModalOpen(false);
+  }, [selectedCard]);
 
   const tableData = [
     { title: "Últimos Andamentos", icon: <FaTableCellsLarge /> },
@@ -92,7 +99,7 @@ const Home = () => {
         {isModalOpen && selectedCard && (
           <ModalDetails
             isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
+            onClose={closeModal}
             title={selectedCard.title}
             total={selectedCard.total}
             color={selectedCard.color}

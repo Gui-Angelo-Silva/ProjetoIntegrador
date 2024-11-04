@@ -1,10 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { HouseLine, User } from '@phosphor-icons/react';
 import { Tabs, Tab, Box } from '@mui/material';
 
-import SelectComponent from '../../../../../../components/SelectComponent';
-
 import { useServer } from '../../../../../../routes/serverRoute';
+import StagesComponent from "./stagesComponent";
 import * as functions from '../../../functions/functions';
 
 import {
@@ -425,8 +423,13 @@ const ProcessForm = ({
         )}
       </div>
 
-      <hr className="mt-6 mb-6 border-t-4 border-gray-400 rounded-lg w-full" />
+      {idTypeProcess && activeTab === 0 ? (
+        <>
+          <hr className="mt-6 mb-6 border-t-4 border-gray-400 rounded-lg w-full" />
 
+          <StagesComponent idTypeProcess={idTypeProcess} />
+        </>
+      ) : null}
     </>
   );
 };

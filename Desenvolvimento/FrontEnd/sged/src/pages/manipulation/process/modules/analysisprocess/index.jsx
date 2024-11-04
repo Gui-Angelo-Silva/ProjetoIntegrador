@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from 'react-router-dom';
+
+import { ListChecks, Check, X, Hourglass, ListMagnifyingGlass } from "@phosphor-icons/react";
 
 // Importa o arquivo CSS
 import "./styles.css";
 
-import Breadcrumb from "../../../../components/Title/Breadcrumb";
-import ProgressBar from "../../../../components/ProgressBar";
+import Breadcrumb from "../../../../../components/Title/Breadcrumb";
+import ProgressBar from "../../../../../components/ProgressBar";
 
-import { useMontage } from "../../../../object/modules/montage";
-import { useServer } from '../../../../routes/serverRoute';
-import ConnectionService from "../../../../object/service/connection";
-import ListModule from "../../../../object/modules/list";
-import SelectModule from "../../../../object/modules/select";
+import { useMontage } from "../../../../../object/modules/montage";
+import ConnectionService from "../../../../../object/service/connection";
+import ListModule from "../../../../../object/modules/list";
+import SelectModule from "../../../../../object/modules/select";
 
 import ProcessForm from "./form/processForm";
 import DocumentComponent from "./documents/documentComponent";
@@ -25,11 +27,12 @@ const AddProcess = () => {
   const pages = [
     { name: "Documentos", link: "/administrador/documentos", isEnabled: true },
     { name: "Processo", link: "/administrador/documentos/processo", isEnabled: true },
-    { name: "Cadastro de Processo", link: "", isEnabled: false }, // Link desativado
+    { name: "Análise Processo", link: "", isEnabled: false }, // Link desativado
   ];
 
+  const { id } = useParams();
+
   // Services initialization --------------------------------------------------------------------------------------------------------------------------
-  const server = useServer();
   const connection = new ConnectionService();
   const list_Realstate = ListModule();
   const selectBox_Realstate = SelectModule();
@@ -56,6 +59,7 @@ const AddProcess = () => {
     approvationDate: "",
     processStatus: 0,
   });
+  const [processo, setProcesso] = useState({});
   const [documentsProcess, setDocumentsProcess] = useState([]);
 
   const [realstate, setRealstate] = useState({});
@@ -80,6 +84,67 @@ const AddProcess = () => {
 
 
   // Functions ----------------------------------------------------------------------------------------------------------------------------------------
+
+  // Imóvel
+  const GetProcess = async () => {
+    await connection.endpoint("Processo").data(id).get();
+    setProcesso(connection.getObject());
+  };
+
+  // Função para converter Base64 de volta para Uint8Array
+  function base64ToUint8Array(base64) {
+    const binaryString = atob(base64);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes;
+  }
+
+  // Função para recriar o arquivo a partir dos bytes
+  function recreateFileFromBytes(bytes, fileName, mimeType = "application/octet-stream") {
+    return new File([new Blob([bytes], { type: mimeType })], fileName);
+  }
+
+  // Função para traduzir e processar o documento
+  function translateDocument(document) {
+    return {
+      id: document.id || "",
+      documentIdentification: document.identificacaoDocumento || "NOT ATTACHED",
+      documentDescription: document.descricaoDocumento || "",
+      documentObservation: document.observacaoDocumento || "",
+      documentHash: document.hashDocumento || "",
+      arquive: document.arquivoDocumento ? base64ToUint8Array(document.arquivoDocumento) : null,
+      status: document.status || 0,
+      idProcess: document.idProcesso || "",
+      idTypeDocumentStage: document.idTipoDocumentoEtapa || 0,
+      idResponsible: document.idResponsavel || null,
+      idApprover: document.idAprovador || null,
+      fileName: document.fileName || "document",  // Nome do arquivo, se disponível
+      mimeType: document.mimeType || "application/octet-stream",  // Tipo MIME, se disponível
+    };
+  }
+
+  const GetDocuments = async (idProcess) => {
+    await connection.endpoint("DocumentoProcesso").action("GetByProcess").data(idProcess).get();
+    const documents = connection.getList();
+
+    const translatedDocuments = documents.map((document) => {
+      // Traduz as propriedades e recria o arquivo do documento
+      const translatedDoc = translateDocument(document);
+      if (translatedDoc.arquive) {
+        translatedDoc.file = recreateFileFromBytes(
+          translatedDoc.arquive,
+          translatedDoc.fileName,         // Nome do arquivo
+          translatedDoc.mimeType          // Tipo MIME
+        );
+      }
+      return translatedDoc;
+    });
+
+    setDocumentsProcess(translatedDocuments);
+  };
 
   // Imóvel
   const GetAllEnrollmentRegistrations = async () => {
@@ -209,6 +274,8 @@ const AddProcess = () => {
   }
 
   const PostAllDatas = async () => {
+    console.log(1);
+
     const documentList = await Promise.all(
       documentsProcess.map(async (data) => {
         const bytes = data.arquive ? await convertFileToBytes(data.arquive) : null;
@@ -229,6 +296,8 @@ const AddProcess = () => {
       })
     );
 
+    console.log(2);
+
     // Constrói o objeto de dados do processo
     const dataProcess = {
       identificacaoProcesso: process.identificationNumber,
@@ -244,21 +313,21 @@ const AddProcess = () => {
       idResponsavel: selectBox_UserResponsible.selectedOption.value || null,
       idAprovador: selectBox_UserApprover.selectedOption.value || null,
 
-      documentosProcessoDTO: documentList.length > 0 ? documentList : []
+      documentosProcessoDTOs: documentList.length > 0 ? documentList : []
     };
 
     console.log(dataProcess);
 
-    await connection.endpoint("Processo").action("PostAllDatas").post(dataProcess);
-
-    if (connection.getObject()) server.removeSegment(1).dispatch();
+    //await connection.endpoint("Processo").action("PostAllDatas").post(dataProcess);
   };
 
 
 
   // UseEffets ----------------------------------------------------------------------------------------------------------------------------------------
   useEffect(() => {
-    if (updateData) {
+    if (updateData && id) {
+      GetProcess();
+
       GetAllEnrollmentRegistrations();
       GetAllTypes();
       GetAllNamesUsers();
@@ -267,8 +336,54 @@ const AddProcess = () => {
 
       setUpdateData(false);
     }
-  }, [updateData]);
+  }, [updateData, id]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      setProcess({
+        identificationNumber: processo.identificacaoProcesso,
+        processSituation: processo.situacaoProcesso,
+        processDescription: processo.descricaoProcesso,
+        approvationDate: processo.dataAprovacao,
+        processStatus: processo.status
+      });
+
+      GetRealstate(processo.idImovel);
+      GetTypeProcess(processo.idTipoProcesso);
+
+      if (processo.idEngenheiro) GetEngineer(processo.idEngenheiro);
+      if (processo.idFiscal) GetSupervisor(processo.idFiscal);
+
+      // Funções que requerem await
+      try {
+        if (processo.idResponsavel) {
+          const userR = await GetUser(processo.idResponsavel);
+          setUserResponsible(userR);
+        }
+
+        if (processo.idAprovador) {
+          const userA = await GetUser(processo.idAprovador);
+          setUserApprover(userA);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar dados dos usuários:", error);
+      }
+    };
+
+    if (processo.id) fetchData();
+  }, [processo]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      GetDocuments(processo.id);
+    };
+
+    if (processo.id) fetchData();
+  }, [processo, typeProcess]);
+
+  useEffect(() => {
+    console.log(documentsProcess);
+  }, [documentsProcess]);
 
   // Imóvel
   useEffect(() => { // Para atualizar as opções do Select bem como o valor padrão selecionado
@@ -588,10 +703,16 @@ const AddProcess = () => {
     }
   }, [typeProcess.id]);
 
+  // UseEffect to reset data whenever typeProcess.id changes
+  useEffect(() => {
+    console.log("Etapas: ", stagesMap);
+    console.log("Documentos: ", documentsMap);
+  }, [stagesMap, documentsMap]);
+
   const ProgressRow = ({ title, data }) => (
-    <div className="grid grid-cols-5 items-center mt-2">
+    <div className="grid grid-cols-6 items-center mt-2">
       <p className="font-bold text-left">{title}</p>
-      {["pending", "attach", "approved", "reject"].map((type, index) => (
+      {["pending", "attach", "analysis", "approved", "reject"].map((type, index) => (
         <div key={index} className="flex items-center justify-start gap-x-5">
           <div className="text-left">
             <p style={{ textAlign: 'right' }}>
@@ -609,17 +730,17 @@ const AddProcess = () => {
           <ProgressBar
             width={24}
             backgroundColor="bg-gray-200"
-            primaryColor={type === "approved" ? "from-[#2BFF00]" : (type === "reject" ? "from-[#FF000D]" : (type === "pending" ? "from-[#A3A3A3]" : "from-[#65EBFF]"))}
-            secondaryColor={type === "approved" ? "to-[#1BA100]" : (type === "reject" ? "to-[#B20009]" : (type === "pending" ? "to-[#585858]" : "to-[#00A9C2]"))}
-            iconColor={type === "approved" ? "text-[#2BFF00]" : (type === "reject" ? "text-[#FF000D]" : (type === "pending" ? "text-[#A3A3A3]" : "text-[#65EBFF]"))}
+            primaryColor={type === "approved" ? "from-[#2BFF00]" : (type === "reject" ? "from-[#FF000D]" : (type === "pending" ? "from-[#A3A3A3]" : (type === "analysis" ? "from-[#CA87FF]" : "from-[#65EBFF]")))}
+            secondaryColor={type === "approved" ? "to-[#1BA100]" : (type === "reject" ? "to-[#B20009]" : (type === "pending" ? "to-[#585858]" : (type === "analysis" ? "to-[#7D00DF]" : "to-[#00A9C2]")))}
+            iconColor={type === "approved" ? "text-[#2BFF00]" : (type === "reject" ? "text-[#FF000D]" : (type === "pending" ? "text-[#A3A3A3]" : (type === "analysis" ? "text-[#CA87FF]" : "text-[#65EBFF]")))}
             totalValue={data.total}
-            partialValue={(type === "attach" ? data[type] + data.analysis : data[type])}
+            partialValue={data[type]}
           />
         </div>
       ))}
-      <hr className="border-t-2 border-gray-300 my-1 col-span-4" />
+      <hr className="border-t-2 border-gray-300 my-1 col-span-6" />
     </div>
-  );  
+  );
 
   return (
     <>
@@ -653,49 +774,79 @@ const AddProcess = () => {
 
         <hr className="my-10" />
 
-        {stages?.length > 0 && (
-          <>
-            <div className="bg-white shadow-md rounded-lg mb-4">
-              <div className="bg-gray-300 rounded-t-lg p-4">
+        <>
+          <div className="bg-white shadow-md rounded-lg mb-4">
+            <div className={`rounded-t-lg p-4 bg-gradient-to-tr ${(processo.status === 0 ? "from-[#A3A3A3] to-[#585858]" : (processo.status === 1 ? "from-[#65EBFF] to-[#00A9C2] " : (processo.status === 2 ? "from-[#CA87FF] to-[#7D00DF]" : (processo.status === 3 ? "from-[#2BFF00] to-[#1BA100]" : (processo.status === 4 ? "from-[#FF000D] to-[#B20009]" : "")))))}`}>
+              <div className="flex items-center rounded-lg bg-white p-3">
                 <h3 className="text-xl font-semibold">Progresso do Processo:</h3>
-              </div>
 
-              <div className="px-20 py-4">
-                {/* Título das colunas */}
-                <div className="grid grid-cols-5 text-left">
-                  <p className="font-bold"></p> {/* Título da primeira coluna */}
-                  <p className="font-bold">Pendente</p>
-                  <p className="font-bold">Concluído</p>
-                  <p className="font-bold">Aprovado</p>
-                  <p className="font-bold">Recusado</p>
-                </div>
-
-                {/* Linhas de progresso */}
-                <ProgressRow
-                  title="Etapas"
-                  data={stagesMap}
-                />
-                <ProgressRow
-                  title="Documentos"
-                  data={documentsMap}
-                />
+                {processo && (
+                  processo.status === 1 ? (
+                    <span className="text-[#00A9C2] flex items-center ml-5">
+                      <ListChecks size={20} />
+                      <span className="ml-1">Em Progresso</span>
+                    </span>
+                  ) : processo.status === 2 ? (
+                    <span className="text-[#7D00DF] flex items-center ml-5">
+                      <ListMagnifyingGlass size={20} />
+                      <span className="ml-1">Em Análise</span>
+                    </span>
+                  ) : processo.status === 3 ? (
+                    <span className="text-[#1BA100] flex items-center ml-5">
+                      <Check size={20} />
+                      <span className="ml-1">Aprovado</span>
+                    </span>
+                  ) : processo.status === 4 ? (
+                    <span className="text-[#B20009] flex items-center ml-5">
+                      <X size={20} />
+                      <span className="ml-1">Desaprovado</span>
+                    </span>
+                  ) : (
+                    <span className="text-[#585858] flex items-center ml-5">
+                      <Hourglass size={20} />
+                      <span className="ml-1">Em Espera</span>
+                    </span>
+                  )
+                )}
               </div>
             </div>
 
-            <DocumentComponent
-              stages={stages}
-              typeDocumentStagesData={typeDocumentStagesData}
-              typeDocumentsData={typeDocumentsData}
-              fetchTypeDocument={fetchTypeDocument}
-              setDocumentsProcess={setDocumentsProcess}
-              documentsProcess={documentsProcess}
-              userResponsible={userResponsible}
-              typeResponsible={typeResponsible}
-              setStagesMap={setStagesMap}
-              setDocumentsMap={setDocumentsMap}
-            />
-          </>
-        )}
+            <div className="px-20 py-4">
+              {/* Título das colunas */}
+              <div className="grid grid-cols-6 text-left">
+                <p className="font-bold"></p> {/* Título da primeira coluna */}
+                <p className="font-bold">Pendente</p>
+                <p className="font-bold">Concluído</p>
+                <p className="font-bold">Em Análise</p>
+                <p className="font-bold">Aprovado</p>
+                <p className="font-bold">Recusado</p>
+              </div>
+
+              {/* Linhas de progresso */}
+              <ProgressRow
+                title="Etapas"
+                data={stagesMap}
+              />
+              <ProgressRow
+                title="Documentos"
+                data={documentsMap}
+              />
+            </div>
+          </div>
+
+          <DocumentComponent
+            stages={stages}
+            typeDocumentStagesData={typeDocumentStagesData}
+            typeDocumentsData={typeDocumentsData}
+            fetchTypeDocument={fetchTypeDocument}
+            setDocumentsProcess={setDocumentsProcess}
+            documentsProcess={documentsProcess}
+            userResponsible={userResponsible}
+            typeResponsible={typeResponsible}
+            setStagesMap={setStagesMap}
+            setDocumentsMap={setDocumentsMap}
+          />
+        </>
       </div>
     </>
   );

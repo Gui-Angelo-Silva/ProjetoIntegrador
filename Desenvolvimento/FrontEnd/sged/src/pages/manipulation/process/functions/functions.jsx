@@ -1,6 +1,6 @@
 /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Arquivo <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */
 
-import ConnectionService from '../../../object/service/connection';
+import ConnectionService from '../../../../object/service/connection';
 const connection = new ConnectionService();
 
 
@@ -71,7 +71,7 @@ export async function setProcessAllData(process, documents) {
         status: process.processStatus || 0,
 
         idImovel: process.idRealstate,
-        idTipoProcesso: process.idTypesProcess,
+        idTipoProcesso: process.idTypeProcess,
         idEngenheiro: process.idEngineer || null,
         idFiscal: process.idSupervisor || null,
         idResponsavel: process.idUserResponsible || null,
@@ -284,4 +284,33 @@ export const GetAllNamesSupervisors = async () => {
 export const GetSupervisor = async (idSupervisor) => {
     await connection.endpoint("Fiscal").data(idSupervisor).get();
     return connection.getObject();
+};
+
+
+
+/* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Pesquisa <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */
+
+export const SearchRealstate = async (search) => {
+    await connection.endpoint("Imovel").action("Search").data(search).get();
+    return connection.getList();
+};
+
+export const SearchEngineer = async (search) => {
+    await connection.endpoint("Engenheiro").action("Search").data(search).get();
+    return connection.getList();
+};
+
+export const SearchSupervisor = async (search) => {
+    await connection.endpoint("Fiscal").action("Search").data(search).get();
+    return connection.getList();
+};
+
+export const SearchResponsible = async (search) => {
+    await connection.endpoint("Usuario").action("Search").data(search).get();
+    return connection.getList();
+};
+
+export const SearchTypeProcess = async (search) => {
+    await connection.endpoint("TipoProcesso").action("Search").data(search).get();
+    return connection.getList();
 };

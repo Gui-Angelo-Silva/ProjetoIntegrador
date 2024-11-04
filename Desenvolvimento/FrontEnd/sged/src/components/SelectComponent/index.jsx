@@ -1,29 +1,54 @@
-import React, { useEffect, useState, useImperativeHandle, forwardRef, useRef } from 'react';
-import { MagnifyingGlass } from "@phosphor-icons/react";
+import React, { useEffect, useState, forwardRef, useRef } from 'react';
+import { MagnifyingGlass, Trash } from "@phosphor-icons/react";
 
 import ControlModule from '../../object/modules/select';
 
-const CustomSelectComponent = forwardRef(({
-    list,
-    setList,
+const CustomSelectComponent = ({
+    variable,
     variableIdentifier,
     variableName,
     id,
     setId,
-    variable,
-    setRequestList
-}, ref) => {
+    error = "",
+    methodSearch,
+    methodGet = null,
+    getObject = false,
+    disable = false
+}) => {
     const selectBox = ControlModule();
-    const [errorId, setErrorId] = useState('');
-    const [inputValue, setInputValue] = useState('');
-    const [valid, setValid] = useState(false);
-    const [showDropdown, setShowDropdown] = useState(false);
-    const wrapperRef = useRef(null);
 
-    const enableRequestList = () => setRequestList(true);
+    const [list, setList] = useState([]);
+    const [object, setObject] = useState({});
+    const [request, setRequest] = useState(false);
+    const [inputValue, setInputValue] = useState('');
+    const [showDropdown, setShowDropdown] = useState(false);
 
     useEffect(() => {
-        selectBox.updateOptions(list, variableIdentifier, variableName);
+        const fetchObject = async () => {
+            const objectData = await methodGet(id);
+
+            if (objectData) {
+                setInputValue(objectData[variableName]);
+                setObject(objectData);
+            }
+        };
+
+        if (getObject && id) fetchObject();
+        getObject = false;
+    }, [getObject]);
+
+    useEffect(() => {
+        const fetchList = async () => {
+            const listData = await methodSearch(inputValue);
+            setList(listData || []);
+        };
+
+        if (request && inputValue) fetchList();
+    }, [request]);
+
+    useEffect(() => {
+        if (request) selectBox.updateOptions(list, variableIdentifier, variableName);
+        setRequest(false);
     }, [list]);
 
     useEffect(() => {
@@ -32,19 +57,9 @@ const CustomSelectComponent = forwardRef(({
         }
     }, [selectBox.selectedOption]);
 
-    useEffect(() => {
-        setValid(!errorId && selectBox.selectedOption && selectBox.selectedOption.value >= 0);
-    }, [errorId, selectBox.selectedOption]);
-
-    useEffect(() => {
-        if ((id && id > 0) && id !== selectBox.selectedOption.value) {
-            selectBox.handleChange(selectBox.options[0]);
-        }
-    }, [id, selectBox.options]);
-
     const handleKeyPress = (event) => {
         if (event.key === 'Enter' && inputValue.trim() !== '') {
-            enableRequestList();
+            setRequest(true);
         }
     };
 
@@ -60,17 +75,20 @@ const CustomSelectComponent = forwardRef(({
         setShowDropdown(false);
     };
 
+    const clearData = () => {
+        setInputValue(object ? object[variableName] : "");
+        selectBox.clearData();
+        setRequest(false);
+        setList([]);
+        setId(null);
+    };
+
+    const wrapperRef = useRef(null);
+
     const handleClickOutside = (event) => {
         if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
             setShowDropdown(false);
         }
-    };
-
-    const clearData = () => {
-        selectBox.clearData();
-        setInputValue("");
-        setList([]);
-        setRequestList(false);
     };
 
     useEffect(() => {
@@ -80,27 +98,21 @@ const CustomSelectComponent = forwardRef(({
         };
     }, []);
 
-    // Expondo variáveis e funções para outros componentes usando ref
-    useImperativeHandle(ref, () => ({
-        valid,
-        inputValue,
-        clearData
-    }));
-
     return (
-        <div ref={wrapperRef} className="relative w-full max-w-md">
-            <div className="flex items-center space-x-2"> {/* Adiciona espaço entre o campo e o botão */}
-                <div className="relative flex-grow"> {/* Contêiner ao redor do campo de entrada */}
+        <div ref={wrapperRef} className="relative w-full">
+            <div className="flex items-center space-x-2">
+                <div className="relative w-full"> {/* Permite o campo de entrada expandir */}
                     <input
                         type="text"
-                        value={!showDropdown && selectBox.selectedOption.value > 0 ? selectBox.selectedOption.label : inputValue}
-                        onFocus={() => setShowDropdown(true)} // Sempre abre o dropdown ao focar no campo
-                        onChange={handleInputChange}
-                        onKeyDown={handleKeyPress}
+                        value={!showDropdown && selectBox.selectedOption.value > 0 ? selectBox.selectedOption.label : (inputValue || "")}
+                        onFocus={() => { if (!disable) setShowDropdown(true) }} // Sempre abre o dropdown ao focar no campo
+                        onChange={(e) => { if (!disable) handleInputChange(e) }}
+                        onKeyDown={(e) => { if (!disable) handleKeyPress(e) }}
                         placeholder={`Pesquisar ${variable} . . .`}
-                        className="w-full border-gray-400 p-2 rounded-md focus:outline-none focus:ring-1"
+                        className={`w-full border-gray-400 p-2 rounded-md focus:outline-none focus:ring-1 ${disable && "cursor-not-allowed"}`}
+                        disabled={disable} // está certo?
                     />
-                    {showDropdown && selectBox.options.length > 0 && (
+                    {!disable && showDropdown && selectBox.options.length > 0 && (
                         <ul className="absolute w-full bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-green-500">
                             {selectBox.options.map((option, index) => (
                                 <li
@@ -117,25 +129,37 @@ const CustomSelectComponent = forwardRef(({
                         </ul>
                     )}
                 </div>
+
                 <button
                     onClick={() => {
-                        if (inputValue.trim() !== '') {
-                            enableRequestList();
+                        if (!disable) {
+                            setRequest(true);
                             setShowDropdown(true);
                         }
                     }}
-                    className="bg-gray-300 text-black w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-400"
+                    className={`${disable ? "bg-gray-100 cursor-not-allowed" : "bg-[#6DECFF] hover:bg-[#00c8e7]"} text-black w-10 h-10 flex items-center justify-center rounded-full`}
+                    disabled={disable}
                 >
-                    <MagnifyingGlass size={28} weight="duotone" />
+                    <MagnifyingGlass size={25} weight="duotone" />
+                </button>
+
+                <button
+                    onClick={() => { if (!disable) clearData() }}
+                    className={`${disable ? "bg-gray-100 cursor-not-allowed" : "bg-[#FF7880] hover:bg-[#ff0011]"} text-black w-10 h-10 flex items-center justify-center rounded-full`}
+                    disabled={disable}
+                >
+                    <Trash size={25} weight="duotone" />
                 </button>
             </div>
-            {errorId && (
+
+            {/* Error Id */}
+            {error && (
                 <div className="text-sm text-red-600 mt-2">
-                    {errorId}
+                    {error}
                 </div>
             )}
         </div>
-    );    
-});
+    );
+};
 
 export default CustomSelectComponent;

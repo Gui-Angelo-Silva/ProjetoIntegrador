@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 import SubCard from './subcards'; // Importe o novo componente de sub-card
-import * as functions from './functions';
+import * as functions from '../functions/functions';
 
 export default function Card({ title, primaryColor, secondaryColor, status }) {
     const [subcards, setSubcards] = useState([]);
@@ -137,7 +137,7 @@ export default function Card({ title, primaryColor, secondaryColor, status }) {
             </div>
 
             {showModal && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                     <div ref={modalRef} className="bg-white p-4 rounded shadow-lg" style={{ minWidth: '300px', minHeight: '200px', overflow: 'auto' }}>
                         <div className="grid gap-2" style={{
                             display: 'grid',

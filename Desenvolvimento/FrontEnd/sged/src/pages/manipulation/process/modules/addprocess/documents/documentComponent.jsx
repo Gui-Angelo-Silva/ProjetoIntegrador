@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Paperclip, Files, FileText, FileArchive, CaretDown, CaretRight, Circle, ArrowSquareOut, DownloadSimple, PencilSimpleLine, Trash, WarningCircle } from "@phosphor-icons/react";
 
-import ProgressBar from '../../../../../components/ProgressBar';
+import ProgressBar from '../../../../../../components/ProgressBar';
 
 import DocumentModal from './documentModal';
 import DocumentView from './documentView';

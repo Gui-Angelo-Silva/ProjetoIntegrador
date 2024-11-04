@@ -25,10 +25,18 @@ export const ServerProvider = ({ children }) => {
         navigate(url);
     };
 
+    const newTab = (url) => {
+        window.open(url, '_blank'); // '_blank' abre em uma nova aba
+    };
+
     const serverActions = (url = '') => ({
         url,
         dispatch: () => {
             dispatch(url);
+            return serverActions(url);
+        },
+        newTab: () => {
+            newTab(url);
             return serverActions(url);
         },
         currentRoute: () => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, ModalBody, ModalHeader } from 'reactstrap';
 import { User, FileArchive, ArrowSquareOut, DownloadSimple, X } from '@phosphor-icons/react';
-import ConnectionService from "../../../../../object/service/connection";
+import * as functions from '../../../functions/functions';
 
 const DocumentView = ({
   isOpen,
@@ -13,21 +13,17 @@ const DocumentView = ({
   const [userResponsible, setUserResponsible] = useState({});
   const [arquiveUrl, setArquiveUrl] = useState(null);
 
-  const connection = new ConnectionService();
-
   useEffect(() => {
     const fetchData = async () => {
       let user = {};
       if (data?.idUserResponsible) {
-        await connection.endpoint("Usuario").data(data.idUserResponsible).get();
-        user = connection.getObject();
+        user = await functions.GetUser(data.idUserResponsible);
 
         setUserResponsible(user);
       }
 
       if (user?.idTipoUsuario) {
-        await connection.endpoint("TipoUsuario").data(userResponsible.idTipoUsuario).get();
-        const userType = connection.getObject();
+        const userType = await functions.GetTypeUser(userResponsible.idTipoUsuario);
 
         setTypeUserResponsible(userType);
       }

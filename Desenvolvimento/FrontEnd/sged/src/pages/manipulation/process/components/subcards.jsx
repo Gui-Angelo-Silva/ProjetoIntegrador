@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useServer } from '../../../routes/serverRoute';
-import * as functions from './functions';
+import { useServer } from '../../../../routes/serverRoute';
+import * as functions from '../functions/functions';
 import { User } from '@phosphor-icons/react';
 
 export default function SubCard({ subcard }) {

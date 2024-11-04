@@ -9,7 +9,7 @@ import Breadcrumb from "../../../components/Title/Breadcrumb";
 
 import RegistrationButton from "../../../components/Button/RegistrationButton";
 
-import Card from "./cards";
+import Card from "./components/cards";
 
 export default function Process() {
 
@@ -46,7 +46,7 @@ export default function Process() {
                 </div>
             </div>
 
-            <div className="mt-3 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+            <div className="mt-3 -mx-3 px-3 py-3 rounded-md overflow-x-auto overflow-y-auto max-h-[2000px] scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 bg-gray-100">
                 {/* Contêiner com scroll horizontal e espaçamento entre os cards */}
                 <div className="flex space-x-4 pb-4 flex-nowrap">
                     {cardsData.map((card, index) => (

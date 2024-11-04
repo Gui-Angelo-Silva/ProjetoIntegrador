@@ -24,8 +24,8 @@ import TypeInfrastructure from '../../pages/manipulation/typeinfrastructure';
 import Infrastructure from '../../pages/manipulation/infrastructure';
 import Installation from '../../pages/manipulation/installation';
 import Process from '../../pages/manipulation/process';
-import AddProcess from '../../pages/manipulation/process/addprocess';
-import AnalysisProcess from '../../pages/manipulation/process/analysisprocess';
+import AddProcess from '../../pages/manipulation/process/modules/addprocess';
+import AnalysisProcess from '../../pages/manipulation/process/modules/analysisprocess';
 
 export default function RouteA() {
     return (

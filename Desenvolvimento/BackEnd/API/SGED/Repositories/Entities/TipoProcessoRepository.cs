@@ -3,6 +3,7 @@ using SGED.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using SGED.Objects.Models.Entities;
+using SGED.Objects.Utilities;
 
 namespace SGED.Repositories.Entities;
 public class TipoProcessoRepository : ITipoProcessoRepository
@@ -18,6 +19,25 @@ public class TipoProcessoRepository : ITipoProcessoRepository
     public async Task<IEnumerable<TipoProcessoModel>> GetAll()
     {
         return await _dbContext.TipoProcesso.AsNoTracking().ToListAsync();
+    }
+
+    public async Task<IEnumerable<TipoProcessoModel>> Search(string search)
+    {
+        if (string.IsNullOrWhiteSpace(search))
+        {
+            return new List<TipoProcessoModel>();
+        }
+
+        // Carregar todos os tipo processos do banco de dados
+        var tipoProcessos = await _dbContext.TipoProcesso.AsNoTracking().ToListAsync();
+
+        // Normaliza e converte o termo de pesquisa para lowercase, removendo acentuação
+        string normalizedSearch = Operator.RemoveAccents(search.ToLower());
+
+        // Filtrar os tipo processos no lado do cliente
+        return tipoProcessos.Where(e => e.NomeTipoProcesso != null &&
+            Operator.RemoveAccents(e.NomeTipoProcesso.ToLower()).Contains(normalizedSearch))
+            .ToList();
     }
 
     public async Task<TipoProcessoModel> GetById(int id)

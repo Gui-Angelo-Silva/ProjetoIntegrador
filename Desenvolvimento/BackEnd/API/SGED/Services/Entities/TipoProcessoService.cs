@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
+using SGED.Repositories.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
 
@@ -20,6 +21,12 @@ public class TipoProcessoService : ITipoProcessoService
     public async Task<IEnumerable<TipoProcessoDTO>> GetAll()
     {
         var tipoProcessos = await _tipoProcessoRepository.GetAll();
+        return _mapper.Map<IEnumerable<TipoProcessoDTO>>(tipoProcessos);
+    }
+
+    public async Task<IEnumerable<TipoProcessoDTO>> Search(string search)
+    {
+        var tipoProcessos = await _tipoProcessoRepository.Search(search);
         return _mapper.Map<IEnumerable<TipoProcessoDTO>>(tipoProcessos);
     }
 

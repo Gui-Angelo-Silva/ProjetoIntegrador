@@ -54,5 +54,27 @@ namespace SGED.Objects.Utilities
         {
             return !string.IsNullOrEmpty(text) && Regex.IsMatch(text, @"^\d+$");
         }
+
+        public static string RemoveAccents(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return string.Empty;
+
+            // Normaliza a string e remove os caracteres acentuados
+            var normalizedString = input.Normalize(NormalizationForm.FormD);
+            var stringBuilder = new StringBuilder();
+
+            foreach (var c in normalizedString)
+            {
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                // Adiciona apenas os caracteres que não são acentuados
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+
+            return stringBuilder.ToString().Replace(" ", "").Replace("ç", "c"); // Remove espaços e substitui "ç"
+        }
     }
 }

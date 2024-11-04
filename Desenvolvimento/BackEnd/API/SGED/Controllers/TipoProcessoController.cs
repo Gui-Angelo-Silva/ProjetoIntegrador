@@ -47,6 +47,37 @@ namespace SGED.Controllers
             }
         }
 
+        [HttpGet("Search/{search}", Name = "SearchTipoProcecsso")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult<TipoProcessoDTO>> SearchTypeProcess(string search)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    _response.SetNotFound();
+                    _response.Message = "Informe o nome do Tipo Processo para pesquisa!";
+                    _response.Data = Enumerable.Empty<TipoProcessoDTO>();
+                    return NotFound(_response);
+                }
+
+                var tipoProcessosDTO = await _tipoProcessoService.Search(search);
+                _response.SetSuccess();
+                _response.Message = tipoProcessosDTO.Any() ?
+                    "Lista dos Tipo Processos obtida com sucesso." :
+                    "Nenhum TipoProcesso encontrado.";
+                _response.Data = tipoProcessosDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista dos TipoProcessos!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
         [HttpGet("GetAllTypes")]
         [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<TipoProcessoDTO>>> GetAllTypes()

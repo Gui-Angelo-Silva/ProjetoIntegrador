@@ -34,24 +34,9 @@ const AddProcess = () => {
   };
 
   const PostAllDatas = async () => {
-    const dataProcess = {
-      identificationNumber: process.identificationNumber,
-      processSituation: process.processSituation,
-      processDescription: process.processDescription,
-      approvationDate: process.approvationDate,
-      processStatus: process.processStatus,
+    const data = await functions.setProcessAllData(process, []);
 
-      idTypeProcess: typeProcess.id,
-      idRealstate: realstate.id,
-      idEngineer: engineer?.id || null,
-      idSupervisor: supervisor?.id || null,
-      idResponsible: userResponsible?.id || null,
-      idApprover: userApprover?.id || null,
-    };
-
-    const data = await functions.setProcessAllData(dataProcess, documentsProcess);
-
-    const responnse = await functions.PostAllDatas(data);
+    const responnse = await functions.PostProcess(data);
     if (responnse) server.removeSegment(1).dispatch();
   };
 

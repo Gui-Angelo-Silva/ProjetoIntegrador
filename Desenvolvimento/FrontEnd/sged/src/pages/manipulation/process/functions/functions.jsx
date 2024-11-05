@@ -118,6 +118,11 @@ export const PostAllDatas = async (data) => {
     return connection.getObject();
 };
 
+export const PostProcess = async (data) => {
+    await connection.endpoint("Processo").post(data);
+    return connection.getObject();
+};
+
 
 
 /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Documento <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */
@@ -283,6 +288,11 @@ export const GetAllNamesSupervisors = async () => {
 
 export const GetSupervisor = async (idSupervisor) => {
     await connection.endpoint("Fiscal").data(idSupervisor).get();
+    return connection.getObject();
+};
+
+export const GetCitizen = async (idCitizen) => {
+    await connection.endpoint("Municipe").data(idCitizen).get();
     return connection.getObject();
 };
 

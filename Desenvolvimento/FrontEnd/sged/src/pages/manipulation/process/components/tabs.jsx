@@ -4,10 +4,10 @@ import React, { useEffect, useState } from "react";
 import { HouseLine, User } from '@phosphor-icons/react';
 import { Tabs, Tab, Box } from '@mui/material';
 
-import SelectComponent from '../../../../../../components/SelectComponent';
+import SelectComponent from '../../../../components/SelectComponent';
 
-import { useServer } from '../../../../../../routes/serverRoute';
-import * as functions from '../../../functions/functions';
+import { useServer } from '../../../../routes/serverRoute';
+import * as functions from '../functions/functions';
 
 
 
@@ -117,6 +117,27 @@ export const RealStateTab = ({
     use,
     occupation,
 }) => {
+    // Imagem:
+    const [currentImageIndex, setCurrentImageIndex] = useState(0); // Índice da imagem atual
+
+    useEffect(() => {
+        if (realstate.imagemImovel && realstate.imagemImovel.length > 1) {
+            const interval = setInterval(() => {
+                setCurrentImageIndex((prevIndex) =>
+                    prevIndex === realstate.imagemImovel.length - 1 ? 0 : prevIndex + 1
+                );
+            }, 5000); // A cada 5 segundos
+
+            return () => clearInterval(interval);
+        }
+    }, [realstate.imagemImovel]);
+
+    useEffect(() => {
+        if (realstate.imagemImovel) {
+            setCurrentImageIndex(0);
+        }
+    }, [realstate]);
+
     return (
         <Box p={4} className="bg-white rounded-lg shadow-sm" style={{ display: open ? "block" : "none" }}>
             <h2 className="text-xl font-semibold text-gray-700 mb-4">Informações do Imóvel</h2>

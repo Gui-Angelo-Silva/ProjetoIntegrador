@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Tabs, Tab, Box } from '@mui/material';
 
-import { useServer } from '../../../../../../routes/serverRoute';
-import StagesComponent from "./stagesComponent";
+import StagesComponent from "../../../components/stages";
 import * as functions from '../../../functions/functions';
 
 import {
@@ -10,7 +9,7 @@ import {
   RealStateTab, RealStateTab as RealStateView,
   EntitiesTab, EntitiesTab as EntitiesView,
   NoticeModal
-} from "./tabs";
+} from "../../../components/tabs";
 
 const ProcessForm = ({
   process,
@@ -26,10 +25,6 @@ const ProcessForm = ({
     setActiveTab(newValue);
   };
 
-  // Serviços -------------------------------------------------------------------------------------------------------------------------------------------
-
-  const server = useServer();
-
   // Control -------------------------------------------------------------------------------------------------------------------------------------------
 
   const [open, setOpen] = useState(false);
@@ -39,21 +34,21 @@ const ProcessForm = ({
     let status = true;
 
     if (process.identificationNumber) {
-      status = false;
+      //status = false;
     } else {
       status = false;
     }
 
     if (process.processSituation) {
-      status = false;
+      //status = false;
     }
 
     if (process.processDescription) {
-      status = false;
+      //status = false;
     }
 
     if (process.approvationDate) {
-      status = false;
+      //status = false;
     }
 
     if (!process.idTypeProcess) status = false;
@@ -73,15 +68,6 @@ const ProcessForm = ({
   const [processSituation, setProcessSituation] = useState("");
   const [processDescription, setProcessDescription] = useState("");
   const [approvationDate, setApprovationDate] = useState("");
-
-  const handleIdentificationChange = useCallback((e) => {
-    setIdentificationNumber(e.target.value);
-  }, []);
-
-  const handleProcessSituationChange = useCallback((e) => {
-    setProcessSituation(e.target.value);
-  }, []);
-
 
   const [idRealstate, setIdRealstate] = useState(0);
   const [realstate, setRealstate] = useState({});
@@ -134,16 +120,16 @@ const ProcessForm = ({
 
   useEffect(() => {
     const fetchDataRealstate = async () => {
-      const ownerData = await functions.GetUser(realstate.idProprietario);
+      const ownerData = await functions.GetCitizen(realstate.idProprietario);
       setOwner(ownerData);
 
-      const taxpayerData = await functions.GetUser(realstate.idContribuinte);
+      const taxpayerData = await functions.GetCitizen(realstate.idContribuinte);
       setTaxpayer(taxpayerData);
 
-      const useData = await functions.GetUser(realstate.idUso);
+      const useData = await functions.GetUse(realstate.idUso);
       setUse(useData);
 
-      const occupationData = await functions.GetUser(realstate.idOcupacaoAtual);
+      const occupationData = await functions.GetOccupation(realstate.idOcupacaoAtual);
       setOccupation(occupationData);
     };
 
@@ -231,30 +217,6 @@ const ProcessForm = ({
 
     if (userApprover.id) fetchTypeUserApprover();
   }, [userApprover]);
-
-
-
-  // Imagem -------------------------------------------------------------------------------------------------------------------------------------------
-
-  const [currentImageIndex, setCurrentImageIndex] = useState(0); // Índice da imagem atual
-
-  useEffect(() => {
-    if (realstate.imagemImovel && realstate.imagemImovel.length > 1) {
-      const interval = setInterval(() => {
-        setCurrentImageIndex((prevIndex) =>
-          prevIndex === realstate.imagemImovel.length - 1 ? 0 : prevIndex + 1
-        );
-      }, 5000); // A cada 5 segundos
-
-      return () => clearInterval(interval);
-    }
-  }, [realstate.imagemImovel]);
-
-  useEffect(() => {
-    if (realstate.imagemImovel) {
-      setCurrentImageIndex(0);
-    }
-  }, [realstate]);
 
 
 

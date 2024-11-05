@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FileText, WarningCircle } from "@phosphor-icons/react";
-import * as functions from '../../../functions/functions';
+import * as functions from '../functions/functions';
 
 const DocumentsComponent = ({ idStage }) => {
   const [documentsStage, setDocumentsStage] = useState([]);

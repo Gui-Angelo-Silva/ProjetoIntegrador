@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Paperclip, Files, FileText, FileArchive, CaretDown, CaretRight, Circle, ArrowSquareOut, DownloadSimple, PencilSimpleLine, Trash, WarningCircle } from "@phosphor-icons/react";
 
-import * as functions from '../../../functions/functions';
-import DocumentsComponent from './documentsComponent';
+import * as functions from '../functions/functions';
+import TypeDocumentsComponent from './typedocuments';
 
 const StagesComponent = ({
   idTypeProcess
@@ -58,7 +58,7 @@ const StagesComponent = ({
               </div>
 
               {expandedRows.includes(stage.id) ? (
-                <DocumentsComponent
+                <TypeDocumentsComponent
                   idStage={stage.id}
                 />
               ) : (null)}

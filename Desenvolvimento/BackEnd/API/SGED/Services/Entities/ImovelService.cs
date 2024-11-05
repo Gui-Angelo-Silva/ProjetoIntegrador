@@ -24,17 +24,23 @@ namespace SGED.Services.Entities
 			return _mapper.Map<IEnumerable<ImovelDTO>>(imovel);	
 		}
 
-		public async Task<ImovelDTO> GetById(int id)
-		{
-			var imovel = await _imovelRepository.GetById(id);
-			return _mapper.Map<ImovelDTO>(imovel);
-		}
+        public async Task<IEnumerable<ImovelDTO>> Search(string search)
+        {
+            var imoveis = await _imovelRepository.Search(search);
+            return _mapper.Map<IEnumerable<ImovelDTO>>(imoveis);
+        }
 
         public async Task<ImovelDTO> GetByProperty(string propertyName, string data)
         {
             var imovel = await _imovelRepository.GetByProperty(propertyName, data);
             return _mapper.Map<ImovelDTO>(imovel);
         }
+
+        public async Task<ImovelDTO> GetById(int id)
+		{
+			var imovel = await _imovelRepository.GetById(id);
+			return _mapper.Map<ImovelDTO>(imovel);
+		}
 
         public async Task Create(ImovelDTO imovelDTO)
 		{

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Collections.Generic;
 using SGED.Objects.Models.Entities;
 using SGED.Objects.Server;
+using SGED.Objects.Utilities;
 
 namespace SGED.Repositories.Entities;
 public class UsuarioRepository : IUsuarioRepository
@@ -33,18 +34,23 @@ public class UsuarioRepository : IUsuarioRepository
         return usuarios;
     }
 
-    public async Task<UsuarioModel> GetById(int id)
+    public async Task<IEnumerable<UsuarioModel>> Search(string search)
     {
-        var usuario = await _dbContext.Usuario
-            .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Id == id);
-
-        if (usuario != null)
+        if (string.IsNullOrWhiteSpace(search))
         {
-            usuario.SenhaUsuario = string.Empty;
+            return new List<UsuarioModel>();
         }
 
-        return usuario;
+        // Carregar todos os usuarios do banco de dados
+        var usuarios = await _dbContext.Usuario.AsNoTracking().ToListAsync();
+
+        // Normaliza e converte o termo de pesquisa para lowercase, removendo acentuação
+        string normalizedSearch = Operator.RemoveAccents(search.ToLower());
+
+        // Filtrar os usuarios no lado do cliente
+        return usuarios.Where(u => u.NomePessoa != null &&
+            Operator.RemoveAccents(u.NomePessoa.ToLower()).Contains(normalizedSearch))
+            .ToList();
     }
 
     public async Task<IEnumerable<UsuarioModel>> GetByEmail(int id, string email)
@@ -60,6 +66,20 @@ public class UsuarioRepository : IUsuarioRepository
         }
 
         return usuarios;
+    }
+
+    public async Task<UsuarioModel> GetById(int id)
+    {
+        var usuario = await _dbContext.Usuario
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (usuario != null)
+        {
+            usuario.SenhaUsuario = string.Empty;
+        }
+
+        return usuario;
     }
 
     public async Task<UsuarioModel> Login(Login login)

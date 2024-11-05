@@ -47,6 +47,37 @@ namespace SGED.Controllers
             }
         }
 
+        [HttpGet("Search/{search}", Name = "SearchEngenheiro")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult<IEnumerable<EngenheiroDTO>>> SearchEngineer(string search)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    _response.SetNotFound();
+                    _response.Message = "Informe o nome do Engenheiro para pesquisa!";
+                    _response.Data = Enumerable.Empty<EngenheiroDTO>();
+                    return NotFound(_response);
+                }
+
+                var engenheirosDTO = await _engenheiroService.Search(search);
+                _response.SetSuccess();
+                _response.Message = engenheirosDTO.Any() ?
+                    "Lista dos Engenheiros obtida com sucesso." :
+                    "Nenhum Engenheiro encontrado.";
+                _response.Data = engenheirosDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista dos Engenheiros!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
         [HttpGet("GetAllNames")]
         [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<EngenheiroDTO>>> GetAllNames()

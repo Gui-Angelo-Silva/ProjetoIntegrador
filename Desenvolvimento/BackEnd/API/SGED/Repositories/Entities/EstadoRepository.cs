@@ -42,14 +42,14 @@ public class EstadoRepository : IEstadoRepository
             .ToList();
     }
 
-    public async Task<EstadoModel> GetById(int id)
-    {
-        return await _dbContext.Estado.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
-    }
-
     public async Task<IEnumerable<EstadoModel>> GetByName(string nome)
     {
         return await _dbContext.Estado.Where(e => e.NomeEstado.ToUpper().Contains(nome.ToUpper())).AsNoTracking().ToListAsync();
+    }
+
+    public async Task<EstadoModel> GetById(int id)
+    {
+        return await _dbContext.Estado.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
     }
 
     public async Task<EstadoModel> Create(EstadoModel estado)

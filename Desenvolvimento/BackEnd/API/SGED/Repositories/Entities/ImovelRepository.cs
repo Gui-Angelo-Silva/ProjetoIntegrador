@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SGED.Context;
 using SGED.Objects.Models.Entities;
+using SGED.Objects.Utilities;
 using SGED.Repositories.Interfaces;
 
 namespace SGED.Repositories.Entities
@@ -20,10 +21,24 @@ namespace SGED.Repositories.Entities
 			return await _dbContext.Imovel.AsNoTracking().ToListAsync();
 		}
 
-        public async Task<ImovelModel> GetById(int id)
-		{
-			return await _dbContext.Imovel.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
-		}
+        public async Task<IEnumerable<ImovelModel>> Search(string search)
+        {
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                return new List<ImovelModel>();
+            }
+
+            // Carregar todos os imoveis do banco de dados
+            var imoveis = await _dbContext.Imovel.AsNoTracking().ToListAsync();
+
+            // Normaliza e converte o termo de pesquisa para lowercase, removendo acentuação
+            string normalizedSearch = Operator.RemoveAccents(search.ToLower());
+
+            // Filtrar os imovels no lado do cliente
+            return imoveis.Where(i => i.InscricaoCadastral != null &&
+                Operator.RemoveAccents(i.InscricaoCadastral.ToLower()).Contains(normalizedSearch))
+                .ToList();
+        }
 
         public async Task<ImovelModel> GetByProperty(string propertyName, string data)
         {
@@ -44,6 +59,11 @@ namespace SGED.Repositories.Entities
 
             return imovel;
         }
+
+        public async Task<ImovelModel> GetById(int id)
+		{
+			return await _dbContext.Imovel.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
+		}
 
         public async Task<ImovelModel> Create(ImovelModel imovel)
 		{

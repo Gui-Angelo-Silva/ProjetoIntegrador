@@ -2,6 +2,7 @@
 using SGED.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SGED.Objects.Models.Entities;
+using SGED.Objects.Utilities;
 
 namespace SGED.Repositories.Entities;
 public class EngenheiroRepository : IEngenheiroRepository
@@ -19,11 +20,29 @@ public class EngenheiroRepository : IEngenheiroRepository
 		return await _dbContext.Engenheiro.AsNoTracking().ToListAsync();
     }
 
+    public async Task<IEnumerable<EngenheiroModel>> Search(string search)
+    {
+        if (string.IsNullOrWhiteSpace(search))
+        {
+            return new List<EngenheiroModel>();
+        }
+
+        // Carregar todos os engenheiros do banco de dados
+        var engenheiros = await _dbContext.Engenheiro.AsNoTracking().ToListAsync();
+
+        // Normaliza e converte o termo de pesquisa para lowercase, removendo acentuação
+        string normalizedSearch = Operator.RemoveAccents(search.ToLower());
+
+        // Filtrar os engenheiros no lado do cliente
+        return engenheiros.Where(e => e.NomePessoa != null &&
+            Operator.RemoveAccents(e.NomePessoa.ToLower()).Contains(normalizedSearch))
+            .ToList();
+    }
+
     public async Task<EngenheiroModel> GetById(int id)
     {
         return await _dbContext.Engenheiro.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
     }
-
 
     public async Task<EngenheiroModel> Create(EngenheiroModel engenheiro)
     {

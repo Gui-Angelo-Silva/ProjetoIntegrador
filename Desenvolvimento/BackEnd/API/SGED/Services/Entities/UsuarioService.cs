@@ -2,6 +2,7 @@
 using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Objects.Server;
+using SGED.Repositories.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
 
@@ -22,20 +23,18 @@ public class UsuarioService : IUsuarioService
     {
         var usuarios = await _usuarioRepository.GetAll();
         return _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
+    }
 
-        /*IEnumerable<UsuarioDTO> usuariosDTO = _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
+    public async Task<IEnumerable<UsuarioDTO>> Search(string search)
+    {
+        var usuarios = await _usuarioRepository.Search(search);
+        return _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
+    }
 
-        foreach (var usuarioDTO in usuariosDTO)
-        {
-            var usuario = usuarios.FirstOrDefault(u => u.Id == usuarioDTO.Id);
-            if (usuario != null)
-            {
-                TipoUsuarioDTO tipoUsuarioDTO = _mapper.Map<TipoUsuarioDTO>(usuario.TipoUsuario);
-                usuarioDTO.TipoUsuarioDTO = tipoUsuarioDTO;
-            }
-        }
-
-        return usuariosDTO;*/
+    public async Task<IEnumerable<string>> GetByEmail(int id, string email)
+    {
+        var usuarios = await _usuarioRepository.GetByEmail(id, email);
+        return usuarios.Select(u => u.EmailPessoa).ToList();
     }
 
     public async Task<UsuarioDTO> GetById(int id)
@@ -43,15 +42,9 @@ public class UsuarioService : IUsuarioService
         var usuario = await _usuarioRepository.GetById(id);
 
         UsuarioDTO usuarioDTO = _mapper.Map<UsuarioDTO>(usuario);
-        usuarioDTO.TipoUsuarioDTO = _mapper.Map<TipoUsuarioDTO>(usuario.TipoUsuario);
+        if (usuarioDTO is not null) usuarioDTO.TipoUsuarioDTO = _mapper.Map<TipoUsuarioDTO>(usuario.TipoUsuario);
 
         return usuarioDTO;
-    }
-
-    public async Task<IEnumerable<string>> GetByEmail(int id, string email)
-    {
-        var usuarios = await _usuarioRepository.GetByEmail(id, email);
-        return usuarios.Select(u => u.EmailPessoa).ToList();
     }
 
     public async Task<UsuarioDTO> Login(Login login)

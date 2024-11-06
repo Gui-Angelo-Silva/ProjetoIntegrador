@@ -10,8 +10,6 @@ namespace SGED.Objects.DTOs.Entities
     {
         public Guid Id { get; set; }
 
-        [Required(ErrorMessage = "O código de identificação é requerido!")]
-        [MaxLength(50)]
         public string IdentificacaoProcesso { get; set; }
 
         [MaxLength(300)]

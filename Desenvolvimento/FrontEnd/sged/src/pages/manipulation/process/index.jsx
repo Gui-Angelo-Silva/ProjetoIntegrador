@@ -15,7 +15,7 @@ export default function Process() {
 
     const pages = [
         { name: 'Documentos', link: '/administrador/documentos', isEnabled: true },
-        { name: 'Processo', link: '', isEnabled: false }
+        { name: 'Processos', link: '', isEnabled: false }
     ];
 
     const montage = useMontage();
@@ -52,6 +52,7 @@ export default function Process() {
                     {cardsData.map((card, index) => (
                         <div key={index} className="w-[400px]">
                             <Card
+                                column={index}
                                 title={card.title}
                                 primaryColor={card.primaryColor}
                                 secondaryColor={card.secondaryColor}

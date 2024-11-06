@@ -3,7 +3,7 @@ import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 import SubCard from './subcards'; // Importe o novo componente de sub-card
 import * as functions from '../functions/functions';
 
-export default function Card({ title, primaryColor, secondaryColor, status }) {
+export default function Card({ column, title, primaryColor, secondaryColor, status }) {
     const [subcards, setSubcards] = useState([]);
     const itemsPerPage = 10;
     const totalPages = subcards.length === 0 ? 0 : Math.ceil(subcards.length / itemsPerPage);
@@ -95,9 +95,13 @@ export default function Card({ title, primaryColor, secondaryColor, status }) {
                 </div>
             </div>
 
-            <div className="p-2 bg-white flex flex-col space-y-2">
+            <div className="p-2 bg-gray-50 flex flex-col space-y-2">
                 {getCurrentPageSubcards().map((subcard, index) => (
-                    <SubCard key={index} subcard={subcard} /> // Usa o SubCard aqui
+                    <SubCard
+                        key={index}
+                        subcard={subcard}
+                        column={column}
+                    />
                 ))}
 
                 <div className="pt-4 flex items-center relative">

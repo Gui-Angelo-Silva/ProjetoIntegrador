@@ -20,7 +20,7 @@ const AddProcess = () => {
 
   const pages = [
     { name: "Documentos", link: "/administrador/documentos", isEnabled: true },
-    { name: "Processo", link: "/administrador/documentos/processo", isEnabled: true },
+    { name: "Processos", link: "/administrador/documentos/processo", isEnabled: true },
     { name: "Cadastro de Processo", link: "", isEnabled: false }, // Link desativado
   ];
 
@@ -36,7 +36,9 @@ const AddProcess = () => {
   const PostAllDatas = async () => {
     const data = await functions.setProcessAllData(process, []);
 
-    const responnse = await functions.PostProcess(data);
+    console.log(data);
+
+    const responnse = await functions.PostAllDatas(data);
     if (responnse) server.removeSegment(1).dispatch();
   };
 

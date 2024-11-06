@@ -33,22 +33,16 @@ const ProcessForm = ({
   const validateData = () => {
     let status = true;
 
-    if (process.identificationNumber) {
-      //status = false;
-    } else {
-      status = false;
-    }
-
     if (process.processSituation) {
-      //status = false;
+      if (process.processSituation.length > 300) status = false;
     }
 
     if (process.processDescription) {
-      //status = false;
+      if (process.processDescription.length > 500) status = false;
     }
 
     if (process.approvationDate) {
-      //status = false;
+      if (process.approvationDate.length > 10) status = false;
     }
 
     if (!process.idTypeProcess) status = false;

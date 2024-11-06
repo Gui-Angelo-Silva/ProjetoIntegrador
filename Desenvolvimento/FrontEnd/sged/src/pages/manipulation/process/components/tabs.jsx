@@ -53,50 +53,78 @@ export const ProcessTab = ({
             ></textarea>
 
             {/* Processo */}
+            <div className="flex items-center gap-x-5">
+                <div className="w-full">
+                    <h1 className="text-lg text-gray-700 mt-4">Número de Identificação: </h1>
+                    <input
+                        type="text"
+                        className={`rounded-sm border-[#e5e7eb] w-full cursor-not-allowed`}
+                        onChange={(e) => setIdentificationNumber(e.target.value)}
+                        value={identificationNumber}
+                        required
+                        disabled={true}
+                    />
+                </div>
 
-            <h1 className="text-lg text-gray-700 mt-4">Número de Identificação: <span className="text-red-600">*</span></h1>
-            <input
-                type="text"
-                className={`rounded-sm border-[#e5e7eb] w-full ${disabled && "cursor-not-allowed"}`}
-                onChange={(e) => setIdentificationNumber(e.target.value)}
-                value={identificationNumber}
-                required
-                disabled={disabled}
-            />
+                <div >
+                    <h1 className="text-lg text-gray-700 mt-4">Status:</h1>
+                    <input
+                        disabled
+                        type="text"
+                        className="w-[400px] cursor-not-allowed rounded-sm border-[#e5e7eb]"
+                        value={(() => {
+                            switch (process.processStatus) {
+                                case 0:
+                                    return "Em Espera";
+                                case 1:
+                                    return "Em Progresso";
+                                case 2:
+                                    return "Em Análise";
+                                case 3:
+                                    return "Aprovado";
+                                case 4:
+                                    return "Reprovado";
+                                default:
+                                    return "";
+                            }
+                        })()}
+                    />
+                </div>
+
+                <div >
+                    <h1 className="text-lg text-gray-700 mt-4">Data de Aprovação:</h1>
+                    <input
+                        type="date"
+                        className={`w-[200px] rounded-sm border-[#e5e7eb] ${disabled && "cursor-not-allowed"}`}
+                        min="1700-01-01" // Limite inferior de 1700
+                        max="9999-12-31" // Limite superior de 9999
+                        onChange={(e) => setApprovationDate(e.target.value)}
+                        value={approvationDate}
+                        disabled={disabled}
+                    />
+                </div>
+            </div>
 
             <h1 className="text-lg text-gray-700 mt-4">Situação:</h1>
             <textarea
                 className={`rounded-sm border-[#e5e7eb] w-full h-32 resize-none ${disabled && "cursor-not-allowed"}`}
-                onChange={(e) => setProcessSituation(e.target.value)}
+                onChange={(e) => {
+                    if (e.target.value.length <= 300) setProcessSituation(e.target.value);
+                }}
                 value={processSituation}
                 disabled={disabled}
+                maxLength={300} // Limita para 300 caracteres
             />
 
             <h1 className="text-lg text-gray-700 mt-4">Descrição:</h1>
             <textarea
                 className={`rounded-sm border-[#e5e7eb] w-full h-32 resize-none ${disabled && "cursor-not-allowed"}`}
-                onChange={(e) => setProcessDescription(e.target.value)}
+                onChange={(e) => {
+                    if (e.target.value.length <= 500) setProcessDescription(e.target.value);
+                }}
                 value={processDescription}
                 disabled={disabled}
-            />
-
-            <h1 className="text-lg text-gray-700 mt-4">Data de Aprovação:</h1>
-            <input
-                type="date"
-                className={`rounded-sm border-[#e5e7eb] ${disabled && "cursor-not-allowed"}`}
-                min="1700-01-01" // Limite inferior de 1700
-                max="9999-12-31" // Limite superior de 9999
-                onChange={(e) => setApprovationDate(e.target.value)}
-                value={approvationDate}
-                disabled={disabled}
-            />
-
-            <h1 className="text-lg text-gray-700 mt-4">Status:</h1>
-            <input
-                disabled
-                type="text"
-                className="cursor-not-allowed rounded-sm border-[#e5e7eb]"
-                value={process.processStatus}
+                maxLength={500} // Limita para 500 caracteres
             />
         </Box>
     );
@@ -141,9 +169,13 @@ export const RealStateTab = ({
     return (
         <Box p={4} className="bg-white rounded-lg shadow-sm" style={{ display: open ? "block" : "none" }}>
             <h2 className="text-xl font-semibold text-gray-700 mb-4">Informações do Imóvel</h2>
-            <div className="mr-8  w-full rounded-lg border-[2px] flex items-center justify-center">
+            <div className="mr-8 inline-flex items-center justify-center rounded-lg border-[2px] w-full overflow-hidden">
                 {realstate.imagemImovel && realstate.imagemImovel.length > 0 ? (
-                    <img src={realstate.imagemImovel[currentImageIndex]} alt="Imóvel" className="rounded-lg border-[2px]" />
+                    <img
+                        src={realstate.imagemImovel[currentImageIndex]}
+                        alt="Imóvel"
+                        className="object-cover w-full h-full rounded-lg"
+                    />
                 ) : (
                     <HouseLine size={50} />
                 )}
@@ -171,41 +203,73 @@ export const RealStateTab = ({
             />
 
             <h1 className="text-lg text-gray-700 mt-4">Proprietário:</h1>
-            <input
-                type="text"
-                disabled
-                className="cursor-not-allowed rounded-sm border-[#e5e7eb] w-full"
-                value={owner.nomePessoa || ''}
-            />
-            <div>
-                {owner.imagemPessoa ? (
-                    <img
-                        src={owner.imagemPessoa}
-                        alt="Proprietário"
-                        className="cursor-pointer rounded-full w-[50px] h-[50px] object-cover p-1 shadow-md"
+            <div className="flex items-center gap-x-5">
+                <div className="cursor-pointer rounded-full w-[50px] h-[50px] flex justify-center items-center p-1 border-1 border-gray-200">
+                    {owner.imagemPessoa ? (
+                        <img
+                            src={owner.imagemPessoa}
+                            alt="Proprietário"
+                            className="rounded-full w-full h-full object-cover"
+                        />
+                    ) : (
+                        <User size={50} />
+                    )}
+                </div>
+                <input
+                    type="text"
+                    disabled
+                    className="w-full cursor-not-allowed rounded-sm border-[#e5e7eb] "
+                    value={owner.nomePessoa || ''}
+                />
+                <div className="flex items-center gap-x-5">
+                    <input
+                        type="text"
+                        disabled
+                        className="w-[300px] cursor-not-allowed rounded-sm border-[#e5e7eb] "
+                        value={owner.cpfCnpjPessoa || ''}
                     />
-                ) : (
-                    <User size={50} />
-                )}
+                    <input
+                        type="text"
+                        disabled
+                        className="w-[300px] cursor-not-allowed rounded-sm border-[#e5e7eb] "
+                        value={owner.rgIePessoa || ''}
+                    />
+                </div>
             </div>
 
             <h1 className="text-lg text-gray-700 mt-4">Contribuinte:</h1>
-            <input
-                type="text"
-                disabled
-                className="cursor-not-allowed rounded-sm border-[#e5e7eb] w-full"
-                value={taxpayer.nomePessoa || ''}
-            />
-            <div>
-                {taxpayer.imagemPessoa ? (
-                    <img
-                        src={taxpayer.imagemPessoa}
-                        alt="Contribuinte"
-                        className="cursor-pointer rounded-full w-[50px] h-[50px] object-cover p-1 shadow-md"
+            <div className="flex items-center gap-x-5">
+                <div className="cursor-pointer rounded-full w-[50px] h-[50px] flex justify-center items-center p-1 border-1 border-gray-200">
+                    {taxpayer.imagemPessoa ? (
+                        <img
+                            src={taxpayer.imagemPessoa}
+                            alt="Proprietário"
+                            className="rounded-full w-full h-full object-cover"
+                        />
+                    ) : (
+                        <User size={50} />
+                    )}
+                </div>
+                <input
+                    type="text"
+                    disabled
+                    className="w-full cursor-not-allowed rounded-sm border-[#e5e7eb] "
+                    value={taxpayer.nomePessoa || ''}
+                />
+                <div className="flex items-center gap-x-5">
+                    <input
+                        type="text"
+                        disabled
+                        className="w-[300px] cursor-not-allowed rounded-sm border-[#e5e7eb] "
+                        value={taxpayer.cpfCnpjPessoa || ''}
                     />
-                ) : (
-                    <User size={50} />
-                )}
+                    <input
+                        type="text"
+                        disabled
+                        className="w-[300px] cursor-not-allowed rounded-sm border-[#e5e7eb] "
+                        value={taxpayer.rgIePessoa || ''}
+                    />
+                </div>
             </div>
 
             <h1 className="text-lg text-gray-700 mt-4">Uso:</h1>

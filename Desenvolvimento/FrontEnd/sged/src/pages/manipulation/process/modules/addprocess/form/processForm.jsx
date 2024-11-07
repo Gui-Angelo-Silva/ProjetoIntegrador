@@ -101,13 +101,13 @@ const ProcessForm = ({
       if (idRealstate) {
         const realstateData = await functions.GetRealstate(idRealstate);
         setRealstate(realstateData);
-
-        setProcess((prevState) => ({
-          ...prevState,
-          idRealstate: realstateData.id || 0,
-        }));
       }
     };
+
+    setProcess((prevState) => ({
+      ...prevState,
+      idRealstate: idRealstate || 0,
+    }));
 
     fetchRealstate();
   }, [idRealstate]);
@@ -135,13 +135,13 @@ const ProcessForm = ({
       if (idEngineer) {
         const engineerData = await functions.GetEngineer(idEngineer);
         setEngineer(engineerData);
-
-        setProcess((prevState) => ({
-          ...prevState,
-          idEngineer: engineerData.id || null,
-        }));
       }
     };
+
+    setProcess((prevState) => ({
+      ...prevState,
+      idEngineer: idEngineer || null,
+    }));
 
     fetchEngineer();
   }, [idEngineer]);
@@ -151,13 +151,13 @@ const ProcessForm = ({
       if (idSupervisor) {
         const supervisorData = await functions.GetSupervisor(idSupervisor);
         setSupervisor(supervisorData);
-
-        setProcess((prevState) => ({
-          ...prevState,
-          idSupervisor: supervisorData.id || null,
-        }));
       }
     };
+
+    setProcess((prevState) => ({
+      ...prevState,
+      idSupervisor: idSupervisor || null,
+    }));
 
     fetchSupervisor();
   }, [idSupervisor]);
@@ -167,13 +167,13 @@ const ProcessForm = ({
       if (idUserResponsible) {
         const userData = await functions.GetUser(idUserResponsible);
         setUserResponsible(userData);
-
-        setProcess((prevState) => ({
-          ...prevState,
-          idResponsible: userData.id || null,
-        }));
       }
     };
+
+    setProcess((prevState) => ({
+      ...prevState,
+      idResponsible: idUserResponsible || null,
+    }));
 
     fetchUserResponsible();
   }, [idUserResponsible]);
@@ -183,13 +183,13 @@ const ProcessForm = ({
       if (idTypeProcess) {
         const typeProcessData = await functions.GetTypeProcess(idTypeProcess);
         setTypeProcess(typeProcessData);
-
-        setProcess((prevState) => ({
-          ...prevState,
-          idTypeProcess: typeProcessData.id || "",
-        }));
       }
     };
+
+    setProcess((prevState) => ({
+      ...prevState,
+      idTypeProcess: idTypeProcess || 0,
+    }));
 
     fetchTypeProcess();
   }, [idTypeProcess]);
@@ -213,12 +213,55 @@ const ProcessForm = ({
   }, [userApprover]);
 
 
+  // Limpeza ao clicar no Select
+
+  useEffect(() => {
+    if (!idTypeProcess) {
+      setTypeProcess({});
+      setIdTypeProcess(0);
+    }
+  }, [idTypeProcess]);
+
+  useEffect(() => {
+    if (!idRealstate) {
+      setRealstate({});
+      setUse({})
+      setOccupation({});
+      setOwner({});
+      setTaxpayer({});
+      setIdRealstate(0);
+    }
+  }, [idRealstate]);
+
+  useEffect(() => {
+    if (!idEngineer) {
+      setEngineer({});
+      setIdEngineer(0);
+    }
+  }, [idEngineer]);
+
+  useEffect(() => {
+    if (!idSupervisor) {
+      setSupervisor({});
+      setIdSupervisor(0);
+    }
+  }, [idSupervisor]);
+
+  useEffect(() => {
+    if (!idUserResponsible) {
+      setUserResponsible({});
+      setTypeResponsible({});
+      setIdUserResponsible(0);
+    }
+  }, [idUserResponsible]);
+
+
 
   // Página -------------------------------------------------------------------------------------------------------------------------------------------
 
   return (
     <>
-      <div className="p-6 bg-gray-50 min-h-screen">
+      <div className="p-6 bg-gray-50">
         <Tabs
           value={activeTab}
           onChange={handleTabChange}

@@ -94,7 +94,7 @@ namespace SGED.Objects.DTOs.Mappings
                 .ForMember(dest => dest.Arquivo,
                     opt => opt.MapFrom(src => src.Arquivo != null && !IsObjectDefault(src.Arquivo)
                                         ? JsonConvert.SerializeObject(src.Arquivo)
-                                        : null));  // Condicional para verificar se o objeto Arquivo tem valor
+                                        : ""));  // Condicional para verificar se o objeto Arquivo tem valor
 
             CreateMap<DocumentoProcessoModel, DocumentoProcessoDTO>()
                 .ForMember(dest => dest.Arquivo,

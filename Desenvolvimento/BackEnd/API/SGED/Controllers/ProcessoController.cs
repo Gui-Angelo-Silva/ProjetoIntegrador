@@ -10,6 +10,8 @@ using AutoMapper;
 using System.Dynamic;
 using System.Linq;
 using SGED.Objects.Enums.Status;
+using System.ComponentModel.DataAnnotations;
+using SGED.DTOs.Entities;
 
 namespace SGED.Controllers
 {
@@ -79,36 +81,41 @@ namespace SGED.Controllers
                     "Lista do(s) Processo(s) obtida com sucesso." :
                     "Nenhum Processo encontrado.";
 
-                // Cria uma nova lista com ExpandoObject para adicionar propriedades dinamicamente
-                var processosComProgresso = await Task.WhenAll(processosDTO.Select(async processo =>
+                var processosComProgresso = new List<dynamic>();
+                foreach (var processo in processosDTO)
                 {
-                    // Cria uma cópia dinâmica do processo
                     dynamic processoClone = new ExpandoObject();
-                    foreach (var property in processo.GetType().GetProperties())
-                    {
-                        // Adiciona cada propriedade do processo original ao novo objeto
-                        ((IDictionary<string, object>)processoClone).Add(property.Name, property.GetValue(processo));
-                    }
+                    processoClone.id = processo.Id;
+                    processoClone.identificacaoProcesso = processo.IdentificacaoProcesso;
+                    processoClone.descricaoProcesso = processo.DescricaoProcesso;
+                    processoClone.situacaoProcesso = processo.SituacaoProcesso;
+                    processoClone.dataAprovacao = processo.DataAprovacao;
+                    processoClone.status = processo.Status;
+                    processoClone.idImovel = processo.IdImovel;
+                    processoClone.idTipoProcesso = processo.IdTipoProcesso;
+                    processoClone.idEngenheiro = processo.IdEngenheiro;
+                    processoClone.idFiscal = processo.IdFiscal;
+                    processoClone.idResponsavel = processo.IdResponsavel;
+                    processoClone.idAprovador = processo.IdAprovador;
+                    processoClone.documentosProcessoDTO = processo.DocumentosProcessoDTO;
 
-                    // Obtém os documentos relacionados ao processo
                     var documentos = await _documentoProcessoService.GetByProcess(processo.Id);
 
-                    // Define o novo atributo "Progresso" com contadores
-                    processoClone.Progresso = new
+                    processoClone.progresso = new
                     {
                         total = documentos.Count(),
                         emEspera = documentos.Count(documento => documento.Status == StatusDocumentProcess.OnHold ||
-                                                                   documento.Status == StatusDocumentProcess.Pending ||
-                                                                   documento.Status == StatusDocumentProcess.NotAttached ||
-                                                                   documento.Status == StatusDocumentProcess.NotIntact),
-                        emProcesso = documentos.Count(documento => documento.Status == StatusDocumentProcess.Attached),
+                                                                 documento.Status == StatusDocumentProcess.Pending ||
+                                                                 documento.Status == StatusDocumentProcess.NotAttached ||
+                                                                 documento.Status == StatusDocumentProcess.NotIntact),
+                        emProgresso = documentos.Count(documento => documento.Status == StatusDocumentProcess.Attached),
                         emAnalise = documentos.Count(documento => documento.Status == StatusDocumentProcess.InAnalysis),
                         aprovado = documentos.Count(documento => documento.Status == StatusDocumentProcess.Approved),
                         reprovado = documentos.Count(documento => documento.Status == StatusDocumentProcess.Disapproved),
                     };
 
-                    return processoClone;  // Retorna o processo com o atributo Progresso
-                }));
+                    processosComProgresso.Add(processoClone);
+                }
 
                 _response.Data = processosComProgresso;
                 return Ok(_response);

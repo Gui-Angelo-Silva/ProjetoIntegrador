@@ -95,12 +95,13 @@ export default function Card({ column, title, primaryColor, secondaryColor, stat
                 </div>
             </div>
 
-            <div className="p-2 bg-gray-50 flex flex-col space-y-2">
+            <div className="p-2 bg-gray-100 flex flex-col space-y-2">
                 {getCurrentPageSubcards().map((subcard, index) => (
                     <SubCard
                         key={index}
                         subcard={subcard}
                         column={column}
+                        status={status}
                     />
                 ))}
 

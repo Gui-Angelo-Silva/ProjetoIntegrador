@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+
+import { NewspaperClipping } from '@phosphor-icons/react';
 
 import { useMontage } from '../../../object/modules/montage';
 import { useServer } from '../../../routes/serverRoute';
@@ -43,65 +45,62 @@ export default function Process() {
         <>
             <Breadcrumb pages={pages} />
 
-            {/* Tabs */}
-            <div className="flex items-center space-x-4 mb-3 mt-7">
-                <button
-                    onClick={() => setActiveTab("acoes")}
-                    className={`py-2 px-6 rounded-t-md text-sm font-semibold transition ${activeTab === "acoes" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-600 hover:bg-gray-300"
-                        }`}
-                >
-                    Ações
-                </button>
-                <button
-                    onClick={() => setActiveTab("pesquisa")}
-                    className={`py-2 px-6 rounded-t-md text-sm font-semibold transition ${activeTab === "pesquisa" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-600 hover:bg-gray-300"
-                        }`}
-                >
-                    Pesquisa
-                </button>
+            <div className='bg-gray-50 p-2 rounded-md mt-7 border-2 border-gray-200'>
+                {/* Tabs */}
+                <div className="flex items-center space-x-4">
+                    <button
+                        onClick={() => setActiveTab("acoes")}
+                        className={`py-2 px-6 rounded-t-md text-sm font-semibold transition ${activeTab === "acoes" ? "bg-gray-500 text-white" : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                            }`}
+                    >
+                        Ações
+                    </button>
+                    <button
+                        onClick={() => setActiveTab("pesquisa")}
+                        className={`py-2 px-6 rounded-t-md text-sm font-semibold transition ${activeTab === "pesquisa" ? "bg-gray-500 text-white" : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                            }`}
+                    >
+                        Pesquisa
+                    </button>
+                </div>
+
+                {/* Conteúdo da Tab */}
+                <div className="bg-white p-6 rounded-b-md space-y-4 border-1 border-gray-200">
+                    {activeTab === "acoes" && (
+                        <div className="flex items-center space-x-4">
+                            {/* Botões de Ação */}
+                            <button
+                                className="border-2 border-[#6DECFF] hover:bg-[#6DECFF] text-gray-700 font-semibold p-2 rounded transition flex items-center gap-x-2"
+                                onClick={() => server.currentRoute().addSegment("cadastrar-processo").dispatch()}
+                            >
+                                <NewspaperClipping size={20} />
+                                Cadastrar
+                            </button>
+                        </div>
+                    )}
+
+                    {activeTab === "pesquisa" && (
+                        <div className="flex items-center space-x-4">
+                            {/* Campo de Pesquisa */}
+                            <input
+                                type="text"
+                                placeholder="Pesquisar..."
+                                className="border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-100 transition shadow-sm w-full"
+                            />
+
+                            {/* Filtro */}
+                            <select className="border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-100 transition shadow-sm">
+                                <option>Filtrar por...</option>
+                                <option>Status</option>
+                                <option>Data</option>
+                                <option>Prioridade</option>
+                            </select>
+                        </div>
+                    )}
+                </div>
             </div>
 
-            {/* Conteúdo da Tab */}
-            <div className="bg-white shadow-lg p-6 rounded-md space-y-4">
-                {activeTab === "acoes" && (
-                    <div className="flex items-center space-x-4">
-                        {/* Botões de Ação */}
-                        <button
-                            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded shadow transition"
-                            onClick={() => server.currentRoute().addSegment("cadastrar-processo").dispatch()}
-                        >
-                            Cadastrar
-                        </button>
-                        <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-6 rounded shadow transition">
-                            Alterar
-                        </button>
-                        <button className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded shadow transition">
-                            Remover
-                        </button>
-                    </div>
-                )}
-
-                {activeTab === "pesquisa" && (
-                    <div className="flex items-center space-x-4">
-                        {/* Campo de Pesquisa */}
-                        <input
-                            type="text"
-                            placeholder="Pesquisar..."
-                            className="border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-100 transition shadow-sm w-full"
-                        />
-
-                        {/* Filtro */}
-                        <select className="border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-100 transition shadow-sm">
-                            <option>Filtrar por...</option>
-                            <option>Status</option>
-                            <option>Data</option>
-                            <option>Prioridade</option>
-                        </select>
-                    </div>
-                )}
-            </div>
-
-            <div className="mt-3 px-3 py-3 pr-6 rounded-md overflow-x-auto overflow-y-auto max-h-[2000px] bg-gray-50 shadow-md scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+            <div className="mt-3 px-3 py-3 pr-6 rounded-md overflow-x-auto overflow-y-auto max-h-[2000px] bg-gray-50 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 border-2 border-gray-200">
                 {/* Contêiner com scroll horizontal e espaçamento entre os cards */}
                 <div className="flex space-x-4 pb-4 mb-4 flex-nowrap">
                     {cardsData.map((card, index) => (

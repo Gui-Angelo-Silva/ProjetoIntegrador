@@ -47,7 +47,7 @@ const CardDashboard = ({ title, total, onClick, lastTotal }) => {
       <p className="pl-5 text-sm pb-[18px]">Total: {total}</p>
       <div className={`border-t-4 ${border}`}></div>
       <p
-        className="flex justify-between items-center pl-5 text-sm pt-2 pr-5 cursor-pointer"
+        className="flex justify-between items-center pl-5 text-sm pt-[12px] pr-5 cursor-pointer"
         aria-label={`Ver detalhes de ${title}`}
         role="button"
         onClick={handleCardClick}

@@ -90,16 +90,17 @@ namespace SGED.Objects.DTOs.Mappings
             CreateMap<ProcessoDTO, ProcessoModel>();
             CreateMap<ProcessoModel, ProcessoDTO>().ReverseMap();
 
-            // Mapeamento de DocumentoProcessoDTO para DocumentoProcessoModel - converte o objeto Arquivo em JSON
             CreateMap<DocumentoProcessoDTO, DocumentoProcessoModel>()
                 .ForMember(dest => dest.Arquivo,
-                           opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Arquivo)));
+                    opt => opt.MapFrom(src => src.Arquivo != null && !IsObjectDefault(src.Arquivo)
+                                        ? JsonConvert.SerializeObject(src.Arquivo)
+                                        : null));  // Condicional para verificar se o objeto Arquivo tem valor
 
-            // Mapeamento de DocumentoProcessoModel para DocumentoProcessoDTO - converte JSON para o objeto Arquivo
             CreateMap<DocumentoProcessoModel, DocumentoProcessoDTO>()
                 .ForMember(dest => dest.Arquivo,
-                           opt => opt.MapFrom(src => JsonConvert.DeserializeObject<Archive>(src.Arquivo)))
-                .ReverseMap();  // Permite a conversão reversa automática
+                    opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Arquivo) && IsValidJson(src.Arquivo)
+                                        ? JsonConvert.DeserializeObject<Archive>(src.Arquivo)
+                                        : null));  // Verifica se a string JSON é válida
 
 
             // Objetos do Servidor:
@@ -114,6 +115,22 @@ namespace SGED.Objects.DTOs.Mappings
 
             CreateMap<ConfiguracaoDTO, ConfiguracaoModel>();
             CreateMap<ConfiguracaoModel, ConfiguracaoDTO>().ReverseMap();
+        }
+
+        // Função para verificar se o objeto é o valor padrão (new)
+        private bool IsObjectDefault(Archive arquivo)
+        {
+            return arquivo == null || (arquivo.Hash == null && arquivo.Bytes == null && arquivo.FileName == null && arquivo.MimeType == null);
+        }
+
+
+
+        // Função para verificar se a string JSON é válida
+        private bool IsValidJson(string str)
+        {
+            str = str.Trim();
+            return str.StartsWith("{") && str.EndsWith("}") // Simples verificação para checar se é um objeto JSON válido
+                   || str.StartsWith("[") && str.EndsWith("]"); // Caso também seja um array JSON
         }
     }
 }

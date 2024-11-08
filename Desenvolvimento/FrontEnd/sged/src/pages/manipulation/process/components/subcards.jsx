@@ -40,7 +40,7 @@ export default function SubCard({ subcard, column }) {
 
     return (
         <div
-            className={`h-[50px] p-2 rounded-md border border-gray-200 shadow-sm bg-gradient-to-r from-[#ffffff] to-[#ffffff] ${colors[column].primaryColor} ${colors[column].secondaryColor} hover:cursor-pointer relative flex justify-between items-center`}
+            className={`h-[60px] p-3 rounded-md border border-gray-200 shadow-sm bg-gradient-to-r from-[#ffffff] to-[#ffffff] ${colors[column].primaryColor} ${colors[column].secondaryColor} hover:cursor-pointer relative flex justify-between items-center`}
             onClick={handleClick}
         >
             <span>
@@ -59,8 +59,8 @@ export default function SubCard({ subcard, column }) {
                             alt="Responsável"
                         />
                     ) : (
-                        <div className="h-[34px] w-[34px] rounded-full border-1 border-gray-300 flex items-center justify-center bg-gray-100">
-                            <User className="h-[20px] w-[20px] text-gray-500" />
+                        <div className="h-[34px] w-[34px] rounded-full border-1 border-gray-300 flex items-center justify-center bg-gray-50">
+                            <User className="h-[20px] w-[20px] text-gray-500" weight="duotone" />
                         </div>
                     )
                 )}
@@ -73,13 +73,12 @@ export default function SubCard({ subcard, column }) {
                             alt="Aprovador"
                         />
                     ) : (
-                        <div className="h-[34px] w-[34px] rounded-full border-1 border-gray-300 flex items-center justify-center bg-gray-100">
-                            <User className="h-[20px] w-[20px] text-gray-500" />
+                        <div className="h-[34px] w-[34px] rounded-full border-1 border-gray-300 flex items-center justify-center bg-gray-50">
+                            <User className="h-[20px] w-[20px] text-gray-500" weight="duotone" />
                         </div>
                     )
                 )}
             </div>
-
         </div>
     );
 }

@@ -26,7 +26,7 @@ const AddProcess = () => {
 
   const pages = [
     { name: "Documentos", link: "/administrador/documentos", isEnabled: true },
-    { name: "Processos", link: "/administrador/documentos/processo", isEnabled: true },
+    { name: "Processos", link: "/administrador/documentos/processos", isEnabled: true },
     { name: "Análise Processo", link: "", isEnabled: false }, // Link desativado
   ];
 

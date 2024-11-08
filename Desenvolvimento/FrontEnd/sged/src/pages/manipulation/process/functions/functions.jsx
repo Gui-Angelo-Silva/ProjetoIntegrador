@@ -220,6 +220,26 @@ export const GetOccupation = async (idOccupation) => {
     return connection.getObject();
 };
 
+export const GetPublicplace = async (idPublicplace) => {
+    await connection.endpoint("Logradouro").data(idPublicplace).get();
+    return connection.getObject();
+};
+
+export const GetNeighborhood = async (idNeighborhood) => {
+    await connection.endpoint("Bairro").data(idNeighborhood).get();
+    return connection.getObject();
+};
+
+export const GetCity = async (idCity) => {
+    await connection.endpoint("Cidade").data(idCity).get();
+    return connection.getObject();
+};
+
+export const GetState = async (idState) => {
+    await connection.endpoint("Estado").data(idState).get();
+    return connection.getObject();
+};
+
 
 /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Tipo Processo <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */
 

@@ -82,6 +82,11 @@ const ProcessForm = ({
   const [taxpayer, setTaxpayer] = useState({});
   const [use, setUse] = useState({});
   const [occupation, setOccupation] = useState({});
+  const [publicplace, setPublicplace] = useState({});
+  const [neighborhood, setNeighborhood] = useState({});
+  const [city, setCity] = useState({});
+  const [state, setState] = useState({});
+
   const [typeResponsible, setTypeResponsible] = useState({});
   const [userApprover, setUserApprover] = useState({});
   const [typeApprover, setTypeApprover] = useState({});
@@ -125,6 +130,18 @@ const ProcessForm = ({
 
       const occupationData = await functions.GetOccupation(realstate.idOcupacaoAtual);
       setOccupation(occupationData);
+
+      const publicplaceData = await functions.GetPublicplace(realstate.idLogradouro);
+      setPublicplace(publicplaceData);
+
+      const neighborhoodData = await functions.GetNeighborhood(publicplaceData.idBairro);
+      setNeighborhood(neighborhoodData);
+
+      const cityData = await functions.GetCity(neighborhoodData.idCidade);
+      setCity(cityData);
+
+      const stateData = await functions.GetState(cityData.idEstado);
+      setState(stateData);
     };
 
     if (realstate?.id) fetchDataRealstate();
@@ -229,6 +246,10 @@ const ProcessForm = ({
       setOccupation({});
       setOwner({});
       setTaxpayer({});
+      setPublicplace({})
+      setNeighborhood({});
+      setCity({});
+      setState({});
       setIdRealstate(0);
     }
   }, [idRealstate]);
@@ -319,6 +340,10 @@ const ProcessForm = ({
           taxpayer={taxpayer}
           use={use}
           occupation={occupation}
+          publicplace={publicplace}
+          neighborhood={neighborhood}
+          city={city}
+          state={state}
         />
 
         <EntitiesTab
@@ -425,6 +450,12 @@ const ProcessForm = ({
       {idTypeProcess && activeTab === 0 ? (
         <>
           <hr className="mt-6 mb-6 border-t-4 border-gray-400 rounded-lg w-full" />
+
+          <div className="p-4 bg-gray-50 shadow-md rounded-lg">
+            <h1 className="text-xl font-semibold text-gray-800">Etapas Relacionadas:</h1>
+          </div>
+
+          <br />
 
           <StagesComponent idTypeProcess={idTypeProcess} />
         </>

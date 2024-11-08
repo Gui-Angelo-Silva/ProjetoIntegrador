@@ -144,6 +144,10 @@ export const RealStateTab = ({
     taxpayer,
     use,
     occupation,
+    publicplace,
+    neighborhood,
+    city,
+    state
 }) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -257,21 +261,19 @@ export const RealStateTab = ({
 
                 {/* Coluna da Direita */}
                 <div className="w-1/2 flex flex-col border border-gray-300 rounded-lg p-4">
-                    <div className="w-full flex items-center gap-x-5">
-                        <div className="w-full">
-                            <h1 className="text-lg text-gray-700 mt-4">Imóvel: <span className="text-red-600">*</span></h1>
-                            <SelectComponent
-                                variable="inscrição cadastral"
-                                variableIdentifier="id"
-                                variableName="inscricaoCadastral"
-                                id={idRealstate}
-                                setId={setIdRealstate}
-                                methodSearch={functions.SearchRealstate}
-                                methodGet={functions.GetRealstate}
-                                getObject={disabled}
-                                disable={disabled}
-                            />
-                        </div>
+                    <div>
+                        <h1 className="text-lg text-gray-700 mt-4">Imóvel: <span className="text-red-600">*</span></h1>
+                        <SelectComponent
+                            variable="inscrição cadastral"
+                            variableIdentifier="id"
+                            variableName="inscricaoCadastral"
+                            id={idRealstate}
+                            setId={setIdRealstate}
+                            methodSearch={functions.SearchRealstate}
+                            methodGet={functions.GetRealstate}
+                            getObject={disabled}
+                            disable={disabled}
+                        />
                     </div>
 
                     <div className="w-full flex items-center gap-x-5">
@@ -302,7 +304,7 @@ export const RealStateTab = ({
                                 type="text"
                                 disabled
                                 className="cursor-not-allowed rounded-sm w-full border-[#e5e7eb]"
-                                value={'Em Progresso' || ''}
+                                value={publicplace?.ruaLogradouro || ''}
                             />
                         </div>
 
@@ -312,7 +314,7 @@ export const RealStateTab = ({
                                 type="text"
                                 disabled
                                 className="cursor-not-allowed rounded-sm w-full border-[#e5e7eb]"
-                                value={'Em Progresso' || ''}
+                                value={neighborhood?.nomeBairro || ''}
                             />
                         </div>
                     </div>
@@ -344,7 +346,7 @@ export const RealStateTab = ({
                                 type="text"
                                 disabled
                                 className="cursor-not-allowed rounded-sm w-full border-[#e5e7eb]"
-                                value={'Em Progresso' || ''}
+                                value={city?.nomeCidade || ''}
                             />
                         </div>
 
@@ -354,7 +356,7 @@ export const RealStateTab = ({
                                 type="text"
                                 disabled
                                 className="cursor-not-allowed rounded-sm w-full border-[#e5e7eb]"
-                                value={'Em Progresso' || ''}
+                                value={state?.ufEstado || ''}
                             />
                         </div>
                     </div>
@@ -370,7 +372,7 @@ export const RealStateTab = ({
                                         className="rounded-full w-full h-full object-cover"
                                     />
                                 ) : (
-                                    <User size={50} />
+                                    <User size={50} weight="duotone" />
                                 )}
                             </div>
                             <input
@@ -410,7 +412,7 @@ export const RealStateTab = ({
                                         className="rounded-full w-full h-full object-cover"
                                     />
                                 ) : (
-                                    <User size={50} />
+                                    <User size={50} weight="duotone" />
                                 )}
                             </div>
                             <input
@@ -482,7 +484,7 @@ export const EntitiesTab = ({
                                         className="rounded-full w-full h-full object-cover"
                                     />
                                 ) : (
-                                    <User size={45} />
+                                    <User size={45} weight="duotone" />
                                 )}
                             </div>
                             <div className="flex-1 min-w-[220px]">
@@ -519,7 +521,7 @@ export const EntitiesTab = ({
                                         className="rounded-full w-full h-full object-cover"
                                     />
                                 ) : (
-                                    <User size={45} />
+                                    <User size={45} weight="duotone" />
                                 )}
                             </div>
                             <div className="flex-1 min-w-[220px]">
@@ -558,7 +560,7 @@ export const EntitiesTab = ({
                                         className="rounded-full w-full h-full object-cover"
                                     />
                                 ) : (
-                                    <User size={45} />
+                                    <User size={45} weight="duotone" />
                                 )}
                             </div>
                             <div className="flex-1 min-w-[220px]">
@@ -595,7 +597,7 @@ export const EntitiesTab = ({
                                         className="rounded-full w-full h-full object-cover"
                                     />
                                 ) : (
-                                    <User size={45} />
+                                    <User size={45} weight="duotone" />
                                 )}
                             </div>
                             <div className="flex-1 min-w-[220px]">

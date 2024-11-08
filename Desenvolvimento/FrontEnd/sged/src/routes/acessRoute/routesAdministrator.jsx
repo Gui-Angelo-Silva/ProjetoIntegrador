@@ -56,9 +56,9 @@ export default function RouteA() {
             <Route path="cadastros/instalacao" element={<Installation />}></Route>
 
             <Route path="documentos" element={<Document />}></Route>
-            <Route path="documentos/processo" element={<Process />}></Route>
-            <Route path="documentos/processo/cadastrar-processo" element={<AddProcess />}></Route>
-            <Route path="documentos/processo/analisar-processo/:id" element={<AnalysisProcess />} />
+            <Route path="documentos/processos" element={<Process />}></Route>
+            <Route path="documentos/processos/cadastrar-processo" element={<AddProcess />}></Route>
+            <Route path="documentos/processos/analisar-processo/:id" element={<AnalysisProcess />} />
 
             {/* Rota catch-all para páginas inexistentes */}
             <Route path="*" element={<Navigate to="/pagina-inexistente" replace />} />

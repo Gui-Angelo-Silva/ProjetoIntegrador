@@ -21,7 +21,7 @@ export default function Document() {
         {
             title: "Processo",
             imgSrc: ImgProcesso,
-            onClick: () => server.currentRoute().addSegment("processo").dispatch(),
+            onClick: () => server.currentRoute().addSegment("processos").dispatch(),
         },
         {
             title: "Doc. Processo",

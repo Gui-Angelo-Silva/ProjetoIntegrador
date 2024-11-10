@@ -9,7 +9,7 @@ import { useMontage } from "../../../../../object/modules/montage";
 import { useServer } from '../../../../../routes/serverRoute';
 import * as functions from '../../functions/functions';
 
-import ProcessForm from "./form/processForm";
+import ProcessForm from "./forms/form";
 
 const Add = () => {
   const montage = useMontage();

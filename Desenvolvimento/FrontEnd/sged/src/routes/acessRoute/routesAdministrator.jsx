@@ -24,8 +24,9 @@ import TypeInfrastructure from '../../pages/manipulation/typeinfrastructure';
 import Infrastructure from '../../pages/manipulation/infrastructure';
 import Installation from '../../pages/manipulation/installation';
 import Process from '../../pages/manipulation/process';
-import AddProcess from '../../pages/manipulation/process/modules/addprocess';
-import AnalysisProcess from '../../pages/manipulation/process/modules/analysisprocess';
+import AddProcess from '../../pages/manipulation/process/modules/add';
+import EditProcess from '../../pages/manipulation/process/modules/edit';
+import AnalysisProcess from '../../pages/manipulation/process/modules/analysis';
 
 export default function RouteA() {
     return (
@@ -58,7 +59,8 @@ export default function RouteA() {
             <Route path="documentos" element={<Document />}></Route>
             <Route path="documentos/processos" element={<Process />}></Route>
             <Route path="documentos/processos/cadastrar-processo" element={<AddProcess />}></Route>
-            <Route path="documentos/processos/analisar-processo/:id" element={<AnalysisProcess />} />
+            <Route path="documentos/processos/editar-processo/:id" element={<EditProcess />}></Route>
+            <Route path="documentos/processos/analisar-processo/:id" element={<AnalysisProcess />}></Route>
 
             {/* Rota catch-all para páginas inexistentes */}
             <Route path="*" element={<Navigate to="/pagina-inexistente" replace />} />

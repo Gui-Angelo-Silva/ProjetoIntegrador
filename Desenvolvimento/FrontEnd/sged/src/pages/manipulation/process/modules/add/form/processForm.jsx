@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { Tabs, Tab, Box } from '@mui/material';
+import { CaretDoubleDown, WarningCircle } from '@phosphor-icons/react';
 
 import StagesComponent from "../../../components/stages";
 import * as functions from '../../../functions/functions';
@@ -11,7 +12,7 @@ import {
   NoticeModal
 } from "../../../components/tabs";
 
-const ProcessForm = ({
+const Form = ({
   process,
   setProcess,
   save
@@ -278,6 +279,44 @@ const ProcessForm = ({
 
 
 
+  // Exibição de Aviso -------------------------------------------------------------------------------------------------------------------------------------------
+
+  const [first, setFirst] = useState(false); // Controla a visibilidade do ícone
+  const [showAlertIcon, setShowAlertIcon] = useState(false); // Controla a visibilidade do ícone
+  const [opacityChangeCount, setOpacityChangeCount] = useState(0); // Conta as alternâncias de opacidade
+
+  // Função para alterar o ícone 6 vezes entre opacidade 0 e 1
+  const toggleIconOpacity = () => {
+    if (opacityChangeCount < 6) {
+      setOpacityChangeCount(opacityChangeCount + 1);
+    } else {
+      setShowAlertIcon(false); // Após 6 alternâncias, desativa o ícone
+    }
+  };
+
+  // Efeito para monitorar idTypeProcess e ativar o ícone
+  useEffect(() => {
+    if (idTypeProcess && activeTab === 0 && !first) {
+      setShowAlertIcon(true); // Ativa o ícone de alerta quando idTypeProcess mudar e tab estiver na 0
+      setOpacityChangeCount(0); // Reseta o contador de alternâncias
+
+      setFirst(true);
+    }
+  }, [idTypeProcess, activeTab]);
+
+  // Efeito para alternar a opacidade do ícone
+  useEffect(() => {
+    if (showAlertIcon) {
+      const interval = setInterval(() => {
+        toggleIconOpacity(); // Alterna a visibilidade do ícone
+      }, 700); // Alterna a cada 500ms (pode ajustar conforme necessário)
+
+      return () => clearInterval(interval); // Limpa o intervalo quando o efeito for limpo
+    }
+  }, [showAlertIcon, opacityChangeCount]);
+
+
+
   // Página -------------------------------------------------------------------------------------------------------------------------------------------
 
   return (
@@ -447,21 +486,39 @@ const ProcessForm = ({
         )}
       </div>
 
+      {/* Conteúdo das Etapas */}
       {idTypeProcess && activeTab === 0 ? (
-        <>
+        <div>
           <hr className="mt-6 mb-6 border-t-4 border-gray-400 rounded-lg w-full" />
-
-          <div className="p-4 bg-gray-50 shadow-md rounded-lg">
+          <div className="flex items-center p-4 bg-gray-50 shadow-md rounded-lg mb-4 gap-x-3">
             <h1 className="text-xl font-semibold text-gray-800">Etapas Relacionadas:</h1>
+            {showAlertIcon && (<WarningCircle className="text-[#FF000D]" size={25} />)}
           </div>
-
-          <br />
-
           <StagesComponent idTypeProcess={idTypeProcess} />
-        </>
+        </div>
       ) : null}
+
+      {/* Ícone de Alerta */}
+      {showAlertIcon && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: "20px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 1000,
+            border: opacityChangeCount % 2 === 0 ? "1px solid #FF000D" : "1px solid transparent", // Alterna a borda entre vermelha e transparente
+            color: opacityChangeCount % 2 === 0 ? "#FF000D" : "transparent", // Alterna a cor do texto entre preto e transparente
+            padding: "10px",
+            borderRadius: "50%",
+            transition: "border-color 0.5s ease, color 0.5s ease", // Transição suave para borda e cor do texto
+          }}
+        >
+          <CaretDoubleDown fontSize="large" />
+        </div>
+      )}
     </>
   );
 };
 
-export default ProcessForm;
+export default Form;

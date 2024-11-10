@@ -15,7 +15,7 @@ namespace SGED.Objects.DTOs.Entities
 
         [Required(ErrorMessage = "A descrição do TipoProcesso é requerida!")]
         [MinLength(3)]
-        [MaxLength(100)]
+        [MaxLength(500)]
         public string DescricaoTipoProcesso { get; set; }
 
         [Required(ErrorMessage = "O status é requerido!")]

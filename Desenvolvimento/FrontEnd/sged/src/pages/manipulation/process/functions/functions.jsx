@@ -103,6 +103,25 @@ export async function setProcess(process) {
     return processData;
 };
 
+// Função para traduzir e processar o documento
+export function convertProcess(processo) {
+    return {
+        id: processo.id || 0,
+        identificationNumber: processo.identificacaoProcesso || "",
+        processSituation: processo.situacaoProcesso || "",
+        processDescription: processo.descricaoProcesso || "",
+        approvationDate: processo.dataAprovacao || "",
+        processStatus: processo.status || 0,
+
+        idTypeProcess: processo.idTipoProcesso || 0,
+        idRealstate: processo.idImovel || 0,
+        idEngineer: processo.idEngenheiro || null,
+        idSupervisor: processo.idFiscal || null,
+        idResponsible: processo.idResponsavel || null,
+        idApprover: processo.idAprovador || null,
+    };
+}
+
 export const GetProcessListByStatus = async (status) => {
     await connection.endpoint("Processo").action("GetByStatus").data(status).get();
     return connection.getList();
@@ -122,6 +141,12 @@ export const PostProcess = async (data) => {
     await connection.endpoint("Processo").post(data);
     return connection.getObject();
 };
+
+export const PutProcess = async (data) => {
+    await connection.endpoint("Processo").put(data);
+    return connection.getObject();
+};
+
 
 
 

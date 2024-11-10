@@ -160,7 +160,7 @@ export default function SubCard({ subcard, column, status }) {
 
                             <button
                                 className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${true ? 'border-[#8cff9d] hover:bg-[#8cff9d] text-black' : 'bg-gray-200 cursor-not-allowed'}`}
-                                onClick={true ? null : null}
+                                onClick={() => true ? server.currentRoute().addSegment("editar-processo").addData(subcard.id).dispatch() : null}
                                 disabled={false}
                             >
                                 <PencilSimpleLine size={20} />

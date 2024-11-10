@@ -15,6 +15,8 @@ import * as functions from '../functions/functions';
 export const ProcessTab = ({
     open = false,
     disabled = false,
+    isEdit = false,
+
     idTypeProcess,
     setIdTypeProcess,
     identificationNumber,
@@ -31,35 +33,26 @@ export const ProcessTab = ({
 }) => {
     return (
         <Box p={4} className="bg-white rounded-lg shadow-sm" style={{ display: open ? "block" : "none" }}>
-            <h2 className="text-xl font-semibold text-gray-700 mb-4">Tipo de Processo</h2>
-            <h1 className="text-lg text-gray-700">Tipo Processo: <span className="text-red-600">*</span></h1>
-            <SelectComponent
-                variable="tipo processo"
-                variableIdentifier="id"
-                variableName="nomeTipoProcesso"
-                id={idTypeProcess}
-                setId={setIdTypeProcess}
-                methodSearch={functions.SearchTypeProcess}
-                methodGet={functions.GetTypeProcess}
-                getObject={disabled}
-                disable={disabled}
-            />
-
-            <h1 className="text-lg text-gray-700 mt-4">Descrição do Tipo de Processo:</h1>
-            <textarea
-                disabled
-                className="cursor-not-allowed rounded-sm border-[#e5e7eb] w-full h-32 resize-none"
-                value={typeProcess.descricaoTipoProcesso || ''}
-            ></textarea>
+            <h2 className="text-xl font-semibold text-gray-700">Processo</h2>
 
             {/* Processo */}
             <div className="flex items-center gap-x-5">
+                <div className="w-full">
+                    <h1 className="text-lg text-gray-700 mt-4">Código: </h1>
+                    <input
+                        type="text"
+                        className={`rounded-sm border-[#e5e7eb] w-full cursor-not-allowed`}
+                        value={process.id || ""}
+                        required
+                        disabled={true}
+                    />
+                </div>
+
                 <div className="w-full">
                     <h1 className="text-lg text-gray-700 mt-4">Número de Identificação: </h1>
                     <input
                         type="text"
                         className={`rounded-sm border-[#e5e7eb] w-full cursor-not-allowed`}
-                        onChange={(e) => setIdentificationNumber(e.target.value)}
                         value={identificationNumber}
                         required
                         disabled={true}
@@ -71,7 +64,7 @@ export const ProcessTab = ({
                     <input
                         disabled
                         type="text"
-                        className="w-[400px] cursor-not-allowed rounded-sm border-[#e5e7eb]"
+                        className="w-[300px] cursor-not-allowed rounded-sm border-[#e5e7eb]"
                         value={(() => {
                             switch (process.processStatus) {
                                 case 0:
@@ -98,34 +91,65 @@ export const ProcessTab = ({
                         className={`w-[200px] rounded-sm border-[#e5e7eb] ${disabled && "cursor-not-allowed"}`}
                         min="1700-01-01" // Limite inferior de 1700
                         max="9999-12-31" // Limite superior de 9999
-                        onChange={(e) => setApprovationDate(e.target.value)}
                         value={approvationDate}
-                        disabled={disabled}
+                        disabled={true}
                     />
                 </div>
             </div>
 
-            <h1 className="text-lg text-gray-700 mt-4">Situação:</h1>
-            <textarea
-                className={`rounded-sm border-[#e5e7eb] w-full h-32 resize-none ${disabled && "cursor-not-allowed"}`}
-                onChange={(e) => {
-                    if (e.target.value.length <= 300) setProcessSituation(e.target.value);
-                }}
-                value={processSituation}
-                disabled={disabled}
-                maxLength={300} // Limita para 300 caracteres
+            <h1 className="text-lg text-gray-700 mt-4">Tipo de Processo: <span className="text-red-600">*</span></h1>
+            <SelectComponent
+                variable="tipo processo"
+                variableIdentifier="id"
+                variableName="nomeTipoProcesso"
+                id={idTypeProcess}
+                setId={setIdTypeProcess}
+                methodSearch={functions.SearchTypeProcess}
+                methodGet={functions.GetTypeProcess}
+                getObject={isEdit}
+                disable={disabled}
             />
 
-            <h1 className="text-lg text-gray-700 mt-4">Descrição:</h1>
+            <h1 className="text-lg text-gray-700 mt-4">Descrição do Tipo de Processo:</h1>
             <textarea
-                className={`rounded-sm border-[#e5e7eb] w-full h-32 resize-none ${disabled && "cursor-not-allowed"}`}
-                onChange={(e) => {
-                    if (e.target.value.length <= 500) setProcessDescription(e.target.value);
-                }}
-                value={processDescription}
-                disabled={disabled}
-                maxLength={500} // Limita para 500 caracteres
-            />
+                disabled
+                className="cursor-not-allowed rounded-sm border-[#e5e7eb] w-full h-28 resize-none"
+                value={typeProcess.descricaoTipoProcesso || ''}
+            ></textarea>
+
+            <div className="flex items-center gap-x-5">
+                <div className="w-full relative">
+                    <h1 className="text-lg text-gray-700 mt-4">Situação:</h1>
+                    <textarea
+                        className={`rounded-sm border-[#e5e7eb] w-full h-48 resize-none p-3 ${disabled && "cursor-not-allowed"}`}
+                        onChange={(e) => {
+                            if (e.target.value.length <= 300) setProcessSituation(e.target.value);
+                        }}
+                        value={processSituation}
+                        disabled={disabled}
+                        maxLength={300} // Limita para 300 caracteres
+                    />
+                    <span className="text-sm text-gray-500 absolute bottom-4 right-3 pointer-events-none">
+                        {processSituation.length} / 300
+                    </span>
+                </div>
+
+                <div className="w-full relative">
+                    <h1 className="text-lg text-gray-700 mt-4">Descrição:</h1>
+                    <textarea
+                        className={`rounded-sm border-[#e5e7eb] w-full h-48 resize-none p-3 ${disabled && "cursor-not-allowed"}`}
+                        onChange={(e) => {
+                            if (e.target.value.length <= 500) setProcessDescription(e.target.value);
+                        }}
+                        value={processDescription}
+                        disabled={disabled}
+                        maxLength={500} // Limita para 500 caracteres
+                    />
+                    <span className="text-sm text-gray-500 absolute bottom-4 right-3 pointer-events-none">
+                        {processDescription.length} / 500
+                    </span>
+                </div>
+            </div>
         </Box>
     );
 };
@@ -136,6 +160,7 @@ export const ProcessTab = ({
 export const RealStateTab = ({
     open = false,
     disabled = false,
+    isEdit = false,
     idRealstate,
     setIdRealstate,
 
@@ -197,10 +222,11 @@ export const RealStateTab = ({
 
     return (
         <Box p={4} className="bg-white rounded-lg shadow-sm" style={{ display: open ? "block" : "none" }}>
+            <h2 className="text-xl font-semibold text-gray-700 mb-4">Imóvel Relacionado</h2>
+
             <div className="flex">
                 {/* Coluna da Esquerda */}
                 <div className="w-1/2 pr-4">
-                    <h2 className="text-xl font-semibold text-gray-700 mb-4">Informações do Imóvel</h2>
                     <div className="relative mr-8 inline-flex items-center justify-center rounded-lg border-[2px] w-full overflow-hidden">
                         {realstate.imagemImovel && realstate.imagemImovel.length > 0 ? (
                             <>
@@ -271,7 +297,7 @@ export const RealStateTab = ({
                             setId={setIdRealstate}
                             methodSearch={functions.SearchRealstate}
                             methodGet={functions.GetRealstate}
-                            getObject={disabled}
+                            getObject={isEdit}
                             disable={disabled}
                         />
                     </div>
@@ -452,6 +478,7 @@ export const RealStateTab = ({
 export const EntitiesTab = ({
     open = false,
     disabled = false,
+    isEdit = false,
     idEngineer,
     setIdEngineer,
     idSupervisor,
@@ -496,7 +523,7 @@ export const EntitiesTab = ({
                                     setId={setIdEngineer}
                                     methodSearch={functions.SearchEngineer}
                                     methodGet={functions.GetEngineer}
-                                    getObject={disabled}
+                                    getObject={isEdit}
                                     disable={disabled}
                                 />
                             </div>
@@ -533,7 +560,7 @@ export const EntitiesTab = ({
                                     setId={setIdSupervisor}
                                     methodSearch={functions.SearchSupervisor}
                                     methodGet={functions.GetSupervisor}
-                                    getObject={disabled}
+                                    getObject={isEdit}
                                     disable={disabled}
                                 />
                             </div>
@@ -572,7 +599,7 @@ export const EntitiesTab = ({
                                     setId={setIdUserResponsible}
                                     methodSearch={functions.SearchResponsible}
                                     methodGet={functions.GetUser}
-                                    getObject={disabled}
+                                    getObject={isEdit}
                                     disable={disabled}
                                 />
                             </div>

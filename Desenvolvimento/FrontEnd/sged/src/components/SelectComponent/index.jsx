@@ -16,6 +16,7 @@ const CustomSelectComponent = ({
     disable = false
 }) => {
     const selectBox = ControlModule();
+    const [get, setGet] = useState(getObject);
 
     const [list, setList] = useState([]);
     const [object, setObject] = useState({});
@@ -31,11 +32,12 @@ const CustomSelectComponent = ({
                 setInputValue(objectData[variableName]);
                 setObject(objectData);
             }
+
+            setGet(false);
         };
 
-        if (getObject && id) fetchObject();
-        getObject = false;
-    }, [getObject]);
+        if (get && id) fetchObject();
+    }, [get, id]);
 
     useEffect(() => {
         const fetchList = async () => {

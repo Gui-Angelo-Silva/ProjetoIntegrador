@@ -11,7 +11,7 @@ import * as functions from '../../functions/functions';
 
 import ProcessForm from "./form/processForm";
 
-const AddProcess = () => {
+const Add = () => {
   const montage = useMontage();
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const AddProcess = () => {
   const pages = [
     { name: "Documentos", link: "/administrador/documentos", isEnabled: true },
     { name: "Processos", link: "/administrador/documentos/processos", isEnabled: true },
-    { name: "Cadastro de Processo", link: "", isEnabled: false }, // Link desativado
+    { name: "Cadastrar Processo", link: "", isEnabled: false }, // Link desativado
   ];
 
   // Services initialization --------------------------------------------------------------------------------------------------------------------------
@@ -36,8 +36,6 @@ const AddProcess = () => {
   const PostAllDatas = async () => {
     const data = await functions.setProcessAllData(process, []);
 
-    console.log(data);
-
     const responnse = await functions.PostAllDatas(data);
     if (responnse) server.removeSegment(1).dispatch();
   };
@@ -45,6 +43,8 @@ const AddProcess = () => {
   // State hooks --------------------------------------------------------------------------------------------------------------------------------------
 
   const [process, setProcess] = useState({
+    id: "",
+
     identificationNumber: "",
     processSituation: "",
     processDescription: "",
@@ -73,4 +73,4 @@ const AddProcess = () => {
   );
 };
 
-export default AddProcess;
+export default Add;

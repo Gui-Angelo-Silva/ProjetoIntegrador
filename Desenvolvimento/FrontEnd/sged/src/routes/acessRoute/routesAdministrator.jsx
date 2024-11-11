@@ -26,7 +26,7 @@ import Installation from '../../pages/manipulation/installation';
 import Process from '../../pages/manipulation/process';
 import AddProcess from '../../pages/manipulation/process/modules/add';
 import EditProcess from '../../pages/manipulation/process/modules/edit';
-import AnalysisProcess from '../../pages/manipulation/process/modules/analysis';
+import AnalysisProcess from '../../pages/manipulation/process/modules/approve';
 
 export default function RouteA() {
     return (

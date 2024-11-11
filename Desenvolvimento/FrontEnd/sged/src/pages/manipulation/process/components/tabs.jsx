@@ -88,7 +88,7 @@ export const ProcessTab = ({
                     <h1 className="text-lg text-gray-700 mt-4">Data de Aprovação:</h1>
                     <input
                         type="date"
-                        className={`w-[200px] rounded-sm border-[#e5e7eb] ${disabled && "cursor-not-allowed"}`}
+                        className={`w-[200px] rounded-sm border-[#e5e7eb] cursor-not-allowed`}
                         min="1700-01-01" // Limite inferior de 1700
                         max="9999-12-31" // Limite superior de 9999
                         value={approvationDate}

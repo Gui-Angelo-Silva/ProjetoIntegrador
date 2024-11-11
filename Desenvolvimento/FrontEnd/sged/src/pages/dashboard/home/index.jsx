@@ -9,7 +9,7 @@ import ModalDetails from "../../../components/Modal/ModalDetails";
 import { AnimatePresence } from "framer-motion";
 
 const Home = () => {
-  const data = ["Guilherme", "Gabriel", "Neto", "Lopes", "Victor", "Pedro"];
+  const data = ["Test1", "Test2", "Test3", "Test4", "Test5", "Test6"];
   const pages = [{ name: 'Visão Geral', link: '', isEnabled: false }];
   const { componentMounted } = useMontage();
 

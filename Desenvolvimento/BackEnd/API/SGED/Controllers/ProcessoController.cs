@@ -564,68 +564,159 @@ namespace SGED.Controllers
         private async Task<dynamic> GetAllData(ProcessoDTO processoDTO)
         {
             dynamic processo = new ExpandoObject();
-            processo.id = processoDTO.Id;
-            processo.identificacaoProcesso = processoDTO.IdentificacaoProcesso;
-            processo.descricaoProcesso = processoDTO.DescricaoProcesso;
-            processo.situacaoProcesso = processoDTO.SituacaoProcesso;
-            processo.dataAprovacao = processoDTO.DataAprovacao;
-            processo.status = processoDTO.Status;
-            processo.idImovel = processoDTO.IdImovel;
-            processo.idTipoProcesso = processoDTO.IdTipoProcesso;
-            processo.idEngenheiro = processoDTO.IdEngenheiro;
-            processo.idFiscal = processoDTO.IdFiscal;
-            processo.idResponsavel = processoDTO.IdResponsavel;
-            processo.idAprovador = processoDTO.IdAprovador;
-            processo.tipoProcesso = await _tipoProcessoService.GetById(processoDTO.IdTipoProcesso);
-            processo.tipoProcesso.etapas = await _etapaService.GetStagesRelatedToTypeProcess(processoDTO.IdTipoProcesso);
-            processo.progresso = new
-            {
-                total = 0,
-                emEspera = 0,
-                emProgresso = 0,
-                emAnalise = 0,
-                aprovado = 0,
-                reprovado = 0
-            };
-
             var documentos = await _documentoProcessoService.GetByProcess(processoDTO.Id);
 
-            foreach (var etapa in processo.tipoProcesso.etapas)
-            {
-                etapa.documentosEtapas = await _tipoDocumentoEtapaService.GetTypeDocumentStagesRelatedToStage(etapa.Id);
+            processo = GenerateProcess(processoDTO);
+            processo.tipoProcesso = GenerateTypeProcess(await _tipoProcessoService.GetById(processoDTO.IdTipoProcesso));
 
-                foreach (var documentoEtapa in etapa.documentosEtapas)
+            processo.tipoProcesso.etapas = new List<dynamic>();
+            var etapas = await _etapaService.GetStagesRelatedToTypeProcess(processoDTO.IdTipoProcesso);
+            foreach (var etapa in etapas)
+            {
+                dynamic etapaObj = GenerateStage(etapa);
+                etapaObj.documentosEtapa = new List<dynamic>();
+
+                // Obtenha os documentos da etapa
+                var documentosEtapa = await _tipoDocumentoEtapaService.GetTypeDocumentStagesRelatedToStage(etapa.Id);
+                foreach (var documentoEtapa in documentosEtapa)
                 {
-                    documentoEtapa.tipoDocumento = await _tipoDocumentoService.GetById(documentoEtapa.IdTipoDocumento);
-                    documentoEtapa.documentoProcesso = documentos.FirstOrDefault(dp => dp.IdTipoDocumentoEtapa == documentoEtapa.Id);
+                    var docEtapa = GenerateTypeDocumentStage(documentoEtapa);
+                    docEtapa.tipoDocumento = GenerateTypeDocument(await _tipoDocumentoService.GetById(documentoEtapa.IdTipoDocumento));
+
+                    // Associa o documento do processo, se existir
+                    var documentoProcesso = documentos.FirstOrDefault(dp => dp.IdTipoDocumentoEtapa == documentoEtapa.Id);
+                    docEtapa.documentoProcesso = documentoProcesso != null ? GenerateDocumentProcess(documentoProcesso) : null;
+
+                    etapaObj.documentosEtapa.Add(docEtapa);
                 }
 
-                var documentosEtapas = ((IEnumerable<dynamic>)etapa.documentosEtapas).ToList();
+                // Calcula o progresso da etapa
+                var documentosEtapas = ((IEnumerable<dynamic>)etapaObj.documentosEtapa).ToList();
+                etapaObj.progresso = new ExpandoObject();
+                etapaObj.progresso.total = documentosEtapas.Count;
+                etapaObj.progresso.emEspera = documentosEtapas.Count(de => de.documentoProcesso == null || de.documentoProcesso?.Status == StatusDocumentProcess.OnHold);
+                etapaObj.progresso.emProgresso = documentosEtapas.Count(de => de.documentoProcesso != null &&
+                                    (de.documentoProcesso.Status == StatusDocumentProcess.Pending ||
+                                     de.documentoProcesso.Status == StatusDocumentProcess.NotAttached ||
+                                     de.documentoProcesso.Status == StatusDocumentProcess.NotIntact ||
+                                     de.documentoProcesso.Status == StatusDocumentProcess.Attached));
+                etapaObj.progresso.emAnalise = documentosEtapas.Count(de => de.documentoProcesso != null && de.documentoProcesso.Status == StatusDocumentProcess.InAnalysis);
+                etapaObj.progresso.aprovado = documentosEtapas.Count(de => de.documentoProcesso != null && de.documentoProcesso.Status == StatusDocumentProcess.Approved);
+                etapaObj.progresso.reprovado = documentosEtapas.Count(de => de.documentoProcesso != null && de.documentoProcesso.Status == StatusDocumentProcess.Disapproved);
 
-                etapa.progresso = new
-                {
-                    total = documentosEtapas.Count(de => de.documentoProcesso == null && de.documentoProcesso != null),
-                    emEspera = documentosEtapas.Count(de => de.documentoProcesso == null &&
-                                    de.documentoProcesso?.Status == StatusDocumentProcess.OnHold),
-                    emProgresso = documentosEtapas.Count(de => de.documentoProcesso != null &&
-                                   (de.documentoProcesso.Status == StatusDocumentProcess.Pending ||
-                                    de.documentoProcesso.Status == StatusDocumentProcess.NotAttached ||
-                                    de.documentoProcesso.Status == StatusDocumentProcess.NotIntact ||
-                                    de.documentoProcesso.Status == StatusDocumentProcess.Attached)),
-                    emAnalise = documentosEtapas.Count(de => de.documentoProcesso?.Status == StatusDocumentProcess.InAnalysis),
-                    aprovado = documentosEtapas.Count(de => de.documentoProcesso?.Status == StatusDocumentProcess.Approved),
-                    reprovado = documentosEtapas.Count(de => de.documentoProcesso?.Status == StatusDocumentProcess.Disapproved)
-                };
+                // Adiciona o progresso da etapa ao progresso total do processo
+                processo.progresso.total += etapaObj.progresso.total;
+                processo.progresso.emEspera += etapaObj.progresso.emEspera;
+                processo.progresso.emProgresso += etapaObj.progresso.emProgresso;
+                processo.progresso.emAnalise += etapaObj.progresso.emAnalise;
+                processo.progresso.aprovado += etapaObj.progresso.aprovado;
+                processo.progresso.reprovado += etapaObj.progresso.reprovado;
 
-                processo.progresso.total += etapa.progresso.total;
-                processo.progresso.emEspera += etapa.progresso.emEspera;
-                processo.progresso.emProgresso += etapa.progresso.emProgresso;
-                processo.progresso.emAnalise += etapa.progresso.emAnalise;
-                processo.progresso.aprovado += etapa.progresso.aprovado;
-                processo.progresso.reprovado += etapa.progresso.reprovado;
+                processo.tipoProcesso.etapas.Add(etapaObj);
             }
 
             return processo;
+        }
+
+        private static dynamic GenerateProcess(ProcessoDTO processo)
+        {
+            dynamic data = new ExpandoObject();
+            data.id = processo.Id;
+            data.identificacaoProcesso = processo.IdentificacaoProcesso;
+            data.descricaoProcesso = processo.DescricaoProcesso;
+            data.situacaoProcesso = processo.SituacaoProcesso;
+            data.dataAprovacao = processo.DataAprovacao;
+            data.status = processo.Status;
+
+            data.idImovel = processo.IdImovel;
+            data.idTipoProcesso = processo.IdTipoProcesso;
+            data.idEngenheiro = processo.IdEngenheiro;
+            data.idFiscal = processo.IdFiscal;
+            data.idResponsavel = processo.IdResponsavel;
+            data.idAprovador = processo.IdAprovador;
+
+            data.progresso = new ExpandoObject();
+            data.progresso.total = 0;
+            data.progresso.emEspera = 0;
+            data.progresso.emProgresso = 0;
+            data.progresso.emAnalise = 0;
+            data.progresso.aprovado = 0;
+            data.progresso.reprovado = 0;
+
+            return data;
+        }
+
+        private static dynamic GenerateTypeProcess(TipoProcessoDTO tipoProcesso)
+        {
+            dynamic data = new ExpandoObject();
+            data.id = tipoProcesso.Id;
+            data.nomeTipoProcesso = tipoProcesso.NomeTipoProcesso;
+            data.descricaoTipoProcesso = tipoProcesso.DescricaoTipoProcesso;
+            data.status = tipoProcesso.Status;
+
+            return data;
+        }
+
+        private static dynamic GenerateStage(EtapaDTO etapa)
+        {
+            dynamic data = new ExpandoObject();
+            data.id = etapa.Id;
+            data.nomeEtapa = etapa.NomeEtapa;
+            data.descricaoEtapa = etapa.DescricaoEtapa;
+            data.posicao = etapa.Posicao;
+            data.status = etapa.Status;
+
+            data.idTipoProcesso = etapa.IdTipoProcesso;
+
+            return data;
+        }
+
+        private static dynamic GenerateTypeDocumentStage(TipoDocumentoEtapaDTO tipoDocumentoEtapa)
+        {
+            dynamic data = new ExpandoObject();
+            data.id = tipoDocumentoEtapa.Id;
+            data.posicao = tipoDocumentoEtapa.Posicao;
+            data.status = tipoDocumentoEtapa.Status;
+
+            data.idEtapa = tipoDocumentoEtapa.IdEtapa;
+            data.idTipoDocumento = tipoDocumentoEtapa.IdTipoDocumento;
+
+            return data;
+        }
+
+        private static dynamic GenerateTypeDocument(TipoDocumentoDTO tipoDocumento)
+        {
+            dynamic data = new ExpandoObject();
+            data.id = tipoDocumento.Id;
+            data.nomeTipoDocumento = tipoDocumento.NomeTipoDocumento;
+            data.descricaoTipoDocumento = tipoDocumento.DescricaoTipoDocumento;
+            data.status = tipoDocumento.Status;
+
+            return data;
+        }
+
+        private static dynamic GenerateDocumentProcess(DocumentoProcessoDTO documentoProcesso)
+        {
+            dynamic data = new ExpandoObject();
+            data.id = documentoProcesso.Id;
+            data.identificacaoDocumento = documentoProcesso.IdentificacaoDocumento;
+            data.descricaoDocumento = documentoProcesso.DescricaoDocumento;
+            data.observacaoDocumento = documentoProcesso.ObservacaoDocumento;
+            data.status = documentoProcesso.Status;
+            data.arquivo = new
+            {
+                hash = documentoProcesso.Arquivo.Hash,
+                bytes = documentoProcesso.Arquivo.Bytes,
+                fileName = documentoProcesso.Arquivo.FileName,
+                mimeType = documentoProcesso.Arquivo.MimeType
+            };
+
+            data.idProcesso = documentoProcesso.IdProcesso;
+            data.idTipoDocumentoEtapa = documentoProcesso.IdTipoDocumentoEtapa;
+            data.idResponsavel = documentoProcesso.IdResponsavel;
+            data.idResponsavel = documentoProcesso.IdResponsavel;
+
+            return data;
         }
     }
 }

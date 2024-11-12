@@ -68,6 +68,36 @@ namespace SGED.Controllers
             }
         }
 
+        [HttpGet("Filter/{filters}")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult<IEnumerable<dynamic>>> Filter(object filters)
+        {
+            try
+            {
+                var processosDTO = new List<dynamic>();
+
+                _response.SetSuccess();
+                _response.Message = processosDTO.Any() ?
+                    "Lista do(s) Processo(s) obtida com sucesso." :
+                    "Nenhum Processo encontrado.";
+
+                for (int i = 0; i < processosDTO.Count; i++)
+                {
+                    processosDTO[i] = await GetAllData(processosDTO[i]);
+                }
+
+                _response.Data = processosDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista do(s) Processo(s)!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
         [HttpGet("GetByStatus/{status:int}")]
         [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<dynamic>>> GetByStatus(int status)
@@ -104,11 +134,11 @@ namespace SGED.Controllers
                     processoClone.progresso = new
                     {
                         total = documentos.Count(),
-                        emEspera = documentos.Count(documento => documento.Status == StatusDocumentProcess.OnHold ||
-                                                                 documento.Status == StatusDocumentProcess.Pending ||
-                                                                 documento.Status == StatusDocumentProcess.NotAttached ||
-                                                                 documento.Status == StatusDocumentProcess.NotIntact),
-                        emProgresso = documentos.Count(documento => documento.Status == StatusDocumentProcess.Attached),
+                        emEspera = documentos.Count(documento => documento.Status == StatusDocumentProcess.OnHold),
+                        emProgresso = documentos.Count(documento => documento.Status == StatusDocumentProcess.Pending ||
+                                                                    documento.Status == StatusDocumentProcess.NotAttached ||
+                                                                    documento.Status == StatusDocumentProcess.NotIntact ||
+                                                                    documento.Status == StatusDocumentProcess.Attached),
                         emAnalise = documentos.Count(documento => documento.Status == StatusDocumentProcess.InAnalysis),
                         aprovado = documentos.Count(documento => documento.Status == StatusDocumentProcess.Approved),
                         reprovado = documentos.Count(documento => documento.Status == StatusDocumentProcess.Disapproved),
@@ -143,6 +173,8 @@ namespace SGED.Controllers
                     _response.Data = processoDTO;
                     return NotFound(_response);
                 };
+
+                processoDTO = await GetAllData(processoDTO);
 
                 _response.SetSuccess();
                 _response.Message = "Processo " + processoDTO.IdentificacaoProcesso + " obtido com sucesso.";
@@ -216,7 +248,7 @@ namespace SGED.Controllers
 
                 await _processoService.Create(processoDTO);
 
-                await PercorrerDocumentosEtapa(
+                await BrowseStageDocuments(
                     tipoProcessoDTO.Id, // ID da TipoProcesso (int)
                     processoDTO.Id, // ID do Processo (Guid)
                     processoDTO.IdResponsavel.HasValue ? processoDTO.IdResponsavel.Value : (int?)null, // ID do Responsável (int?)
@@ -467,7 +499,7 @@ namespace SGED.Controllers
             }
         }
 
-        private async Task PercorrerDocumentosEtapa(int idTipoProcesso, Guid idProcesso, int? idResponsavel, ICollection<DocumentoProcessoDTO> documentosProcesso)
+        private async Task BrowseStageDocuments(int idTipoProcesso, Guid idProcesso, int? idResponsavel, ICollection<DocumentoProcessoDTO> documentosProcesso)
         {
             var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(idTipoProcesso);
 
@@ -527,6 +559,73 @@ namespace SGED.Controllers
                     await _documentoProcessoService.Create(documentoProcesso);
                 }
             }
+        }
+
+        private async Task<dynamic> GetAllData(ProcessoDTO processoDTO)
+        {
+            dynamic processo = new ExpandoObject();
+            processo.id = processoDTO.Id;
+            processo.identificacaoProcesso = processoDTO.IdentificacaoProcesso;
+            processo.descricaoProcesso = processoDTO.DescricaoProcesso;
+            processo.situacaoProcesso = processoDTO.SituacaoProcesso;
+            processo.dataAprovacao = processoDTO.DataAprovacao;
+            processo.status = processoDTO.Status;
+            processo.idImovel = processoDTO.IdImovel;
+            processo.idTipoProcesso = processoDTO.IdTipoProcesso;
+            processo.idEngenheiro = processoDTO.IdEngenheiro;
+            processo.idFiscal = processoDTO.IdFiscal;
+            processo.idResponsavel = processoDTO.IdResponsavel;
+            processo.idAprovador = processoDTO.IdAprovador;
+            processo.tipoProcesso = await _tipoProcessoService.GetById(processoDTO.IdTipoProcesso);
+            processo.tipoProcesso.etapas = await _etapaService.GetStagesRelatedToTypeProcess(processoDTO.IdTipoProcesso);
+            processo.progresso = new
+            {
+                total = 0,
+                emEspera = 0,
+                emProgresso = 0,
+                emAnalise = 0,
+                aprovado = 0,
+                reprovado = 0
+            };
+
+            var documentos = await _documentoProcessoService.GetByProcess(processoDTO.Id);
+
+            foreach (var etapa in processo.tipoProcesso.etapas)
+            {
+                etapa.documentosEtapas = await _tipoDocumentoEtapaService.GetTypeDocumentStagesRelatedToStage(etapa.Id);
+
+                foreach (var documentoEtapa in etapa.documentosEtapas)
+                {
+                    documentoEtapa.tipoDocumento = await _tipoDocumentoService.GetById(documentoEtapa.IdTipoDocumento);
+                    documentoEtapa.documentoProcesso = documentos.FirstOrDefault(dp => dp.IdTipoDocumentoEtapa == documentoEtapa.Id);
+                }
+
+                var documentosEtapas = ((IEnumerable<dynamic>)etapa.documentosEtapas).ToList();
+
+                etapa.progresso = new
+                {
+                    total = documentosEtapas.Count(de => de.documentoProcesso == null && de.documentoProcesso != null),
+                    emEspera = documentosEtapas.Count(de => de.documentoProcesso == null &&
+                                    de.documentoProcesso?.Status == StatusDocumentProcess.OnHold),
+                    emProgresso = documentosEtapas.Count(de => de.documentoProcesso != null &&
+                                   (de.documentoProcesso.Status == StatusDocumentProcess.Pending ||
+                                    de.documentoProcesso.Status == StatusDocumentProcess.NotAttached ||
+                                    de.documentoProcesso.Status == StatusDocumentProcess.NotIntact ||
+                                    de.documentoProcesso.Status == StatusDocumentProcess.Attached)),
+                    emAnalise = documentosEtapas.Count(de => de.documentoProcesso?.Status == StatusDocumentProcess.InAnalysis),
+                    aprovado = documentosEtapas.Count(de => de.documentoProcesso?.Status == StatusDocumentProcess.Approved),
+                    reprovado = documentosEtapas.Count(de => de.documentoProcesso?.Status == StatusDocumentProcess.Disapproved)
+                };
+
+                processo.progresso.total += etapa.progresso.total;
+                processo.progresso.emEspera += etapa.progresso.emEspera;
+                processo.progresso.emProgresso += etapa.progresso.emProgresso;
+                processo.progresso.emAnalise += etapa.progresso.emAnalise;
+                processo.progresso.aprovado += etapa.progresso.aprovado;
+                processo.progresso.reprovado += etapa.progresso.reprovado;
+            }
+
+            return processo;
         }
     }
 }

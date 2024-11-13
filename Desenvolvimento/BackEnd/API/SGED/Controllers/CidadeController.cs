@@ -4,6 +4,7 @@ using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -24,6 +25,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<CidadeDTO>>> Get()
         {
             try
@@ -46,6 +48,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetCidade")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<CidadeDTO>> Get(int id)
         {
             try
@@ -74,6 +77,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] CidadeDTO cidadeDTO)
         {
             if (cidadeDTO is null)
@@ -121,6 +125,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] CidadeDTO cidadeDTO)
         {
             if (cidadeDTO is null)
@@ -176,6 +181,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<CidadeDTO>> Delete(int id)
         {
             try

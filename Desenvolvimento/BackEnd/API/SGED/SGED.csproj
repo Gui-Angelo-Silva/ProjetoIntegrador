@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="API\**" />
+    <Compile Remove="wwwroot\**" />
     <Content Remove="API\**" />
+    <Content Remove="wwwroot\**" />
     <EmbeddedResource Remove="API\**" />
+    <EmbeddedResource Remove="wwwroot\**" />
     <None Remove="API\**" />
+    <None Remove="wwwroot\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,10 +53,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

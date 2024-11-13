@@ -2,13 +2,12 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
-import LinkTitle from "../../../components/Title/LinkTitle";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 
 // Component imports
 import ButtonTable from "../../../components/Table/ButtonTable";
 import CustomTable from "../../../components/Table/Table";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
 
@@ -20,8 +19,14 @@ import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
 import TypeUserClass from '../../../object/class/typeuser';
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function TypeUser() {
+
+    const pages = [
+        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Tipo de Usuário', link: '', isEnabled: false }
+    ];
 
     const { componentMounted } = useMontage();
 
@@ -133,8 +138,6 @@ export default function TypeUser() {
             GetTypeUser();
             setUpdateData(false);
         }
-
-        list.searchBy ? null : list.setSearchBy('nomeTipoUsuario');
     }, [updateData]);
 
     const dataForTable = list.currentList.map((tipousuario) => {
@@ -166,9 +169,19 @@ export default function TypeUser() {
                     />
                 ))}
             </div>}
-            <LayoutPage>
-                <LinkTitle pageName="Tipo Usuário" />
-                <div className="flex items-center">
+            <>
+                <Breadcrumb pages={pages} />
+                <MultiSearchBar 
+                    maxSearchBars={2}
+                    searchOptions={[
+                        { label: 'Tipo de Usuário', value: 'nomeTipoUsuario'},
+                        { label: 'Nível de Acesso', value: 'nivelAcesso'},
+                        { label: 'Descrição', value: 'descricaoTipoUsuario'}
+                    ]}
+                    setSearchDictionary={list.setSearchDictionary}
+                    button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
+                />
+                {/* <div className="flex items-center">
                     <div className="flex justify-center items-center mx-auto w-[450px]">
                         <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
                             <div className="pl-2">
@@ -191,7 +204,7 @@ export default function TypeUser() {
                     <div className="flex items-center">
                         <RegistrationButton action={() => openCloseModalInsert(true)} />
                     </div>
-                </div>
+                </div> */}
                 <CustomTable
                     totalColumns={4}
                     headers={["Tipo Usuário", "Nível de Acesso", "Descrição", "Ações"]}
@@ -288,7 +301,7 @@ export default function TypeUser() {
                         </div>
                     </ModalBody>
                 </Modal>
-            </LayoutPage>
+            </>
         </>
     );
 }

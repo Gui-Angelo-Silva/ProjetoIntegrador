@@ -27,40 +27,48 @@ import Installation from '../../pages/manipulation/installation';
 import Setting from '../../pages/account/setting';
 import Process from '../../pages/manipulation/process';
 import AddProcess from '../../pages/manipulation/process/addprocess';
+import LayoutPage from '../../components/Layout/LayoutPage';
+import NextRealstate from '../../pages/[nextfeatures]/nextRealstate';
 
 export default function RouteA() {
     return (
         <Routes>
-            <Route path="/principal" element={<Home />}></Route>
+            <Route element={<LayoutPage />}>
+                <Route path="/principal" element={<Home />}></Route>
 
-            <Route path="/cadastros" element={<Registration />}></Route>
-            <Route path="/cadastros/estado" element={<State />}></Route>
-            <Route path="/cadastros/cidade" element={<City />}></Route>
-            <Route path="/cadastros/tipo-usuario" element={<TypeUser />}></Route>
-            <Route path="/cadastros/usuario" element={<User />}></Route>
-            <Route path="/cadastros/municipe" element={<Citizen />}></Route>
-            <Route path="/cadastros/engenheiro" element={<Engineer />}></Route>
-            <Route path="/cadastros/tipo-logradouro" element={<TypePublicPlace />}></Route>
-            <Route path="/cadastros/bairro" element={<Neighborhood />}></Route>
-            <Route path="/cadastros/logradouro" element={<PublicPlace />}></Route>
-            <Route path="/cadastros/tipo-documento" element={<TypeDocument />}></Route>
-            <Route path="/cadastros/tipo-processo" element={<TypeProcess />}></Route>
-            <Route path="/cadastros/etapa" element={<Stage />}></Route>
-            <Route path="/cadastros/imovel" element={<RealState />}></Route>
-            <Route path="/cadastros/etapa-tipo-documento" element={<StageDocumentType />}></Route>
-            <Route path="/cadastros/fiscal" element={<Supervisor />}></Route>
-            <Route path="/cadastros/uso" element={<Usage />}></Route>
-            <Route path="/cadastros/ocupacao-atual" element={<CurrentOccupation />}></Route>
-            <Route path="/cadastros/topografia" element={<Topography />}></Route>
-            <Route path="/cadastros/tipo-infraestrutura" element={<TypeInfrastructure />}></Route>
-            <Route path="/cadastros/infraestrutura" element={<Infrastructure />}></Route>
-            <Route path="/cadastros/instalacao" element={<Installation />}></Route>
-            <Route path="/configuracao" element={<Setting />}></Route>
-            <Route path="/documentos/processo" element={<Process />}></Route>
-            <Route path="/documentos/processo/cadastrar-processo" element={<AddProcess />}></Route>
+                <Route path="/cadastros" element={<Registration />}></Route>
+                <Route path="/cadastros/estado" element={<State />}></Route>
+                <Route path="/cadastros/cidade" element={<City />}></Route>
+                <Route path="/cadastros/tipo-usuario" element={<TypeUser />}></Route>
+                <Route path="/cadastros/usuario" element={<User />}></Route>
+                <Route path="/cadastros/municipe" element={<Citizen />}></Route>
+                <Route path="/cadastros/engenheiro" element={<Engineer />}></Route>
+                <Route path="/cadastros/tipo-logradouro" element={<TypePublicPlace />}></Route>
+                <Route path="/cadastros/bairro" element={<Neighborhood />}></Route>
+                <Route path="/cadastros/logradouro" element={<PublicPlace />}></Route>
+                <Route path="/cadastros/tipo-documento" element={<TypeDocument />}></Route>
+                <Route path="/cadastros/tipo-processo" element={<TypeProcess />}></Route>
+                <Route path="/cadastros/etapa" element={<Stage />}></Route>
+                <Route path="/cadastros/imovel" element={<RealState />}></Route>
+                <Route path="/cadastros/etapa-tipo-documento" element={<StageDocumentType />}></Route>
+                <Route path="/cadastros/fiscal" element={<Supervisor />}></Route>
+                <Route path="/cadastros/uso" element={<Usage />}></Route>
+                <Route path="/cadastros/ocupacao-atual" element={<CurrentOccupation />}></Route>
+                <Route path="/cadastros/topografia" element={<Topography />}></Route>
+                <Route path="/cadastros/tipo-infraestrutura" element={<TypeInfrastructure />}></Route>
+                <Route path="/cadastros/infraestrutura" element={<Infrastructure />}></Route>
+                <Route path="/cadastros/instalacao" element={<Installation />}></Route>
 
-            <Route path="/documentos" element={<Document />}></Route>
-            <Route path="/teste" element={<Test />}></Route>
+                <Route path="/documentos" element={<Document />}></Route>
+                <Route path="/documentos/processo" element={<Process />}></Route>
+                <Route path="/documentos/processo/cadastrar-processo" element={<AddProcess />}></Route>
+                
+                <Route path="/prefeatures/nextrealstate" element={<NextRealstate />}></Route>
+
+                <Route path="/configuracao" element={<Setting />}></Route>
+                
+                <Route path="/teste" element={<Test />}></Route>
+            </Route>
         </Routes>
     );
 }

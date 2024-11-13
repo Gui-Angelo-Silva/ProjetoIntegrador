@@ -15,7 +15,6 @@ import ConnectionService from '../../../object/service/connection';
 import UserClass from '../../../object/class/user';
 import LoginClass from '../../../object/class/login';
 import ControlModule from '../../../object/modules/control';
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import Title from "../../../components/Title/Title";
 
 export default function User() {
@@ -107,7 +106,7 @@ export default function User() {
   };
 
   return (
-    <LayoutPage>
+    <>
       <Title title={inEdit ? "Editar Dados" : "Perfil"} />
       <div className="flex">
         <div className="flex relative justify-center lg:flex col-span-1">
@@ -372,6 +371,6 @@ export default function User() {
           </div>
         </ModalBody>
       </Modal>
-    </LayoutPage>
+    </>
   );
 }

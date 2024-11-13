@@ -8,12 +8,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FilePlus, Pen, Trash, Warning } from "@phosphor-icons/react";
 
 // Component imports
-import LinkTitle from "../../../components/Title/LinkTitle";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 import SearchBar from "../../../components/Search/SearchBar";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
 import CancelButton from "../../../components/Button/CancelButton";
 import CustomTable from "../../../components/Table/Table";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
@@ -25,12 +24,18 @@ import ListModule from '../../../object/modules/list';
 import TopographyClass from '../../../object/class/topography';
 import ActionManager from '../../../object/modules/action';
 import CompareModule from '../../../object/modules/compare';
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function Topography() {
 
+    const pages = [
+        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Topografia', link: '', isEnabled: false }
+    ];
+
     // Marking the assembled component
     const montage = useMontage();
-    
+
     useEffect(() => {
         montage.componentMounted();
     }, []);
@@ -63,8 +68,6 @@ export default function Topography() {
             openCloseModalEdit(false);
             openCloseModalDelete(false);
         }
-
-        list.searchBy ? null : list.setSearchBy('nomeTopografia');
     }, [updateData]);
 
     /*useEffect(() => {
@@ -243,15 +246,14 @@ export default function Topography() {
                     />
                 ))}
             </div>}
-            <LayoutPage>
-                <LinkTitle pageName="Topografia" />
-                <SearchBar
-                    placeholder="Pesquisar Topografia"
-                    onSearchChange={(value) => list.handleSearch(value)}
-                    onSearchByChange={(value) => list.handleSearchBy(value)}
-                    options={[
+            <>
+                <Breadcrumb pages={pages} />
+                <MultiSearchBar
+                    maxSearchBars={2}
+                    searchOptions={[
                         { label: 'Nome', value: 'nomeTopografia' }
                     ]}
+                    setSearchDictionary={list.setSearchDictionary}
                     button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
                 />
                 <CustomTable
@@ -378,7 +380,7 @@ export default function Topography() {
                     </ModalFooter>
                 </Modal>
 
-            </LayoutPage>
+            </>
         </>
     );
 }

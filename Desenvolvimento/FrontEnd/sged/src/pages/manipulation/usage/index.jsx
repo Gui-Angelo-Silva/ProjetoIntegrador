@@ -8,12 +8,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FilePlus, Pen, Trash, Warning } from "@phosphor-icons/react";
 
 // Component imports
-import LinkTitle from "../../../components/Title/LinkTitle";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 import SearchBar from "../../../components/Search/SearchBar";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
 import CancelButton from "../../../components/Button/CancelButton";
 import CustomTable from "../../../components/Table/Table";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
@@ -25,12 +24,18 @@ import ListModule from '../../../object/modules/list';
 import UsageClass from '../../../object/class/usage';
 import ActionManager from '../../../object/modules/action';
 import CompareModule from '../../../object/modules/compare';
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function Usage() {
 
+    const pages = [
+        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Uso', link: '', isEnabled: false }
+    ];
+
     // Marking the assembled component
     const montage = useMontage();
-    
+
     useEffect(() => {
         montage.componentMounted();
     }, []);
@@ -63,8 +68,6 @@ export default function Usage() {
             openCloseModalEdit(false);
             openCloseModalDelete(false);
         }
-
-        list.searchBy ? null : list.setSearchBy('nomeUso');
     }, [updateData]);
 
     /*useEffect(() => {
@@ -244,16 +247,15 @@ export default function Usage() {
                     />
                 ))}
             </div>}
-            <LayoutPage>
-                <LinkTitle pageName="Uso" />
-                <SearchBar
-                    placeholder="Pesquisar Uso"
-                    onSearchChange={(value) => list.handleSearch(value)}
-                    onSearchByChange={(value) => list.handleSearchBy(value)}
-                    options={[
+            <>
+                <Breadcrumb pages={pages} />
+                <MultiSearchBar
+                    maxSearchBars={2}
+                    searchOptions={[
                         { label: 'Nome', value: 'nomeUso' },
                         { label: 'Descrição', value: 'descricaoUso' },
                     ]}
+                    setSearchDictionary={list.setSearchDictionary}
                     button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
                 />
                 <CustomTable
@@ -316,7 +318,7 @@ export default function Usage() {
                             <br />
                             <label className="text-[#444444]">Descrição: <span className="text-red-600">*</span></label>
                             <br />
-                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation}  value={usage.usageDescription} onChange={(e) => usage.setUsageDescription(e.target.value)} />
+                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation} value={usage.usageDescription} onChange={(e) => usage.setUsageDescription(e.target.value)} />
                             <br />
                         </div>
                     </ModalBody>
@@ -388,7 +390,7 @@ export default function Usage() {
                     </ModalFooter>
                 </Modal>
 
-            </LayoutPage>
+            </>
         </>
     );
 }

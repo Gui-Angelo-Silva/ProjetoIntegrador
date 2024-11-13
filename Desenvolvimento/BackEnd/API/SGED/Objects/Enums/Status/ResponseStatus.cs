@@ -7,6 +7,7 @@
         NotFound = 3,
         Conflict = 4,
         Unauthorized = 5,
-        Error = 6
+        Forbidden = 6,
+        Error = 7
     }
 }

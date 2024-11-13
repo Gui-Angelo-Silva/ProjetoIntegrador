@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
 using SGED.Services.Entities;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -34,6 +35,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<ProcessoDTO>>> Get()
         {
             try
@@ -56,6 +58,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetProcesso")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<ProcessoDTO>> Get(Guid id)
         {
             try
@@ -84,6 +87,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] ProcessoDTO processoDTO)
         {
             if (processoDTO is null)
@@ -113,6 +117,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost("PostAllDatas")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> PostAllDatas([FromBody] ProcessoDTO processoDTO)
         {
             if (processoDTO is null)
@@ -161,6 +166,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] ProcessoDTO processoDTO)
         {
             if (processoDTO is null)
@@ -199,6 +205,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<ProcessoDTO>> Delete(Guid id)
         {
             try
@@ -228,16 +235,6 @@ namespace SGED.Controllers
             }
         }
 
-        private async Task PercorrerEtapas(int idTipoProcesso, Guid idProcesso, int idResponsavel, ICollection<DocumentoProcessoDTO> documentosProcesso)
-        {
-            var etapasDTO = await _etapaService.GetStagesRelatedToTypeProcess(idTipoProcesso);
-
-            foreach (var etapa in etapasDTO)
-            {
-                await PercorrerDocumentosEtapa(etapa.Id, idProcesso, idResponsavel, documentosProcesso);
-            }
-        }
-
         private async Task PercorrerDocumentosEtapa(int idEtapa, Guid idProcesso, int? idResponsavel, ICollection<DocumentoProcessoDTO> documentosProcesso)
         {
             var documentosEtapaDTO = await _tipoDocumentoEtapaService.GetTypeDocumentStagesRelatedToStage(idEtapa);
@@ -248,9 +245,44 @@ namespace SGED.Controllers
 
                 if (documentoProcesso != null) // Se o documento foi declarado
                 {
-                    documentoProcesso.MarkAsAttached();
                     documentoProcesso.IdProcesso = idProcesso;
                     documentoProcesso.IdResponsavel = idResponsavel;
+
+                    // Verifica se ArquivoDocumento não está vazio e se o tipo é PDF
+                    if (documentoProcesso.ArquivoDocumento != null && documentoProcesso.ArquivoDocumento.Length > 0)
+                    {
+                        // Verifica se é PDF
+                        bool isPDF = documentoProcesso.IsPDF();
+
+                        if (isPDF) // Se for PDF
+                        {
+                            // Gera o hash do arquivo para comparação
+                            if (documentoProcesso.GenerateHashSHA256() == documentoProcesso.HashDocumento)
+                            {
+                                documentoProcesso.MarkAsAttached(); // O arquivo está íntegro
+                            }
+                            else
+                            {
+
+                                documentoProcesso.MarkAsNotIntact(); // O arquivo não está íntegro
+                                documentoProcesso.ArquivoDocumento = new byte[0]; // Define o arquivo como vazio
+                                documentoProcesso.HashDocumento = "";
+                            }
+                        }
+                        else
+                        {
+                            // Se não for PDF, marca como não anexado e define o arquivo como vazio
+                            documentoProcesso.MarkAsNotAttached();
+                            documentoProcesso.HashDocumento = "";
+                            documentoProcesso.ArquivoDocumento = new byte[0];
+                        }
+                    }
+                    else
+                    {
+                        // Se o ArquivoDocumento estiver vazio, marca como não anexado
+                        documentoProcesso.MarkAsNotAttached();
+                        documentoProcesso.HashDocumento = "";
+                    }
                 }
                 else // Se nenhum documento foi declarado
                 {
@@ -259,6 +291,7 @@ namespace SGED.Controllers
                     documentoProcesso.IdentificacaoDocumento = "NÃO ANEXADO";
                     documentoProcesso.DescricaoDocumento = "";
                     documentoProcesso.ObservacaoDocumento = "";
+                    documentoProcesso.HashDocumento = "";
                     documentoProcesso.IdProcesso = idProcesso;
                     documentoProcesso.IdTipoDocumentoEtapa = documentoEtapa.Id;
 

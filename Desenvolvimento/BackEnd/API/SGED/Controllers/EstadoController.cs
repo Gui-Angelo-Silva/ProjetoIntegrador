@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
 using System.Dynamic;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -23,6 +24,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<EstadoDTO>>> GetAll()
         {
             try
@@ -45,6 +47,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetEstado")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<EstadoDTO>> GetById(int id)
         {
             try
@@ -73,6 +76,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] EstadoDTO estadoDTO)
         {
             if (estadoDTO is null)
@@ -117,6 +121,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] EstadoDTO estadoDTO)
         {
             if (estadoDTO is null)
@@ -169,6 +174,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<EstadoDTO>> Delete(int id)
         {
             try

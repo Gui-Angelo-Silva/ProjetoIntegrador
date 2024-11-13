@@ -4,6 +4,7 @@ using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -25,6 +26,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<InfraestruturaDTO>>> Get()
         {
             try
@@ -47,6 +49,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetInfraestrutura")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<InfraestruturaDTO>> Get(int id)
         {
             try
@@ -75,6 +78,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] InfraestruturaDTO infraestruturaDTO)
         {
             if (infraestruturaDTO is null)
@@ -122,6 +126,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] InfraestruturaDTO infraestruturaDTO)
         {
             if (infraestruturaDTO is null)
@@ -177,6 +182,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<InfraestruturaDTO>> Delete(int id)
         {
             try

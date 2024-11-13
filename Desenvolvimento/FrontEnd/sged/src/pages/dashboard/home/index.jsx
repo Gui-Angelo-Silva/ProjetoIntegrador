@@ -1,28 +1,66 @@
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { FaTableCellsLarge, FaFile } from "react-icons/fa6";
 import CardDashboard from "../../../components/Card/CardDashboard";
-import Title from "../../../components/Title/Title";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 import Subtitle from "../../../components/Title/Subtitle";
 import TableDashboard from "../../../components/TableDasboard/TableDashboard";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import { useMontage } from '../../../object/modules/montage';
-
-const data = ["Guilherme", "Gabriel", "Neto", "Lopes", "Victor", "Pedro"];
+import ModalDetails from "../../../components/Modal/ModalDetails";
+import { AnimatePresence } from "framer-motion";
 
 const Home = () => {
+  const data = ["Test1", "Test2", "Test3", "Test4", "Test5", "Test6"];
+  const pages = [{ name: 'Visão Geral', link: '', isEnabled: false }];
   const { componentMounted } = useMontage();
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
+  const [cardUpdates, setCardUpdates] = useState([
+    { title: "NOVOS", total: 4, lastTotal: 0, color: "#057BFF" },
+    { title: "EM ANDAMENTO", total: 1, lastTotal: 1, color: "#19A2B4" },
+    { title: "PENDENTE", total: 3, lastTotal: 1, color: "#FFBD07" },
+    { title: "ATRASADO", total: 0, lastTotal: 0, color: "#D93442" },
+    { title: "PRAZO HOJE", total: 0, lastTotal: 0, color: "#26A242" }
+  ]);
+
   useEffect(() => {
+    const savedCardUpdates = sessionStorage.getItem("cardUpdates");
+    if (savedCardUpdates) {
+      setCardUpdates(JSON.parse(savedCardUpdates));
+    }
     componentMounted();
   }, [componentMounted]);
 
-  const cardData = [
-    { title: "NOVAS", total: 0 },
-    { title: "EM ANDAMENTO", total: 0 },
-    { title: "PENDENTE", total: 0 },
-    { title: "ATRASADO", total: 0 },
-    { title: "PRAZO HOJE", total: 0 }
-  ];
+  useEffect(() => {
+    sessionStorage.setItem("cardUpdates", JSON.stringify(cardUpdates));
+  }, [cardUpdates]);
+
+  useEffect(() => {
+    setCardUpdates((prev) =>
+      prev.map((card) => ({
+        ...card,
+        updated: card.total > card.lastTotal,
+      }))
+    );
+  }, []);
+
+  const openModal = useCallback((card) => {
+    setSelectedCard(card);
+    setIsModalOpen(true);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    if (selectedCard) {
+      setCardUpdates((prev) =>
+        prev.map((card) =>
+          card.title === selectedCard.title
+            ? { ...card, lastTotal: card.total, updated: false }
+            : card
+        )
+      );
+    }
+    setIsModalOpen(false);
+  }, [selectedCard]);
 
   const tableData = [
     { title: "Últimos Andamentos", icon: <FaTableCellsLarge /> },
@@ -32,23 +70,43 @@ const Home = () => {
   ];
 
   return (
-    <LayoutPage>
-      <Title title="Visão Geral" />
+    <>
+      <Breadcrumb pages={pages} />
       <Subtitle subtitle="Solicitações Gerais" />
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 pt-4">
-        {cardData.map((card, index) => (
-          <CardDashboard key={index} title={card.title} total={card.total} />
+        {cardUpdates.map((card, index) => (
+          <CardDashboard
+            key={index}
+            title={card.title}
+            total={card.total}
+            lastTotal={card.lastTotal}
+            updated={card.updated}
+            onClick={() => openModal(card)}
+          />
         ))}
       </div>
-      {tableData.map((table, index) => (
-        <TableDashboard
-          key={index}
-          title={table.title}
-          data={data.slice(0, 4)}
-          icon={table.icon}
-        />
-      ))}
-    </LayoutPage>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 pt-6">
+        {tableData.map((table, index) => (
+          <TableDashboard
+            key={index}
+            title={table.title}
+            data={data.slice(0, 4)}
+            icon={table.icon}
+          />
+        ))}
+      </div>
+      <AnimatePresence>
+        {isModalOpen && selectedCard && (
+          <ModalDetails
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            title={selectedCard.title}
+            total={selectedCard.total}
+            color={selectedCard.color}
+          />
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 

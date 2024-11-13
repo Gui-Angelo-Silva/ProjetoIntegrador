@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import LayoutPage from '../../../components/Layout/LayoutPage';
 import Title from '../../../components/Title/Title';
 import Switch from '../../../components/Switch/Switch';
 import ConnectionService from '../../../object/service/connection';
@@ -108,7 +107,7 @@ const Setting = () => {
   }, {});
 
   return (
-    <LayoutPage>
+    <>
       <Title title="Configurações" />
       <div className="flex flex-col flex-grow mt-4 border-2 border-[#d8d8d8] rounded-lg pt-2 px-3 shadow-sm h-[800px]">
         <div className="bg-[#59C3D3]/25 px-3 py-[11px] rounded-lg">
@@ -134,7 +133,7 @@ const Setting = () => {
           <h2 className="text-lg text-[#636262]">Configuração ID 1 está {configId1Active ? 'ativa' : 'inativa'}</h2>
         </div> */}
       </div>
-    </LayoutPage>
+    </>
   );
 };
 

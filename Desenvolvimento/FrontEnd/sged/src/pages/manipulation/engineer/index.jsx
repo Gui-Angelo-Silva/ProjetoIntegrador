@@ -6,11 +6,10 @@ import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 // Component imports
-import LinkTitle from "../../../components/Title/LinkTitle";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import CustomTable from "../../../components/Table/Table";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
 
@@ -23,8 +22,14 @@ import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
 import EngineerClass from '../../../object/class/engineer';
 import SelectModule from '../../../object/modules/select';
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function Engineer() {
+
+    const pages = [
+        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Engenheiro', link: '', isEnabled: false }
+    ];
 
     const { componentMounted } = useMontage();
 
@@ -138,8 +143,6 @@ export default function Engineer() {
             GetEngineer();
             setUpdateData(false);
         }
-
-        if (!list.searchBy) list.setSearchBy('nomePessoa');
     }, [updateData]);
 
     const dataForTable = list.currentList.map((engenheiro) => {
@@ -180,9 +183,21 @@ export default function Engineer() {
                     />
                 ))}
             </div>}
-            <LayoutPage>
-                <LinkTitle pageName="Engenheiro" />
-                <div className="flex items-center">
+            <>
+                <Breadcrumb pages={pages} />
+                <MultiSearchBar
+                    maxSearchBars={2}
+                    searchOptions={[
+                        { label: 'Nome', value: 'nomePessoa' },
+                        { label: 'CREA', value: 'creaEngenheiro' },
+                        { label: 'Email', value: 'emailPessoa' },
+                        { label: 'CPF / CNPJ', value: 'cpfCnpjPessoa' },
+                        { label: 'RG / IE', value: 'rgIePessoa' },
+                    ]}
+                    setSearchDictionary={list.setSearchDictionary}
+                    button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
+                />
+                {/* <div className="flex items-center">
                     <div className="flex justify-center items-center mx-auto w-[450px]">
                         <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
                             <div className="pl-2">
@@ -211,7 +226,7 @@ export default function Engineer() {
                     <div className="flex items-center">
                         <RegistrationButton action={() => openCloseModalInsert(true)} />
                     </div>
-                </div>
+                </div> */}
 
                 <CustomTable
                     totalColumns={7}
@@ -430,7 +445,7 @@ export default function Engineer() {
                         </div>
                     </ModalBody>
                 </Modal>
-            </LayoutPage>
+            </>
         </>
     );
 }

@@ -4,11 +4,10 @@ import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 // Component imports
-import LinkTitle from "../../../components/Title/LinkTitle";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import CustomTable from "../../../components/Table/Table";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
 
@@ -21,6 +20,7 @@ import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
 import CitizenClass from '../../../object/class/citizen';
 import SelectModule from '../../../object/modules/select';
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function Citizen() {
 
@@ -41,6 +41,22 @@ export default function Citizen() {
     const [modalDelete, setModalDelete] = useState(false);
     const [updateData, setUpdateData] = useState(true);
     const [inOperation, setInOperation] = useState(false);
+
+    const pages = [
+        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Munícipe', link: '', isEnabled: false }
+    ];
+
+    useEffect(() => {
+        if (updateData) {
+            setUpdateData(false);
+            GetCitizen();
+
+            openCloseModalInsert(false);
+            openCloseModalEdit(false);
+            openCloseModalDelete(false);
+        }
+    }, [updateData]);
 
     const openCloseModalInsert = (boolean) => {
         setModalInsert(boolean);
@@ -107,6 +123,7 @@ export default function Citizen() {
 
         if (citizen.verifyData()) {
             await connection.endpoint("Municipe").put(citizen.getData());
+            console.log(citizen.getData())
             managerPopUp.addPopUp(connection.typeMethod, connection.messageRequest.type, connection.messageRequest.content);
 
             openCloseModalEdit(!connection.response.status);
@@ -127,15 +144,6 @@ export default function Citizen() {
 
         setInOperation(false);
     };
-
-    useEffect(() => {
-        if (updateData) {
-            GetCitizen();
-            setUpdateData(false);
-        }
-
-        if (!list.searchBy) list.setSearchBy('nomePessoa');
-    }, [updateData]);
 
     const dataForTable = list.currentList.map((municipe) => {
         return {
@@ -174,35 +182,20 @@ export default function Citizen() {
                     />
                 ))}
             </div>}
-            <LayoutPage>
-                <LinkTitle pageName="Munícipe" />
-                <div className="flex items-center">
-                    <div className="flex justify-center items-center mx-auto w-[450px]">
-                        <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
-                            <div className="pl-2">
-                                <Search />
-                            </div>
-                            <input type="text" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar usuário" required onChange={(e) => list.handleSearch(e.target.value)} />
-                            <select className="form-control w-28 text-gray-800 h-full cursor-pointer" onChange={(e) => list.handleSearchBy(e.target.value)}>
-                                <option key="nomePessoa" value="nomePessoa">
-                                    Nome
-                                </option>
-                                <option key="emailPessoa" value="emailPessoa">
-                                    E-mail
-                                </option>
-                                <option key="cpfCnpjPessoa" value="cpfCnpjPessoa">
-                                    CPF / CNPJ
-                                </option>
-                                <option key="rgIePessoa" value="rgIePessoa">
-                                    RG / IE
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="flex items-center">
-                        <RegistrationButton action={() => openCloseModalInsert(true)} />
-                    </div>
-                </div>
+            <>
+                <Breadcrumb pages={pages} />
+
+                <MultiSearchBar
+                    maxSearchBars={2}
+                    searchOptions={[
+                        { label: 'Nome', value: 'nomePessoa' },
+                        { label: 'Email', value: 'emailPessoa' },
+                        { label: 'CPF / CNPJ', value: 'cpfCnpjPessoa' },
+                        { label: 'RG / IE', value: 'rgIePessoa' },
+                    ]}
+                    setSearchDictionary={list.setSearchDictionary}
+                    button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
+                />
 
                 <CustomTable
                     totalColumns={6}
@@ -411,7 +404,7 @@ export default function Citizen() {
                         </div>
                     </ModalBody>
                 </Modal>
-            </LayoutPage>
+            </>
         </>
     );
 }

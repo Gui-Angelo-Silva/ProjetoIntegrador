@@ -7,12 +7,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FilePlus, Pen, Trash, Warning } from "@phosphor-icons/react";
 
 // Component imports
-import LinkTitle from "../../../components/Title/LinkTitle";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
 import CancelButton from "../../../components/Button/CancelButton";
 import CustomTable from "../../../components/Table/Table";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
@@ -24,8 +23,16 @@ import ListModule from '../../../object/modules/list';
 import StateClass from '../../../object/class/state';
 import ActionManager from '../../../object/modules/action';
 import CompareModule from '../../../object/modules/compare';
+import InputText from "../../../components/Input/InputText";
+import Label from "../../../components/Label/Label";
+import FormField from "../../../components/FormField/FormField";
 
 export default function State() {
+
+    const pages = [
+        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Estado', link: '', isEnabled: false }
+    ];
 
     // Marking the assembled component
     const montage = useMontage();
@@ -266,8 +273,8 @@ export default function State() {
                 ))}
             </div>}
 
-            <LayoutPage>
-                <LinkTitle pageName="Estado" />
+            <>
+                <Breadcrumb pages={pages} />
                 <MultiSearchBar
                     maxSearchBars={2}
                     searchOptions={[
@@ -294,26 +301,32 @@ export default function State() {
                         </div>
                     </ModalHeader>
                     <ModalBody>
-                        <div className="form-group">
-                            <label className="text-[#444444]">Nome: <span className="text-red-600">*</span></label>
-                            <br />
-                            <input type="text" className="form-control rounded-md border-[#BCBCBC]" disabled={inOperation} onBlur={() => state.verifyName()} onChange={(e) => state.setStateName(e.target.value)} />
-                            {state.errorStateName.map((error, index) => (
-                                <div key={index} className="flex items-center">
-                                    <span className="text-sm text-red-600">- {error}</span>
-                                </div>
-                            ))}
-                            <br />
-                            <label className="text-[#444444]">Sigla: <span className="text-red-600">*</span></label>
-                            <br />
-                            <input type="text" className={`form-control rounded-md border-[#BCBCBC]`} disabled={inOperation} onBlur={() => state.verifyUf()} value={state.stateUf} onChange={(e) => state.setStateUf(e.target.value.toUpperCase())} maxLength={2} />
-                            {state.errorStateUf.map((error, index) => (
-                                <div key={index} className="flex items-center">
-                                    <span className="text-sm text-red-600">- {error}</span>
-                                </div>
-                            ))}
-                            <br />
+                        <div>
+                            <FormField
+                                label="Estado"
+                                isRequired
+                                inputProps={{
+                                    disabled: inOperation,
+                                    onBlur: () => state.verifyName(),
+                                    onChange: (e) => state.setStateName(e.target.value),
+                                }}
+                                errors={state.errorStateName}
+                            />
+
+                            <FormField
+                                label="Sigla"
+                                isRequired
+                                inputProps={{
+                                    disabled: inOperation,
+                                    value: state.stateUf,
+                                    onBlur: () => state.verifyUf(),
+                                    onChange: (e) => state.setStateUf(e.target.value.toUpperCase()),
+                                    maxLength: 2,
+                                }}
+                                errors={state.errorStateUf}
+                            />
                         </div>
+
                     </ModalBody>
                     <ModalFooter>
                         <div className="flex justify-center gap-4 ">
@@ -415,7 +428,7 @@ export default function State() {
                     </ModalHeader>
                     <ModalBody className="text-center flex flex-col justify-center items-center">
                         <h3 className="pl-4 text-lg font-thin">
-                            O Estado  {lastRequisition === "buscar" ? "selecionado" : "informado" } não existe no banco de dados.
+                            O Estado  {lastRequisition === "buscar" ? "selecionado" : "informado"} não existe no banco de dados.
                             <br />
                             O sistema irá carregar os dados atuais após fechar a tela. Tempo restante: {timeLeft}s
                         </h3>
@@ -433,7 +446,7 @@ export default function State() {
                     </ModalFooter>
                 </Modal>
 
-            </LayoutPage>
+            </>
         </>
     );
 }

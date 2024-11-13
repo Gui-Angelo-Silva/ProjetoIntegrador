@@ -9,12 +9,11 @@ import Select from 'react-select';
 import { FilePlus, Pen, Trash, Warning } from "@phosphor-icons/react";
 
 // Component imports
-import LinkTitle from "../../../components/Title/LinkTitle";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 import SearchBar from "../../../components/Search/SearchBar";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
 import CancelButton from "../../../components/Button/CancelButton";
 import CustomTable from "../../../components/Table/Table";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
@@ -27,8 +26,14 @@ import InstallationClass from '../../../object/class/installation';
 import ActionManager from '../../../object/modules/action';
 import CompareModule from '../../../object/modules/compare';
 import SelectModule from '../../../object/modules/select';
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function Installation() {
+
+    const pages = [
+        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Instalação', link: '', isEnabled: false }
+    ];
 
     // Marking the assembled component
     const montage = useMontage();
@@ -79,8 +84,6 @@ export default function Installation() {
 
             setUpdateData(false);
         }
-
-        list.searchBy ? null : list.setSearchBy('dataInstalacao');
     }, [updateData]);
 
     useEffect(() => {
@@ -315,16 +318,15 @@ export default function Installation() {
                     />
                 ))}
             </div>}
-            <LayoutPage>
-                <LinkTitle pageName="Instalacao" />
-                <SearchBar
-                    placeholder="Pesquisar Instalacao"
-                    onSearchChange={(value) => list.handleSearch(value)}
-                    onSearchByChange={(value) => list.handleSearchBy(value)}
-                    options={[
+            <>
+                <Breadcrumb pages={pages} />
+                <MultiSearchBar
+                    maxSearchBars={2}
+                    searchOptions={[
                         { label: 'Data', value: 'dataInstalacao' },
                         { label: 'Situação', value: 'situacaoInstalacao' },
                     ]}
+                    setSearchDictionary={list.setSearchDictionary}
                     button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
                 />
                 <CustomTable
@@ -585,7 +587,7 @@ export default function Installation() {
                     </ModalFooter>
                 </Modal>
 
-            </LayoutPage>
+            </>
         </>
     );
 }

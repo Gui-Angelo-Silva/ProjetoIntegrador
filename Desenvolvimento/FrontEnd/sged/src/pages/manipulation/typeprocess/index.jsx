@@ -6,11 +6,10 @@ import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 // Component imports
-import LinkTitle from "../../../components/Title/LinkTitle";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import CustomTable from "../../../components/Table/Table";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
 
@@ -22,8 +21,14 @@ import { useMontage } from "../../../object/modules/montage";
 import ConnectionService from "../../../object/service/connection";
 import ListModule from "../../../object/modules/list";
 import TypeProcessClass from "../../../object/class/typeprocess";
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function TypeProcess() {
+
+    const pages = [
+        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Tipo de Processo', link: '', isEnabled: false }
+    ];
 
     const { componentMounted } = useMontage();
 
@@ -130,8 +135,6 @@ export default function TypeProcess() {
             GetTypeProcess();
             setUpdateData(false);
         }
-
-        list.searchBy ? null : list.setSearchBy('nomeTipoProcesso');
     }, [updateData]);
 
     const dataForTable = list.currentList.map((tipoprocesso) => {
@@ -162,29 +165,17 @@ export default function TypeProcess() {
                     />
                 ))}
             </div>}
-            <LayoutPage>
-                <LinkTitle pageName="Tipo Processo" />
-                <div className="flex items-center">
-                    <div className="flex justify-center items-center mx-auto w-[450px]">
-                        <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
-                            <div className="pl-2">
-                                <Search />
-                            </div>
-                            <input type="search" id="default-search" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar tipo processo" required onChange={(e) => list.handleSearch(e.target.value)} />
-                            <select className="form-control w-28 text-gray-800 h-full cursor-pointer" onChange={(e) => list.handleSearchBy(e.target.value)} >
-                                <option key="nomeTipoProcesso" value="nomeTipoProcesso">
-                                    Tipo Processo
-                                </option>
-                                <option key="descricaoTipoProcesso" value="descricaoTipoProcesso">
-                                    Descrição
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="flex items-center">
-                        <RegistrationButton action={() => openCloseModalInsert(true)} />
-                    </div>
-                </div>
+            <>
+                <Breadcrumb pages={pages} />
+                <MultiSearchBar
+                    maxSearchBars={2}
+                    searchOptions={[
+                        { label: 'Nome', value: 'nomeTipoProcesso' },
+                        { label: 'Descrição', value: 'descricaoTipoProcesso' },
+                    ]}
+                    setSearchDictionary={list.setSearchDictionary}
+                    button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
+                />
                 <CustomTable
                     totalColumns={3}
                     headers={["Tipo Processo", "Descrição", "Ações"]}
@@ -259,7 +250,7 @@ export default function TypeProcess() {
                         </div>
                     </ModalBody>
                 </Modal>
-            </LayoutPage>
+            </>
         </>
     );
 }

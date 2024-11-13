@@ -3,9 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Authorization;
 using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTO.Searchs;
 using SGED.Objects.Utilities;
 using Google.Protobuf;
 using SGED.Services.Entities;
+using SGED.Services.Server.Attributes;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace SGED.Controllers
 {
@@ -29,6 +33,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<LogradouroDTO>>> Get()
         {
             try
@@ -51,6 +56,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetLogradouro")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<LogradouroDTO>> Get(int id)
         {
             try
@@ -78,7 +84,45 @@ namespace SGED.Controllers
             }
         }
 
+        [HttpGet("CEP/{cep}", Name = "GetLogradouroByCEP")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult<LogradouroSearch>> GetByCEP(string cep)
+        {
+            if (cep == null || !Regex.IsMatch(cep, @"^\d{5}-\d{3}$"))
+            {
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
+                _response.Data = new LogradouroSearch();
+                return BadRequest(_response);
+            }
+
+            try
+            {
+                var logradouroSearch = await _logradouroService.GetByCEP(cep);
+                if (logradouroSearch is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = $"Logradouro com o cep {cep} não encontrado!";
+                    _response.Data = logradouroSearch;
+                    return NotFound(_response);
+                };
+
+                _response.SetSuccess();
+                _response.Message = "Logradouro obtido com sucesso.";
+                _response.Data = logradouroSearch;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir o Logradouro informado!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] LogradouroDTO logradouroDTO)
         {
             if (logradouroDTO is null)
@@ -135,6 +179,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] LogradouroDTO logradouroDTO)
         {
             if (logradouroDTO is null)
@@ -199,6 +244,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<LogradouroDTO>> Delete(int id)
         {
             try

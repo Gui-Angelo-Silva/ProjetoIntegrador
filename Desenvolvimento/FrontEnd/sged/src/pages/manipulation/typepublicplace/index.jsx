@@ -2,13 +2,12 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
-import LinkTitle from "../../../components/Title/LinkTitle";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 
 // Component imports
 import ButtonTable from "../../../components/Table/ButtonTable";
 import CustomTable from "../../../components/Table/Table";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
 
@@ -20,6 +19,7 @@ import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
 import TypePublicPlaceClass from "../../../object/class/typepublicplace";
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function TypePublicPlace() {
 
@@ -28,6 +28,11 @@ export default function TypePublicPlace() {
     useEffect(() => {
         componentMounted();
     }, [componentMounted]);
+
+    const pages = [
+        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Tipo Logradouro', link: '', isEnabled: false }
+    ];
 
     const connection = new ConnectionService();
     const managerPopUp = PopUpManager();
@@ -133,8 +138,6 @@ export default function TypePublicPlace() {
             GetTypePublicPlace();
             setUpdateData(false);
         }
-
-        list.searchBy ? null : list.setSearchBy('codigoInformativo');
     }, [updateData]);
 
     const dataForTable = list.currentList.map((tipologradouro) => {
@@ -165,29 +168,17 @@ export default function TypePublicPlace() {
                     />
                 ))}
             </div>}
-            <LayoutPage>
-                <LinkTitle pageName="Tipo Logradouro" />
-                <div className="flex items-center">
-                    <div className="flex justify-center items-center mx-auto w-[450px]">
-                        <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
-                            <div className="pl-2">
-                                <Search />
-                            </div>
-                            <input type="search" id="default-search" className="bg-transparent border-none w-full focus:outline-transparent focus:ring-transparent text-gray-700 text-sm" placeholder="Pesquisar tipo logradouro" required onChange={(e) => list.handleSearch(e.target.value)} />
-                            <select className="form-control w-28 text-gray-800 h-full cursor-pointer" onChange={(e) => list.handleSearchBy(e.target.value)} >
-                                <option key="codigoInformativo" value="codigoInformativo">
-                                    Código
-                                </option>
-                                <option key="descricao" value="descricao">
-                                    Descrição
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="flex items-center">
-                        <RegistrationButton action={() => openCloseModalInsert(true)} />
-                    </div>
-                </div>
+            <>
+                <Breadcrumb pages={pages} />
+                <MultiSearchBar
+                    maxSearchBars={2}
+                    searchOptions={[
+                        { label: 'Código', value: 'codigoInformativo' },
+                        { label: 'Descrição', value: 'descricao' },
+                    ]}
+                    setSearchDictionary={list.setSearchDictionary}
+                    button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
+                />
                 <CustomTable
                     totalColumns={3}
                     headers={["Codigo Informativo", "Descrição", "Ações"]}
@@ -263,7 +254,7 @@ export default function TypePublicPlace() {
                         </div>
                     </ModalBody>
                 </Modal>
-            </LayoutPage>
+            </>
         </>
     )
 }

@@ -5,6 +5,7 @@ using SGED.Objects.Models.Entities;
 using SGED.Objects.Utilities;
 using SGED.Services.Entities;
 using SGED.Services.Interfaces;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -23,6 +24,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<TipoDocumentoDTO>>> GetAll()
         {
             try
@@ -45,6 +47,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetTipoDocumento")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<TipoDocumentoDTO>> GetById(int id)
         {
             try
@@ -73,6 +76,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] TipoDocumentoDTO tipoDocumentoDTO)
         {
             if (tipoDocumentoDTO is null)
@@ -113,6 +117,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] TipoDocumentoDTO tipoDocumentoDTO)
         {
             if (tipoDocumentoDTO is null)
@@ -166,6 +171,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut("{id:int}/Ativar")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<TipoDocumentoDTO>> Activity(int id)
         {
             try
@@ -206,6 +212,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut("{id:int}/Desativar")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<TipoProcessoDTO>> Desactivity(int id)
         {
             try
@@ -246,6 +253,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<TipoDocumentoDTO>> Delete(int id)
         {
             try

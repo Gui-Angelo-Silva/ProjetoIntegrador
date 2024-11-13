@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTO.Searchs;
 using SGED.Objects.Models.Entities;
 
 namespace SGED.Objects.DTO.Mappings
@@ -70,6 +71,9 @@ namespace SGED.Objects.DTO.Mappings
             CreateMap<InstalacaoDTO, Instalacao>();
             CreateMap<Instalacao, InstalacaoDTO>().ReverseMap();
 
+            CreateMap<CondicaoSoloDTO, CondicaoSolo>();
+            CreateMap<CondicaoSolo, CondicaoSoloDTO>().ReverseMap();
+
 
             // Objetos de Processo:
 
@@ -104,6 +108,21 @@ namespace SGED.Objects.DTO.Mappings
 
             CreateMap<ConfiguracaoDTO, Configuracao>();
             CreateMap<Configuracao, ConfiguracaoDTO>().ReverseMap();
+
+
+            // Objetos de Pesquisa
+
+            CreateMap<LogradouroSearch, Logradouro>();
+            CreateMap<Logradouro, LogradouroSearch>().ReverseMap();
+
+            CreateMap<BairroSearch, Bairro>();
+            CreateMap<Bairro, BairroSearch>().ReverseMap();
+
+            CreateMap<CidadeSearch, Cidade>();
+            CreateMap<Cidade, CidadeSearch>().ReverseMap();
+
+            CreateMap<EstadoSearch, Estado>();
+            CreateMap<Estado, EstadoSearch>().ReverseMap();
         }
     }
 }

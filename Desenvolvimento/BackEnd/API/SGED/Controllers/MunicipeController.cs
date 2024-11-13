@@ -5,6 +5,7 @@ using SGED.Objects.DTO.Entities;
 using SGED.Services.Interfaces;
 using SGED.Objects.Utilities;
 using SGED.Services.Entities;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -24,6 +25,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<MunicipeDTO>>> Get()
         {
             try
@@ -46,6 +48,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetMunicipe")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<MunicipeDTO>> Get(int id)
         {
             try
@@ -74,6 +77,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] MunicipeDTO municipeDTO)
         {
             if (municipeDTO is null)
@@ -141,6 +145,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] MunicipeDTO municipeDTO)
         {
             if (municipeDTO is null)
@@ -218,6 +223,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<MunicipeDTO>> Delete(int id)
         {
             try
@@ -247,7 +253,7 @@ namespace SGED.Controllers
             }
         }
 
-        private void ValidateDocuments(MunicipeDTO municipeDTO, ref string email, ref string cpfcnpj, ref string rgie)
+        private static void ValidateDocuments(MunicipeDTO municipeDTO, ref string email, ref string cpfcnpj, ref string rgie)
         {
             if (!municipeDTO.Email())
             {
@@ -287,7 +293,7 @@ namespace SGED.Controllers
             }
         }
 
-        private void CheckDuplicates(IEnumerable<MunicipeDTO> municipesDTO, MunicipeDTO municipeDTO, ref string email, ref string cpfcnpj, ref string rgie)
+        private static void CheckDuplicates(IEnumerable<MunicipeDTO> municipesDTO, MunicipeDTO municipeDTO, ref string email, ref string cpfcnpj, ref string rgie)
         {
             foreach (var municipe in municipesDTO)
             {
@@ -308,7 +314,7 @@ namespace SGED.Controllers
             }
         }
 
-        private string GenerateErrorMessage(string email, string cpfcnpj, string rgie, MunicipeDTO municipeDTO)
+        private static string GenerateErrorMessage(string email, string cpfcnpj, string rgie, MunicipeDTO municipeDTO)
         {
             string error = "";
             if (!string.IsNullOrEmpty(email)) error += "e-mail";

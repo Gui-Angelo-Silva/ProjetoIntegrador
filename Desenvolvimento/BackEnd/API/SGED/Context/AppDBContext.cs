@@ -32,6 +32,7 @@ public class AppDBContext : DbContext
 	public DbSet<Infraestrutura> Infraestrutura { get; set; }
 	public DbSet<Instalacao> Instalacao { get; set; }
 	public DbSet<Imovel> Imovel { get; set; }
+	public DbSet<CondicaoSolo> CondicaoSolo { get; set; }
 
 	// Conjunto: Processo
 	public DbSet<TipoProcesso> TipoProcesso { get; set; }
@@ -69,6 +70,7 @@ public class AppDBContext : DbContext
 		InfraestruturaBuilder.Build(modelBuilder);
 		InstalacaoBuilder.Build(modelBuilder);
 		ImovelBuilder.Build(modelBuilder);
+		CondicaoSoloBuilder.Build(modelBuilder);
 
 		// Builders: Conjunto Processo
 		TipoProcessoBuilder.Build(modelBuilder);

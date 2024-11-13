@@ -23,7 +23,7 @@ const DocumentModal = ({
   const [documentStatus, setDocumentStatus] = useState(0);
   const [idTypeDocument, setIdTypeDocument] = useState(0);
   const [idUserResponsible, setIdUserResponsible] = useState(0);
-  
+
   const prepareDataForSave = async () => {
     const documentData = {
       documentId,
@@ -35,7 +35,7 @@ const DocumentModal = ({
       idTypeDocumentStage: idTypeDocument || 0,
       idUserResponsible: idUserResponsible || null,
     };
-  
+
     await onSave(documentId, documentData);
   };
 
@@ -96,6 +96,7 @@ const DocumentModal = ({
             type="file"
             className="rounded-sm border-[#e5e7eb]"
             onChange={(e) => setArquive(e.target.files[0])}
+            accept=".pdf" // Permite apenas arquivos PDF
           />
 
           <h1 className="text-lg text-gray-700">Status:</h1>

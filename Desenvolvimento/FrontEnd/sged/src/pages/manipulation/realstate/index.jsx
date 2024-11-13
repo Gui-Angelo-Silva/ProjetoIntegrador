@@ -7,11 +7,10 @@ import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 // Component imports
-import LinkTitle from "../../../components/Title/LinkTitle";
+import Breadcrumb from "../../../components/Title/Breadcrumb";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import CustomTable from "../../../components/Table/Table";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
-import LayoutPage from "../../../components/Layout/LayoutPage";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
 
@@ -27,6 +26,11 @@ import ControlModule from "../../../object/modules/control";
 import SelectModule from "../../../object/modules/select";
 
 export default function RealState() {
+
+    const pages = [
+        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Imóvel', link: '', isEnabled: false }
+    ];
 
     const { componentMounted } = useMontage();
 
@@ -230,8 +234,16 @@ export default function RealState() {
 
                 list.setListToRender(filtered);
             } else {
-                list.setSearchTerm(searchTerm);
-                list.setSearchBy(searchBy);
+                const filtered = list.list.filter((realstate) => {
+                    const realStateFilter = realstate[searchBy]
+                        .normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, '')
+                        .toLowerCase();
+                    
+                    return realStateFilter.includes(searchTermNormalized.toLowerCase());
+                });
+                
+                list.setListToRender(filtered);
             }
         }
     };
@@ -353,8 +365,8 @@ export default function RealState() {
                     />
                 ))}
             </div>}
-            <LayoutPage>
-                <LinkTitle pageName="Imóvel" />
+            <>
+                <Breadcrumb pages={pages} />
                 <div className="flex items-center">
                     <div className="flex justify-center items-center mx-auto w-[450px]">
                         <div className="flex border-1 border-[#dee2e6] rounded-md w-full h-12 items-center hover:border-[#2d636b]">
@@ -382,7 +394,7 @@ export default function RealState() {
 
                 <CustomTable
                     totalColumns={6}
-                    headers={["Inscrição Cadastral", "Nome Proprietário", "Nome Contribuinte", "CEP", "Número Imóvel", "Ações"]}
+                    headers={["Inscrição Cadastral", "Proprietário", "Contribuinte", "CEP", "Número Imóvel", "Ações"]}
                     data={dataForTable}
                     onPageChange={(page) => list.goToPage(page)}
                     currentPage={list.currentPage}
@@ -762,7 +774,7 @@ export default function RealState() {
                         </div>
                     </ModalBody>
                 </Modal>
-            </LayoutPage>
+            </>
         </>
     )
 }

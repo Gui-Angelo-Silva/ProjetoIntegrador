@@ -1,26 +1,21 @@
-import TokenClass from '../../class/token';
+import CookieModule from '../../modules/cookie';
 
 function ApiService() {
-
-  const token = TokenClass();
-  const baseURL = "https://localhost:7096/api/";
+  const cookie = CookieModule();
+  const baseURL = import.meta.env.VITE_API_URL;
 
   const appendRoute = (route) => {
     return baseURL + route;
   };
 
-  const updateToken = (newToken) => {
-    console.log(newToken);
-    token.setData(newToken? newToken.startsWith('Front ') ? newToken.replace('Front ', '') : newToken : null);
-  };
-
   const headerConfig = () => {
-    const auth = token.getData();
+    const auth = cookie.getCookie("token");
+
     if (auth) {
       return {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Front ${auth}`
+          Authorization: `Bearer ${auth}`
         }
       };
     } else {
@@ -33,8 +28,7 @@ function ApiService() {
   };
 
   return {
-    appendRoute, 
-    updateToken, 
+    appendRoute,
     headerConfig 
   };
 

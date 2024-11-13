@@ -6,6 +6,7 @@ using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
 using SGED.Services.Entities;
 using SGED.Objects.Enums.Status;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -24,6 +25,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<TipoProcessoDTO>>> GetAll()
         {
             try
@@ -46,6 +48,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("GetAllTypes")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<TipoProcessoDTO>>> GetAllTypes()
         {
             try
@@ -70,6 +73,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetTipoProcesso")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<TipoProcessoDTO>> GetById(int id)
         {
             try
@@ -98,6 +102,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] TipoProcessoDTO tipoProcessoDTO)
         {
             if (tipoProcessoDTO is null)
@@ -140,6 +145,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] TipoProcessoDTO tipoProcessoDTO)
         {
             if (tipoProcessoDTO is null)
@@ -197,6 +203,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut("{id:int}/Ativar")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<TipoProcessoDTO>> Activity(int id)
         {
             try
@@ -237,6 +244,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut("{id:int}/Desativar")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<TipoProcessoDTO>> Desactivity(int id)
         {
             try
@@ -277,6 +285,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<TipoProcessoDTO>> Delete(int id)
         {
             try

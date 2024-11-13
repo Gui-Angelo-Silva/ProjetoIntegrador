@@ -6,6 +6,7 @@ using SGED.Objects.DTO.Entities;
 using SGED.Objects.Utilities;
 using Google.Protobuf;
 using SGED.Services.Entities;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -31,6 +32,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<InstalacaoDTO>>> Get()
         {
             try
@@ -53,6 +55,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetInstalacao")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<InstalacaoDTO>> Get(int id)
         {
             try
@@ -81,6 +84,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] InstalacaoDTO instalacaoDTO)
         {
             if (instalacaoDTO is null)
@@ -141,6 +145,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] InstalacaoDTO instalacaoDTO)
         {
             if (instalacaoDTO is null)
@@ -209,6 +214,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<InstalacaoDTO>> Delete(int id)
         {
             try

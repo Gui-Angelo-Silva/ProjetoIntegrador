@@ -5,6 +5,7 @@ using SGED.Objects.DTO.Entities;
 using SGED.Services.Interfaces;
 using SGED.Objects.Utilities;
 using SGED.Services.Entities;
+using SGED.Services.Server.Attributes;
 
 namespace SGED.Controllers
 {
@@ -24,6 +25,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<EngenheiroDTO>>> Get()
         {
             try
@@ -46,6 +48,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("GetAllNames")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<IEnumerable<EngenheiroDTO>>> GetAllNames()
         {
             try
@@ -70,6 +73,7 @@ namespace SGED.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetEngenheiro")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<EngenheiroDTO>> Get(int id)
         {
             try
@@ -98,6 +102,7 @@ namespace SGED.Controllers
         }
 
         [HttpPost()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Post([FromBody] EngenheiroDTO engenheiroDTO)
         {
             if (engenheiroDTO is null)
@@ -167,6 +172,7 @@ namespace SGED.Controllers
         }
 
         [HttpPut()]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Put([FromBody] EngenheiroDTO engenheiroDTO)
         {
             if (engenheiroDTO is null)
@@ -246,6 +252,7 @@ namespace SGED.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<EngenheiroDTO>> Delete(int id)
         {
             try
@@ -275,7 +282,7 @@ namespace SGED.Controllers
             }
         }
 
-        private void ValidateDocuments(EngenheiroDTO engenheiroDTO, ref string email, ref string cpfcnpj, ref string rgie, ref string crea)
+        private static void ValidateDocuments(EngenheiroDTO engenheiroDTO, ref string email, ref string cpfcnpj, ref string rgie, ref string crea)
         {
             if (!engenheiroDTO.Email())
             {
@@ -326,7 +333,7 @@ namespace SGED.Controllers
             }
         }
 
-        private void CheckDuplicates(IEnumerable<EngenheiroDTO> engenheirosDTO, EngenheiroDTO engenheiroDTO, ref string email, ref string cpfcnpj, ref string rgie, ref string crea)
+        private static void CheckDuplicates(IEnumerable<EngenheiroDTO> engenheirosDTO, EngenheiroDTO engenheiroDTO, ref string email, ref string cpfcnpj, ref string rgie, ref string crea)
         {
             foreach (var engenheiro in engenheirosDTO)
             {
@@ -352,7 +359,7 @@ namespace SGED.Controllers
             }
         }
 
-        private string GenerateErrorMessage(string email, string cpfcnpj, string rgie, string crea, EngenheiroDTO engenheiroDTO)
+        private static string GenerateErrorMessage(string email, string cpfcnpj, string rgie, string crea, EngenheiroDTO engenheiroDTO)
         {
             string error = "";
             if (!string.IsNullOrEmpty(email)) error += "e-mail";

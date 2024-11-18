@@ -232,9 +232,9 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpPut("PutOnPending")]
+        [HttpPut("PutOnPending/{id:Guid}")]
         [AccessPermission("A", "B", "C")]
-        public async Task<ActionResult> PutOnPending([FromBody] Guid id)
+        public async Task<ActionResult> PutOnPending(Guid id)
         {
             try
             {
@@ -264,9 +264,9 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpPut("MarkAsAttached")]
+        [HttpPut("MarkAsAttached/{id:Guid}")]
         [AccessPermission("A", "B", "C")]
-        public async Task<ActionResult> MarkAsAttached([FromBody] Guid id)
+        public async Task<ActionResult> MarkAsAttached(Guid id)
         {
             try
             {
@@ -296,9 +296,9 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpPut("SendForAnalysis")]
+        [HttpPut("SendForAnalysis/{id:Guid}")]
         [AccessPermission("A", "B", "C")]
-        public async Task<ActionResult> SendForAnalysis([FromBody] Guid id)
+        public async Task<ActionResult> SendForAnalysis(Guid id)
         {
             try
             {
@@ -328,9 +328,9 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpPut("Approve")]
+        [HttpPut("Approve/{id:Guid}")]
         [AccessPermission("A", "B", "C")]
-        public async Task<ActionResult> Approve([FromBody] Guid id)
+        public async Task<ActionResult> Approve(Guid id)
         {
             try
             {
@@ -360,9 +360,9 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpPut("Disapprove")]
+        [HttpPut("Disapprove/{id:Guid}")]
         [AccessPermission("A", "B", "C")]
-        public async Task<ActionResult> Disapprove([FromBody] Guid id)
+        public async Task<ActionResult> Disapprove(Guid id)
         {
             try
             {

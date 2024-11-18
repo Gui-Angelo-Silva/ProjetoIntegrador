@@ -134,12 +134,12 @@ namespace SGED.Controllers
                     processoClone.progresso = new
                     {
                         total = documentos.Count(),
-                        emEspera = documentos.Count(documento => documento.Status == StatusDocumentProcess.OnHold),
-                        emProgresso = documentos.Count(documento => documento.Status == StatusDocumentProcess.Pending ||
+                        pendente = documentos.Count(documento => documento.Status == StatusDocumentProcess.OnHold),
+                        anexado = documentos.Count(documento => documento.Status == StatusDocumentProcess.Pending ||
                                                                     documento.Status == StatusDocumentProcess.NotAttached ||
                                                                     documento.Status == StatusDocumentProcess.NotIntact ||
                                                                     documento.Status == StatusDocumentProcess.Attached),
-                        emAnalise = documentos.Count(documento => documento.Status == StatusDocumentProcess.InAnalysis),
+                        analise = documentos.Count(documento => documento.Status == StatusDocumentProcess.InAnalysis),
                         aprovado = documentos.Count(documento => documento.Status == StatusDocumentProcess.Approved),
                         reprovado = documentos.Count(documento => documento.Status == StatusDocumentProcess.Disapproved),
                     };
@@ -174,11 +174,12 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 };
 
-                processoDTO = await GetAllData(processoDTO);
+                dynamic processo = new ExpandoObject();
+                if (processoDTO != null) processo = await GetAllData(processoDTO);
 
                 _response.SetSuccess();
-                _response.Message = "Processo " + processoDTO.IdentificacaoProcesso + " obtido com sucesso.";
-                _response.Data = processoDTO;
+                _response.Message = "Processo " + processo.identificacaoProcesso + " obtido com sucesso.";
+                _response.Data = processo;
                 return Ok(_response);
             }
             catch (Exception ex)
@@ -308,14 +309,14 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpPut("PutOnHold")]
+        [HttpPut("PutOnHold/{id:Guid}")]
         [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> PutOnHold(Guid id)
         {
             try
             {
-                var documentoProcessoDTO = await _processoService.GetById(id);
-                if (documentoProcessoDTO is null)
+                var processoDTO = await _processoService.GetById(id);
+                if (processoDTO is null)
                 {
                     _response.SetNotFound();
                     _response.Message = "O Processo informado não existe!";
@@ -323,12 +324,12 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                documentoProcessoDTO.PutOnHold();
-                await _processoService.Update(documentoProcessoDTO);
+                processoDTO.PutOnHold();
+                await _processoService.Update(processoDTO);
 
                 _response.SetSuccess();
-                _response.Message = "Processo " + documentoProcessoDTO.IdentificacaoProcesso + " colocado em espera.";
-                _response.Data = documentoProcessoDTO;
+                _response.Message = "Processo " + processoDTO.IdentificacaoProcesso + " colocado em espera.";
+                _response.Data = processoDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
@@ -340,14 +341,14 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpPut("PutInProgress")]
+        [HttpPut("PutInProgress/{id:Guid}")]
         [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> PutInProgress(Guid id)
         {
             try
             {
-                var documentoProcessoDTO = await _processoService.GetById(id);
-                if (documentoProcessoDTO is null)
+                var processoDTO = await _processoService.GetById(id);
+                if (processoDTO is null)
                 {
                     _response.SetNotFound();
                     _response.Message = "O Processo informado não existe!";
@@ -355,12 +356,21 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                documentoProcessoDTO.PutInProgress();
-                await _processoService.Update(documentoProcessoDTO);
+                var documentosProcesso = await _documentoProcessoService.GetByProcess(processoDTO.Id);
+                if (documentosProcesso is null || !documentosProcesso.Any())
+                {
+                    _response.SetInvalid();
+                    _response.Message = "Não existe Documentos vinculados ao Processo!";
+                    _response.Data = new { error = "Não existe Documentos vinculados ao Processo!" };
+                    return BadRequest(_response);
+                }
+
+                processoDTO.PutInProgress();
+                await _processoService.Update(processoDTO);
 
                 _response.SetSuccess();
-                _response.Message = "Processo " + documentoProcessoDTO.IdentificacaoProcesso + " em progresso.";
-                _response.Data = documentoProcessoDTO;
+                _response.Message = "Processo " + processoDTO.IdentificacaoProcesso + " em progresso.";
+                _response.Data = processoDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
@@ -372,14 +382,14 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpPut("SendForAnalysis")]
+        [HttpPut("SendForAnalysis/{id:Guid}")]
         [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> SendForAnalysis(Guid id)
         {
             try
             {
-                var documentoProcessoDTO = await _processoService.GetById(id);
-                if (documentoProcessoDTO is null)
+                var processoDTO = await _processoService.GetById(id);
+                if (processoDTO is null)
                 {
                     _response.SetNotFound();
                     _response.Message = "O Processo informado não existe!";
@@ -387,12 +397,34 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                documentoProcessoDTO.SendForAnalysis();
-                await _processoService.Update(documentoProcessoDTO);
+                var documentosProcesso = await _documentoProcessoService.GetByProcess(processoDTO.Id);
+                if (documentosProcesso is null || !documentosProcesso.Any())
+                {
+                    _response.SetInvalid();
+                    _response.Message = "Não existe Documentos vinculados ao Processo!";
+                    _response.Data = new { error = "Não existe Documentos vinculados ao Processo!" };
+                    return BadRequest(_response);
+                }
+                else if (!documentosProcesso.Any(dp => dp.Status == StatusDocumentProcess.Attached))
+                {
+                    _response.SetInvalid();
+                    _response.Message = "Não existe Documentos Anexados a ser enviado para Análise!";
+                    _response.Data = new { error = "Não existe Documentos Anexados a ser enviado para Análise!" };
+                    return BadRequest(_response);
+                }
+
+                foreach (var documento in documentosProcesso.Where(dp => dp.Status == StatusDocumentProcess.Attached))
+                {
+                    documento.SendForAnalysis();
+                    await _documentoProcessoService.Update(documento);
+                }
+
+                processoDTO.SendForAnalysis();
+                await _processoService.Update(processoDTO);
 
                 _response.SetSuccess();
-                _response.Message = "Processo " + documentoProcessoDTO.IdentificacaoProcesso + " enviado para análise.";
-                _response.Data = documentoProcessoDTO;
+                _response.Message = "Processo " + processoDTO.IdentificacaoProcesso + " enviado para análise.";
+                _response.Data = processoDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
@@ -404,14 +436,14 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpPut("Approve")]
+        [HttpPut("Approve/{id:Guid}")]
         [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Approve(Guid id)
         {
             try
             {
-                var documentoProcessoDTO = await _processoService.GetById(id);
-                if (documentoProcessoDTO is null)
+                var processoDTO = await _processoService.GetById(id);
+                if (processoDTO is null)
                 {
                     _response.SetNotFound();
                     _response.Message = "O Processo informado não existe!";
@@ -419,12 +451,12 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                documentoProcessoDTO.Approve();
-                await _processoService.Update(documentoProcessoDTO);
+                processoDTO.Approve();
+                await _processoService.Update(processoDTO);
 
                 _response.SetSuccess();
-                _response.Message = "Processo " + documentoProcessoDTO.IdentificacaoProcesso + " aprovado.";
-                _response.Data = documentoProcessoDTO;
+                _response.Message = "Processo " + processoDTO.IdentificacaoProcesso + " aprovado.";
+                _response.Data = processoDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
@@ -436,14 +468,14 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpPut("Disapprove")]
+        [HttpPut("Disapprove/{id:Guid}")]
         [AccessPermission("A", "B", "C")]
         public async Task<ActionResult> Disapprove(Guid id)
         {
             try
             {
-                var documentoProcessoDTO = await _processoService.GetById(id);
-                if (documentoProcessoDTO is null)
+                var processoDTO = await _processoService.GetById(id);
+                if (processoDTO is null)
                 {
                     _response.SetNotFound();
                     _response.Message = "O Processo informado não existe!";
@@ -451,12 +483,12 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
-                documentoProcessoDTO.Disapprove();
-                await _processoService.Update(documentoProcessoDTO);
+                processoDTO.Disapprove();
+                await _processoService.Update(processoDTO);
 
                 _response.SetSuccess();
-                _response.Message = "Processo " + documentoProcessoDTO.IdentificacaoProcesso + " desaprovado.";
-                _response.Data = documentoProcessoDTO;
+                _response.Message = "Processo " + processoDTO.IdentificacaoProcesso + " desaprovado.";
+                _response.Data = processoDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
@@ -594,21 +626,21 @@ namespace SGED.Controllers
                 var documentosEtapas = ((IEnumerable<dynamic>)etapaObj.documentosEtapa).ToList();
                 etapaObj.progresso = new ExpandoObject();
                 etapaObj.progresso.total = documentosEtapas.Count;
-                etapaObj.progresso.emEspera = documentosEtapas.Count(de => de.documentoProcesso == null || de.documentoProcesso?.Status == StatusDocumentProcess.OnHold);
-                etapaObj.progresso.emProgresso = documentosEtapas.Count(de => de.documentoProcesso != null &&
-                                    (de.documentoProcesso.Status == StatusDocumentProcess.Pending ||
-                                     de.documentoProcesso.Status == StatusDocumentProcess.NotAttached ||
-                                     de.documentoProcesso.Status == StatusDocumentProcess.NotIntact ||
-                                     de.documentoProcesso.Status == StatusDocumentProcess.Attached));
-                etapaObj.progresso.emAnalise = documentosEtapas.Count(de => de.documentoProcesso != null && de.documentoProcesso.Status == StatusDocumentProcess.InAnalysis);
-                etapaObj.progresso.aprovado = documentosEtapas.Count(de => de.documentoProcesso != null && de.documentoProcesso.Status == StatusDocumentProcess.Approved);
-                etapaObj.progresso.reprovado = documentosEtapas.Count(de => de.documentoProcesso != null && de.documentoProcesso.Status == StatusDocumentProcess.Disapproved);
+                etapaObj.progresso.pendente = documentosEtapas.Count(de => de.documentoProcesso == null ||
+                                    (de.documentoProcesso?.status == StatusDocumentProcess.OnHold ||
+                                     de.documentoProcesso.status == StatusDocumentProcess.Pending ||
+                                     de.documentoProcesso.status == StatusDocumentProcess.NotAttached ||
+                                     de.documentoProcesso.status == StatusDocumentProcess.NotIntact));
+                etapaObj.progresso.anexado = documentosEtapas.Count(de => de.documentoProcesso != null && de.documentoProcesso.status == StatusDocumentProcess.Attached);
+                etapaObj.progresso.analise = documentosEtapas.Count(de => de.documentoProcesso != null && de.documentoProcesso.status == StatusDocumentProcess.InAnalysis);
+                etapaObj.progresso.aprovado = documentosEtapas.Count(de => de.documentoProcesso != null && de.documentoProcesso.status == StatusDocumentProcess.Approved);
+                etapaObj.progresso.reprovado = documentosEtapas.Count(de => de.documentoProcesso != null && de.documentoProcesso.status == StatusDocumentProcess.Disapproved);
 
                 // Adiciona o progresso da etapa ao progresso total do processo
                 processo.progresso.total += etapaObj.progresso.total;
-                processo.progresso.emEspera += etapaObj.progresso.emEspera;
-                processo.progresso.emProgresso += etapaObj.progresso.emProgresso;
-                processo.progresso.emAnalise += etapaObj.progresso.emAnalise;
+                processo.progresso.pendente += etapaObj.progresso.pendente;
+                processo.progresso.anexado += etapaObj.progresso.anexado;
+                processo.progresso.analise += etapaObj.progresso.analise;
                 processo.progresso.aprovado += etapaObj.progresso.aprovado;
                 processo.progresso.reprovado += etapaObj.progresso.reprovado;
 
@@ -637,9 +669,9 @@ namespace SGED.Controllers
 
             data.progresso = new ExpandoObject();
             data.progresso.total = 0;
-            data.progresso.emEspera = 0;
-            data.progresso.emProgresso = 0;
-            data.progresso.emAnalise = 0;
+            data.progresso.pendente = 0;
+            data.progresso.anexado = 0;
+            data.progresso.analise = 0;
             data.progresso.aprovado = 0;
             data.progresso.reprovado = 0;
 
@@ -703,13 +735,21 @@ namespace SGED.Controllers
             data.descricaoDocumento = documentoProcesso.DescricaoDocumento;
             data.observacaoDocumento = documentoProcesso.ObservacaoDocumento;
             data.status = documentoProcesso.Status;
-            data.arquivo = new
+
+            if (documentoProcesso.Arquivo != null)
             {
-                hash = documentoProcesso.Arquivo.Hash,
-                bytes = documentoProcesso.Arquivo.Bytes,
-                fileName = documentoProcesso.Arquivo.FileName,
-                mimeType = documentoProcesso.Arquivo.MimeType
-            };
+                data.arquivo = new
+                {
+                    hash = documentoProcesso.Arquivo.Hash,
+                    bytes = documentoProcesso.Arquivo.Bytes,
+                    fileName = documentoProcesso.Arquivo.FileName,
+                    mimeType = documentoProcesso.Arquivo.MimeType
+                };
+            }
+            else
+            {
+                data.arquivo = null;
+            }
 
             data.idProcesso = documentoProcesso.IdProcesso;
             data.idTipoDocumentoEtapa = documentoProcesso.IdTipoDocumentoEtapa;

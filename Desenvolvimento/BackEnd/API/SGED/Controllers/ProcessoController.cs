@@ -555,6 +555,8 @@ namespace SGED.Controllers
                             if (documentoProcesso.Arquivo.CompareHashs())
                             {
                                 documentoProcesso.MarkAsAttached(); // O arquivo está íntegro
+
+
                             }
                             else
                             {
@@ -754,7 +756,7 @@ namespace SGED.Controllers
             data.idProcesso = documentoProcesso.IdProcesso;
             data.idTipoDocumentoEtapa = documentoProcesso.IdTipoDocumentoEtapa;
             data.idResponsavel = documentoProcesso.IdResponsavel;
-            data.idResponsavel = documentoProcesso.IdResponsavel;
+            data.idAprovador = documentoProcesso.IdAprovador;
 
             return data;
         }

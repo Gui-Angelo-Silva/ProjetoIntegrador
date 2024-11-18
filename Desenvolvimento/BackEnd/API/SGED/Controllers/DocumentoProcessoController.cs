@@ -6,6 +6,8 @@ using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Utilities;
 using System.Xml.Linq;
 using SGED.Services.Server.Attributes;
+using System.Dynamic;
+using SGED.Services.Entities;
 
 namespace SGED.Controllers
 {
@@ -14,12 +16,16 @@ namespace SGED.Controllers
     public class DocumentoProcessoController : Controller
     {
         private readonly IProcessoService _processoService;
+        private readonly ITipoDocumentoService _tipoDocumentoService;
+        private readonly ITipoDocumentoEtapaService _tipoDocumentoEtapaService;
         private readonly IDocumentoProcessoService _documentoProcessoService;
         private readonly Response _response;
 
-        public DocumentoProcessoController(IProcessoService processoService, IDocumentoProcessoService documentoProcessoService)
+        public DocumentoProcessoController(IProcessoService processoService, ITipoDocumentoService tipoDocumentoService, ITipoDocumentoEtapaService tipoDocumentoEtapaService, IDocumentoProcessoService documentoProcessoService)
         {
             _processoService = processoService;
+            _tipoDocumentoService = tipoDocumentoService;
+            _tipoDocumentoEtapaService = tipoDocumentoEtapaService;
             _documentoProcessoService = documentoProcessoService;
 
             _response = new Response();
@@ -115,9 +121,19 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 };
 
+                dynamic documentoProcesso = new ExpandoObject();
+                if (documentoProcessoDTO != null)
+                {
+                    documentoProcesso = GenerateDocumentProcess(documentoProcessoDTO);
+
+                    var tipoDocumentoEtapa = await _tipoDocumentoEtapaService.GetById(documentoProcessoDTO.IdTipoDocumentoEtapa);
+                    var tipoDocumento = await _tipoDocumentoService.GetById(tipoDocumentoEtapa.IdTipoDocumento);
+                    documentoProcesso.tipoDocumento = GenerateTypeDocument(tipoDocumento);
+                }
+
                 _response.SetSuccess();
-                _response.Message = "Documento de Processo " + documentoProcessoDTO.IdentificacaoDocumento + " obtido com sucesso.";
-                _response.Data = documentoProcessoDTO;
+                _response.Message = "Documento de Processo " + documentoProcesso.identificacaoDocumento + " obtido com sucesso.";
+                _response.Data = documentoProcesso;
                 return Ok(_response);
             }
             catch (Exception ex)
@@ -344,6 +360,7 @@ namespace SGED.Controllers
                 }
 
                 documentoProcessoDTO.Approve();
+                documentoProcessoDTO.IdAprovador = 1;
                 await _documentoProcessoService.Update(documentoProcessoDTO);
 
                 _response.SetSuccess();
@@ -427,6 +444,49 @@ namespace SGED.Controllers
         {
             var documentoProcessosDTO = await _documentoProcessoService.GetByProcess(documentoProcessoDTO.IdProcesso);
             return documentoProcessosDTO.FirstOrDefault(c => c.Id != documentoProcessoDTO.Id && Operator.CompareString(c.IdentificacaoDocumento, documentoProcessoDTO.IdentificacaoDocumento)) is not null;
+        }
+
+        private static dynamic GenerateTypeDocument(TipoDocumentoDTO tipoDocumento)
+        {
+            dynamic data = new ExpandoObject();
+            data.id = tipoDocumento.Id;
+            data.nomeTipoDocumento = tipoDocumento.NomeTipoDocumento;
+            data.descricaoTipoDocumento = tipoDocumento.DescricaoTipoDocumento;
+            data.status = tipoDocumento.Status;
+
+            return data;
+        }
+
+        private static dynamic GenerateDocumentProcess(DocumentoProcessoDTO documentoProcesso)
+        {
+            dynamic data = new ExpandoObject();
+            data.id = documentoProcesso.Id;
+            data.identificacaoDocumento = documentoProcesso.IdentificacaoDocumento;
+            data.descricaoDocumento = documentoProcesso.DescricaoDocumento;
+            data.observacaoDocumento = documentoProcesso.ObservacaoDocumento;
+            data.status = documentoProcesso.Status;
+
+            if (documentoProcesso.Arquivo != null)
+            {
+                data.arquivo = new
+                {
+                    hash = documentoProcesso.Arquivo.Hash,
+                    bytes = documentoProcesso.Arquivo.Bytes,
+                    fileName = documentoProcesso.Arquivo.FileName,
+                    mimeType = documentoProcesso.Arquivo.MimeType
+                };
+            }
+            else
+            {
+                data.arquivo = null;
+            }
+
+            data.idProcesso = documentoProcesso.IdProcesso;
+            data.idTipoDocumentoEtapa = documentoProcesso.IdTipoDocumentoEtapa;
+            data.idResponsavel = documentoProcesso.IdResponsavel;
+            data.idAprovador = documentoProcesso.IdAprovador;
+
+            return data;
         }
     }
 }

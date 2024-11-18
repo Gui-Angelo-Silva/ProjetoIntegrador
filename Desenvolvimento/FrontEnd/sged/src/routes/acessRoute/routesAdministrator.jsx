@@ -1,5 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+
 import Home from '../../pages/dashboard/home';
+
 import Registration from '../../pages/dashboard/registration';
 import State from '../../pages/manipulation/state';
 import City from '../../pages/manipulation/city';
@@ -13,7 +15,6 @@ import PublicPlace from '../../pages/manipulation/publicplace';
 import TypeDocument from '../../pages/manipulation/typedocument';
 import TypeProcess from '../../pages/manipulation/typeprocess';
 import Stage from '../../pages/manipulation/stage';
-import Document from '../../pages/dashboard/document';
 import RealState from '../../pages/manipulation/realstate';
 import StageDocumentType from '../../pages/manipulation/stagedocumenttype';
 import Supervisor from '../../pages/manipulation/supervisor';
@@ -23,10 +24,15 @@ import Topography from '../../pages/manipulation/topography';
 import TypeInfrastructure from '../../pages/manipulation/typeinfrastructure';
 import Infrastructure from '../../pages/manipulation/infrastructure';
 import Installation from '../../pages/manipulation/installation';
+
+import Document from '../../pages/dashboard/document';
 import Process from '../../pages/manipulation/process';
 import AddProcess from '../../pages/manipulation/process/modules/add';
 import EditProcess from '../../pages/manipulation/process/modules/edit';
-import AnalysisProcess from '../../pages/manipulation/process/modules/approve';
+import AnalysisProcess from '../../pages/manipulation/process/modules/analysis';
+import DocumentProcess from '../../pages/manipulation/documentprocess';
+import EditDocumentProcess from '../../pages/manipulation/documentprocess/modules/edit';
+import AnalysisDocumentProcess from '../../pages/manipulation/documentprocess/modules/analysis';
 
 export default function RouteA() {
     return (
@@ -61,6 +67,9 @@ export default function RouteA() {
             <Route path="documentos/processos/cadastrar-processo" element={<AddProcess />}></Route>
             <Route path="documentos/processos/editar-processo/:id" element={<EditProcess />}></Route>
             <Route path="documentos/processos/analisar-processo/:id" element={<AnalysisProcess />}></Route>
+            <Route path="documentos/documentos-processos" element={<DocumentProcess />}></Route>
+            <Route path="documentos/documentos-processos/editar-documento/:id" element={<EditDocumentProcess />}></Route>
+            <Route path="documentos/documentos-processos/analisar-documento/:id" element={<AnalysisDocumentProcess />}></Route>
 
             {/* Rota catch-all para páginas inexistentes */}
             <Route path="*" element={<Navigate to="/pagina-inexistente" replace />} />

@@ -9,8 +9,7 @@ import Breadcrumb from "../../../../../components/Title/Breadcrumb";
 import { useMontage } from "../../../../../object/modules/montage";
 import * as functions from '../../functions/functions';
 
-import ProcessForm from "./forms/form";
-import Stages from "./components/stage";
+import DocumentProcessForm from "./forms/form";
 
 const Edit = () => {
   const montage = useMontage();
@@ -21,8 +20,8 @@ const Edit = () => {
 
   const pages = [
     { name: "Documentos", link: "/administrador/documentos", isEnabled: true },
-    { name: "Processos", link: "/administrador/documentos/processos", isEnabled: true },
-    { name: "Análise do Processo", link: "", isEnabled: false },
+    { name: "Documentos de Processos", link: "/administrador/documentos/documentos-processos", isEnabled: true },
+    { name: "Editar Documento", link: "", isEnabled: false }, // Link desativado
   ];
 
   const { id } = useParams();
@@ -30,12 +29,12 @@ const Edit = () => {
   // State hooks --------------------------------------------------------------------------------------------------------------------------------------
 
   const [update, setUpdate] = useState(true);
-  const [process, setProcess] = useState({});
+  const [documentProcess, setDocumentProcess] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await functions.GetProcess(id);
-      setProcess(data);
+      const data = await functions.GetDocument(id);
+      setDocumentProcess(data);
 
       setUpdate(false);
     };
@@ -47,15 +46,13 @@ const Edit = () => {
     <>
       <Breadcrumb pages={pages} />
       <div className="mt-8">
-        <ProcessForm
+        <DocumentProcessForm
           update={update}
           setUpdate={setUpdate}
-          process={process}
+          documentProcess={documentProcess}
         />
 
-        <hr className="mt-6 mb-6 border-t-4 border-gray-400 rounded-lg w-full" />
-
-        <Stages setUpdate={setUpdate} process={process} stages={process?.tipoProcesso?.etapas || []} />
+        <hr className="w-full mt-6 mb-6 border-t-4 border-gray-400 rounded-lg" />
       </div>
     </>
   );

@@ -88,7 +88,7 @@ const Stages = ({ setUpdate, process, stages }) => {
   return (
     <div className="w-full">
       {stages.length === 0 ? (
-        <div className="flex items-center space-x-2 p-4 bg-gray-200 rounded-lg">
+        <div className="flex items-center p-4 space-x-2 bg-gray-200 rounded-lg">
           <WarningCircle size={20} />
           <span className="text-gray-700">
             Não há Etapas vinculadas a este Tipo Processo.
@@ -103,10 +103,10 @@ const Stages = ({ setUpdate, process, stages }) => {
                 className="border border-gray-200 rounded-lg shadow-md"
               >
                 <div
-                  className="flex justify-between items-center p-4 bg-gray-200 rounded-t-lg cursor-pointer"
+                  className="flex items-center justify-between p-4 bg-gray-200 rounded-t-lg cursor-pointer"
                   onClick={() => toggleRow(stage.id)}
                 >
-                  <span className="gap-x-2 text-lg flex items-center">
+                  <span className="flex items-center text-lg gap-x-2">
                     <Files size={30} />
                     Etapa {stage.posicao} - {stage.nomeEtapa}{" "}
                     {showAlertIcon && (
@@ -239,23 +239,23 @@ const Stages = ({ setUpdate, process, stages }) => {
 
                 {expandedRows.includes(stage.id) &&
                   (stage.documentosEtapa.length === 0 ? (
-                    <div className="flex items-center space-x-2 p-4">
+                    <div className="flex items-center p-4 space-x-2">
                       <WarningCircle size={20} />
                       <span className="text-gray-700">
                         Não há Documentos vinculados a esta Etapa.
                       </span>
                     </div>
                   ) : (
-                    <div className="bg-white p-4">
+                    <div className="p-4 bg-white">
                       <ul>
                         {stage.documentosEtapa.map((typeDocumentStage) => {
                           return (
                             <li
                               key={typeDocumentStage.id}
-                              className="p-2 flex justify-between items-center border-b hover:bg-gray-100 "
+                              className="flex items-center justify-between p-2 border-b hover:bg-gray-100 "
                             >
-                              <div className="flex justify-between items-center">
-                                <span className="text-gray-700 gap-x-2 flex items-center mr-2">
+                              <div className="flex items-center justify-between">
+                                <span className="flex items-center mr-2 text-gray-700 gap-x-2">
                                   <FileText size={20} /> Documento{" "}
                                   {typeDocumentStage.posicao} -{" "}
                                   {
@@ -319,7 +319,7 @@ const Stages = ({ setUpdate, process, stages }) => {
                                           ? server
                                               .removeSegment(3)
                                               .addSegment(
-                                                "documentos-processo/editar-documento"
+                                                "documentos-processos/editar-documento"
                                               )
                                               .addData(
                                                 typeDocumentStage
@@ -345,7 +345,7 @@ const Stages = ({ setUpdate, process, stages }) => {
                                         server
                                           .removeSegment(3)
                                           .addSegment(
-                                            "documentos-processo/analisar-documento"
+                                            "documentos-processos/analisar-documento"
                                           )
                                           .addData(
                                             typeDocumentStage.documentoProcesso

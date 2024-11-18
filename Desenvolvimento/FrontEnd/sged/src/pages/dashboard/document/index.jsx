@@ -26,7 +26,7 @@ export default function Document() {
         {
             title: "Doc. Processo",
             imgSrc: ImgDocumentoProcesso,
-            onClick: () => server.inDevelopment("Controle de Documento Processo"),
+            onClick: () => server.currentRoute().addSegment("documentos-processos").dispatch(),
         },
     ];
 

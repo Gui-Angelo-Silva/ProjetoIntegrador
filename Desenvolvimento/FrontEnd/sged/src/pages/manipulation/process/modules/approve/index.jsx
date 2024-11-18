@@ -55,7 +55,7 @@ const Edit = () => {
 
         <hr className="mt-6 mb-6 border-t-4 border-gray-400 rounded-lg w-full" />
 
-        <Stages setUpdate={setUpdate} stages={process?.tipoProcesso?.etapas || []} />
+        <Stages setUpdate={setUpdate} process={process} stages={process?.tipoProcesso?.etapas || []} />
       </div>
     </>
   );

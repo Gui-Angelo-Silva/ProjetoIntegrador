@@ -1,16 +1,31 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Paperclip, Files, FileText, FileArchive, CaretDown, CaretRight, Circle, ArrowSquareOut, DownloadSimple, PencilSimpleLine, Trash, WarningCircle, Check, X, Warning, FileMagnifyingGlass, CaretDoubleDown } from "@phosphor-icons/react";
+import React, { useState, useEffect, useMemo } from "react";
+import {
+  Paperclip,
+  Files,
+  FileText,
+  FileArchive,
+  CaretDown,
+  CaretRight,
+  Circle,
+  ArrowSquareOut,
+  DownloadSimple,
+  PencilSimpleLine,
+  Trash,
+  WarningCircle,
+  Check,
+  X,
+  Warning,
+  FileMagnifyingGlass,
+  CaretDoubleDown,
+} from "@phosphor-icons/react";
 
-import ProgressBar from '../../../../../../components/ProgressBar';
-import InvisibleChar from '../../../../../../components/InvisibleChar';
+import ProgressBar from "../../../../../../components/ProgressBar";
+import InvisibleChar from "../../../../../../components/InvisibleChar";
 
 import { useServer } from "../../../../../../routes/serverRoute";
-import * as functions from '../../../functions/functions';
+import * as functions from "../../../functions/functions";
 
-const Stages = ({
-  setUpdate,
-  stages
-}) => {
+const Stages = ({ setUpdate, process, stages }) => {
   const server = useServer();
 
   const [expandedRows, setExpandedRows] = useState([]);
@@ -28,7 +43,7 @@ const Stages = ({
       const url = URL.createObjectURL(arquive.bytes);
 
       if (url) {
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.href = url;
         link.download = arquive.fileName; // Define o nome do arquivo para download
         link.click();
@@ -71,131 +86,297 @@ const Stages = ({
   }, [showAlertIcon, opacityChangeCount]);
 
   return (
-    <div className='w-full'>
+    <div className="w-full">
       {stages.length === 0 ? (
         <div className="flex items-center space-x-2 p-4 bg-gray-200 rounded-lg">
           <WarningCircle size={20} />
-          <span className="text-gray-700">Não há Etapas vinculadas a este Tipo Processo.</span>
+          <span className="text-gray-700">
+            Não há Etapas vinculadas a este Tipo Processo.
+          </span>
         </div>
       ) : (
         <ul className="space-y-4">
           {stages.map((stage) => {
             return (
-              <li key={stage.id} className="border border-gray-200 rounded-lg shadow-md">
-                <div className="flex justify-between items-center p-4 bg-gray-200 rounded-t-lg cursor-pointer" onClick={() => toggleRow(stage.id)}>
+              <li
+                key={stage.id}
+                className="border border-gray-200 rounded-lg shadow-md"
+              >
+                <div
+                  className="flex justify-between items-center p-4 bg-gray-200 rounded-t-lg cursor-pointer"
+                  onClick={() => toggleRow(stage.id)}
+                >
                   <span className="gap-x-2 text-lg flex items-center">
                     <Files size={30} />
-                    Etapa {stage.posicao} - {stage.nomeEtapa} {" "} {showAlertIcon && (<WarningCircle className="text-[#FF000D]" size={25} />)}
+                    Etapa {stage.posicao} - {stage.nomeEtapa}{" "}
+                    {showAlertIcon && (
+                      <WarningCircle className="text-[#FF000D]" size={25} />
+                    )}
                   </span>
 
                   <div className="flex items-center gap-x-10">
                     <div className="flex items-center gap-x-10">
                       <div className="flex items-center gap-x-5">
                         <span className="text-lg text-gray-600">
-                          <InvisibleChar text={stage.progresso.pendente} number={2} /> / {" "} <InvisibleChar text={stage.progresso.total} number={2} />
+                          <InvisibleChar
+                            text={stage.progresso.pendente}
+                            number={2}
+                          />{" "}
+                          /{" "}
+                          <InvisibleChar
+                            text={stage.progresso.total}
+                            number={2}
+                          />
                         </span>
-                        <ProgressBar width={"w-10"} primaryColor={"from-[#A3A3A3]"} secondaryColor={"to-[#585858]"} iconColor={"text-[#A3A3A3]"} totalValue={stage.progresso.total} partialValue={stage.progresso.pendente} />
+                        <ProgressBar
+                          width={"w-20"}
+                          primaryColor={"from-[#A3A3A3]"}
+                          secondaryColor={"to-[#585858]"}
+                          iconColor={"text-[#A3A3A3]"}
+                          totalValue={stage.progresso.total}
+                          partialValue={stage.progresso.pendente}
+                        />
                       </div>
 
                       <div className="flex items-center gap-x-5">
                         <span className="text-lg text-gray-600">
-                          <InvisibleChar text={stage.progresso.anexado} number={2} /> / {" "} <InvisibleChar text={stage.progresso.total} number={2} />
+                          <InvisibleChar
+                            text={stage.progresso.anexado}
+                            number={2}
+                          />{" "}
+                          /{" "}
+                          <InvisibleChar
+                            text={stage.progresso.total}
+                            number={2}
+                          />
                         </span>
-                        <ProgressBar width={"w-10"} totalValue={stage.progresso.total} partialValue={stage.progresso.anexado} />
+                        <ProgressBar
+                          width={"w-20"}
+                          primaryColor={"from-[#41e6ff]"}
+                          secondaryColor={"to-[#00A9C2]"}
+                          iconColor={"text-[#41e6ff]"}
+                          totalValue={stage.progresso.total}
+                          partialValue={stage.progresso.anexado}
+                        />
                       </div>
 
                       <div className="flex items-center gap-x-5">
                         <span className="text-lg text-gray-600">
-                          <InvisibleChar text={stage.progresso.analise} number={2} /> / {" "} <InvisibleChar text={stage.progresso.total} number={2} />
+                          <InvisibleChar
+                            text={stage.progresso.analise}
+                            number={2}
+                          />{" "}
+                          /{" "}
+                          <InvisibleChar
+                            text={stage.progresso.total}
+                            number={2}
+                          />
                         </span>
-                        <ProgressBar width={"w-10"} primaryColor={"from-[#CA87FF]"} secondaryColor={"to-[#7D00DF]"} iconColor={"text-[#CA87FF]"} totalValue={stage.progresso.total} partialValue={stage.progresso.analise} />
+                        <ProgressBar
+                          width={"w-20"}
+                          primaryColor={"from-[#b14aff]"}
+                          secondaryColor={"to-[#7D00DF]"}
+                          iconColor={"text-[#b14aff]"}
+                          totalValue={stage.progresso.total}
+                          partialValue={stage.progresso.analise}
+                        />
                       </div>
 
                       <div className="flex items-center gap-x-5">
                         <span className="text-lg text-gray-600">
-                          <InvisibleChar text={stage.progresso.aprovado} number={2} /> / {" "} <InvisibleChar text={stage.progresso.total} number={2} />
+                          <InvisibleChar
+                            text={stage.progresso.aprovado}
+                            number={2}
+                          />{" "}
+                          /{" "}
+                          <InvisibleChar
+                            text={stage.progresso.total}
+                            number={2}
+                          />
                         </span>
-                        <ProgressBar width={"w-10"} primaryColor={"from-[#2BFF00]"} secondaryColor={"to-[#1BA100]"} iconColor={"text-[#2BFF00]"} totalValue={stage.progresso.total} partialValue={stage.progresso.aprovado} />
+                        <ProgressBar
+                          width={"w-20"}
+                          primaryColor={"from-[#2BFF00]"}
+                          secondaryColor={"to-[#1BA100]"}
+                          iconColor={"text-[#2BFF00]"}
+                          totalValue={stage.progresso.total}
+                          partialValue={stage.progresso.aprovado}
+                        />
                       </div>
 
                       <div className="flex items-center gap-x-5">
                         <span className="text-lg text-gray-600">
-                          <InvisibleChar text={stage.progresso.reprovado} number={2} /> / {" "} <InvisibleChar text={stage.progresso.total} number={2} />
+                          <InvisibleChar
+                            text={stage.progresso.reprovado}
+                            number={2}
+                          />{" "}
+                          /{" "}
+                          <InvisibleChar
+                            text={stage.progresso.total}
+                            number={2}
+                          />
                         </span>
-                        <ProgressBar width={"w-10"} primaryColor={"from-[#FF000D]"} secondaryColor={"to-[#B20009]"} iconColor={"text-[#FF000D]"} totalValue={stage.progresso.total} partialValue={stage.progresso.reprovado} />
+                        <ProgressBar
+                          width={"w-20"}
+                          primaryColor={"from-[#FF000D]"}
+                          secondaryColor={"to-[#B20009]"}
+                          iconColor={"text-[#FF000D]"}
+                          totalValue={stage.progresso.total}
+                          partialValue={stage.progresso.reprovado}
+                        />
                       </div>
                     </div>
 
-                    <button className="text-black">{expandedRows.includes(stage.id) ? <CaretDown size={30} /> : <CaretRight size={30} />}</button>
+                    <button className="text-black">
+                      {expandedRows.includes(stage.id) ? (
+                        <CaretDown size={30} />
+                      ) : (
+                        <CaretRight size={30} />
+                      )}
+                    </button>
                   </div>
                 </div>
 
-                {expandedRows.includes(stage.id) && (
-                  stage.documentosEtapa.length === 0 ? (
+                {expandedRows.includes(stage.id) &&
+                  (stage.documentosEtapa.length === 0 ? (
                     <div className="flex items-center space-x-2 p-4">
                       <WarningCircle size={20} />
-                      <span className="text-gray-700">Não há Documentos vinculados a esta Etapa.</span>
+                      <span className="text-gray-700">
+                        Não há Documentos vinculados a esta Etapa.
+                      </span>
                     </div>
                   ) : (
                     <div className="bg-white p-4">
                       <ul>
                         {stage.documentosEtapa.map((typeDocumentStage) => {
                           return (
-                            <li key={typeDocumentStage.id} className="p-2 flex justify-between items-center border-b hover:bg-gray-100 ">
+                            <li
+                              key={typeDocumentStage.id}
+                              className="p-2 flex justify-between items-center border-b hover:bg-gray-100 "
+                            >
                               <div className="flex justify-between items-center">
                                 <span className="text-gray-700 gap-x-2 flex items-center mr-2">
-                                  <FileText size={20} /> Documento {typeDocumentStage.posicao} - {typeDocumentStage.tipoDocumento.nomeTipoDocumento}
+                                  <FileText size={20} /> Documento{" "}
+                                  {typeDocumentStage.posicao} -{" "}
+                                  {
+                                    typeDocumentStage.tipoDocumento
+                                      .nomeTipoDocumento
+                                  }
                                 </span>
 
-                                {typeDocumentStage.documentoProcesso && (
-                                  typeDocumentStage.documentoProcesso.status === 4 ? (
-                                    <span className="text-[#00A9C2] flex items-center space-x-1 ml-auto">
+                                {typeDocumentStage.documentoProcesso &&
+                                  (typeDocumentStage.documentoProcesso
+                                    .status === 4 ? (
+                                    <span className="text-[#00A9C2] flex items-center space-x-1 ml-auto bg-gradient-to-r from-[#00A9C233] to-[#00A9C200] border-1 border-gray-200 rounded-full px-3 py-1">
                                       <Paperclip size={20} />
                                       <span>Anexado</span>
                                     </span>
-                                  ) : typeDocumentStage.documentoProcesso.status === 5 ? (
-                                    <span className="text-[#7D00DF] flex items-center space-x-1 ml-auto">
+                                  ) : typeDocumentStage.documentoProcesso
+                                      .status === 5 ? (
+                                    <span className="text-[#7D00DF] flex items-center space-x-1 ml-auto bg-gradient-to-r from-[#7D00DF33] to-[#7D00DF00] border-1 border-gray-200 rounded-full px-3 py-1">
                                       <FileMagnifyingGlass size={20} />
                                       <span>Em Análise</span>
                                     </span>
-                                  ) : typeDocumentStage.documentoProcesso.status === 6 ? (
-                                    <span className="text-[#1BA100] flex items-center space-x-1 ml-auto">
+                                  ) : typeDocumentStage.documentoProcesso
+                                      .status === 6 ? (
+                                    <span className="text-[#1BA100] flex items-center space-x-1 ml-auto bg-gradient-to-r from-[#1BA10033] to-[#1BA10000] border-1 border-gray-200 rounded-full px-3 py-1">
                                       <Check size={20} />
                                       <span>Aprovado</span>
                                     </span>
-                                  ) : typeDocumentStage.documentoProcesso.status === 7 ? (
-                                    <span className="text-[#B20009] flex items-center space-x-1 ml-auto">
+                                  ) : typeDocumentStage.documentoProcesso
+                                      .status === 7 ? (
+                                    <span className="text-[#B20009] flex items-center space-x-1 ml-auto bg-gradient-to-r from-[#B2000933] to-[#B2000900] border-1 border-gray-200 rounded-full px-3 py-1">
                                       <X size={20} />
-                                      <span>Desaprovado</span>
+                                      <span>Reprovado</span>
                                     </span>
                                   ) : (
-                                    <span className="text-[#585858] flex items-center space-x-1 ml-auto">
+                                    <span className="text-[#585858] flex items-center space-x-1 ml-auto bg-gradient-to-r from-[#58585833] to-[#58585800] border-1 border-gray-200 rounded-full px-3 py-1">
                                       <Warning size={20} />
                                       <span>Pendente</span>
                                     </span>
-                                  )
-                                )}
+                                  ))}
                               </div>
 
                               <div className="flex items-center space-x-2">
                                 <div className="flex space-x-20">
                                   <div className="flex items-center space-x-3">
                                     <button
-                                      className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${typeDocumentStage.documentoProcesso.status !== 5 && typeDocumentStage.documentoProcesso.status !== 6 ? 'border-[#6abcff] hover:bg-[#6abcff] text-black' : 'bg-gray-200 cursor-not-allowed'}`}
-                                      onClick={() => typeDocumentStage.documentoProcesso.status !== 5 && typeDocumentStage.documentoProcesso.status !== 6 ? server.removeSegment(3).addSegment("documentos-processo/editar-documento").addData(typeDocumentStage.documentoProcesso.id).newTab() : null}
-                                      disabled={typeDocumentStage.documentoProcesso.status === 5 && typeDocumentStage.documentoProcesso.status === 6}
+                                      className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${
+                                        typeDocumentStage.documentoProcesso
+                                          .status !== 5 &&
+                                        typeDocumentStage.documentoProcesso
+                                          .status !== 6 &&
+                                        process.status !== 3
+                                          ? "border-[#6abcff] hover:bg-[#6abcff] text-black"
+                                          : "bg-gray-200 cursor-not-allowed"
+                                      }`}
+                                      onClick={() =>
+                                        typeDocumentStage.documentoProcesso
+                                          .status !== 5 &&
+                                        typeDocumentStage.documentoProcesso
+                                          .status !== 6 &&
+                                        process.status !== 3
+                                          ? server
+                                              .removeSegment(3)
+                                              .addSegment(
+                                                "documentos-processo/editar-documento"
+                                              )
+                                              .addData(
+                                                typeDocumentStage
+                                                  .documentoProcesso.id
+                                              )
+                                              .newTab()
+                                          : null
+                                      }
+                                      disabled={
+                                        typeDocumentStage.documentoProcesso
+                                          .status === 5 ||
+                                        typeDocumentStage.documentoProcesso
+                                          .status === 6 ||
+                                        process.status === 3
+                                      }
                                     >
                                       <PencilSimpleLine size={20} />
                                       Editar
                                     </button>
-                                    <button className="border-2 border-[#da8aff] hover:bg-[#da8aff] text-black px-2 py-1 rounded flex items-center gap-x-1" onClick={() => server.removeSegment(3).addSegment("documentos-processo/editar-documento").addData(typeDocumentStage.documentoProcesso.id).newTab()}>
+                                    <button
+                                      className="border-2 border-[#da8aff] hover:bg-[#da8aff] text-black px-2 py-1 rounded flex items-center gap-x-1"
+                                      onClick={() =>
+                                        server
+                                          .removeSegment(3)
+                                          .addSegment(
+                                            "documentos-processo/analisar-documento"
+                                          )
+                                          .addData(
+                                            typeDocumentStage.documentoProcesso
+                                              .id
+                                          )
+                                          .newTab()
+                                      }
+                                    >
                                       <ArrowSquareOut size={20} />
                                       Visualizar
                                     </button>
                                     <button
-                                      className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${typeDocumentStage.documentoProcesso.arquivo ? 'border-[#8cff9d] hover:bg-[#8cff9d] text-black' : 'bg-gray-200 cursor-not-allowed'}`}
-                                      onClick={() => typeDocumentStage.documentoProcesso.arquivo ? handleDownload(typeDocumentStage.documentoProcesso.arquivo) : null}
-                                      disabled={!typeDocumentStage.documentoProcesso.arquivo}
+                                      className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${
+                                        typeDocumentStage.documentoProcesso
+                                          .arquivo
+                                          ? "border-[#5feaff] hover:bg-[#5feaff] text-black"
+                                          : "bg-gray-200 cursor-not-allowed"
+                                      }`}
+                                      onClick={() =>
+                                        typeDocumentStage.documentoProcesso
+                                          .arquivo
+                                          ? handleDownload(
+                                              typeDocumentStage
+                                                .documentoProcesso.arquivo
+                                            )
+                                          : null
+                                      }
+                                      disabled={
+                                        !typeDocumentStage.documentoProcesso
+                                          .arquivo
+                                      }
                                     >
                                       <DownloadSimple size={20} />
                                       Baixar
@@ -204,17 +385,55 @@ const Stages = ({
 
                                   <div className="flex items-center space-x-3">
                                     <button
-                                      className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${typeDocumentStage.documentoProcesso.status === 5 ? 'border-[#78ff5d] hover:bg-[#78ff5d] text-black' : 'bg-gray-200 cursor-not-allowed'}`}
-                                      onClick={typeDocumentStage.documentoProcesso.status === 5 ? () => { functions.ApproveDocumentProcess(typeDocumentStage.documentoProcesso.id); setUpdate(true); } : null}
-                                      disabled={typeDocumentStage.documentoProcesso.status !== 5}
+                                      className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${
+                                        typeDocumentStage.documentoProcesso
+                                          .status === 5
+                                          ? "border-[#78ff5d] hover:bg-[#78ff5d] text-black"
+                                          : "bg-gray-200 cursor-not-allowed"
+                                      }`}
+                                      onClick={
+                                        typeDocumentStage.documentoProcesso
+                                          .status === 5
+                                          ? async () => {
+                                              await functions.ApproveDocumentProcess(
+                                                typeDocumentStage
+                                                  .documentoProcesso.id
+                                              );
+                                              setUpdate(true);
+                                            }
+                                          : null
+                                      }
+                                      disabled={
+                                        typeDocumentStage.documentoProcesso
+                                          .status !== 5
+                                      }
                                     >
                                       <Check size={20} />
                                       Aprovar
                                     </button>
                                     <button
-                                      className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${typeDocumentStage.documentoProcesso.status === 5 ? 'border-[#ff5e66] hover:bg-[#ff5e66] text-black' : 'bg-gray-200 cursor-not-allowed'}`}
-                                      onClick={typeDocumentStage.documentoProcesso.status === 5 ? () => { functions.DisapproveDocumentProcess(typeDocumentStage.documentoProcesso.id); setUpdate(true); } : null}
-                                      disabled={typeDocumentStage.documentoProcesso.status !== 5}
+                                      className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${
+                                        typeDocumentStage.documentoProcesso
+                                          .status === 5
+                                          ? "border-[#ff5e66] hover:bg-[#ff5e66] text-black"
+                                          : "bg-gray-200 cursor-not-allowed"
+                                      }`}
+                                      onClick={
+                                        typeDocumentStage.documentoProcesso
+                                          .status === 5
+                                          ? async () => {
+                                              await functions.DisapproveDocumentProcess(
+                                                typeDocumentStage
+                                                  .documentoProcesso.id
+                                              );
+                                              setUpdate(true);
+                                            }
+                                          : null
+                                      }
+                                      disabled={
+                                        typeDocumentStage.documentoProcesso
+                                          .status !== 5
+                                      }
                                     >
                                       <X size={20} />
                                       Reprovar
@@ -227,8 +446,7 @@ const Stages = ({
                         })}
                       </ul>
                     </div>
-                  )
-                )}
+                  ))}
               </li>
             );
           })}
@@ -244,7 +462,10 @@ const Stages = ({
             left: "50%",
             transform: "translateX(-50%)",
             zIndex: 1000,
-            border: opacityChangeCount % 2 === 0 ? "1px solid #FF000D" : "1px solid transparent", // Alterna a borda entre vermelha e transparente
+            border:
+              opacityChangeCount % 2 === 0
+                ? "1px solid #FF000D"
+                : "1px solid transparent", // Alterna a borda entre vermelha e transparente
             color: opacityChangeCount % 2 === 0 ? "#FF000D" : "transparent", // Alterna a cor do texto entre preto e transparente
             padding: "10px",
             borderRadius: "50%",

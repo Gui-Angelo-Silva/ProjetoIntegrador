@@ -20,13 +20,11 @@ export const ProcessTab = ({
     idTypeProcess,
     setIdTypeProcess,
     identificationNumber,
-    setIdentificationNumber,
     processSituation,
     setProcessSituation,
     processDescription,
     setProcessDescription,
     approvationDate,
-    setApprovationDate,
 
     typeProcess,
     process,

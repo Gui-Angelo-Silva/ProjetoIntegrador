@@ -2,7 +2,7 @@ import React from 'react';
 import { Circle } from "@phosphor-icons/react";
 
 const ProgressBar = ({
-  width = 64,             // Comprimento do elemento
+  width = "w-64",             // Comprimento do elemento
   backgroundColor = 'bg-white', // Cor de fundo
   primaryColor = 'from-[#65EBFF]', // Cor primária
   secondaryColor = 'to-[#00A9C2]', // Cor secundária
@@ -13,7 +13,7 @@ const ProgressBar = ({
   const progressPercentage = (partialValue / totalValue) * 100;
 
   return (
-    <div className={`relative w-${width} h-2 ${backgroundColor} rounded`}>
+    <div className={`relative ${width} h-2 ${backgroundColor} rounded`}>
       {/* Barra de progresso */}
       <div
         className={`h-full bg-gradient-to-r ${primaryColor} ${secondaryColor} rounded`}

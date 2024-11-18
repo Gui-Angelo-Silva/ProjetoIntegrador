@@ -10,6 +10,7 @@ import { useMontage } from "../../../../../object/modules/montage";
 import * as functions from '../../functions/functions';
 
 import ProcessForm from "./forms/form";
+import Stages from "./components/stage";
 
 const Edit = () => {
   const montage = useMontage();
@@ -28,24 +29,33 @@ const Edit = () => {
 
   // State hooks --------------------------------------------------------------------------------------------------------------------------------------
 
+  const [update, setUpdate] = useState(true);
   const [process, setProcess] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await functions.GetProcess(id);
-      setProcess(functions.convertProcess(data));
+      setProcess(data);
+
+      setUpdate(false);
     };
 
-    fetchData();
-  }, [id]);
+    if (update) fetchData();
+  }, [id, update]);
 
   return (
     <>
       <Breadcrumb pages={pages} />
       <div className="mt-8">
         <ProcessForm
+          update={update}
+          setUpdate={setUpdate}
           process={process}
         />
+
+        <hr className="mt-6 mb-6 border-t-4 border-gray-400 rounded-lg w-full" />
+
+        <Stages setUpdate={setUpdate} stages={process?.tipoProcesso?.etapas || []} />
       </div>
     </>
   );

@@ -384,13 +384,11 @@ const Form = ({
           idTypeProcess={idTypeProcess}
           setIdTypeProcess={setIdTypeProcess}
           identificationNumber={identificationNumber}
-          setIdentificationNumber={setIdentificationNumber}
           processSituation={processSituation}
           setProcessSituation={setProcessSituation}
           processDescription={processDescription}
           setProcessDescription={setProcessDescription}
           approvationDate={approvationDate}
-          setApprovationDate={setApprovationDate}
 
           typeProcess={typeProcess}
           process={process}
@@ -473,6 +471,10 @@ const Form = ({
               taxpayer={taxpayer}
               use={use}
               occupation={occupation}
+              publicplace={publicplace}
+              neighborhood={neighborhood}
+              city={city}
+              state={state}
             />
             <br />
 
@@ -550,6 +552,7 @@ const Form = ({
             color: opacityChangeCount % 2 === 0 ? "#FF000D" : "transparent", // Alterna a cor do texto entre preto e transparente
             padding: "10px",
             borderRadius: "50%",
+            backgroundColor: "#FF000D1A", // Vermelho com 30% de opacidade
             transition: "border-color 0.5s ease, color 0.5s ease", // Transição suave para borda e cor do texto
           }}
         >

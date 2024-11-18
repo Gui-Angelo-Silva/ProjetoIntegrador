@@ -147,6 +147,26 @@ export const PutProcess = async (data) => {
     return connection.getObject();
 };
 
+export const PutInProgressProcess = async (id) => {
+    await connection.endpoint("Processo").action("PutInProgress").data(id).put(id);
+    return connection.getObject();
+};
+
+export const SendForAnalysisProcess = async (id) => {
+    await connection.endpoint("Processo").action("SendForAnalysis").data(id).put(id);
+    return connection.getObject();
+};
+
+export const ApproveProcess = async (id) => {
+    await connection.endpoint("Processo").action("Approve").data(id).put(id);
+    return connection.getObject();
+};
+
+export const DisapproveProcess = async (id) => {
+    await connection.endpoint("Processo").action("Disapprove").data(id).put(id);
+    return connection.getObject();
+};
+
 
 
 
@@ -208,6 +228,16 @@ export function setDocument(documento) {
 export const GetDocuments = async (idProcess) => {
     await connection.endpoint("DocumentoProcesso").action("GetByProcess").data(idProcess).get();
     return connection.getList();
+};
+
+export const ApproveDocumentProcess = async (id) => {
+    await connection.endpoint("DocumentoProcesso").action("Approve").data(id).put(id);
+    return connection.getObject();
+};
+
+export const DisapproveDocumentProcess = async (id) => {
+    await connection.endpoint("DocumentoProcesso").action("Disapprove").data(id).put(id);
+    return connection.getObject();
 };
 
 

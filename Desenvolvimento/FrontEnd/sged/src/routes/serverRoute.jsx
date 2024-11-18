@@ -26,7 +26,7 @@ export const ServerProvider = ({ children }) => {
     };
 
     const newTab = (url) => {
-        window.open(url, '_blank'); // '_blank' abre em uma nova aba
+        window.open(url, '_blank', 'noopener,noreferrer'); // Garante maior segurança e desempenho
     };
 
     const serverActions = (url = '') => ({
@@ -72,18 +72,17 @@ export const ServerProvider = ({ children }) => {
             return serverActions(newUrl);
         },
         removeSegment: (quantRemove) => {
-            const segments = window.location.pathname.split('/');
+            const currentUrl = window.location.pathname;
+            const segments = currentUrl.split('/');
             const numSegments = segments.length;
             const index = numSegments - quantRemove;
 
-            let newUrl;
             if (index > 0) {
-                newUrl = `/${segments.slice(1, index).join('/')}`;
-            } else {
-                newUrl = '/pagina-inexistente';
-                dispatch(newUrl);
+                let newUrl = `/${segments.slice(1, index).join('/')}`;
+                return serverActions(newUrl);
             }
-            return serverActions(newUrl);
+
+            return serverActions(currentUrl);
         },
         clearUrl: (route) => {
             const newUrl = `/${route}`;

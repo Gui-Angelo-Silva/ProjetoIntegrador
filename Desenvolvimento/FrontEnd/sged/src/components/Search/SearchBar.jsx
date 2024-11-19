@@ -45,7 +45,7 @@ const SearchBar = ({ placeholder, options, onSearchChange, onSearchByChange, but
     return (
         <div className="flex items-center">
             <div className="flex justify-center items-center mx-auto w-[500px]">
-                <div className={`flex border-1 rounded-md w-full h-12 items-center ${isButtonHovered ? 'border-red-500' : 'border-[#dee2e6]'}`}>
+                <div className={`flex border-1 rounded-md w-full h-12 items-center focus-within:border-green-500 ${isButtonHovered ? 'border-red-500' : 'border-[#dee2e6]'}`}>
                     <div className="pl-2">
                         <Search />
                     </div>

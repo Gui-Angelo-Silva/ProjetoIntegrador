@@ -232,6 +232,8 @@ namespace SGED.Controllers
                     return BadRequest(_response);
                 }
 
+                documentoProcessoDTO.MarkAsAttached();
+
                 await _documentoProcessoService.Update(documentoProcessoDTO);
 
                 _response.SetSuccess();

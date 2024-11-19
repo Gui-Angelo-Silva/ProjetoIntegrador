@@ -35,7 +35,16 @@ namespace SGED.Objects.Utilities
         // Validação personalizada para MimeType.
         public static ValidationResult ValidateMimeType(string mimeType, ValidationContext context)
         {
-            var validMimeTypes = new[] { ".pdf", ".doc", ".docx", ".csv", ".xlsx", ".txt" };
+            var validMimeTypes = new[]
+            {
+                "application/pdf", // PDF
+                "application/msword", // DOC
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // DOCX
+                "text/csv", // CSV
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // XLSX
+                "text/plain" // TXT
+            };
+
             if (!Array.Exists(validMimeTypes, type => type.Equals(mimeType, StringComparison.OrdinalIgnoreCase)))
             {
                 return new ValidationResult("Tipo MIME inválido. Os tipos permitidos são: " + string.Join(", ", validMimeTypes));

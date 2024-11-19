@@ -74,8 +74,8 @@ export async function setProcessAllData(process, documents) {
         idTipoProcesso: process.idTypeProcess,
         idEngenheiro: process.idEngineer || null,
         idFiscal: process.idSupervisor || null,
-        idResponsavel: process.idUserResponsible || null,
-        idAprovador: process.idUserApprover || null,
+        idResponsavel: process.idResponsible || null,
+        idAprovador: process.idApprover || null,
 
         documentosProcessoDTO: documentList.length > 0 ? documentList : []
     };

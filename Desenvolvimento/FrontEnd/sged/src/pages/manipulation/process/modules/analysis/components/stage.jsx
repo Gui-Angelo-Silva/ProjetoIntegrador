@@ -355,13 +355,13 @@ const Stages = ({ setUpdate, process, stages }) => {
                                       }
                                     >
                                       <ArrowSquareOut size={20} />
-                                      Visualizar
+                                      Analisar
                                     </button>
                                     <button
                                       className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${
                                         typeDocumentStage.documentoProcesso
                                           .arquivo
-                                          ? "border-[#5feaff] hover:bg-[#5feaff] text-black"
+                                          ? "border-[#5fff94] hover:bg-[#5fff94] text-black"
                                           : "bg-gray-200 cursor-not-allowed"
                                       }`}
                                       onClick={() =>

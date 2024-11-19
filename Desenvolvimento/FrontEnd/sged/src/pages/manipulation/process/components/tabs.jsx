@@ -39,7 +39,7 @@ export const ProcessTab = ({
                     <h1 className="text-lg text-gray-700 mt-4">Código: </h1>
                     <input
                         type="text"
-                        className={`rounded-sm border-[#e5e7eb] bg-gray-50 w-full cursor-not-allowed`}
+                        className={`rounded-sm border-gray-300 bg-gray-50 w-full cursor-not-allowed`}
                         value={process.id || ""}
                         required
                         disabled={true}
@@ -50,7 +50,7 @@ export const ProcessTab = ({
                     <h1 className="text-lg text-gray-700 mt-4">Número de Identificação: </h1>
                     <input
                         type="text"
-                        className={`rounded-sm border-[#e5e7eb] bg-gray-50 w-full cursor-not-allowed`}
+                        className={`rounded-sm border-gray-300 bg-gray-50 w-full cursor-not-allowed`}
                         value={identificationNumber}
                         required
                         disabled={true}
@@ -62,7 +62,7 @@ export const ProcessTab = ({
                     <input
                         disabled
                         type="text"
-                        className="w-[300px] cursor-not-allowed rounded-sm border-[#e5e7eb] bg-gray-50"
+                        className="w-[300px] cursor-not-allowed rounded-sm border-gray-300 bg-gray-50"
                         value={(() => {
                             switch (process.processStatus) {
                                 case 0:
@@ -86,7 +86,7 @@ export const ProcessTab = ({
                     <h1 className="text-lg text-gray-700 mt-4">Data de Aprovação:</h1>
                     <input
                         type="date"
-                        className={`w-[200px] rounded-sm border-[#e5e7eb] bg-gray-50 cursor-not-allowed`}
+                        className={`w-[200px] rounded-sm border-gray-300 bg-gray-50 cursor-not-allowed`}
                         min="1700-01-01" // Limite inferior de 1700
                         max="9999-12-31" // Limite superior de 9999
                         value={approvationDate}
@@ -111,7 +111,7 @@ export const ProcessTab = ({
             <h1 className="text-lg text-gray-700 mt-4">Descrição do Tipo de Processo:</h1>
             <textarea
                 disabled
-                className="cursor-not-allowed rounded-sm border-[#e5e7eb] bg-gray-50 w-full h-28 resize-none"
+                className="cursor-not-allowed rounded-sm border-gray-300 bg-gray-50 w-full h-28 resize-none"
                 value={typeProcess.descricaoTipoProcesso || ''}
             ></textarea>
 
@@ -119,7 +119,7 @@ export const ProcessTab = ({
                 <div className="w-full relative">
                     <h1 className="text-lg text-gray-700 mt-4">Situação:</h1>
                     <textarea
-                        className={`rounded-sm border-[#e5e7eb] w-full h-48 resize-none p-3 ${disabled && "bg-gray-50 cursor-not-allowed"}`}
+                        className={`rounded-sm border-gray-300 w-full h-48 resize-none p-3 ${disabled && "bg-gray-50 cursor-not-allowed"}`}
                         onChange={(e) => {
                             if (e.target.value.length <= 300) setProcessSituation(e.target.value);
                         }}
@@ -135,7 +135,7 @@ export const ProcessTab = ({
                 <div className="w-full relative">
                     <h1 className="text-lg text-gray-700 mt-4">Descrição:</h1>
                     <textarea
-                        className={`rounded-sm border-[#e5e7eb] w-full h-48 resize-none p-3 ${disabled && "bg-gray-50 cursor-not-allowed"}`}
+                        className={`rounded-sm border-gray-300 w-full h-48 resize-none p-3 ${disabled && "bg-gray-50 cursor-not-allowed"}`}
                         onChange={(e) => {
                             if (e.target.value.length <= 500) setProcessDescription(e.target.value);
                         }}
@@ -306,7 +306,7 @@ export const RealStateTab = ({
                             <input
                                 type="text"
                                 disabled
-                                className="cursor-not-allowed rounded-sm w-full border-[#e5e7eb] bg-gray-50"
+                                className="cursor-not-allowed rounded-sm w-full border-gray-300 bg-gray-50"
                                 value={use.nomeUso || ''}
                             />
                         </div>
@@ -315,7 +315,7 @@ export const RealStateTab = ({
                             <input
                                 type="text"
                                 disabled
-                                className="cursor-not-allowed rounded-sm w-full border-[#e5e7eb] bg-gray-50"
+                                className="cursor-not-allowed rounded-sm w-full border-gray-300 bg-gray-50"
                                 value={occupation.nomeOcupacaoAtual || ''}
                             />
                         </div>
@@ -327,7 +327,7 @@ export const RealStateTab = ({
                             <input
                                 type="text"
                                 disabled
-                                className="cursor-not-allowed rounded-sm w-full border-[#e5e7eb] bg-gray-50"
+                                className="cursor-not-allowed rounded-sm w-full border-gray-300 bg-gray-50"
                                 value={publicplace?.ruaLogradouro || ''}
                             />
                         </div>
@@ -337,7 +337,7 @@ export const RealStateTab = ({
                             <input
                                 type="text"
                                 disabled
-                                className="cursor-not-allowed rounded-sm w-full border-[#e5e7eb] bg-gray-50"
+                                className="cursor-not-allowed rounded-sm w-full border-gray-300 bg-gray-50"
                                 value={neighborhood?.nomeBairro || ''}
                             />
                         </div>
@@ -349,7 +349,7 @@ export const RealStateTab = ({
                             <input
                                 type="text"
                                 disabled
-                                className="cursor-not-allowed rounded-sm w-full border-[#e5e7eb] bg-gray-50"
+                                className="cursor-not-allowed rounded-sm w-full border-gray-300 bg-gray-50"
                                 value={realstate.numeroImovel || ''}
                             />
                         </div>
@@ -359,7 +359,7 @@ export const RealStateTab = ({
                             <input
                                 type="text"
                                 disabled
-                                className="cursor-not-allowed rounded-sm w-full border-[#e5e7eb] bg-gray-50"
+                                className="cursor-not-allowed rounded-sm w-full border-gray-300 bg-gray-50"
                                 value={'Em Progresso' || ''}
                             />
                         </div>
@@ -369,7 +369,7 @@ export const RealStateTab = ({
                             <input
                                 type="text"
                                 disabled
-                                className="cursor-not-allowed rounded-sm w-full border-[#e5e7eb] bg-gray-50"
+                                className="cursor-not-allowed rounded-sm w-full border-gray-300 bg-gray-50"
                                 value={city?.nomeCidade || ''}
                             />
                         </div>
@@ -379,7 +379,7 @@ export const RealStateTab = ({
                             <input
                                 type="text"
                                 disabled
-                                className="cursor-not-allowed rounded-sm w-full border-[#e5e7eb] bg-gray-50"
+                                className="cursor-not-allowed rounded-sm w-full border-gray-300 bg-gray-50"
                                 value={state?.ufEstado || ''}
                             />
                         </div>
@@ -402,7 +402,7 @@ export const RealStateTab = ({
                             <input
                                 type="text"
                                 disabled
-                                className="w-full cursor-not-allowed rounded-sm border-[#e5e7eb] bg-gray-50"
+                                className="w-full cursor-not-allowed rounded-sm border-gray-300 bg-gray-50"
                                 value={owner.nomePessoa || ''}
                                 placeholder="Nome"
                             />
@@ -410,14 +410,14 @@ export const RealStateTab = ({
                                 <input
                                     type="text"
                                     disabled
-                                    className="w-[150px] cursor-not-allowed rounded-sm border-[#e5e7eb] bg-gray-50"
+                                    className="w-[150px] cursor-not-allowed rounded-sm border-gray-300 bg-gray-50"
                                     value={owner.cpfCnpjPessoa || ''}
                                     placeholder="CPF / CNPJ"
                                 />
                                 <input
                                     type="text"
                                     disabled
-                                    className="w-[150px] cursor-not-allowed rounded-sm border-[#e5e7eb] bg-gray-50"
+                                    className="w-[150px] cursor-not-allowed rounded-sm border-gray-300 bg-gray-50"
                                     value={owner.rgIePessoa || ''}
                                     placeholder="RG / IE"
                                 />
@@ -442,7 +442,7 @@ export const RealStateTab = ({
                             <input
                                 type="text"
                                 disabled
-                                className="w-full cursor-not-allowed rounded-sm border-[#e5e7eb] bg-gray-50"
+                                className="w-full cursor-not-allowed rounded-sm border-gray-300 bg-gray-50"
                                 value={taxpayer.nomePessoa || ''}
                                 placeholder="Nome"
                             />
@@ -450,14 +450,14 @@ export const RealStateTab = ({
                                 <input
                                     type="text"
                                     disabled
-                                    className="w-[150px] cursor-not-allowed rounded-sm border-[#e5e7eb] bg-gray-50"
+                                    className="w-[150px] cursor-not-allowed rounded-sm border-gray-300 bg-gray-50"
                                     value={taxpayer.cpfCnpjPessoa || ''}
                                     placeholder="CPF / CNPJ"
                                 />
                                 <input
                                     type="text"
                                     disabled
-                                    className="w-[150px] cursor-not-allowed rounded-sm border-[#e5e7eb] bg-gray-50"
+                                    className="w-[150px] cursor-not-allowed rounded-sm border-gray-300 bg-gray-50"
                                     value={taxpayer.rgIePessoa || ''}
                                     placeholder="RG / IE"
                                 />
@@ -645,37 +645,5 @@ export const EntitiesTab = ({
                 </div>
             </div>
         </Box>
-    );
-};
-
-
-
-// Componente de Aviso
-
-export const NoticeModal = ({ onCancel, open }) => {
-    if (!open) return null;
-    const server = useServer();
-
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <Box p={4} className="bg-white rounded-lg shadow-lg w-96 text-center">
-                <h2 className="text-lg font-semibold text-red-600 mb-4">
-                    Atenção
-                </h2>
-                <p className="text-gray-600 mb-6">
-                    Ao prosseguir com essa ação, todos os dados informados serão perdidos.
-                    <br />
-                    Deseja continuar?
-                </p>
-                <div className="flex justify-center gap-4">
-                    <button className="w-24 bg-red-500 hover:bg-red-600 text-white rounded-sm p-2" onClick={() => server.removeSegment(1).dispatch()}>
-                        Sim
-                    </button>
-                    <button className="w-24 bg-orange-400 hover:bg-orange-500 text-white rounded-sm p-2" onClick={() => onCancel(false)}>
-                        Não
-                    </button>
-                </div>
-            </Box>
-        </div>
     );
 };

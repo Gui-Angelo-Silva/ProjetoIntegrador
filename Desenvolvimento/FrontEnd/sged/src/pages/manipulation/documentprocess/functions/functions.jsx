@@ -1,5 +1,6 @@
 /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Arquivo <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */
 
+import { FilePdf } from '@phosphor-icons/react';
 import ConnectionService from '../../../../object/service/connection';
 const connection = new ConnectionService();
 
@@ -195,6 +196,20 @@ export async function getDocument(document) {
     };
 };
 
+// Função para converter o documento/arquivo
+export async function generateArchive(archive) {
+    const bytes = archive ? await convertFileToBytes(archive) : null;
+    const hash = bytes ? await generateSHA256(bytes) : null;
+    const arquivoDocumentoBase64 = bytes ? uint8ArrayToBase64(bytes) : "";
+
+    return {
+        hash: hash,
+        bytes: arquivoDocumentoBase64,
+        fileName: archive.name,
+        mimeType: archive.type
+    };
+};
+
 // Função para traduzir e processar o documento
 export function convertDocument(documento) {
     return {
@@ -232,6 +247,11 @@ export const GetDocuments = async (idProcess) => {
 
 export const GetDocument = async (idDocumentProcess) => {
     await connection.endpoint("DocumentoProcesso").data(idDocumentProcess).get();
+    return connection.getObject();
+};
+
+export const PutDocument = async (document) => {
+    await connection.endpoint("DocumentoProcesso").put(document);
     return connection.getObject();
 };
 

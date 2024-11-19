@@ -5,12 +5,13 @@ import { CaretDoubleDown, WarningCircle } from '@phosphor-icons/react';
 import StagesComponent from "../../../components/stages";
 import * as functions from '../../../functions/functions';
 
+import { useServer } from "../../../../../../routes/serverRoute";
 import {
   ProcessTab, ProcessTab as ProcessView,
   RealStateTab, RealStateTab as RealStateView,
-  EntitiesTab, EntitiesTab as EntitiesView,
-  NoticeModal
+  EntitiesTab, EntitiesTab as EntitiesView
 } from "../../../components/tabs";
+import NoticeModal from "../../../../../../components/Notice";
 
 const Form = ({
   process,
@@ -30,6 +31,7 @@ const Form = ({
 
   // Control -------------------------------------------------------------------------------------------------------------------------------------------
 
+  const server = useServer();
   const [open, setOpen] = useState(false);
   const [valid, setValid] = useState(false);
 
@@ -522,6 +524,7 @@ const Form = ({
             <NoticeModal
               onCancel={setOpen}
               open={open}
+              dispatch={() => server.removeSegment(1).dispatch()}
             />
           </Box>
         )}

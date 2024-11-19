@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Tabs, Tab, Box } from "@mui/material";
 import {
   ListChecks,
@@ -16,14 +16,19 @@ import {
   PencilSimpleLine,
   ArrowClockwise,
   DownloadSimple,
+  FileArrowUp,
+  ArrowSquareOut
 } from "@phosphor-icons/react";
 
 import { useServer } from "../../../../../../routes/serverRoute";
-
 import * as functions from "../../../functions/functions";
+import NoticeModal from "../../../../../../components/Notice";
 
-const Form = ({ update, setUpdate, documentProcess }) => {
+const Form = ({ update, setUpdate, documentProcess, save }) => {
   const server = useServer();
+
+  const [valid, setValid] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const [process, setProcess] = useState({});
   const [typeDocument, setTypeDocument] = useState({});
@@ -32,18 +37,65 @@ const Form = ({ update, setUpdate, documentProcess }) => {
   const [userApprover, setUserApprover] = useState({});
   const [typeApprover, setTypeApprover] = useState({});
 
+  const [date, setDate] = useState(documentProcess.dataExpedicao || "");
+  const [file, setFile] = useState("");
+  const [expeditionDate, setExpeditionDate] = useState(documentProcess.dataExpedicao || "");
+  const [descriptionDocument, setDescriptionDocument] = useState(documentProcess.descricaoDocumento || "");
+  const [observationDocument, setObservationDocument] = useState(documentProcess.observacaoDocumento || "");
+
+  const minDate = "1900-01-01";
+  const maxDate = (() => {
+    const currentYear = new Date().getFullYear();
+    return `${currentYear + 100}-12-31`;
+  })();
+
+  const verifyDate = () => {
+    // Verifica se a data está dentro do intervalo permitido
+    if (date && (date < minDate || date > maxDate)) {
+      setDate("");
+      alert(
+        "A data deve estar entre 01/01/1900 e 31/12/" +
+        (new Date().getFullYear() + 100)
+      );
+    } else {
+      setExpeditionDate(date)
+    }
+  };
+
+  const verifyData = () => {
+    var status = true;
+
+    if (!file) {
+      status = false;
+    }
+
+    if (!expeditionDate || expeditionDate === documentProcess.dataExpedicao) {
+      status = false;
+    }
+
+    if (!descriptionDocument || descriptionDocument === documentProcess.descricaoDocumento) {
+      status = false;
+    }
+
+    if (!observationDocument || observationDocument === documentProcess.observacaoDocumento) {
+      status = false;
+    }
+
+    setValid(status);
+  };
+
+  useEffect(() => {
+    verifyData();
+  }, [file, expeditionDate, descriptionDocument, observationDocument]);
+
   useEffect(() => {
     const fetchData = async () => {
       if (documentProcess.id) {
         const tp = await functions.GetProcess(documentProcess.idProcesso);
         setProcess(tp);
 
-        const tde = await functions.GetTypeDocumentStage(
-          documentProcess.idTipoDocumentoEtapa
-        );
-        console.log(tde);
+        const tde = await functions.GetTypeDocumentStage(documentProcess.idTipoDocumentoEtapa);
         const td = await functions.GetTypeDocument(tde.idTipoDocumento);
-        console.log(td);
         setTypeDocument(td);
 
         if (documentProcess.idResponsavel) {
@@ -67,16 +119,48 @@ const Form = ({ update, setUpdate, documentProcess }) => {
     fetchData();
   }, [documentProcess.id]);
 
-  const handleDownload = (arquive) => {
-    if (arquive) {
-      const url = URL.createObjectURL(arquive.bytes);
+  const handleDownload = () => {
+    console.log(1);
+
+    if (file) {
+      // Cria uma URL temporária para o arquivo e baixa-o
+      const url = URL.createObjectURL(file);
+      console.log(2);
+
+      if (url) {
+        console.log(3);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = file.name; // Nome original do arquivo para o download
+        link.click();
+
+        // Libera a URL após o download para evitar vazamento de memória
+        URL.revokeObjectURL(url);
+      }
+    } else if (documentProcess.arquivo) {
+      const url = URL.createObjectURL(documentProcess.arquivo.bytes);
 
       if (url) {
         const link = document.createElement("a");
         link.href = url;
-        link.download = arquive.fileName; // Define o nome do arquivo para download
+        link.download = documentProcess.arquivo.fileName; // Define o nome do arquivo para download
         link.click();
       }
+    }
+  };
+
+  const fileInputRef = useRef(null);
+
+  const handleUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setFile(file);
+    }
+  };
+
+  const handleButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click(); // Ativa o campo de upload ao clicar no botão.
     }
   };
 
@@ -102,30 +186,49 @@ const Form = ({ update, setUpdate, documentProcess }) => {
               <h1 className="text-lg text-gray-700">Arquivo:</h1>
               <div className="flex items-center gap-x-3">
                 <button
-                  className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${
-                    documentProcess.arquivo
-                      ? "border-[#5feaff] hover:bg-[#5feaff] text-black"
-                      : "bg-gray-200 cursor-not-allowed"
-                  }`}
+                  className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 border-[#5feaff] hover:bg-[#5feaff] text-black`}
+                  onClick={handleButtonClick}
+                >
+                  <FileArrowUp size={20} />
+                  Anexar
+                </button>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept=".pdf, .doc, .docx, .csv, .xls, .xlsx, .txt" // Extensões permitidas
+                  style={{ display: "none" }} // Oculta o input de arquivo.
+                  onChange={(e) => handleUpload(e)} // Chama a função de upload no evento de mudança
+                />
+
+                <button
+                  className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${file || documentProcess.arquivo
+                    ? "border-[#5fff94] hover:bg-[#5fff94] text-black"
+                    : "bg-gray-200 cursor-not-allowed"
+                    }`}
                   onClick={() =>
-                    documentProcess.arquivo
-                      ? handleDownload(documentProcess.arquivo)
+                    file || documentProcess.arquivo
+                      ? handleDownload()
                       : null
                   }
-                  disabled={!documentProcess.arquivo}
+                  disabled={!file && !documentProcess.arquivo}
                 >
                   <DownloadSimple size={20} />
                   Baixar
                 </button>
+
                 <p>
-                  {documentProcess.arquivo
-                    ? `${
-                        documentProcess.arquivo.fileName.length > 40
-                          ? documentProcess.arquivo.fileName.slice(0, 40) +
-                            "[...]"
-                          : documentProcess.arquivo.fileName
+                  {file
+                    ? (`${file.name.length > 30
+                      ? file.name.slice(0, 30) +
+                      "[...]"
+                      : file.name}`)
+                    : (documentProcess.arquivo
+                      ? `${documentProcess.arquivo.fileName.length > 30
+                        ? documentProcess.arquivo.fileName.slice(0, 30) +
+                        "[...]"
+                        : documentProcess.arquivo.fileName
                       }.${documentProcess.arquivo.mimeType}`
-                    : `Nenhum arquivo foi anexado!`}
+                      : `Nenhum arquivo foi anexado!`)}
                 </p>
               </div>
             </div>
@@ -279,10 +382,11 @@ const Form = ({ update, setUpdate, documentProcess }) => {
             <div className="w-full">
               <h1 className="text-lg text-gray-700">Data de Expedição:</h1>
               <input
-                type="text"
-                className="w-full border-gray-300 rounded-sm cursor-not-allowed bg-gray-50"
-                value={documentProcess.dataAprovacao || "dd/mm/aaaa"}
-                disabled
+                type="date"
+                className="w-full border-gray-300 rounded-sm"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                onBlur={() => verifyDate()}
               />
             </div>
 
@@ -354,26 +458,70 @@ const Form = ({ update, setUpdate, documentProcess }) => {
           </div>
 
           <div className="flex items-center mt-4 gap-x-5">
-            <div className="relative w-full">
+            <div className="w-full relative">
               <h1 className="text-lg text-gray-700">Descrição:</h1>
               <textarea
-                className="w-full h-48 p-3 border-gray-300 rounded-sm cursor-not-allowed resize-none bg-gray-50"
-                value={documentProcess.descricaoDocumento || ""}
-                disabled
+                className={`rounded-sm border-gray-300 w-full h-48 resize-none p-3`}
+                onChange={(e) => {
+                  if (e.target.value.length <= 500) setDescriptionDocument(e.target.value);
+                }}
+                value={descriptionDocument}
+                maxLength={500}
               />
+              <span className="text-sm text-gray-500 absolute bottom-4 right-3 pointer-events-none">
+                {descriptionDocument.length} / 500
+              </span>
             </div>
 
-            <div className="relative w-full">
+            <div className="w-full relative">
               <h1 className="text-lg text-gray-700">Observação:</h1>
               <textarea
-                className="w-full h-48 p-3 border-gray-300 rounded-sm cursor-not-allowed resize-none bg-gray-50"
-                value={documentProcess.observacaoDocumento || ""}
-                disabled
+                className={`rounded-sm border-gray-300 w-full h-48 resize-none p-3`}
+                onChange={(e) => {
+                  if (e.target.value.length <= 300) setObservationDocument(e.target.value);
+                }}
+                value={observationDocument}
+                maxLength={300}
               />
+              <span className="text-sm text-gray-500 absolute bottom-4 right-3 pointer-events-none">
+                {observationDocument.length} / 300
+              </span>
             </div>
+          </div>
+
+          {/* Botão de Salvar e Cancelar */}
+          <div className="flex justify-center gap-x-10 mt-5 p-3 bg-gray-100 shadow-sm rounded-md max-w-max mx-auto">
+            <button
+              className="border-2 border-[#da8aff] hover:bg-[#da8aff] text-black rounded flex items-center gap-x-1 py-1 w-32 justify-center"
+              onClick={() => server.removeSegment(2).addSegment("analisar-documento").addData(documentProcess.id).newTab()}
+            >
+              <ArrowSquareOut size={20} />
+              Analisar
+            </button>
+
+            <button
+              type="button"
+              onClick={async () => await save(file, expeditionDate, descriptionDocument, observationDocument)}
+              className={`${valid ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400 cursor-not-allowed"} text-white rounded-sm flex items-center gap-x-1 py-1 w-32 justify-center`}
+              disabled={!valid}
+            >
+              <PencilSimpleLine size={20} />
+              Editar
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setOpen(true)}
+              className="bg-red-500 hover:bg-red-600 text-white rounded-sm flex items-center gap-x-1 py-1 w-32 justify-center"
+            >
+              <X size={20} />
+              Cancelar
+            </button>
           </div>
         </Box>
       </Box>
+
+      <NoticeModal onCancel={setOpen} open={open} dispatch={() => server.removeSegment(2).dispatch()} />
     </>
   );
 };

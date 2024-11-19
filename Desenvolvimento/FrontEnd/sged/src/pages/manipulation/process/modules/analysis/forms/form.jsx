@@ -313,9 +313,9 @@ const Form = ({ update, setUpdate, process }) => {
             </div>
 
             {/* Segunda coluna */}
-            <div className="w-1/2 flex flex-col bg-gray-50">
+            <div className="w-1/2 flex flex-col">
               <h1 className="text-lg text-gray-700">Progresso:</h1>
-              <div className="border-1 border-gray-300 rounded-md p-3 flex flex-col gap-y-1">
+              <div className="border-1 border-gray-300 bg-gray-50 rounded-md p-3 flex flex-col gap-y-1">
                 {/* Primeira Linha */}
                 <div className="flex items-center gap-x-2 pl-2">
                   <Warning size={20} className="text-[#585858]" />
@@ -442,7 +442,7 @@ const Form = ({ update, setUpdate, process }) => {
               <h1 className="text-lg text-gray-700">Situação:</h1>
               <textarea
                 className="rounded-sm border-gray-300 w-full h-48 resize-none p-3 bg-gray-50 cursor-not-allowed"
-                value={process.processSituation || ""}
+                value={process.situacaoProcesso || ""}
                 disabled
               />
             </div>
@@ -451,7 +451,7 @@ const Form = ({ update, setUpdate, process }) => {
               <h1 className="text-lg text-gray-700">Descrição:</h1>
               <textarea
                 className="rounded-sm border-gray-300 w-full h-48 resize-none p-3 bg-gray-50 cursor-not-allowed"
-                value={process.processDescription || ""}
+                value={process.descricaoProcesso || ""}
                 disabled
               />
             </div>

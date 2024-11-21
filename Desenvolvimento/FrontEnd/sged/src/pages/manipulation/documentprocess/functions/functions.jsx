@@ -255,6 +255,21 @@ export const PutDocument = async (document) => {
     return connection.getObject();
 };
 
+export const PutOnPendingDocumentProcess = async (id) => {
+    await connection.endpoint("DocumentoProcesso").action("PutOnPending").data(id).put(id);
+    return connection.getObject();
+};
+
+export const MarkAsAttachedDocumentProcess = async (id) => {
+    await connection.endpoint("DocumentoProcesso").action("MarkAsAttached").data(id).put(id);
+    return connection.getObject();
+};
+
+export const SendForAnalysisDocumentProcess = async (id) => {
+    await connection.endpoint("DocumentoProcesso").action("SendForAnalysis").data(id).put(id);
+    return connection.getObject();
+};
+
 export const ApproveDocumentProcess = async (id) => {
     await connection.endpoint("DocumentoProcesso").action("Approve").data(id).put(id);
     return connection.getObject();

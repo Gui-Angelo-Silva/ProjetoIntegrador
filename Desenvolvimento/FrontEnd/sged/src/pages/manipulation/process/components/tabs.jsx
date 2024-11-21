@@ -24,6 +24,10 @@ export const ProcessTab = ({
     setProcessSituation,
     processDescription,
     setProcessDescription,
+    startDate,
+    setStartDate,
+    completionDate,
+    setCompletionDate,
     approvationDate,
 
     typeProcess,
@@ -57,12 +61,12 @@ export const ProcessTab = ({
                     />
                 </div>
 
-                <div >
+                <div className="w-full">
                     <h1 className="text-lg text-gray-700 mt-4">Status:</h1>
                     <input
                         disabled
                         type="text"
-                        className="w-[300px] cursor-not-allowed rounded-sm border-gray-300 bg-gray-50"
+                        className="w-full cursor-not-allowed rounded-sm border-gray-300 bg-gray-50"
                         value={(() => {
                             switch (process.processStatus) {
                                 case 0:
@@ -79,18 +83,6 @@ export const ProcessTab = ({
                                     return "";
                             }
                         })()}
-                    />
-                </div>
-
-                <div >
-                    <h1 className="text-lg text-gray-700 mt-4">Data de Aprovação:</h1>
-                    <input
-                        type="date"
-                        className={`w-[200px] rounded-sm border-gray-300 bg-gray-50 cursor-not-allowed`}
-                        min="1700-01-01" // Limite inferior de 1700
-                        max="9999-12-31" // Limite superior de 9999
-                        value={approvationDate}
-                        disabled={true}
                     />
                 </div>
             </div>
@@ -114,6 +106,46 @@ export const ProcessTab = ({
                 className="cursor-not-allowed rounded-sm border-gray-300 bg-gray-50 w-full h-28 resize-none"
                 value={typeProcess.descricaoTipoProcesso || ''}
             ></textarea>
+
+            <div className="flex items-center gap-x-5">
+            <div  className="w-full">
+                    <h1 className="text-lg text-gray-700 mt-4">Data de Início:</h1>
+                    <input
+                        type="date"
+                        className={`w-full rounded-sm border-gray-300  ${disabled && "bg-gray-50 cursor-not-allowed"}`}
+                        min="1700-01-01" // Limite inferior de 1700
+                        max="9999-12-31" // Limite superior de 9999
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        disabled={disabled}
+                    />
+                </div>
+
+                <div  className="w-full">
+                    <h1 className="text-lg text-gray-700 mt-4">Data de Finalização:</h1>
+                    <input
+                        type="date"
+                        className={`w-full rounded-sm border-gray-300  ${disabled && "bg-gray-50 cursor-not-allowed"}`}
+                        min="1700-01-01" // Limite inferior de 1700
+                        max="9999-12-31" // Limite superior de 9999
+                        value={completionDate}
+                        onChange={(e) => setCompletionDate(e.target.value)}
+                        disabled={disabled}
+                    />
+                </div>
+
+                <div  className="w-full">
+                    <h1 className="text-lg text-gray-700 mt-4">Data de Aprovação:</h1>
+                    <input
+                        type="date"
+                        className={`w-full rounded-sm border-gray-300 bg-gray-50 cursor-not-allowed`}
+                        min="1700-01-01" // Limite inferior de 1700
+                        max="9999-12-31" // Limite superior de 9999
+                        value={approvationDate}
+                        disabled={true}
+                    />
+                </div>
+            </div>
 
             <div className="flex items-center gap-x-5">
                 <div className="w-full relative">

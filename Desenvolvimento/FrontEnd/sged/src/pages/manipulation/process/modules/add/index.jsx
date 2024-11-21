@@ -35,6 +35,7 @@ const Add = () => {
 
   const PostAllDatas = async () => {
     const data = await functions.setProcessAllData(process, []);
+    console.log(data);
 
     const responnse = await functions.PostAllDatas(data);
     if (responnse) server.removeSegment(1).dispatch();
@@ -48,6 +49,8 @@ const Add = () => {
     identificationNumber: "",
     processSituation: "",
     processDescription: "",
+    startDate: "",
+    completionDate: "",
     approvationDate: "",
     processStatus: 0,
 

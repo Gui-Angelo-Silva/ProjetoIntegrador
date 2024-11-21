@@ -111,7 +111,7 @@ const CustomSelectComponent = ({
                         onChange={(e) => { if (!disable) handleInputChange(e) }}
                         onKeyDown={(e) => { if (!disable) handleKeyPress(e) }}
                         placeholder={`Pesquisar ${variable} . . .`}
-                        className={`w-full border-gray-400 p-2 rounded-md focus:outline-none focus:ring-1 ${disable && "cursor-not-allowed"}`}
+                        className={`w-full border-gray-400 p-2 rounded-md focus:outline-none focus:ring-1 ${disable && "bg-gray-50 cursor-not-allowed"}`}
                         disabled={disable} // está certo?
                     />
                     {!disable && showDropdown && selectBox.options.length > 0 && (

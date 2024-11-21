@@ -48,7 +48,7 @@ const Form = ({ update, setUpdate, process }) => {
     };
 
     fetchData();
-  }, [process.id]);
+  }, [process]);
 
   return (
     <>
@@ -95,27 +95,18 @@ const Form = ({ update, setUpdate, process }) => {
               </button>
 
               <button
-                className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${process.status !== 1 && process.status !== 3 ? 'border-[#c2c2c2] hover:bg-[#c2c2c2] text-black' : 'bg-gray-200 cursor-not-allowed'}`}
-                onClick={process.status !== 1 && process.status !== 3 ? async () => { await functions.PutInProgressProcess(process.id); setUpdate(true); } : null}
-                disabled={process.status === 1 || process.status === 3}
+                className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${process.status === 1 || process.status === 4 ? 'border-[#da8aff] hover:bg-[#da8aff] text-black' : 'bg-gray-200 cursor-not-allowed'}`}
+                onClick={process.status === 1 || process.status === 4 ? async () => { await functions.SendForAnalysisProcess(process.id); setUpdate(true); } : null}
+                disabled={process.status !== 1 && process.status !== 4}
               >
-                <ArrowFatLineLeft size={20} />
-                Devolver
+                <ListMagnifyingGlass size={20} />
+                Submeter
               </button>
 
               <button
-                className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${process.status === 1 ? 'border-[#da8aff] hover:bg-[#da8aff] text-black' : 'bg-gray-200 cursor-not-allowed'}`}
-                onClick={process.status === 1 ? async () => { await functions.SendForAnalysisProcess(process.id); setUpdate(true); } : null}
-                disabled={process.status !== 1}
-              >
-                <MagnifyingGlass size={20} />
-                Analisar
-              </button>
-
-              <button
-                className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${process.status === 2 ? 'border-[#78ff5d] hover:bg-[#78ff5d] text-black' : 'bg-gray-200 cursor-not-allowed'}`}
-                onClick={process.status === 2 ? async () => { await functions.ApproveProcess(process.id); setUpdate(true); } : null}
-                disabled={process.status !== 2}
+                className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${process.status === 2 && process.progresso.aprovado === process.progresso.total ? 'border-[#78ff5d] hover:bg-[#78ff5d] text-black' : 'bg-gray-200 cursor-not-allowed'}`}
+                onClick={process.status === 2 && process.progresso.aprovado === process.progresso.total ? async () => { await functions.ApproveProcess(process.id); setUpdate(true); } : null}
+                disabled={process.status !== 2 || process.progresso.aprovado !== process.progresso.total}
               >
                 <Check size={20} />
                 Aprovar
@@ -216,7 +207,7 @@ const Form = ({ update, setUpdate, process }) => {
               <input
                 type="text"
                 className="w-full rounded-sm border-gray-300 bg-gray-50 cursor-not-allowed"
-                value={process.dataAprovacao || "dd/mm/aaaa"}
+                value={process.dataInicio || "dd/mm/aaaa"}
                 disabled
               />
             </div>
@@ -226,7 +217,7 @@ const Form = ({ update, setUpdate, process }) => {
               <input
                 type="text"
                 className="w-full rounded-sm border-gray-300 bg-gray-50 cursor-not-allowed"
-                value={process.dataAprovacao || "dd/mm/aaaa"}
+                value={process.dataFinalizacao || "dd/mm/aaaa"}
                 disabled
               />
             </div>

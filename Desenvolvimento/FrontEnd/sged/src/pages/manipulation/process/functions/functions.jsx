@@ -67,6 +67,8 @@ export async function setProcessAllData(process, documents) {
         identificacaoProcesso: process.identificationNumber,
         descricaoProcesso: process.processDescription || "",
         situacaoProcesso: process.processSituation || "",
+        dataInicio: process.startDate || "",
+        dataFinalizacao: process.completionDate || "",
         dataAprovacao: process.approvationDate || "",
         status: process.processStatus || 0,
 
@@ -89,6 +91,8 @@ export async function setProcess(process) {
         identificacaoProcesso: process.identificationNumber,
         descricaoProcesso: process.processDescription || "",
         situacaoProcesso: process.processSituation || "",
+        dataInicio: process.startDate || "",
+        dataFinalizacao: process.completionDate || "",
         dataAprovacao: process.approvationDate || "",
         status: process.processStatus || 0,
 
@@ -110,6 +114,8 @@ export function convertProcess(processo) {
         identificationNumber: processo.identificacaoProcesso || "",
         processSituation: processo.situacaoProcesso || "",
         processDescription: processo.descricaoProcesso || "",
+        startDate: processo.dataInicio || "",
+        completionDate: processo.dataFinalizacao || "",
         approvationDate: processo.dataAprovacao || "",
         processStatus: processo.status || 0,
 

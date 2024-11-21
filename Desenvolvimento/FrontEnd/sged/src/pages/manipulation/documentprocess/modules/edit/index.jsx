@@ -42,7 +42,12 @@ const Edit = () => {
     if (update) fetchData();
   }, [id, update]);
 
-  const Post = async (file, expeditionDate, descriptionDocument, observationDocument) => {
+  const Post = async (file, expeditionDate, descriptionDocument, observationDocument, idResponsible) => {
+    const formatDate = (date) => {
+      if (!date) return ""; // Se a data não estiver definida, retorna string vazia
+      return new Intl.DateTimeFormat("pt-BR").format(new Date(date));
+    };
+
     try {
       // Cria uma cópia do estado atual para evitar modificações diretas
       const updatedDocument = {
@@ -50,9 +55,9 @@ const Edit = () => {
         arquivo: file ? await functions.generateArchive(file) : documentProcess.arquivo,
         descricaoDocumento: descriptionDocument || documentProcess.descricaoDocumento,
         observacaoDocumento: observationDocument || documentProcess.observacaoDocumento,
+        dataExpedicao: formatDate(expeditionDate) || documentProcess.dataExpedicao,
+        idResponsavel: idResponsible || documentProcess.idResponsavel
       }; delete updatedDocument.tipoDocumento;
-
-      console.log(updatedDocument);
 
       // Envia o documento atualizado
       await functions.PutDocument(updatedDocument);
@@ -60,7 +65,7 @@ const Edit = () => {
       // Atualiza o estado indicando que houve uma mudança
       setUpdate(true);
     } catch (error) {
-      console.error("Erro ao postar o documento:", error);
+      return;
     }
   };
 

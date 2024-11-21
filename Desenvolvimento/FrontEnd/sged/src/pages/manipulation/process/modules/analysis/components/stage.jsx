@@ -38,16 +38,39 @@ const Stages = ({ setUpdate, process, stages }) => {
     );
   };
 
-  const handleDownload = (arquive) => {
-    if (arquive) {
-      const url = URL.createObjectURL(arquive.bytes);
+  const handleDownload = async (arquive) => {
+    if (file || documentProcess.arquivo) {
+      const arquivo = file || documentProcess.arquivo;
+      const nomeArquivo = arquivo.name || arquivo.fileName;
+      const conteudoArquivo = arquivo.bytes || arquivo;
 
-      if (url) {
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = arquive.fileName; // Define o nome do arquivo para download
-        link.click();
+      try {
+        // Converter para Blob se o conteúdo for Base64
+        const blob =
+          typeof conteudoArquivo === "string"
+            ? new Blob([Uint8Array.from(atob(conteudoArquivo), (c) => c.charCodeAt(0))])
+            : new Blob([conteudoArquivo]);
+
+        // Abre o seletor de local para salvar o arquivo
+        const handle = await window.showSaveFilePicker({
+          suggestedName: nomeArquivo,
+          types: [
+            {
+              description: "Arquivos",
+              accept: { "*/*": [`.${nomeArquivo.split(".").pop()}`] },
+            },
+          ],
+        });
+
+        // Escreve o conteúdo no arquivo selecionado
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+      } catch (error) {
+        return;
       }
+    } else {
+      return;
     }
   };
 
@@ -257,7 +280,7 @@ const Stages = ({ setUpdate, process, stages }) => {
                               <div className="flex items-center justify-between">
                                 <span className="flex items-center mr-2 text-gray-700 gap-x-2">
                                   <FileText size={20} /> Documento{" "}
-                                  {typeDocumentStage.posicao} -{" "}
+                                  {typeDocumentStage.documentoProcesso.identificacaoDocumento} -{" "}
                                   {
                                     typeDocumentStage.tipoDocumento
                                       .nomeTipoDocumento
@@ -267,30 +290,30 @@ const Stages = ({ setUpdate, process, stages }) => {
                                 {typeDocumentStage.documentoProcesso &&
                                   (typeDocumentStage.documentoProcesso
                                     .status === 4 ? (
-                                    <span className="text-[#00A9C2] flex items-center space-x-1 ml-auto bg-gradient-to-r from-[#00A9C233] to-[#00A9C200] border-1 border-gray-200 rounded-full px-3 py-1">
+                                    <span className="text-[#00A9C2] flex items-center space-x-1 ml-auto bg-gradient-to-r from-[#00A9C233] to-[#00A9C200] rounded-full px-3 py-1">
                                       <Paperclip size={20} />
                                       <span>Anexado</span>
                                     </span>
                                   ) : typeDocumentStage.documentoProcesso
-                                      .status === 5 ? (
-                                    <span className="text-[#7D00DF] flex items-center space-x-1 ml-auto bg-gradient-to-r from-[#7D00DF33] to-[#7D00DF00] border-1 border-gray-200 rounded-full px-3 py-1">
+                                    .status === 5 ? (
+                                    <span className="text-[#7D00DF] flex items-center space-x-1 ml-auto bg-gradient-to-r from-[#7D00DF33] to-[#7D00DF00] rounded-full px-3 py-1">
                                       <FileMagnifyingGlass size={20} />
                                       <span>Em Análise</span>
                                     </span>
                                   ) : typeDocumentStage.documentoProcesso
-                                      .status === 6 ? (
-                                    <span className="text-[#1BA100] flex items-center space-x-1 ml-auto bg-gradient-to-r from-[#1BA10033] to-[#1BA10000] border-1 border-gray-200 rounded-full px-3 py-1">
+                                    .status === 6 ? (
+                                    <span className="text-[#1BA100] flex items-center space-x-1 ml-auto bg-gradient-to-r from-[#1BA10033] to-[#1BA10000] rounded-full px-3 py-1">
                                       <Check size={20} />
                                       <span>Aprovado</span>
                                     </span>
                                   ) : typeDocumentStage.documentoProcesso
-                                      .status === 7 ? (
-                                    <span className="text-[#B20009] flex items-center space-x-1 ml-auto bg-gradient-to-r from-[#B2000933] to-[#B2000900] border-1 border-gray-200 rounded-full px-3 py-1">
+                                    .status === 7 ? (
+                                    <span className="text-[#B20009] flex items-center space-x-1 ml-auto bg-gradient-to-r from-[#B2000933] to-[#B2000900] rounded-full px-3 py-1">
                                       <X size={20} />
                                       <span>Reprovado</span>
                                     </span>
                                   ) : (
-                                    <span className="text-[#585858] flex items-center space-x-1 ml-auto bg-gradient-to-r from-[#58585833] to-[#58585800] border-1 border-gray-200 rounded-full px-3 py-1">
+                                    <span className="text-[#585858] flex items-center space-x-1 ml-auto bg-gradient-to-r from-[#58585833] to-[#58585800] rounded-full px-3 py-1">
                                       <Warning size={20} />
                                       <span>Pendente</span>
                                     </span>
@@ -301,31 +324,30 @@ const Stages = ({ setUpdate, process, stages }) => {
                                 <div className="flex space-x-20">
                                   <div className="flex items-center space-x-3">
                                     <button
-                                      className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${
-                                        typeDocumentStage.documentoProcesso
+                                      className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${typeDocumentStage.documentoProcesso
                                           .status !== 5 &&
-                                        typeDocumentStage.documentoProcesso
-                                          .status !== 6 &&
-                                        process.status !== 3
+                                          typeDocumentStage.documentoProcesso
+                                            .status !== 6 &&
+                                          process.status !== 3
                                           ? "border-[#6abcff] hover:bg-[#6abcff] text-black"
                                           : "bg-gray-200 cursor-not-allowed"
-                                      }`}
+                                        }`}
                                       onClick={() =>
                                         typeDocumentStage.documentoProcesso
                                           .status !== 5 &&
-                                        typeDocumentStage.documentoProcesso
-                                          .status !== 6 &&
-                                        process.status !== 3
+                                          typeDocumentStage.documentoProcesso
+                                            .status !== 6 &&
+                                          process.status !== 3
                                           ? server
-                                              .removeSegment(3)
-                                              .addSegment(
-                                                "documentos-processos/editar-documento"
-                                              )
-                                              .addData(
-                                                typeDocumentStage
-                                                  .documentoProcesso.id
-                                              )
-                                              .newTab()
+                                            .removeSegment(3)
+                                            .addSegment(
+                                              "documentos-processos/editar-documento"
+                                            )
+                                            .addData(
+                                              typeDocumentStage
+                                                .documentoProcesso.id
+                                            )
+                                            .newTab()
                                           : null
                                       }
                                       disabled={
@@ -358,19 +380,18 @@ const Stages = ({ setUpdate, process, stages }) => {
                                       Analisar
                                     </button>
                                     <button
-                                      className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${
-                                        typeDocumentStage.documentoProcesso
+                                      className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${typeDocumentStage.documentoProcesso
                                           .arquivo
                                           ? "border-[#5fff94] hover:bg-[#5fff94] text-black"
                                           : "bg-gray-200 cursor-not-allowed"
-                                      }`}
+                                        }`}
                                       onClick={() =>
                                         typeDocumentStage.documentoProcesso
                                           .arquivo
                                           ? handleDownload(
-                                              typeDocumentStage
-                                                .documentoProcesso.arquivo
-                                            )
+                                            typeDocumentStage
+                                              .documentoProcesso.arquivo
+                                          )
                                           : null
                                       }
                                       disabled={
@@ -385,22 +406,21 @@ const Stages = ({ setUpdate, process, stages }) => {
 
                                   <div className="flex items-center space-x-3">
                                     <button
-                                      className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${
-                                        typeDocumentStage.documentoProcesso
+                                      className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${typeDocumentStage.documentoProcesso
                                           .status === 5
                                           ? "border-[#78ff5d] hover:bg-[#78ff5d] text-black"
                                           : "bg-gray-200 cursor-not-allowed"
-                                      }`}
+                                        }`}
                                       onClick={
                                         typeDocumentStage.documentoProcesso
                                           .status === 5
                                           ? async () => {
-                                              await functions.ApproveDocumentProcess(
-                                                typeDocumentStage
-                                                  .documentoProcesso.id
-                                              );
-                                              setUpdate(true);
-                                            }
+                                            await functions.ApproveDocumentProcess(
+                                              typeDocumentStage
+                                                .documentoProcesso.id
+                                            );
+                                            setUpdate(true);
+                                          }
                                           : null
                                       }
                                       disabled={
@@ -412,22 +432,21 @@ const Stages = ({ setUpdate, process, stages }) => {
                                       Aprovar
                                     </button>
                                     <button
-                                      className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${
-                                        typeDocumentStage.documentoProcesso
+                                      className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${typeDocumentStage.documentoProcesso
                                           .status === 5
                                           ? "border-[#ff5e66] hover:bg-[#ff5e66] text-black"
                                           : "bg-gray-200 cursor-not-allowed"
-                                      }`}
+                                        }`}
                                       onClick={
                                         typeDocumentStage.documentoProcesso
                                           .status === 5
                                           ? async () => {
-                                              await functions.DisapproveDocumentProcess(
-                                                typeDocumentStage
-                                                  .documentoProcesso.id
-                                              );
-                                              setUpdate(true);
-                                            }
+                                            await functions.DisapproveDocumentProcess(
+                                              typeDocumentStage
+                                                .documentoProcesso.id
+                                            );
+                                            setUpdate(true);
+                                          }
                                           : null
                                       }
                                       disabled={

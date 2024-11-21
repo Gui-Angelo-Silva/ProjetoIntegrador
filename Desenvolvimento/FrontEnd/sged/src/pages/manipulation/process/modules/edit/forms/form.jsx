@@ -66,6 +66,8 @@ const Form = ({
   const [identificationNumber, setIdentificationNumber] = useState("");
   const [processSituation, setProcessSituation] = useState("");
   const [processDescription, setProcessDescription] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [completionDate, setCompletionDate] = useState("");
   const [approvationDate, setApprovationDate] = useState("");
 
   const [idRealstate, setIdRealstate] = useState(0);
@@ -97,17 +99,25 @@ const Form = ({
   const [typeApprover, setTypeApprover] = useState({});
 
   useEffect(() => {
+    const convertToISOFormat = (date) => {
+      if (!date) return ""; // Verifica se a data existe
+      const [day, month, year] = date.split("/"); // Divide a data pelo separador "/"
+      return `${year}-${month}-${day}`; // Reorganiza para o formato ISO (yyyy-MM-dd)
+    };
+
     const fetchData = async () => {
       if (isEdit && process.id) {
         setIdentificationNumber(process.identificationNumber);
         setProcessSituation(process.processSituation);
         setProcessDescription(process.processDescription);
+        setStartDate(convertToISOFormat(process.startDate));
+        setCompletionDate(convertToISOFormat(process.completionDate));
         setApprovationDate(process.approvationDate);
 
         setIdRealstate(process.idRealstate);
         setIdEngineer(process.idEngineer);
         setIdSupervisor(process.idSupervisor);
-        setIdUserResponsible(process.idUserResponsible);
+        setIdUserResponsible(process.idResponsible);
         setIdTypeProcess(process.idTypeProcess);
 
         if (process.idApprover) {
@@ -121,14 +131,20 @@ const Form = ({
   }, [isEdit, process.id]);
 
   useEffect(() => {
+    const formatDate = (date) => {
+      if (!date) return ""; // Se a data não estiver definida, retorna string vazia
+      return new Intl.DateTimeFormat("pt-BR").format(new Date(date));
+    };
+
     setProcess((prevState) => ({
       ...prevState,
       identificationNumber: identificationNumber || "",
       processSituation: processSituation || "",
       processDescription: processDescription || "",
-      approvationDate: approvationDate || "",
+      startDate: startDate ? formatDate(startDate) : "",
+      completionDate: completionDate ? formatDate(completionDate) : "",
     }));
-  }, [identificationNumber, processSituation, processDescription, approvationDate]);
+  }, [identificationNumber, processSituation, processDescription, startDate, completionDate]);
 
   useEffect(() => {
     const fetchRealstate = async () => {
@@ -390,6 +406,10 @@ const Form = ({
           setProcessSituation={setProcessSituation}
           processDescription={processDescription}
           setProcessDescription={setProcessDescription}
+          startDate={startDate}
+          setStartDate={setStartDate}
+          completionDate={completionDate}
+          setCompletionDate={setCompletionDate}
           approvationDate={approvationDate}
 
           typeProcess={typeProcess}
@@ -452,8 +472,11 @@ const Form = ({
               setProcessSituation={setProcessSituation}
               processDescription={processDescription}
               setProcessDescription={setProcessDescription}
+              startDate={startDate}
+              setStartDate={setStartDate}
+              completionDate={completionDate}
+              setCompletionDate={setCompletionDate}
               approvationDate={approvationDate}
-              setApprovationDate={setApprovationDate}
 
               typeProcess={typeProcess}
               process={process}

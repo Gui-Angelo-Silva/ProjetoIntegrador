@@ -17,8 +17,10 @@ import {
   ArrowClockwise,
   DownloadSimple,
   FileArrowUp,
-  ArrowSquareOut
+  ArrowSquareOut,
+  Trash
 } from "@phosphor-icons/react";
+import SelectComponent from "../../../../../../components/SelectComponent";
 
 import { useServer } from "../../../../../../routes/serverRoute";
 import * as functions from "../../../functions/functions";
@@ -27,21 +29,32 @@ import NoticeModal from "../../../../../../components/Notice";
 const Form = ({ update, setUpdate, documentProcess, save }) => {
   const server = useServer();
 
+  const convertToISOFormat = (date) => {
+    if (!date) return ""; // Verifica se a data existe
+    const [day, month, year] = date.split("/"); // Divide a data pelo separador "/"
+    return `${year}-${month}-${day}`; // Reorganiza para o formato ISO (yyyy-MM-dd)
+  };
+
   const [valid, setValid] = useState(false);
   const [open, setOpen] = useState(false);
 
   const [process, setProcess] = useState({});
   const [typeDocument, setTypeDocument] = useState({});
+  const [idResponsible, setIdResponsible] = useState(documentProcess.idResponsavel || 0);
   const [userResponsible, setUserResponsible] = useState({});
   const [typeResponsible, setTypeResponsible] = useState({});
   const [userApprover, setUserApprover] = useState({});
   const [typeApprover, setTypeApprover] = useState({});
 
-  const [date, setDate] = useState(documentProcess.dataExpedicao || "");
-  const [file, setFile] = useState("");
-  const [expeditionDate, setExpeditionDate] = useState(documentProcess.dataExpedicao || "");
+  const [file, setFile] = useState(null);
+  const [dateE, setDateE] = useState(convertToISOFormat(documentProcess.dataExpedicao) || "");
+  const [expeditionDate, setExpeditionDate] = useState(convertToISOFormat(documentProcess.dataExpedicao) || "");
   const [descriptionDocument, setDescriptionDocument] = useState(documentProcess.descricaoDocumento || "");
   const [observationDocument, setObservationDocument] = useState(documentProcess.observacaoDocumento || "");
+
+  useEffect(() => {
+    setIdResponsible(documentProcess.idResponsavel);
+  }, [documentProcess]);
 
   const minDate = "1900-01-01";
   const maxDate = (() => {
@@ -51,14 +64,14 @@ const Form = ({ update, setUpdate, documentProcess, save }) => {
 
   const verifyDate = () => {
     // Verifica se a data está dentro do intervalo permitido
-    if (date && (date < minDate || date > maxDate)) {
-      setDate("");
+    if (dateE && (dateE < minDate || dateE > maxDate)) {
+      setDateE("");
       alert(
         "A data deve estar entre 01/01/1900 e 31/12/" +
         (new Date().getFullYear() + 100)
       );
     } else {
-      setExpeditionDate(date)
+      setExpeditionDate(dateE)
     }
   };
 
@@ -117,35 +130,52 @@ const Form = ({ update, setUpdate, documentProcess, save }) => {
     };
 
     fetchData();
-  }, [documentProcess.id]);
+  }, [documentProcess]);
 
-  const handleDownload = () => {
-    console.log(1);
-
-    if (file) {
-      // Cria uma URL temporária para o arquivo e baixa-o
-      const url = URL.createObjectURL(file);
-      console.log(2);
-
-      if (url) {
-        console.log(3);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = file.name; // Nome original do arquivo para o download
-        link.click();
-
-        // Libera a URL após o download para evitar vazamento de memória
-        URL.revokeObjectURL(url);
+  useEffect(() => {
+    const fetchData = async () => {
+      if (idResponsible) {
+        const ur = await functions.GetUser(idResponsible);
+        setUserResponsible(ur);
       }
-    } else if (documentProcess.arquivo) {
-      const url = URL.createObjectURL(documentProcess.arquivo.bytes);
+    };
 
-      if (url) {
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = documentProcess.arquivo.fileName; // Define o nome do arquivo para download
-        link.click();
+    fetchData();
+  }, [idResponsible]);
+
+  const handleDownload = async () => {
+    if (file || documentProcess.arquivo) {
+      const arquivo = file || documentProcess.arquivo;
+      const nomeArquivo = arquivo.name || arquivo.fileName;
+      const conteudoArquivo = arquivo.bytes || arquivo;
+
+      try {
+        // Converter para Blob se o conteúdo for Base64
+        const blob =
+          typeof conteudoArquivo === "string"
+            ? new Blob([Uint8Array.from(atob(conteudoArquivo), (c) => c.charCodeAt(0))])
+            : new Blob([conteudoArquivo]);
+
+        // Abre o seletor de local para salvar o arquivo
+        const handle = await window.showSaveFilePicker({
+          suggestedName: nomeArquivo,
+          types: [
+            {
+              description: "Arquivos",
+              accept: { "*/*": [`.${nomeArquivo.split(".").pop()}`] },
+            },
+          ],
+        });
+
+        // Escreve o conteúdo no arquivo selecionado
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+      } catch (error) {
+        return;
       }
+    } else {
+      return;
     }
   };
 
@@ -155,6 +185,10 @@ const Form = ({ update, setUpdate, documentProcess, save }) => {
     const file = event.target.files[0];
     if (file) {
       setFile(file);
+    }
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // Reseta o campo de input de arquivo
     }
   };
 
@@ -190,7 +224,6 @@ const Form = ({ update, setUpdate, documentProcess, save }) => {
                   onClick={handleButtonClick}
                 >
                   <FileArrowUp size={20} />
-                  Anexar
                 </button>
                 <input
                   type="file"
@@ -213,22 +246,41 @@ const Form = ({ update, setUpdate, documentProcess, save }) => {
                   disabled={!file && !documentProcess.arquivo}
                 >
                   <DownloadSimple size={20} />
-                  Baixar
+                </button>
+
+                <button
+                  className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${file
+                    ? "border-[#ff6e76] hover:bg-[#ff6e76] text-black"
+                    : "bg-gray-200 cursor-not-allowed"
+                    }`}
+                  onClick={() => {
+                    if (file) {
+                      setFile(null); // Reseta o estado do arquivo
+                      if (fileInputRef.current) {
+                        fileInputRef.current.value = ""; // Reseta o campo de input de arquivo
+                      }
+                    }
+                  }}
+                  disabled={!file}
+                >
+                  <Trash size={20} />
                 </button>
 
                 <p>
                   {file
-                    ? (`${file.name.length > 30
-                      ? file.name.slice(0, 30) +
-                      "[...]"
-                      : file.name}`)
-                    : (documentProcess.arquivo
-                      ? `${documentProcess.arquivo.fileName.length > 30
-                        ? documentProcess.arquivo.fileName.slice(0, 30) +
-                        "[...]"
-                        : documentProcess.arquivo.fileName
-                      }.${documentProcess.arquivo.mimeType}`
-                      : `Nenhum arquivo foi anexado!`)}
+                    ? (
+                      `${file.name.length > 40
+                        ? `${file.name.slice(0, 30)}[...]${file.name.slice(file.name.lastIndexOf('.'))}`
+                        : file.name}`
+                    )
+                    : (
+                      documentProcess.arquivo
+                        ? `${documentProcess.arquivo.fileName.length > 40
+                          ? `${documentProcess.arquivo.fileName.slice(0, 30)}[...]${documentProcess.arquivo.fileName.slice(documentProcess.arquivo.fileName.lastIndexOf('.'))}`
+                          : documentProcess.arquivo.fileName}`
+                        : `Nenhum arquivo foi anexado!`
+                    )
+                  }
                 </p>
               </div>
             </div>
@@ -273,12 +325,16 @@ const Form = ({ update, setUpdate, documentProcess, save }) => {
                     )}
                   </div>
                   <div className="flex items-center flex-1 min-w-[220px] gap-x-5">
-                    <input
-                      type="text"
-                      disabled
-                      className="w-full border-gray-300 rounded-sm cursor-not-allowed bg-gray-50"
-                      value={userResponsible.nomePessoa || ""}
-                      placeholder="Nome"
+                    <SelectComponent
+                      variable="responsável"
+                      variableIdentifier="id"
+                      variableName="nomePessoa"
+                      id={idResponsible}
+                      setId={setIdResponsible}
+                      methodSearch={functions.SearchResponsible}
+                      methodGet={functions.GetUser}
+                      getObject={true}
+                      disable={false}
                     />
 
                     <input
@@ -384,8 +440,8 @@ const Form = ({ update, setUpdate, documentProcess, save }) => {
               <input
                 type="date"
                 className="w-full border-gray-300 rounded-sm"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
+                value={dateE}
+                onChange={(e) => setDateE(e.target.value)}
                 onBlur={() => verifyDate()}
               />
             </div>
@@ -493,7 +549,7 @@ const Form = ({ update, setUpdate, documentProcess, save }) => {
           <div className="flex justify-center gap-x-10 mt-5 p-3 bg-gray-100 shadow-sm rounded-md max-w-max mx-auto">
             <button
               className="border-2 border-[#da8aff] hover:bg-[#da8aff] text-black rounded flex items-center gap-x-1 py-1 w-32 justify-center"
-              onClick={() => server.removeSegment(2).addSegment("analisar-documento").addData(documentProcess.id).newTab()}
+              onClick={() => server.removeSegment(2).addSegment("analisar-documento").addData(documentProcess.id).dispatch()}
             >
               <ArrowSquareOut size={20} />
               Analisar
@@ -501,7 +557,7 @@ const Form = ({ update, setUpdate, documentProcess, save }) => {
 
             <button
               type="button"
-              onClick={async () => await save(file, expeditionDate, descriptionDocument, observationDocument)}
+              onClick={async () => await save(file, expeditionDate, descriptionDocument, observationDocument, idResponsible)}
               className={`${valid ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400 cursor-not-allowed"} text-white rounded-sm flex items-center gap-x-1 py-1 w-32 justify-center`}
               disabled={!valid}
             >

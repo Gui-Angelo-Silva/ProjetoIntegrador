@@ -50,6 +50,8 @@ const Edit = () => {
     processSituation: "",
     processDescription: "",
     approvationDate: "",
+    startDate: "",
+    completionDate: "",
     processStatus: 0,
 
     idTypeProcess: 0,
@@ -63,6 +65,7 @@ const Edit = () => {
   useEffect(() => {
     const fetchData = async () => {
       const process = await functions.GetProcess(id);
+
       setProcess(functions.convertProcess(process));
     };
 

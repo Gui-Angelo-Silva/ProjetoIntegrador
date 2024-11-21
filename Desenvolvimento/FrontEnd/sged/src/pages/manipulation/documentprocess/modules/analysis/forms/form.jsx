@@ -41,9 +41,7 @@ const Form = ({ update, setUpdate, documentProcess }) => {
         const tde = await functions.GetTypeDocumentStage(
           documentProcess.idTipoDocumentoEtapa
         );
-        console.log(tde);
         const td = await functions.GetTypeDocument(tde.idTipoDocumento);
-        console.log(td);
         setTypeDocument(td);
 
         if (documentProcess.idResponsavel) {
@@ -65,18 +63,39 @@ const Form = ({ update, setUpdate, documentProcess }) => {
     };
 
     fetchData();
-  }, [documentProcess.id]);
+  }, [documentProcess]);
 
-  const handleDownload = (arquive) => {
-    if (arquive) {
-      const url = URL.createObjectURL(arquive.bytes);
+  const handleDownload = async (arquive) => {
+    if (!arquive || !arquive.bytes || !arquive.fileName) {
+      return;
+    }
 
-      if (url) {
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = arquive.fileName; // Define o nome do arquivo para download
-        link.click();
-      }
+    try {
+      // Converter Base64 para bytes reais
+      const byteCharacters = atob(arquive.bytes); // Decodifica a string Base64
+      const byteNumbers = new Array(byteCharacters.length).fill(0).map((_, i) => byteCharacters.charCodeAt(i));
+      const byteArray = new Uint8Array(byteNumbers);
+
+      // Criar um Blob a partir dos bytes
+      const blob = new Blob([byteArray]);
+
+      // Abrir o seletor para salvar o arquivo
+      const handle = await window.showSaveFilePicker({
+        suggestedName: arquive.fileName,
+        types: [
+          {
+            description: "Arquivos",
+            accept: { "*/*": [`.${arquive.fileName.split('.').pop()}`] },
+          },
+        ],
+      });
+
+      // Gravar o conteúdo no arquivo selecionado
+      const writable = await handle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+    } catch (error) {
+      return;
     }
   };
 
@@ -90,11 +109,10 @@ const Form = ({ update, setUpdate, documentProcess }) => {
           <div className="flex items-center justify-center gap-x-5">
             <div className="flex items-center mx-10 gap-x-2">
               <button
-                className={`border-2 p-1 rounded flex items-center gap-x-1 ${
-                  !update
-                    ? "border-[#6be1ff] hover:bg-[#6be1ff] text-black"
-                    : "bg-gray-200 cursor-not-allowed"
-                }`}
+                className={`border-2 p-1 rounded flex items-center gap-x-1 ${!update
+                  ? "border-[#6be1ff] hover:bg-[#6be1ff] text-black"
+                  : "bg-gray-200 cursor-not-allowed"
+                  }`}
                 onClick={!update ? () => setUpdate(true) : null}
                 disabled={update}
               >
@@ -109,18 +127,17 @@ const Form = ({ update, setUpdate, documentProcess }) => {
 
             <div className="flex items-center gap-x-3">
               <button
-                className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${
-                  documentProcess.status !== 5 && documentProcess.status !== 6
-                    ? "border-[#6abcff] hover:bg-[#6abcff] text-black"
-                    : "bg-gray-200 cursor-not-allowed"
-                }`}
+                className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${documentProcess.status !== 5 && documentProcess.status !== 6
+                  ? "border-[#6abcff] hover:bg-[#6abcff] text-black"
+                  : "bg-gray-200 cursor-not-allowed"
+                  }`}
                 onClick={() =>
                   documentProcess.status !== 5 && documentProcess.status !== 6
                     ? server
-                        .removeSegment(2)
-                        .addSegment("editar-documento")
-                        .addData(documentProcess.id)
-                        .dispatch()
+                      .removeSegment(2)
+                      .addSegment("editar-documento")
+                      .addData(documentProcess.id)
+                      .dispatch()
                     : null
                 }
                 disabled={
@@ -132,19 +149,18 @@ const Form = ({ update, setUpdate, documentProcess }) => {
               </button>
 
               <button
-                className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${
-                  documentProcess.status === 0
-                    ? "border-[#c2c2c2] hover:bg-[#c2c2c2] text-black"
-                    : "bg-gray-200 cursor-not-allowed"
-                }`}
+                className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${documentProcess.status === 0
+                  ? "border-[#c2c2c2] hover:bg-[#c2c2c2] text-black"
+                  : "bg-gray-200 cursor-not-allowed"
+                  }`}
                 onClick={
                   documentProcess.status === 0
                     ? async () => {
-                        await functions.PutInProgressProcess(
-                          documentProcess.id
-                        );
-                        setUpdate(true);
-                      }
+                      await functions.PutOnPendingDocumentProcess(
+                        documentProcess.id
+                      );
+                      setUpdate(true);
+                    }
                     : null
                 }
                 disabled={documentProcess.status !== 0}
@@ -154,63 +170,37 @@ const Form = ({ update, setUpdate, documentProcess }) => {
               </button>
 
               <button
-                className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${
-                  documentProcess.status !== 4 && documentProcess.status !== 6
-                    ? "border-[#c2c2c2] hover:bg-[#c2c2c2] text-black"
-                    : "bg-gray-200 cursor-not-allowed"
-                }`}
+                className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${documentProcess.status === 4 || documentProcess.status === 7
+                  ? "border-[#da8aff] hover:bg-[#da8aff] text-black"
+                  : "bg-gray-200 cursor-not-allowed"
+                  }`}
                 onClick={
-                  documentProcess.status !== 4 && documentProcess.status !== 6
+                  documentProcess.status === 4 || documentProcess.status === 7
                     ? async () => {
-                        await functions.PutInProgressProcess(
-                          documentProcess.id
-                        );
-                        setUpdate(true);
-                      }
+                      await functions.SendForAnalysisDocumentProcess(
+                        documentProcess.id
+                      );
+                      setUpdate(true);
+                    }
                     : null
                 }
-                disabled={
-                  documentProcess.status === 4 || documentProcess.status === 6
-                }
+                disabled={documentProcess.status !== 4 && documentProcess.status !== 7}
               >
-                <ArrowFatLineLeft size={20} />
-                Devolver
+                <FileMagnifyingGlass size={20} />
+                Submeter
               </button>
 
               <button
-                className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${
-                  documentProcess.status === 4
-                    ? "border-[#da8aff] hover:bg-[#da8aff] text-black"
-                    : "bg-gray-200 cursor-not-allowed"
-                }`}
-                onClick={
-                  documentProcess.status === 4
-                    ? async () => {
-                        await functions.SendForAnalysisProcess(
-                          documentProcess.id
-                        );
-                        setUpdate(true);
-                      }
-                    : null
-                }
-                disabled={documentProcess.status !== 4}
-              >
-                <MagnifyingGlass size={20} />
-                Analisar
-              </button>
-
-              <button
-                className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${
-                  documentProcess.status === 5
-                    ? "border-[#78ff5d] hover:bg-[#78ff5d] text-black"
-                    : "bg-gray-200 cursor-not-allowed"
-                }`}
+                className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${documentProcess.status === 5
+                  ? "border-[#78ff5d] hover:bg-[#78ff5d] text-black"
+                  : "bg-gray-200 cursor-not-allowed"
+                  }`}
                 onClick={
                   documentProcess.status === 5
                     ? async () => {
-                        await functions.ApproveProcess(documentProcess.id);
-                        setUpdate(true);
-                      }
+                      await functions.ApproveDocumentProcess(documentProcess.id);
+                      setUpdate(true);
+                    }
                     : null
                 }
                 disabled={documentProcess.status !== 5}
@@ -220,17 +210,16 @@ const Form = ({ update, setUpdate, documentProcess }) => {
               </button>
 
               <button
-                className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${
-                  documentProcess.status === 5
-                    ? "border-[#ff6e76] hover:bg-[#ff6e76] text-black"
-                    : "bg-gray-200 cursor-not-allowed"
-                }`}
+                className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${documentProcess.status === 5
+                  ? "border-[#ff6e76] hover:bg-[#ff6e76] text-black"
+                  : "bg-gray-200 cursor-not-allowed"
+                  }`}
                 onClick={
                   documentProcess.status === 5
                     ? async () => {
-                        await functions.DisapproveProcess(documentProcess.id);
-                        setUpdate(true);
-                      }
+                      await functions.DisapproveDocumentProcess(documentProcess.id);
+                      setUpdate(true);
+                    }
                     : null
                 }
                 disabled={documentProcess.status !== 5}
@@ -395,24 +384,28 @@ const Form = ({ update, setUpdate, documentProcess }) => {
               <h1 className="text-lg text-gray-700">Arquivo:</h1>
               <div className="flex items-center gap-x-3">
                 <button
-                  className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${
-                    documentProcess.arquivo
-                      ? "border-[#5fff94] hover:bg-[#5fff94] text-black"
-                      : "bg-gray-200 cursor-not-allowed"
-                  }`}
+                  className={`border-2 px-2 py-1 rounded flex items-center gap-x-1 ${documentProcess.arquivo
+                    ? "border-[#5fff94] hover:bg-[#5fff94] text-black"
+                    : "bg-gray-200 cursor-not-allowed"
+                    }`}
                   onClick={() =>
                     documentProcess.arquivo
                       ? handleDownload(
-                          documentProcess.arquivo
-                        )
+                        documentProcess.arquivo
+                      )
                       : null
                   }
                   disabled={!documentProcess.arquivo}
                 >
                   <DownloadSimple size={20} />
-                  Baixar
                 </button>
-                <p>{documentProcess.arquivo ? `${documentProcess.arquivo.fileName}.${documentProcess.arquivo.mimeType}` : `Nenhum arquivo foi anexado!`}</p>
+                <p>
+                  {documentProcess.arquivo
+                    ? documentProcess.arquivo.fileName.length > 60
+                      ? `${documentProcess.arquivo.fileName.slice(0, 50)}[...]${documentProcess.arquivo.fileName.slice(documentProcess.arquivo.fileName.lastIndexOf('.'))}`
+                      : documentProcess.arquivo.fileName
+                    : `Nenhum arquivo foi anexado!`}
+                </p>
               </div>
             </div>
           </div>
@@ -423,7 +416,7 @@ const Form = ({ update, setUpdate, documentProcess }) => {
               <input
                 type="text"
                 className="w-full border-gray-300 rounded-sm cursor-not-allowed bg-gray-50"
-                value={documentProcess.dataAprovacao || "dd/mm/aaaa"}
+                value={documentProcess.dataExpedicao || "dd/mm/aaaa"}
                 disabled
               />
             </div>
@@ -448,7 +441,7 @@ const Form = ({ update, setUpdate, documentProcess }) => {
                     </span>
                   ) : documentProcess.status === 5 ? (
                     <span className="border-1 border-[#b14aff] rounded-full text-[#b14aff] flex items-center justify-center w-11 h-10">
-                      <ListMagnifyingGlass size={30} />
+                      <FileMagnifyingGlass size={30} />
                     </span>
                   ) : documentProcess.status === 6 ? (
                     <span className="border-1 border-[#2BFF00] rounded-full text-[#2BFF00] flex items-center justify-center w-11 h-10">

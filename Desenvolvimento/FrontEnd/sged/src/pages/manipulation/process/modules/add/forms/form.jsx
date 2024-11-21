@@ -64,6 +64,8 @@ const Form = ({
   const [identificationNumber, setIdentificationNumber] = useState("");
   const [processSituation, setProcessSituation] = useState("");
   const [processDescription, setProcessDescription] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [completionDate, setCompletionDate] = useState("");
   const [approvationDate, setApprovationDate] = useState("");
 
   const [idRealstate, setIdRealstate] = useState(0);
@@ -95,14 +97,20 @@ const Form = ({
   const [typeApprover, setTypeApprover] = useState({});
 
   useEffect(() => {
+    const formatDate = (date) => {
+      if (!date) return ""; // Se a data não estiver definida, retorna string vazia
+      return new Intl.DateTimeFormat("pt-BR").format(new Date(date));
+    };
+
     setProcess((prevState) => ({
       ...prevState,
       identificationNumber: identificationNumber || "",
       processSituation: processSituation || "",
       processDescription: processDescription || "",
-      approvationDate: approvationDate || "",
+      startDate: startDate ? formatDate(startDate) : "",
+      completionDate: completionDate ? formatDate(completionDate) : "",
     }));
-  }, [identificationNumber, processSituation, processDescription, approvationDate]);
+  }, [identificationNumber, processSituation, processDescription, startDate, completionDate]);
 
   useEffect(() => {
     const fetchRealstate = async () => {
@@ -363,6 +371,10 @@ const Form = ({
           setProcessSituation={setProcessSituation}
           processDescription={processDescription}
           setProcessDescription={setProcessDescription}
+          startDate={startDate}
+          setStartDate={setStartDate}
+          completionDate={completionDate}
+          setCompletionDate={setCompletionDate}
           approvationDate={approvationDate}
           setApprovationDate={setApprovationDate}
 
@@ -420,6 +432,10 @@ const Form = ({
               setProcessSituation={setProcessSituation}
               processDescription={processDescription}
               setProcessDescription={setProcessDescription}
+              startDate={startDate}
+              setStartDate={setStartDate}
+              completionDate={completionDate}
+              setCompletionDate={setCompletionDate}
               approvationDate={approvationDate}
 
               typeProcess={typeProcess}

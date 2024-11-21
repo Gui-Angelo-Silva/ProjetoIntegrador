@@ -54,11 +54,6 @@ public class ProcessoRepository : IProcessoRepository
 
     public async Task<ProcessoModel> Update(ProcessoModel processo)
     {
-        // Gera o código e atribui ao processo
-        var processoExistente = await GetById(processo.Id);
-        if (processo.IdTipoProcesso != processoExistente.IdTipoProcesso) processo.IdentificacaoProcesso = await GenerateCode(processo);
-        else processo.IdentificacaoProcesso = processoExistente.IdentificacaoProcesso;
-
         _dbContext.Entry(processo).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
         return processo;

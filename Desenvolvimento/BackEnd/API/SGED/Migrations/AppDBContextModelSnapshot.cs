@@ -726,6 +726,18 @@ namespace SGED.Migrations
                         .HasColumnType("text")
                         .HasColumnName("arquivo");
 
+                    b.Property<string>("DataAprovacao")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("dataaprovacao");
+
+                    b.Property<string>("DataExpedicao")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("dataexpedicao");
+
                     b.Property<string>("DescricaoDocumento")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -2262,6 +2274,18 @@ namespace SGED.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)")
                         .HasColumnName("dataaprovacao");
+
+                    b.Property<string>("DataFinalizacao")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("datafinalizacao");
+
+                    b.Property<string>("DataInicio")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("datainicio");
 
                     b.Property<string>("DescricaoProcesso")
                         .IsRequired()

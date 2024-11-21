@@ -19,6 +19,12 @@ namespace SGED.Objects.Models.Entities
         [Column("observacaodocumento")]
         public string ObservacaoDocumento { get; set; }
 
+        [Column("dataexpedicao")]
+        public string DataExpedicao { get; set; }
+
+        [Column("dataaprovacao")]
+        public string DataAprovacao { get; set; }
+
         [Column("arquivo")]
         public string Arquivo { get; set; }
 

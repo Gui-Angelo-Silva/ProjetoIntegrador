@@ -59,9 +59,6 @@ public class DocumentoProcessoRepository : IDocumentoProcessoRepository
 
     public async Task<DocumentoProcessoModel> Update(DocumentoProcessoModel DocumentoProcesso)
     {
-        // Gera o código
-        DocumentoProcesso.IdentificacaoDocumento = await GenerateCode(DocumentoProcesso);
-
         _dbContext.Entry(DocumentoProcesso).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
         return DocumentoProcesso;

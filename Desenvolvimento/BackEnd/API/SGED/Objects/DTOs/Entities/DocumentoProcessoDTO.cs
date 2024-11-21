@@ -23,6 +23,11 @@ namespace SGED.Objects.DTOs.Entities
 		[MaxLength(300)]
 		public string ObservacaoDocumento { get; set; }
 
+        [MaxLength(10)]
+        public string DataExpedicao { get; set; }
+
+        public string DataAprovacao { get; set; }
+
         [Required(ErrorMessage = "O arquivo é requerido!")]
         public Archive Arquivo { get; set; }
 

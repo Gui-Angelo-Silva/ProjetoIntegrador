@@ -12,7 +12,7 @@ using SGED.Context;
 namespace SGED.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20241026203252_Database")]
+    [Migration("20241121082204_Database")]
     partial class Database
     {
         /// <inheritdoc />
@@ -728,6 +728,18 @@ namespace SGED.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("arquivo");
+
+                    b.Property<string>("DataAprovacao")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("dataaprovacao");
+
+                    b.Property<string>("DataExpedicao")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("dataexpedicao");
 
                     b.Property<string>("DescricaoDocumento")
                         .IsRequired()
@@ -2265,6 +2277,18 @@ namespace SGED.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)")
                         .HasColumnName("dataaprovacao");
+
+                    b.Property<string>("DataFinalizacao")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("datafinalizacao");
+
+                    b.Property<string>("DataInicio")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("datainicio");
 
                     b.Property<string>("DescricaoProcesso")
                         .IsRequired()

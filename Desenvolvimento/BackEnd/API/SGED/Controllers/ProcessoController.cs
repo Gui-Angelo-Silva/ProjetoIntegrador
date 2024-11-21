@@ -12,6 +12,7 @@ using System.Linq;
 using SGED.Objects.Enums.Status;
 using System.ComponentModel.DataAnnotations;
 using SGED.DTOs.Entities;
+using MySqlX.XDevAPI;
 
 namespace SGED.Controllers
 {
@@ -24,23 +25,25 @@ namespace SGED.Controllers
         private readonly ITipoDocumentoService _tipoDocumentoService;
         private readonly ITipoDocumentoEtapaService _tipoDocumentoEtapaService;
         private readonly IDocumentoProcessoService _documentoProcessoService;
-
         private readonly IProcessoService _processoService;
+
+        private readonly ISessaoService _sessaoService;
         private readonly Response _response;
         private readonly IMapper _mapper;
 
         public ProcessoController(
             ITipoProcessoService tipoProcessoService, IEtapaService etapaService, ITipoDocumentoService tipoDocumentoService,
             ITipoDocumentoEtapaService tipoDocumentoEtapaService, IDocumentoProcessoService documentoProcessoService,
-            IProcessoService processoService, IMapper mapper)
+            IProcessoService processoService, ISessaoService sessaoService, IMapper mapper)
         {
             _tipoProcessoService = tipoProcessoService;
             _etapaService = etapaService;
             _tipoDocumentoService = tipoDocumentoService;
             _tipoDocumentoEtapaService = tipoDocumentoEtapaService;
             _documentoProcessoService = documentoProcessoService;
-
             _processoService = processoService;
+
+            _sessaoService = sessaoService;
             _response = new Response();
             _mapper = mapper;
         }
@@ -365,7 +368,12 @@ namespace SGED.Controllers
                     return BadRequest(_response);
                 }
 
+                // Pega o token do cabeçalho Authorization
+                var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                var sessao = await _sessaoService.GetByToken(token);
+
                 processoDTO.PutInProgress();
+                processoDTO.IdResponsavel = sessao.IdUsuario;
                 await _processoService.Update(processoDTO);
 
                 _response.SetSuccess();
@@ -405,14 +413,7 @@ namespace SGED.Controllers
                     _response.Data = new { error = "Não existe Documentos vinculados ao Processo!" };
                     return BadRequest(_response);
                 }
-                else if (!documentosProcesso.Any(dp => dp.Status == StatusDocumentProcess.Attached))
-                {
-                    _response.SetInvalid();
-                    _response.Message = "Não existe Documentos Anexados a ser enviado para Análise!";
-                    _response.Data = new { error = "Não existe Documentos Anexados a ser enviado para Análise!" };
-                    return BadRequest(_response);
-                }
-
+                
                 foreach (var documento in documentosProcesso.Where(dp => dp.Status == StatusDocumentProcess.Attached))
                 {
                     documento.SendForAnalysis();
@@ -451,7 +452,13 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
+                // Pega o token do cabeçalho Authorization
+                var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                var sessao = await _sessaoService.GetByToken(token);
+
                 processoDTO.Approve();
+                processoDTO.IdAprovador = sessao.IdUsuario;
+                processoDTO.DataAprovacao = DateTime.Now.ToString("dd/MM/yyyy");
                 await _processoService.Update(processoDTO);
 
                 _response.SetSuccess();
@@ -481,6 +488,13 @@ namespace SGED.Controllers
                     _response.Message = "O Processo informado não existe!";
                     _response.Data = new { errorId = "O Processo informado não existe!" };
                     return NotFound(_response);
+                }
+
+                var documentosProcesso = await _documentoProcessoService.GetByProcess(processoDTO.Id);
+                foreach (var documento in documentosProcesso.Where(dp => dp.Status == StatusDocumentProcess.InAnalysis))
+                {
+                    documento.Disapprove();
+                    await _documentoProcessoService.Update(documento);
                 }
 
                 processoDTO.Disapprove();
@@ -582,6 +596,8 @@ namespace SGED.Controllers
                         documentoProcesso.IdentificacaoDocumento = "NÃO ANEXADO";
                         documentoProcesso.DescricaoDocumento = "";
                         documentoProcesso.ObservacaoDocumento = "";
+                        documentoProcesso.DataExpedicao = "";
+                        documentoProcesso.DataAprovacao = "";
                         documentoProcesso.Arquivo = new Archive();
                         documentoProcesso.IdProcesso = idProcesso;
                         documentoProcesso.IdTipoDocumentoEtapa = documentoEtapa.Id;
@@ -659,6 +675,8 @@ namespace SGED.Controllers
             data.identificacaoProcesso = processo.IdentificacaoProcesso;
             data.descricaoProcesso = processo.DescricaoProcesso;
             data.situacaoProcesso = processo.SituacaoProcesso;
+            data.dataInicio = processo.DataInicio;
+            data.dataFinalizacao = processo.DataFinalizacao;
             data.dataAprovacao = processo.DataAprovacao;
             data.status = processo.Status;
 
@@ -736,6 +754,8 @@ namespace SGED.Controllers
             data.identificacaoDocumento = documentoProcesso.IdentificacaoDocumento;
             data.descricaoDocumento = documentoProcesso.DescricaoDocumento;
             data.observacaoDocumento = documentoProcesso.ObservacaoDocumento;
+            data.dataExpedicao = documentoProcesso.DataExpedicao;
+            data.dataAprovacao = documentoProcesso.DataAprovacao;
             data.status = documentoProcesso.Status;
 
             if (documentoProcesso.Arquivo != null)

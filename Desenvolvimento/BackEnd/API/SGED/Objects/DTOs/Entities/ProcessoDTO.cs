@@ -19,6 +19,11 @@ namespace SGED.Objects.DTOs.Entities
         public string SituacaoProcesso { get; set; }
 
         [MaxLength(10)]
+        public string DataInicio { get; set; }
+
+        [MaxLength(10)]
+        public string DataFinalizacao { get; set; }
+
         public string DataAprovacao { get; set; }
 
         [Required(ErrorMessage = "O stauts é requerido!")]

@@ -19,15 +19,18 @@ namespace SGED.Controllers
         private readonly ITipoDocumentoService _tipoDocumentoService;
         private readonly ITipoDocumentoEtapaService _tipoDocumentoEtapaService;
         private readonly IDocumentoProcessoService _documentoProcessoService;
+
+        private readonly ISessaoService _sessaoService;
         private readonly Response _response;
 
-        public DocumentoProcessoController(IProcessoService processoService, ITipoDocumentoService tipoDocumentoService, ITipoDocumentoEtapaService tipoDocumentoEtapaService, IDocumentoProcessoService documentoProcessoService)
+        public DocumentoProcessoController(IProcessoService processoService, ITipoDocumentoService tipoDocumentoService, ITipoDocumentoEtapaService tipoDocumentoEtapaService, IDocumentoProcessoService documentoProcessoService, ISessaoService sessaoService)
         {
             _processoService = processoService;
             _tipoDocumentoService = tipoDocumentoService;
             _tipoDocumentoEtapaService = tipoDocumentoEtapaService;
             _documentoProcessoService = documentoProcessoService;
 
+            _sessaoService = sessaoService;
             _response = new Response();
         }
 
@@ -265,7 +268,12 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
+                // Pega o token do cabeçalho Authorization
+                var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                var sessao = await _sessaoService.GetByToken(token);
+
                 documentoProcessoDTO.PutOnPending();
+                documentoProcessoDTO.IdResponsavel = sessao.IdUsuario;
                 await _documentoProcessoService.Update(documentoProcessoDTO);
 
                 _response.SetSuccess();
@@ -361,8 +369,13 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 }
 
+                // Pega o token do cabeçalho Authorization
+                var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                var sessao = await _sessaoService.GetByToken(token);
+
                 documentoProcessoDTO.Approve();
-                documentoProcessoDTO.IdAprovador = 1;
+                documentoProcessoDTO.IdAprovador = sessao.IdUsuario;
+                documentoProcessoDTO.DataAprovacao = DateTime.Now.ToString("dd/MM/yyyy");
                 await _documentoProcessoService.Update(documentoProcessoDTO);
 
                 _response.SetSuccess();
@@ -466,6 +479,8 @@ namespace SGED.Controllers
             data.identificacaoDocumento = documentoProcesso.IdentificacaoDocumento;
             data.descricaoDocumento = documentoProcesso.DescricaoDocumento;
             data.observacaoDocumento = documentoProcesso.ObservacaoDocumento;
+            data.dataExpedicao = documentoProcesso.DataExpedicao;
+            data.dataAprovacao = documentoProcesso.DataAprovacao;
             data.status = documentoProcesso.Status;
 
             if (documentoProcesso.Arquivo != null)

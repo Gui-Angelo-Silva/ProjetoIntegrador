@@ -19,6 +19,12 @@ namespace SGED.Objects.Models.Entities
         [Column("situacaoprocesso")]
         public string SituacaoProcesso { get; set; }
 
+        [Column("datainicio")]
+        public string DataInicio { get; set; }
+
+        [Column("datafinalizacao")]
+        public string DataFinalizacao { get; set; }
+
         [Column("dataaprovacao")]
         public string DataAprovacao { get; set; }
 

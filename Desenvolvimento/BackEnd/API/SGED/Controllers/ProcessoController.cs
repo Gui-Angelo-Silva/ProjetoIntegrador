@@ -13,6 +13,7 @@ using SGED.Objects.Enums.Status;
 using System.ComponentModel.DataAnnotations;
 using SGED.DTOs.Entities;
 using MySqlX.XDevAPI;
+using SGED.Objects.Filters;
 
 namespace SGED.Controllers
 {
@@ -71,25 +72,39 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpGet("Filter/{filters}")]
+        [HttpGet("Filter")]
         [AccessPermission("A", "B", "C")]
-        public async Task<ActionResult<IEnumerable<dynamic>>> Filter(object filters)
+        public async Task<ActionResult<IEnumerable<dynamic>>> Filter([FromQuery] ProcessoFilter filters)
         {
             try
             {
-                var processosDTO = new List<dynamic>();
+                var processos = await _processoService.GetAll();
+
+                // Filtro por Id (caso o filtro seja um valor específico)
+                if (filters.Id is not null)
+                {
+                    // Converte o filtro (assumindo que filters.Id é do tipo string) e compara com o Id de tipo Guid
+                    processos = processos.Where(p => p.Id.ToString() == filters.Id); // Converte o Id (Guid) para string e compara
+                }
+
+                // Filtro por IdentificacaoProcesso (verifica se o valor informado está presente)
+                if (!String.IsNullOrEmpty(filters.IdentificacaoProcesso))
+                {
+                    processos = processos.Where(p => p.IdentificacaoProcesso.Contains(filters.IdentificacaoProcesso)); // Verifica se o valor está presente
+                }
+
+                var lista = new List<dynamic>();
+                foreach (var processo in processos)
+                {
+                    lista.Add(await GetAllData(processo));
+                }
 
                 _response.SetSuccess();
-                _response.Message = processosDTO.Any() ?
+                _response.Message = lista.Any() ?
                     "Lista do(s) Processo(s) obtida com sucesso." :
                     "Nenhum Processo encontrado.";
 
-                for (int i = 0; i < processosDTO.Count; i++)
-                {
-                    processosDTO[i] = await GetAllData(processosDTO[i]);
-                }
-
-                _response.Data = processosDTO;
+                _response.Data = lista;
                 return Ok(_response);
             }
             catch (Exception ex)
@@ -413,7 +428,7 @@ namespace SGED.Controllers
                     _response.Data = new { error = "Não existe Documentos vinculados ao Processo!" };
                     return BadRequest(_response);
                 }
-                
+
                 foreach (var documento in documentosProcesso.Where(dp => dp.Status == StatusDocumentProcess.Attached))
                 {
                     documento.SendForAnalysis();

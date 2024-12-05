@@ -14,6 +14,7 @@ using System.ComponentModel.DataAnnotations;
 using SGED.DTOs.Entities;
 using MySqlX.XDevAPI;
 using SGED.Objects.Filters;
+using System.Diagnostics;
 
 namespace SGED.Controllers
 {
@@ -28,14 +29,19 @@ namespace SGED.Controllers
         private readonly IDocumentoProcessoService _documentoProcessoService;
         private readonly IProcessoService _processoService;
 
+        private readonly IImovelService _imovelService;
+        private readonly IFiscalService _fiscalService;
+        private readonly IEngenheiroService _engenheiroService;
+        private readonly IUsuarioService _usuarioService;
+
         private readonly ISessaoService _sessaoService;
         private readonly Response _response;
         private readonly IMapper _mapper;
 
         public ProcessoController(
-            ITipoProcessoService tipoProcessoService, IEtapaService etapaService, ITipoDocumentoService tipoDocumentoService,
-            ITipoDocumentoEtapaService tipoDocumentoEtapaService, IDocumentoProcessoService documentoProcessoService,
-            IProcessoService processoService, ISessaoService sessaoService, IMapper mapper)
+            ITipoProcessoService tipoProcessoService, IEtapaService etapaService, ITipoDocumentoService tipoDocumentoService, ITipoDocumentoEtapaService tipoDocumentoEtapaService, IDocumentoProcessoService documentoProcessoService, IProcessoService processoService,
+            IImovelService imovelService, IFiscalService fiscalService, IEngenheiroService engenheiroService, IUsuarioService usuarioService,
+            ISessaoService sessaoService, IMapper mapper)
         {
             _tipoProcessoService = tipoProcessoService;
             _etapaService = etapaService;
@@ -43,6 +49,11 @@ namespace SGED.Controllers
             _tipoDocumentoEtapaService = tipoDocumentoEtapaService;
             _documentoProcessoService = documentoProcessoService;
             _processoService = processoService;
+
+            _imovelService = imovelService;
+            _fiscalService = fiscalService;
+            _engenheiroService = engenheiroService;
+            _usuarioService = usuarioService;
 
             _sessaoService = sessaoService;
             _response = new Response();
@@ -80,30 +91,33 @@ namespace SGED.Controllers
             {
                 var processos = await _processoService.GetAll();
 
-                // Filtro por Id (caso o filtro seja um valor específico)
-                if (filters.Id is not null)
+                // Aplica os filtros dinamicamente
+                var processosList = new List<ProcessoDTO>();
+                await foreach (var processo in ApplyFilters(processos, filters))
                 {
-                    // Converte o filtro (assumindo que filters.Id é do tipo string) e compara com o Id de tipo Guid
-                    processos = processos.Where(p => p.Id.ToString() == filters.Id); // Converte o Id (Guid) para string e compara
+                    processosList.Add(processo);
                 }
+                processos = processosList;
 
-                // Filtro por IdentificacaoProcesso (verifica se o valor informado está presente)
-                if (!String.IsNullOrEmpty(filters.IdentificacaoProcesso))
+                // Aplica a ordenação com base no primeiro atributo com order válido
+                processosList = new List<ProcessoDTO>();
+                await foreach (var processo in ApplyOrder(processos, filters))
                 {
-                    processos = processos.Where(p => p.IdentificacaoProcesso.Contains(filters.IdentificacaoProcesso)); // Verifica se o valor está presente
-                }
+                    processosList.Add(processo);
+                } processos = processosList;
 
+                // Monta a lista final com os dados processados
                 var lista = new List<dynamic>();
                 foreach (var processo in processos)
                 {
                     lista.Add(await GetAllData(processo));
                 }
 
+                // Resposta da API
                 _response.SetSuccess();
-                _response.Message = lista.Any() ?
-                    "Lista do(s) Processo(s) obtida com sucesso." :
-                    "Nenhum Processo encontrado.";
-
+                _response.Message = lista.Any()
+                    ? "Lista do(s) Processo(s) obtida com sucesso."
+                    : "Nenhum Processo encontrado.";
                 _response.Data = lista;
                 return Ok(_response);
             }
@@ -794,6 +808,407 @@ namespace SGED.Controllers
             data.idAprovador = documentoProcesso.IdAprovador;
 
             return data;
+        }
+
+        // Método genérico para aplicar os filtros
+        private async IAsyncEnumerable<ProcessoDTO> ApplyFilters(IEnumerable<ProcessoDTO> processos, ProcessoFilter filters)
+        {
+            if (!processos.Any() || filters == null) { foreach (var processo in processos) { yield return processo; } }
+
+            // Filtra por ID do processo
+            if (processos.Any() && filters.Id != Guid.Empty)
+                processos = processos.Where(p => p.Id == filters.Id);
+
+            // Filtra por identificação do processo
+            if (processos.Any() && !string.IsNullOrWhiteSpace(filters.IdentificacaoProcesso))
+                processos = processos.Where(p =>
+                    p.IdentificacaoProcesso != null &&
+                    p.IdentificacaoProcesso.Contains(filters.IdentificacaoProcesso, StringComparison.OrdinalIgnoreCase));
+
+            // Filtra por descrição do processo
+            if (processos.Any() && !string.IsNullOrWhiteSpace(filters.DescricaoProcesso))
+                processos = processos.Where(p =>
+                    p.DescricaoProcesso != null &&
+                    p.DescricaoProcesso.Contains(filters.DescricaoProcesso, StringComparison.OrdinalIgnoreCase));
+
+            // Filtra por situação do processo
+            if (processos.Any() && !string.IsNullOrWhiteSpace(filters.SituacaoProcesso))
+                processos = processos.Where(p =>
+                    p.SituacaoProcesso != null &&
+                    p.SituacaoProcesso.Contains(filters.SituacaoProcesso, StringComparison.OrdinalIgnoreCase));
+
+            // Filtra por intervalo de DataInicio
+            if (processos.Any() && filters.DataInicio != null && filters.DataInicio.Length == 2)
+            {
+                var startDate = ParseDateBR(filters.DataInicio[0]);
+                var endDate = ParseDateBR(filters.DataInicio[1]);
+
+                if (startDate.HasValue)
+                    processos = processos.Where(p =>
+                        DateTime.TryParseExact(p.DataInicio, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out var dataInicio)
+                        && dataInicio >= startDate.Value);
+
+                if (endDate.HasValue)
+                    processos = processos.Where(p =>
+                        DateTime.TryParseExact(p.DataInicio, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out var dataInicio)
+                        && dataInicio <= endDate.Value);
+            }
+
+            // Filtra por intervalo de DataFinalizacao
+            if (processos.Any() && filters.DataFinalizacao != null && filters.DataFinalizacao.Length == 2)
+            {
+                var startDate = ParseDateBR(filters.DataFinalizacao[0]);
+                var endDate = ParseDateBR(filters.DataFinalizacao[1]);
+
+                if (startDate.HasValue)
+                    processos = processos.Where(p =>
+                        DateTime.TryParseExact(p.DataFinalizacao, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out var dataFinalizacao)
+                        && dataFinalizacao >= startDate.Value);
+
+                if (endDate.HasValue)
+                    processos = processos.Where(p =>
+                        DateTime.TryParseExact(p.DataFinalizacao, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out var dataFinalizacao)
+                        && dataFinalizacao <= endDate.Value);
+            }
+
+            // Filtra por intervalo de DataAprovacao
+            if (processos.Any() && filters.DataAprovacao != null && filters.DataAprovacao.Length == 2)
+            {
+                var startDate = ParseDateBR(filters.DataAprovacao[0]);
+                var endDate = ParseDateBR(filters.DataAprovacao[1]);
+
+                if (startDate.HasValue)
+                    processos = processos.Where(p =>
+                        DateTime.TryParseExact(p.DataAprovacao, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out var dataAprovacao)
+                        && dataAprovacao >= startDate.Value);
+
+                if (endDate.HasValue)
+                    processos = processos.Where(p =>
+                        DateTime.TryParseExact(p.DataAprovacao, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out var dataAprovacao)
+                        && dataAprovacao <= endDate.Value);
+            }
+
+            // Filtra por status (traduz enum para int)
+            if (processos.Any() && filters.Status != -1)
+                processos = processos.Where(p => (int)p.Status == filters.Status);
+
+            // Filtra pela inscrição cadastral
+            if (processos.Any() && !string.IsNullOrWhiteSpace(filters.InscricaoCadastral))
+            {
+                // Obtém todos os imóveis, mas com o filtro já aplicado se possível
+                var imoveis = await _imovelService.GetAll();
+
+                // Filtra os imóveis pela inscrição cadastral
+                var imoveisFiltrados = imoveis.Where(o =>
+                    !string.IsNullOrWhiteSpace(o.InscricaoCadastral) &&
+                    o.InscricaoCadastral.Contains(filters.InscricaoCadastral, StringComparison.OrdinalIgnoreCase))
+                    .Select(o => o.Id) // Seleciona apenas os IDs dos imóveis
+                    .ToList(); // Converte para lista
+
+                // Filtra os processos que possuem o IdImovel presente nos imóveis filtrados
+                processos = processos.Where(p => imoveisFiltrados.Contains(p.IdImovel)).ToList();
+            }
+
+            if (processos.Any() && !string.IsNullOrWhiteSpace(filters.NomeTipoProcesso))
+            {
+                // Obtém todos os imóveis, mas com o filtro já aplicado se possível
+                var tiposProcesso = await _tipoProcessoService.GetAll();
+
+                // Filtra os imóveis pela inscrição cadastral
+                var tiposProcessoFiltrados = tiposProcesso.Where(o =>
+                    !string.IsNullOrWhiteSpace(o.NomeTipoProcesso) &&
+                    o.NomeTipoProcesso.Contains(filters.NomeTipoProcesso, StringComparison.OrdinalIgnoreCase))
+                    .Select(o => o.Id) // Seleciona apenas os IDs dos imóveis
+                    .ToList(); // Converte para lista
+
+                // Filtra os processos que possuem o IdImovel presente nos imóveis filtrados
+                processos = processos.Where(p => tiposProcessoFiltrados.Contains(p.IdTipoProcesso)).ToList();
+            }
+
+            if (processos.Any() && !string.IsNullOrWhiteSpace(filters.NomeFiscal))
+            {
+                // Obtém todos os imóveis, mas com o filtro já aplicado se possível
+                var fiscais = await _fiscalService.GetAll();
+
+                // Filtra os imóveis pela inscrição cadastral
+                var fiscaisFiltrados = fiscais.Where(o =>
+                    !string.IsNullOrWhiteSpace(o.NomePessoa) &&
+                    o.NomePessoa.Contains(filters.NomeFiscal, StringComparison.OrdinalIgnoreCase))
+                    .Select(o => o.Id) // Seleciona apenas os IDs dos imóveis
+                    .ToList(); // Converte para lista
+
+                // Filtra os processos que possuem o IdImovel presente nos imóveis filtrados
+                processos = processos.Where(p => p.IdFiscal.HasValue && fiscaisFiltrados.Contains(p.IdFiscal.Value)).ToList();
+            }
+
+            if (processos.Any() && !string.IsNullOrWhiteSpace(filters.NomeEngenheiro))
+            {
+                // Obtém todos os imóveis, mas com o filtro já aplicado se possível
+                var engenheiros = await _engenheiroService.GetAll();
+
+                // Filtra os imóveis pela inscrição cadastral
+                var engenheirosFiltrados = engenheiros.Where(o =>
+                    !string.IsNullOrWhiteSpace(o.NomePessoa) &&
+                    o.NomePessoa.Contains(filters.NomeEngenheiro, StringComparison.OrdinalIgnoreCase))
+                    .Select(o => o.Id) // Seleciona apenas os IDs dos imóveis
+                    .ToList(); // Converte para lista
+
+                // Filtra os processos que possuem o IdImovel presente nos imóveis filtrados
+                processos = processos.Where(p => p.IdEngenheiro.HasValue && engenheirosFiltrados.Contains(p.IdEngenheiro.Value)).ToList();
+            }
+
+            if (processos.Any() && !string.IsNullOrWhiteSpace(filters.NomeResponsavel))
+            {
+                // Obtém todos os imóveis, mas com o filtro já aplicado se possível
+                var responsaveis = await _usuarioService.GetAll();
+
+                // Filtra os imóveis pela inscrição cadastral
+                var responsaveisFiltrados = responsaveis.Where(o =>
+                    !string.IsNullOrWhiteSpace(o.NomePessoa) &&
+                    o.NomePessoa.Contains(filters.NomeResponsavel, StringComparison.OrdinalIgnoreCase))
+                    .Select(o => o.Id) // Seleciona apenas os IDs dos imóveis
+                    .ToList(); // Converte para lista
+
+                // Filtra os processos que possuem o IdImovel presente nos imóveis filtrados
+                processos = processos.Where(p => p.IdResponsavel.HasValue && responsaveisFiltrados.Contains(p.IdResponsavel.Value)).ToList();
+            }
+
+            if (processos.Any() && !string.IsNullOrWhiteSpace(filters.NomeAprovador))
+            {
+                // Obtém todos os imóveis, mas com o filtro já aplicado se possível
+                var aprovadores = await _usuarioService.GetAll();
+
+                // Filtra os imóveis pela inscrição cadastral
+                var aprovadoresFiltrados = aprovadores.Where(o =>
+                    !string.IsNullOrWhiteSpace(o.NomePessoa) &&
+                    o.NomePessoa.Contains(filters.NomeAprovador, StringComparison.OrdinalIgnoreCase))
+                    .Select(o => o.Id) // Seleciona apenas os IDs dos imóveis
+                    .ToList(); // Converte para lista
+
+                // Filtra os processos que possuem o IdImovel presente nos imóveis filtrados
+                processos = processos.Where(p => p.IdAprovador.HasValue && aprovadoresFiltrados.Contains(p.IdAprovador.Value)).ToList();
+            }
+
+            // Agora, yield return cada processo filtrado
+            foreach (var processo in processos) { yield return processo; }
+        }
+
+        // Função auxiliar para converter strings em datas no formato esperado
+        private DateTime? ParseDateBR(string dateString)
+        {
+            if (DateTime.TryParseExact(dateString, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out var date))
+                return date;
+
+            return null;
+        }
+
+        private async IAsyncEnumerable<ProcessoDTO> ApplyOrder(IEnumerable<ProcessoDTO> processos, ProcessoFilter filters)
+        {
+            if (!processos.Any() || filters == null) { foreach (var processo in processos) { yield return processo; } }
+
+            if (filters.OrdenarIdentificacaoProcesso != 0)
+                processos = filters.OrdenarIdentificacaoProcesso == 1
+                    ? processos.OrderBy(p => p.IdentificacaoProcesso)
+                    : processos.OrderByDescending(p => p.IdentificacaoProcesso);
+
+            else if (filters.OrdenarDescricaoProcesso != 0)
+                processos = filters.OrdenarDescricaoProcesso == 1
+                    ? processos.OrderBy(p => p.DescricaoProcesso)
+                    : processos.OrderByDescending(p => p.DescricaoProcesso);
+
+            else if (filters.OrdenarSituacaoProcesso != 0)
+                processos = filters.OrdenarSituacaoProcesso == 1
+                    ? processos.OrderBy(p => p.SituacaoProcesso)
+                    : processos.OrderByDescending(p => p.SituacaoProcesso);
+
+            else if (filters.OrdenarDataInicio != 0)
+                processos = filters.OrdenarDataInicio == 1
+                    ? processos.OrderBy(p => p.DataInicio)
+                    : processos.OrderByDescending(p => p.DataInicio);
+
+            else if (filters.OrdenarDataFinalizacao != 0)
+                processos = filters.OrdenarDataFinalizacao == 1
+                    ? processos.OrderBy(p => p.DataFinalizacao)
+                    : processos.OrderByDescending(p => p.DataFinalizacao);
+
+            else if (filters.OrdenarDataAprovacao != 0)
+                processos = filters.OrdenarDataAprovacao == 1
+                    ? processos.OrderBy(p => p.DataAprovacao)
+                    : processos.OrderByDescending(p => p.DataAprovacao);
+
+            else if (filters.OrdenarStatus != 0)
+                processos = filters.OrdenarStatus == 1
+                    ? processos.OrderBy(p => p.Status)
+                    : processos.OrderByDescending(p => p.Status);
+
+            else if (filters.OrdenarStatus != 0)
+                processos = filters.OrdenarStatus == 1
+                    ? processos.OrderBy(p => p.Status)
+                    : processos.OrderByDescending(p => p.Status);
+
+            else if (filters.OrdenarInscricaoCadastral != 0)
+            {
+                // Obtém todos os imóveis, mas com o filtro já aplicado se possível
+                var imoveis = await _imovelService.GetAll();
+
+                // Filtra os imóveis pela inscrição cadastral
+                var imoveisFiltrados = imoveis.Where(o =>
+                    !string.IsNullOrWhiteSpace(o.InscricaoCadastral) &&
+                    o.InscricaoCadastral.Contains(filters.InscricaoCadastral, StringComparison.OrdinalIgnoreCase));
+
+                // Aplica a ordenação conforme o filtro
+                imoveisFiltrados = filters.OrdenarInscricaoCadastral == 1
+                    ? imoveisFiltrados.OrderBy(p => p.InscricaoCadastral)
+                    : imoveisFiltrados.OrderByDescending(p => p.InscricaoCadastral);
+
+                var idsFiltrados = imoveisFiltrados.Select(o => o.Id).ToList();
+
+                // Cria um dicionário para mapear o IdImovel à sua posição na lista de idsFiltrados
+                var indexMap = idsFiltrados.Select((id, index) => new { id, index })
+                                           .ToDictionary(x => x.id, x => x.index);
+
+                // Ordena os processos pela posição de IdImovel nos idsFiltrados
+                processos = processos.Where(p => idsFiltrados.Contains(p.IdImovel))
+                                     .OrderBy(p => indexMap[p.IdImovel])  // Ordena com base na posição no indexMap
+                                     .ToList();
+            }
+
+            else if (filters.OrdenarNomeTipoProcesso != 0)
+            {
+                // Obtém todos os imóveis, mas com o filtro já aplicado se possível
+                var tiposProcesso = await _tipoProcessoService.GetAll();
+
+                // Filtra os imóveis pela inscrição cadastral
+                var tiposProcessoFiltrados = tiposProcesso.Where(o =>
+                    !string.IsNullOrWhiteSpace(o.NomeTipoProcesso) &&
+                    o.NomeTipoProcesso.Contains(filters.NomeTipoProcesso, StringComparison.OrdinalIgnoreCase));
+
+                // Aplica a ordenação conforme o filtro
+                tiposProcessoFiltrados = filters.OrdenarNomeTipoProcesso == 1
+                    ? tiposProcessoFiltrados.OrderBy(p => p.NomeTipoProcesso)
+                    : tiposProcessoFiltrados.OrderByDescending(p => p.NomeTipoProcesso);
+
+                var idsFiltrados = tiposProcessoFiltrados.Select(o => o.Id).ToList();
+
+                // Cria um dicionário para mapear o IdImovel à sua posição na lista de idsFiltrados
+                var indexMap = idsFiltrados.Select((id, index) => new { id, index })
+                                           .ToDictionary(x => x.id, x => x.index);
+
+                // Ordena os processos pela posição de IdImovel nos idsFiltrados
+                processos = processos.Where(p => idsFiltrados.Contains(p.IdTipoProcesso))
+                                     .OrderBy(p => indexMap[p.IdTipoProcesso])  // Ordena com base na posição no indexMap
+                                     .ToList();
+            }
+
+            else if (filters.OrdenarNomeFiscal != 0)
+            {
+                // Obtém todos os imóveis, mas com o filtro já aplicado se possível
+                var fiscais = await _fiscalService.GetAll();
+
+                // Filtra os imóveis pela inscrição cadastral
+                var fiscaisFiltrados = fiscais.Where(o =>
+                    !string.IsNullOrWhiteSpace(o.NomePessoa) &&
+                    o.NomePessoa.Contains(filters.NomeFiscal, StringComparison.OrdinalIgnoreCase));
+
+                // Aplica a ordenação conforme o filtro
+                fiscaisFiltrados = filters.OrdenarNomeFiscal == 1
+                    ? fiscaisFiltrados.OrderBy(p => p.NomePessoa)
+                    : fiscaisFiltrados.OrderByDescending(p => p.NomePessoa);
+
+                var idsFiltrados = fiscaisFiltrados.Select(o => o.Id).ToList();
+
+                // Cria um dicionário para mapear o IdImovel à sua posição na lista de idsFiltrados
+                var indexMap = idsFiltrados.Select((id, index) => new { id, index })
+                                           .ToDictionary(x => x.id, x => x.index);
+
+                // Ordena os processos pela posição de IdImovel nos idsFiltrados
+                processos = processos.Where(p => p.IdFiscal.HasValue && idsFiltrados.Contains(p.IdFiscal.Value))
+                                     .OrderBy(p => indexMap[p.IdFiscal.Value])  // Ordena com base na posição no indexMap
+                                     .ToList();
+            }
+
+            else if (filters.OrdenarNomeEngenheiro != 0)
+            {
+                // Obtém todos os imóveis, mas com o filtro já aplicado se possível
+                var engenheiros = await _engenheiroService.GetAll();
+
+                // Filtra os imóveis pela inscrição cadastral
+                var engenheirosFiltrados = engenheiros.Where(o =>
+                    !string.IsNullOrWhiteSpace(o.NomePessoa) &&
+                    o.NomePessoa.Contains(filters.NomeEngenheiro, StringComparison.OrdinalIgnoreCase));
+
+                // Aplica a ordenação conforme o filtro
+                engenheirosFiltrados = filters.OrdenarNomeEngenheiro == 1
+                    ? engenheirosFiltrados.OrderBy(p => p.NomePessoa)
+                    : engenheirosFiltrados.OrderByDescending(p => p.NomePessoa);
+
+                var idsFiltrados = engenheirosFiltrados.Select(o => o.Id).ToList();
+
+                // Cria um dicionário para mapear o IdImovel à sua posição na lista de idsFiltrados
+                var indexMap = idsFiltrados.Select((id, index) => new { id, index })
+                                           .ToDictionary(x => x.id, x => x.index);
+
+                // Ordena os processos pela posição de IdImovel nos idsFiltrados
+                processos = processos.Where(p => p.IdEngenheiro.HasValue && idsFiltrados.Contains(p.IdEngenheiro.Value))
+                                     .OrderBy(p => indexMap[p.IdEngenheiro.Value])  // Ordena com base na posição no indexMap
+                                     .ToList();
+            }
+
+            else if (filters.OrdenarNomeResponsavel != 0)
+            {
+                // Obtém todos os imóveis, mas com o filtro já aplicado se possível
+                var usuarios = await _usuarioService.GetAll();
+
+                // Filtra os imóveis pela inscrição cadastral
+                var usuariosFiltrados = usuarios.Where(o =>
+                    !string.IsNullOrWhiteSpace(o.NomePessoa) &&
+                    o.NomePessoa.Contains(filters.NomeResponsavel, StringComparison.OrdinalIgnoreCase));
+
+                // Aplica a ordenação conforme o filtro
+                usuariosFiltrados = filters.OrdenarNomeResponsavel == 1
+                    ? usuariosFiltrados.OrderBy(p => p.NomePessoa)
+                    : usuariosFiltrados.OrderByDescending(p => p.NomePessoa);
+
+                var idsFiltrados = usuariosFiltrados.Select(o => o.Id).ToList();
+
+                // Cria um dicionário para mapear o IdImovel à sua posição na lista de idsFiltrados
+                var indexMap = idsFiltrados.Select((id, index) => new { id, index })
+                                           .ToDictionary(x => x.id, x => x.index);
+
+                // Ordena os processos pela posição de IdImovel nos idsFiltrados
+                processos = processos.Where(p => p.IdResponsavel.HasValue && idsFiltrados.Contains(p.IdResponsavel.Value))
+                                     .OrderBy(p => indexMap[p.IdResponsavel.Value])  // Ordena com base na posição no indexMap
+                                     .ToList();
+            }
+
+            else if (filters.OrdenarNomeAprovador != 0)
+            {
+                // Obtém todos os imóveis, mas com o filtro já aplicado se possível
+                var usuarios = await _usuarioService.GetAll();
+
+                // Filtra os imóveis pela inscrição cadastral
+                var usuariosFiltrados = usuarios.Where(o =>
+                    !string.IsNullOrWhiteSpace(o.NomePessoa) &&
+                    o.NomePessoa.Contains(filters.NomeAprovador, StringComparison.OrdinalIgnoreCase));
+
+                // Aplica a ordenação conforme o filtro
+                usuariosFiltrados = filters.OrdenarNomeAprovador == 1
+                    ? usuariosFiltrados.OrderBy(p => p.NomePessoa)
+                    : usuariosFiltrados.OrderByDescending(p => p.NomePessoa);
+
+                var idsFiltrados = usuariosFiltrados.Select(o => o.Id).ToList();
+
+                // Cria um dicionário para mapear o IdImovel à sua posição na lista de idsFiltrados
+                var indexMap = idsFiltrados.Select((id, index) => new { id, index })
+                                           .ToDictionary(x => x.id, x => x.index);
+
+                // Ordena os processos pela posição de IdImovel nos idsFiltrados
+                processos = processos.Where(p => p.IdAprovador.HasValue && idsFiltrados.Contains(p.IdAprovador.Value))
+                                     .OrderBy(p => indexMap[p.IdAprovador.Value])  // Ordena com base na posição no indexMap
+                                     .ToList();
+            }
+
+            foreach (var processo in processos) { yield return processo; }
         }
     }
 }

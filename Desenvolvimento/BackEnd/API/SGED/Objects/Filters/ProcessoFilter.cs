@@ -5,6 +5,9 @@ namespace SGED.Objects.Filters
 {
     public class ProcessoFilter
     {
+        public int Pagina { get; set; }
+        public int QuantidadeElementos { get; set; }
+
         public string Id { get; set; }
         public string IdentificacaoProcesso { get; set; }
         public string DescricaoProcesso { get; set; }

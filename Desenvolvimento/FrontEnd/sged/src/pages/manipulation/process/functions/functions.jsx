@@ -129,10 +129,12 @@ export function convertProcess(processo) {
 }
 
 // Função para traduzir e processar o documento
-export function formateInFilters(data) {
+export function formateInFilters(data, page, number) {
     return {
-        "id": data.id || "",
+        "pagina": page === 0 ? 1 : page,
+        "quantidadeElementos": number || 10,
 
+        "id": data.id || "",
         "identificacaoProcesso": data.identificacaoProcesso || "",
         "descricaoProcesso": data.descricaoProcesso || "",
         "situacaoProcesso": data.situacaoProcesso || "",
@@ -172,8 +174,8 @@ export const GetProcessListByStatus = async (status) => {
     return connection.getList();
 };
 
-export const FilterProcess = async (data) => {
-    const params = formateInFilters(data);
+export const FilterProcess = async (data, page, number) => {
+    const params = formateInFilters(data, page, number);
 
     await connection.endpoint("Processo").action("Filter").post(params);
     return connection.getObject();

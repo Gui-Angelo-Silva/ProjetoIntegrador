@@ -25,6 +25,13 @@ public class ProcessoRepository : IProcessoRepository
         return await _dbContext.Processo.AsNoTracking().ToListAsync();
     }
 
+    public async Task<IEnumerable<ProcessoModel>> GetAllForFilter()
+    {
+        return await _dbContext.Processo
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
     public async Task<IEnumerable<ProcessoModel>> GetByStatus(int status)
     {
         // Convertendo o valor numérico para o enum

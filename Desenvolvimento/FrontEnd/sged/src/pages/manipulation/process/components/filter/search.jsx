@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Box, TextField, MenuItem, Select, InputLabel, FormControl, Button } from "@mui/material";
 import { MagnifyingGlass, Funnel } from "@phosphor-icons/react";
-import * as functions from "../functions/functions";
 
 const FilterField = ({ label, name, value, onChange, type = "text" }) => (
   <TextField
@@ -33,64 +32,12 @@ const FilterSelect = ({ label, name, value, onChange, options }) => (
   </FormControl>
 );
 
-const FilterModule = ({ onFilter }) => {
-  const [request, setRequest] = useState(true);
-  const [data, setData] = useState({});
-  const [filters, setFilters] = useState({
-    id: "",
-    identificacaoProcesso: "",
-    descricaoProcesso: "",
-    situacaoProcesso: "",
-    dataInicio1: "",
-    dataInicio2: "",
-    dataFinalizacao1: "",
-    dataFinalizacao2: "",
-    dataAprovacao1: "",
-    dataAprovacao2: "",
-    status: -1,
-    inscricaoCadastral: "",
-    nomeTipoProcesso: "",
-    nomeFiscal: "",
-    nomeEngenheiro: "",
-    nomeResponsavel: "",
-    nomeAprovador: "",
-
-    ordenarIdentificacaoProcesso: 0,
-    ordenarDescricaoProcesso: 0,
-    ordenarSituacaoProcesso: 0,
-    ordenarDataInicio: 0,
-    ordenarDataFinalizacao: 0,
-    ordenarDataAprovacao: 0,
-    ordenarStatus: 0,
-    ordenarInscricaoCadastral: 0,
-    ordenarNomeTipoProcesso: 0,
-    ordenarNomeFiscal: 0,
-    ordenarNomeEngenheiro: 0,
-    ordenarNomeResponsavel: 0,
-    ordenarNomeAprovador: 0,
-  });
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await functions.FilterProcess(filters);
-      setData(response);
-    };
-    if (request) { fetchData(); setRequest(false); }
-  }, [request]);
-
+const FilterModule = ({ filters, setFilters, setRequest }) => {
   const handleInputChange = (name, value) => {
     setFilters((prev) => ({
       ...prev,
       [name]: value,
     }));
-  };
-
-  const handleDateRangeChange = (name, index, value) => {
-    setFilters((prev) => {
-      const updatedDateRange = [...prev[name]];
-      updatedDateRange[index] = value;
-      return { ...prev, [name]: updatedDateRange };
-    });
   };
 
   const handleClearFilters = () => {
@@ -127,11 +74,6 @@ const FilterModule = ({ onFilter }) => {
       ordenarNomeResponsavel: 0,
       ordenarNomeAprovador: 0,
     });
-    onFilter({});
-  };
-
-  const handleApplyFilters = () => {
-    onFilter(filters);
   };
 
   const statusOptions = [
@@ -150,9 +92,6 @@ const FilterModule = ({ onFilter }) => {
           <Funnel size={24} />
           Filtro
         </h2>
-        <Button variant="outlined" color="error" onClick={handleClearFilters}>
-          Limpar
-        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -267,8 +206,12 @@ const FilterModule = ({ onFilter }) => {
         />
       </div>
 
-      <div className="flex justify-end mt-4">
-        <Button variant="contained" color="primary" onClick={handleApplyFilters}>
+      <div className="flex justify-end mt-4 gap-x-10">
+      <Button variant="outlined" color="error" onClick={handleClearFilters}>
+          Limpar
+        </Button>
+
+        <Button variant="contained" color="primary" onClick={() => setRequest(true)}>
           Pesquisar
         </Button>
       </div>

@@ -23,6 +23,12 @@ public class ProcessoService : IProcessoService
         return _mapper.Map<IEnumerable<ProcessoDTO>>(processos);
     }
 
+    public async Task<IEnumerable<ProcessoDTO>> GetAllForFilter()
+    {
+        var processos = await _processoRepository.GetAllForFilter();
+        return _mapper.Map<IEnumerable<ProcessoDTO>>(processos);
+    }
+
     public async Task<IEnumerable<ProcessoDTO>> GetByStatus(int status)
     {
         var processos = await _processoRepository.GetByStatus(status);

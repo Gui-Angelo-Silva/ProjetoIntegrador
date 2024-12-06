@@ -89,7 +89,7 @@ namespace SGED.Controllers
         {
             try
             {
-                var processos = await _processoService.GetAll();
+                var processos = await _processoService.GetAllForFilter();
 
                 // Aplica os filtros dinamicamente
                 var processosList = new List<ProcessoDTO>();
@@ -105,6 +105,7 @@ namespace SGED.Controllers
                 {
                     processosList.Add(processo);
                 }
+
                 processos = processosList;
 
                 // Monta a lista final com os dados processados
@@ -114,12 +115,27 @@ namespace SGED.Controllers
                     lista.Add(await GetAllData(processo));
                 }
 
+                dynamic dados = new ExpandoObject();
+                dados.quantidade = lista.Count;
+                dados.quatidadePaginas = (int)Math.Ceiling((double)lista.Count() / filters.QuantidadeElementos);
+                dados.paginaAtual = filters.Pagina < dados.quatidadePaginas ? filters.Pagina : dados.quatidadePaginas;
+
+                // Índice inicial baseado na página atual
+                int startIndex = (dados.paginaAtual - 1) * filters.QuantidadeElementos;
+
+                // Pegando os itens da página atual
+                dados.processos = lista
+                    .Skip(startIndex) // Ignora os elementos antes do índice inicial
+                    .Take(filters.QuantidadeElementos) // Pega apenas os elementos da página atual
+                    .ToList();
+
+
                 // Resposta da API
                 _response.SetSuccess();
                 _response.Message = lista.Any()
                     ? "Lista do(s) Processo(s) obtida com sucesso."
                     : "Nenhum Processo encontrado.";
-                _response.Data = lista;
+                _response.Data = dados;
                 return Ok(_response);
             }
             catch (Exception ex)

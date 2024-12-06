@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Box, TextField, MenuItem, Select, InputLabel, FormControl, Button } from "@mui/material";
 import { MagnifyingGlass, Funnel } from "@phosphor-icons/react";
 
+import { useServer } from '../../../../../routes/serverRoute';
+
 const FilterField = ({ label, name, value, onChange, type = "text" }) => (
   <TextField
     label={label}
@@ -33,6 +35,8 @@ const FilterSelect = ({ label, name, value, onChange, options }) => (
 );
 
 const FilterModule = ({ filters, setFilters, setRequest }) => {
+  const server = useServer();
+
   const handleInputChange = (name, value) => {
     setFilters((prev) => ({
       ...prev,
@@ -92,6 +96,10 @@ const FilterModule = ({ filters, setFilters, setRequest }) => {
           <Funnel size={24} />
           Filtro
         </h2>
+
+        <Button variant="outlined" color="error" onClick={() => server.currentRoute().addSegment("cadastrar-processo").dispatch()}>
+          Cadastrar
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

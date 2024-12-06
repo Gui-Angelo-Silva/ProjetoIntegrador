@@ -63,6 +63,9 @@ export default function Process() {
         const fetchData = async () => {
             const response = await functions.FilterProcess(filters, page, elementsPage);
             setData(response);
+
+            if (response.quantidadePages > 0 && page === 0) setPage(1);
+            else setPage(response.paginaAtual);
         };
         if (request) { fetchData(); setRequest(false); }
     }, [request]);

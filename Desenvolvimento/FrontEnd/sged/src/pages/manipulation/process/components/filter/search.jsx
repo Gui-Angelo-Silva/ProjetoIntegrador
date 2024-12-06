@@ -97,7 +97,7 @@ const FilterModule = ({ filters, setFilters, setRequest }) => {
           Filtro
         </h2>
 
-        <Button variant="outlined" color="error" onClick={() => server.currentRoute().addSegment("cadastrar-processo").dispatch()}>
+        <Button variant="outlined" color="success" onClick={() => server.currentRoute().addSegment("cadastrar-processo").dispatch()}>
           Cadastrar
         </Button>
       </div>
@@ -215,7 +215,7 @@ const FilterModule = ({ filters, setFilters, setRequest }) => {
       </div>
 
       <div className="flex justify-end mt-4 gap-x-10">
-      <Button variant="outlined" color="error" onClick={handleClearFilters}>
+        <Button variant="outlined" color="error" onClick={handleClearFilters}>
           Limpar
         </Button>
 

@@ -7,7 +7,7 @@ import { useMontage } from "../../../object/modules/montage";
 import ConnectionService from "../../../object/service/connection";
 import ListModule from "../../../object/modules/list";
 import TypeDocumentStageClass from "../../../object/class/typedocumentstage";
-import SelectModule from '../../../object/modules/select';
+import SelectModule from '../../../object/modules/selectOld';
 import Breadcrumb from "../../../components/Title/Breadcrumb";
 import Table from "../../../components/Table/Table";
 import Tooltip from "../../../components/Tooltip/Tooltip";

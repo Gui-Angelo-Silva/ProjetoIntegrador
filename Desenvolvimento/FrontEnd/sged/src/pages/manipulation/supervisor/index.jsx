@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 // Reactstrap imports
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
+import { User } from "@phosphor-icons/react";
 
 // Component imports
 import Breadcrumb from "../../../components/Title/Breadcrumb";
@@ -21,7 +22,7 @@ import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
 import SupervisorClass from '../../../object/class/supervisor';
-import SelectModule from '../../../object/modules/select';
+import SelectModule from '../../../object/modules/selectOld';
 import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function Supervisor() {
@@ -148,11 +149,17 @@ export default function Supervisor() {
 
     const dataForTable = list.currentList.map((fiscal) => {
         return {
-            imagemPessoa: (
+            imagemPessoa: (fiscal.imagemPessoa ?
                 <img
-                    src={fiscal.imagemPessoa}
-                    alt={`Imagem de ${fiscal.nomePessoa}`}
-                    className="w-[40px] h-[40px]"
+                  src={fiscal.imagemPessoa}
+                  alt={`Imagem de ${fiscal.nomePessoa}`}
+                  className="w-[40px] h-[40px] rounded-full"
+                /> :
+                <User
+                  size={32}
+                  weight="duotone"
+                  alt={`Imagem de ${fiscal.nomePessoa}`}
+                  className="w-[40px] h-[40px] rounded-full"
                 />
             ),
             nomePessoa: fiscal.nomePessoa,

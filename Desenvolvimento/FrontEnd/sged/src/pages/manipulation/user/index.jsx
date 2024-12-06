@@ -4,6 +4,7 @@ import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import Select from 'react-select';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Breadcrumb from "../../../components/Title/Breadcrumb";
+import { User } from "@phosphor-icons/react";
 
 // Component imports
 import ButtonTable from "../../../components/Table/ButtonTable";
@@ -20,9 +21,9 @@ import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
 import UserClass from '../../../object/class/user';
-import SelectModule from '../../../object/modules/select';
+import SelectModule from '../../../object/modules/selectOld';
 
-export default function User() {
+export default function UserPage() {
 
     const pages = [
         { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
@@ -242,11 +243,17 @@ export default function User() {
 
     const dataForTable = list.currentList.map((usuario) => {
         return {
-            imagemPessoa: (
+            imagemPessoa: (usuario.imagemPessoa ?
                 <img
-                    src={usuario.imagemPessoa}
-                    alt={`Imagem de ${usuario.nomePessoa}`}
-                    className="w-[40px] h-[40px]"
+                  src={usuario.imagemPessoa}
+                  alt={`Imagem de ${usuario.nomePessoa}`}
+                  className="w-[40px] h-[40px] rounded-full"
+                /> :
+                <User
+                  size={32}
+                  weight="duotone"
+                  alt={`Imagem de ${usuario.nomePessoa}`}
+                  className="w-[40px] h-[40px] rounded-full"
                 />
             ),
             nomePessoa: usuario.nomePessoa,

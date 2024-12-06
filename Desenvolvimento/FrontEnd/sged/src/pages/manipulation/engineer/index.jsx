@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 // Reactstrap imports
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
+import { User } from "@phosphor-icons/react";
 
 // Component imports
 import Breadcrumb from "../../../components/Title/Breadcrumb";
@@ -21,7 +22,7 @@ import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
 import EngineerClass from '../../../object/class/engineer';
-import SelectModule from '../../../object/modules/select';
+import SelectModule from '../../../object/modules/selectOld';
 import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function Engineer() {
@@ -147,13 +148,19 @@ export default function Engineer() {
 
     const dataForTable = list.currentList.map((engenheiro) => {
         return {
-            imagemPessoa: (
+            imagemPessoa: (engenheiro.imagemPessoa ?
                 <img
-                    src={engenheiro.imagemPessoa}
-                    alt={`Imagem de ${engenheiro.nomePessoa}`}
-                    className="w-[40px] h-[40px]"
+                  src={engenheiro.imagemPessoa}
+                  alt={`Imagem de ${engenheiro.nomePessoa}`}
+                  className="w-[40px] h-[40px] rounded-full"
+                /> :
+                <User
+                  size={32}
+                  weight="duotone"
+                  alt={`Imagem de ${engenheiro.nomePessoa}`}
+                  className="w-[40px] h-[40px] rounded-full"
                 />
-            ),
+              ),              
             nomePessoa: engenheiro.nomePessoa,
             emailPessoa: engenheiro.emailPessoa,
             creaEngenheiro: engenheiro.creaEngenheiro,

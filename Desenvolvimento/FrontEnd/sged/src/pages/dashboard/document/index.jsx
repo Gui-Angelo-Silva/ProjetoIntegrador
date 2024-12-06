@@ -5,7 +5,6 @@ import ImgProcesso from "../../../assets/card/ImgProcessoAtualizada.png";
 import Breadcrumb from "../../../components/Title/Breadcrumb";
 import ImgDocumentoProcesso from "../../../assets/card/ImgDocumentoProcessoAtualizada.png";
 import CardProcess from "../../../components/Card/CardProcess";
-import { useNavigate } from "react-router-dom";
 
 export default function Document() {
 
@@ -15,20 +14,19 @@ export default function Document() {
 
     const [hoveredCard, setHoveredCard] = useState(null);
     const { componentMounted } = useMontage();
-    const navigate = useNavigate();
 
-    const { addSegment, inDevelopment } = useServer();
+    const server = useServer();
 
     const cards = [
         {
             title: "Processo",
             imgSrc: ImgProcesso,
-            onClick: () => addSegment("processo"),
+            onClick: () => server.currentRoute().addSegment("processos").dispatch(),
         },
         {
             title: "Doc. Processo",
             imgSrc: ImgDocumentoProcesso,
-            onClick: () => inDevelopment("Controle de Documento Processo"),
+            onClick: () => server.currentRoute().addSegment("documentos-processos").dispatch(),
         },
     ];
 

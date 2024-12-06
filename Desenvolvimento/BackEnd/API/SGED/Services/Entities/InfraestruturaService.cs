@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
@@ -37,14 +37,14 @@ public class InfraestruturaService : IInfraestruturaService
 
     public async Task Create(InfraestruturaDTO infraestruturaDTO)
 	{
-		var infraestrutura = _mapper.Map<Infraestrutura>(infraestruturaDTO);
+		var infraestrutura = _mapper.Map<InfraestruturaModel>(infraestruturaDTO);
 		await _infraestruturaRepository.Create(infraestrutura);
 		infraestruturaDTO.Id = infraestrutura.Id;
 	}
 
 	public async Task Update(InfraestruturaDTO infraestruturaDTO)
 	{
-		var infraestrutura = _mapper.Map<Infraestrutura>(infraestruturaDTO);
+		var infraestrutura = _mapper.Map<InfraestruturaModel>(infraestruturaDTO);
 		await _infraestruturaRepository.Update(infraestrutura);
 	}
 

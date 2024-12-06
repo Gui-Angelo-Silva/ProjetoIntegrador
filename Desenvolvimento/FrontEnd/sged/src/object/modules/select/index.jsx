@@ -1,10 +1,8 @@
-import debounce from 'lodash.debounce';
 import { useState } from 'react';
 
 function ControlModule() {
     const [options, setOptions] = useState([]);
     const [selectedOption, setSelectedOption] = useState({});
-    const [lastSelected, setLastSelected] = useState({});
 
     const updateOptions = (list, atributeId, atributeName) => {
         const updatedOptions = atributeId && atributeName ?
@@ -26,10 +24,10 @@ function ControlModule() {
         }
     };
 
-    const selectOption = (id) => {
-        const foundOption = options.find(option => option.value === id);
-        if (foundOption) {
-            setSelectedOption(foundOption);
+    const loadOptions = (inputValue, callback) => {
+        const filteredOptions = filterOptions(inputValue);
+        if (typeof callback === 'function') {
+            callback(filteredOptions);
         }
     };
 
@@ -45,23 +43,19 @@ function ControlModule() {
         );
     };
 
-    const loadOptions = (inputValue, callback) => {
-        callback(filterOptions(inputValue));
+    const clearData = () => {
+        setOptions([]);
+        setSelectedOption({});
     };
 
     return {
-        // Atributos
         options,
         selectedOption,
-        lastSelected,
-        setLastSelected,
-
-        // Funções
+        setOptions, // Adiciona a função para definir as opções
         updateOptions,
         handleChange,
-        selectOption,
-        filterOptions,
-        loadOptions
+        loadOptions,
+        clearData,
     };
 }
 

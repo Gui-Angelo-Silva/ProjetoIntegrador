@@ -23,6 +23,11 @@ function SessionService() {
         //return cookie.getCookie("user");
     };
 
+    const getAcessLevel = () => {
+        //return storage.getLocal('acessLevel');
+        return cookie.getCookie("acessLevel");
+    };
+
     const setUser = async () => {
         const token = getToken();
 
@@ -55,14 +60,20 @@ function SessionService() {
         cookie.setCookie("token", token, 12);
     };
 
+    const setAcessLevel = (acessLevel) => {
+        //storage.setLocal('acessLevel', acessLevel);
+        cookie.setCookie("acessLevel", acessLevel, 12);
+    };
+
     const clearSession = () => {
         defaultToken();
+        defaultAcessLevel();
         defaultUser();
     };
 
     const defaultLogin = () => {
         //storage.setLocal('login', null);
-        cookie.setCookie("login", null);
+        storage.setLocal("login", null);
     };
 
     const defaultToken = () => {
@@ -72,7 +83,12 @@ function SessionService() {
 
     const defaultUser = () => {
         //storage.setLocal('user', null);
-        cookie.setCookie("user", null);
+        storage.setLocal("user", null);
+    };
+
+    const defaultAcessLevel = () => {
+        //storage.setLocal('acessLevel', null);
+        cookie.setCookie("acessLevel", null);
     };
 
     const createSession = async (object) => {
@@ -80,10 +96,11 @@ function SessionService() {
         var autentication = false;
 
         try {
-            await connection.endpoint("Sessao").action("Autentication").post(object.getData());
+            await connection.endpoint("Sessao").action("Authentication").post(object.getData());
 
             if (connection.response.status) {
-                setToken(connection.response.data);
+                setToken(connection.response.data.tokenSessao);
+                setAcessLevel(String(connection.response.data.nivelAcesso).toLowerCase());
 
                 if (object.persistLogin) {
                     setLogin(object);
@@ -115,6 +132,7 @@ function SessionService() {
 
     const closeSession = async () => {
         const tokenUser = getToken();
+        clearSession();
 
         if (tokenUser) {
             const data = {
@@ -123,8 +141,6 @@ function SessionService() {
 
             try {
                 await connection.endpoint("Sessao").action("Close").put(data);
-                clearSession();
-
                 return connection.response.status;
 
             } catch (error) {
@@ -167,6 +183,7 @@ function SessionService() {
     return {
         getLogin,
         getUser,
+        getAcessLevel,
 
         setUser,
 

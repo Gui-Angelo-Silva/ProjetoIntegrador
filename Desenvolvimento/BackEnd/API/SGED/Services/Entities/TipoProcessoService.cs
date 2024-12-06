@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
+using SGED.Repositories.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
 
@@ -23,6 +24,12 @@ public class TipoProcessoService : ITipoProcessoService
         return _mapper.Map<IEnumerable<TipoProcessoDTO>>(tipoProcessos);
     }
 
+    public async Task<IEnumerable<TipoProcessoDTO>> Search(string search)
+    {
+        var tipoProcessos = await _tipoProcessoRepository.Search(search);
+        return _mapper.Map<IEnumerable<TipoProcessoDTO>>(tipoProcessos);
+    }
+
     public async Task<TipoProcessoDTO> GetById(int id)
     {
         var tipoProcesso = await _tipoProcessoRepository.GetById(id);
@@ -31,14 +38,14 @@ public class TipoProcessoService : ITipoProcessoService
 
     public async Task Create(TipoProcessoDTO TipoProcessoDTO)
     {
-        var tipoProcesso = _mapper.Map<TipoProcesso>(TipoProcessoDTO);
+        var tipoProcesso = _mapper.Map<TipoProcessoModel>(TipoProcessoDTO);
         await _tipoProcessoRepository.Create(tipoProcesso);
         TipoProcessoDTO.Id = tipoProcesso.Id;
     }
 
     public async Task Update(TipoProcessoDTO TipoProcessoDTO)
     {
-        var tipoProcesso = _mapper.Map<TipoProcesso>(TipoProcessoDTO);
+        var tipoProcesso = _mapper.Map<TipoProcessoModel>(TipoProcessoDTO);
         await _tipoProcessoRepository.Update(tipoProcesso);
     }
 

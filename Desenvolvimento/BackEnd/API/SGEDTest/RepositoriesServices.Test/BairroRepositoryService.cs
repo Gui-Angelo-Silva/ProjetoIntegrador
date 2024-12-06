@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Moq;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Entities;
@@ -25,7 +25,7 @@ namespace SGEDTest.RepositoriesServices.Test
 		[Test]
 		public async Task Obter_TodosBairrosMapeados()
 		{
-			var bairro = new List<Bairro> { new Bairro { Id = 1, NomeBairro = "Residencial São Lucas", IdCidade = 1 } };
+			var bairro = new List<BairroModel> { new BairroModel { Id = 1, NomeBairro = "Residencial São Lucas", IdCidade = 1 } };
 			var bairroDTO = new List<BairroDTO> { new BairroDTO { Id = 1, NomeBairro = "Residencial São Lucas", IdCidade = 1 } };
 			_bairroRepositoryMock.Setup(repo => repo.GetAll()).ReturnsAsync(bairro);
 			_mapperMock.Setup(m => m.Map<IEnumerable<BairroDTO>>(bairro)).Returns(bairroDTO);
@@ -38,7 +38,7 @@ namespace SGEDTest.RepositoriesServices.Test
 		[Test]
 		public async Task Obter_BairroMapeadoPorId()
 		{
-			var bairro = new Bairro { Id = 1, NomeBairro = "Residencial São Lucas", IdCidade = 1 };
+			var bairro = new BairroModel { Id = 1, NomeBairro = "Residencial São Lucas", IdCidade = 1 };
 			var bairroDTO = new BairroDTO { Id = 1, NomeBairro = "Residencial São Lucas", IdCidade = 1 };
 			_bairroRepositoryMock.Setup(repo => repo.GetById(1)).ReturnsAsync(bairro);
 			_mapperMock.Setup(m => m.Map<BairroDTO>(bairro)).Returns(bairroDTO);
@@ -52,26 +52,26 @@ namespace SGEDTest.RepositoriesServices.Test
 		public async Task Cadastro_ChamadadeBairroMapeado()
 		{
 			var bairroDTO = new BairroDTO { NomeBairro = "Residencial São Lucas", IdCidade = 1 };
-			var bairro = new Bairro { NomeBairro = "Residencial São Lucas", IdCidade = 1 };
-			_mapperMock.Setup(c => c.Map<Bairro>(bairroDTO)).Returns(bairro);
+			var bairro = new BairroModel { NomeBairro = "Residencial São Lucas", IdCidade = 1 };
+			_mapperMock.Setup(c => c.Map<BairroModel>(bairroDTO)).Returns(bairro);
 
 			await _bairroService.Create(bairroDTO);
 
 			_bairroRepositoryMock.Verify(repo => repo.Create(bairro), Times.Once);
-			_mapperMock.Verify(c => c.Map<Bairro>(bairroDTO), Times.Once);
+			_mapperMock.Verify(c => c.Map<BairroModel>(bairroDTO), Times.Once);
 		}
 
 		[Test]
 		public async Task Atualiza_ChamadaDeBairroMapeado()
 		{
 			var bairroDTO = new BairroDTO { NomeBairro = "Residencial São Lucas", IdCidade = 1 };
-			var bairro = new Bairro { NomeBairro = "Residencial São Lucas", IdCidade = 1 };
-			_mapperMock.Setup(c => c.Map<Bairro>(bairroDTO)).Returns(bairro);
+			var bairro = new BairroModel { NomeBairro = "Residencial São Lucas", IdCidade = 1 };
+			_mapperMock.Setup(c => c.Map<BairroModel>(bairroDTO)).Returns(bairro);
 
 			await _bairroService.Update(bairroDTO);
 
 			_bairroRepositoryMock.Verify(repo => repo.Update(bairro), Times.Once);
-			_mapperMock.Verify(c => c.Map<Bairro>(bairroDTO), Times.Once);
+			_mapperMock.Verify(c => c.Map<BairroModel>(bairroDTO), Times.Once);
 		}
 
 		[Test]	

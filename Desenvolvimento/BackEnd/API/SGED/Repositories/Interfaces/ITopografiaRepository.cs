@@ -3,9 +3,9 @@
 namespace SGED.Repositories.Interfaces;
 public interface ITopografiaRepository
 {
-    Task<IEnumerable<Topografia>> GetAll();
-    Task<Topografia> GetById(int id);
-    Task<Topografia> Create(Topografia topografia);
-    Task<Topografia> Update(Topografia topografia);
-    Task<Topografia> Delete(int id);
+    Task<IEnumerable<TopografiaModel>> GetAll();
+    Task<TopografiaModel> GetById(int id);
+    Task<TopografiaModel> Create(TopografiaModel topografia);
+    Task<TopografiaModel> Update(TopografiaModel topografia);
+    Task<TopografiaModel> Delete(int id);
 }

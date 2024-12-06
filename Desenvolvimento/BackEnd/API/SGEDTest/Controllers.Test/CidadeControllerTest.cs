@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SGED.Controllers;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Services.Interfaces;
 
 namespace SGEDTest.Controllers.Test

@@ -9,7 +9,7 @@ const TableRow = ({ item }) => {
 
   return (
     <li
-      className="grid w-full"
+      className="grid w-full hover:bg-gray-100" // Adicionei hover:bg-gray-100 aqui para afetar a linha inteira
       style={{ gridTemplateColumns: `repeat(${filteredItem.length}, 1fr)` }}
       key={item.id}
     >

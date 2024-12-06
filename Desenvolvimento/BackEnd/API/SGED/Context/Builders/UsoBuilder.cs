@@ -8,21 +8,21 @@ namespace SGED.Context.Builders
         public static void Build(ModelBuilder modelBuilder)
         {
             // Builder
-            modelBuilder.Entity<Uso>().Property(u => u.Id);
-            modelBuilder.Entity<Uso>().Property(u => u.NomeUso).HasMaxLength(50).IsRequired();
-            modelBuilder.Entity<Uso>().Property(u => u.DescricaoUso).IsRequired();
+            modelBuilder.Entity<UsoModel>().Property(u => u.Id);
+            modelBuilder.Entity<UsoModel>().Property(u => u.NomeUso).HasMaxLength(50).IsRequired();
+            modelBuilder.Entity<UsoModel>().Property(u => u.DescricaoUso).IsRequired();
 
             // Declaração: Defini o ID como Chave Primária
-            modelBuilder.Entity<Uso>().HasKey(u => u.Id);
+            modelBuilder.Entity<UsoModel>().HasKey(u => u.Id);
 
 
             // Inserções
-            modelBuilder.Entity<Uso>().HasData(
-                new Uso { Id = 1, NomeUso = "Residencial", DescricaoUso = "Uso do imóvel para habitação." },
-                new Uso { Id = 2, NomeUso = "Comercial", DescricaoUso = "Uso do imóvel para atividades comerciais." },
-                new Uso { Id = 3, NomeUso = "Industrial", DescricaoUso = "Uso do imóvel para atividades industriais." },
-                new Uso { Id = 4, NomeUso = "Institucional", DescricaoUso = "Uso do imóvel para serviços públicos ou comunitários." },
-                new Uso { Id = 5, NomeUso = "Misto", DescricaoUso = "Uso do imóvel que combina mais de uma finalidade." }
+            modelBuilder.Entity<UsoModel>().HasData(
+                new UsoModel { Id = 1, NomeUso = "Residencial", DescricaoUso = "Uso do imóvel para habitação." },
+                new UsoModel { Id = 2, NomeUso = "Comercial", DescricaoUso = "Uso do imóvel para atividades comerciais." },
+                new UsoModel { Id = 3, NomeUso = "Industrial", DescricaoUso = "Uso do imóvel para atividades industriais." },
+                new UsoModel { Id = 4, NomeUso = "Institucional", DescricaoUso = "Uso do imóvel para serviços públicos ou comunitários." },
+                new UsoModel { Id = 5, NomeUso = "Misto", DescricaoUso = "Uso do imóvel que combina mais de uma finalidade." }
             );
         }
     }

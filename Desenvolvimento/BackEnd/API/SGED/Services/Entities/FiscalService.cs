@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
+using SGED.Repositories.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
 
@@ -23,6 +24,12 @@ public class FiscalService : IFiscalService
         return _mapper.Map<IEnumerable<FiscalDTO>>(fiscais);
     }
 
+    public async Task<IEnumerable<FiscalDTO>> Search(string search)
+    {
+        var fiscais = await _fiscalRepository.Search(search);
+        return _mapper.Map<IEnumerable<FiscalDTO>>(fiscais);
+    }
+
     public async Task<FiscalDTO> GetById(int id)
     {
         var fiscal = await _fiscalRepository.GetById(id);
@@ -31,14 +38,14 @@ public class FiscalService : IFiscalService
 
     public async Task Create(FiscalDTO fiscalDTO)
     {
-        var fiscal = _mapper.Map<Fiscal>(fiscalDTO);
+        var fiscal = _mapper.Map<FiscalModel>(fiscalDTO);
         await _fiscalRepository.Create(fiscal);
         fiscalDTO.Id = fiscal.Id;
     }
 
     public async Task Update(FiscalDTO  fiscalDTO)
     {
-        var fiscal = _mapper.Map<Fiscal>(fiscalDTO);
+        var fiscal = _mapper.Map<FiscalModel>(fiscalDTO);
         await _fiscalRepository.Update(fiscal);
     }
 

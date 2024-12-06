@@ -15,31 +15,31 @@ public class InstalacaoRepository : IInstalacaoRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Instalacao>> GetAll()
+    public async Task<IEnumerable<InstalacaoModel>> GetAll()
     {
         return await _dbContext.Instalacao.AsNoTracking().ToListAsync();
     }
 
-    public async Task<Instalacao> GetById(int id)
+    public async Task<InstalacaoModel> GetById(int id)
     {
         return await _dbContext.Instalacao.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
     }
 
-    public async Task<Instalacao> Create(Instalacao instalacao)
+    public async Task<InstalacaoModel> Create(InstalacaoModel instalacao)
     {
         _dbContext.Instalacao.Add(instalacao);
         await _dbContext.SaveChangesAsync();
         return instalacao;
     }
 
-    public async Task<Instalacao> Update(Instalacao instalacao)
+    public async Task<InstalacaoModel> Update(InstalacaoModel instalacao)
     {
         _dbContext.Entry(instalacao).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
         return instalacao;
     }
 
-    public async Task<Instalacao> Delete(int id)
+    public async Task<InstalacaoModel> Delete(int id)
     {
         var instalacao = await GetById(id);
         _dbContext.Instalacao.Remove(instalacao);

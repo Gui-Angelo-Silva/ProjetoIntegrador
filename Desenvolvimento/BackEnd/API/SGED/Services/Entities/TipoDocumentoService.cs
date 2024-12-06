@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
@@ -31,14 +31,14 @@ namespace SGED.Services.Entities
 
 		public async Task Create(TipoDocumentoDTO TipoDocumentoDTO)
 		{
-			var tipoDocumento = _mapper.Map<TipoDocumento>(TipoDocumentoDTO);
+			var tipoDocumento = _mapper.Map<TipoDocumentoModel>(TipoDocumentoDTO);
 			await _tipoDocumentoRepository.Create(tipoDocumento);
 			TipoDocumentoDTO.Id = tipoDocumento.Id;
 		}
 
 		public async Task Update(TipoDocumentoDTO TipoDocumentoDTO)
 		{
-			var tipoDocumneto = _mapper.Map<TipoDocumento>(TipoDocumentoDTO);
+			var tipoDocumneto = _mapper.Map<TipoDocumentoModel>(TipoDocumentoDTO);
 			await _tipoDocumentoRepository.Update(tipoDocumneto);
 		}
 

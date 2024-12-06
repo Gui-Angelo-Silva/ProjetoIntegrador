@@ -22,7 +22,7 @@ import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
 import NeighborhoodClass from '../../../object/class/neighborhood';
-import SelectModule from '../../../object/modules/select';
+import SelectModule from '../../../object/modules/selectOld';
 
 export default function Neighborhood() {
 
@@ -33,7 +33,7 @@ export default function Neighborhood() {
     }, []);
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Bairro', link: '', isEnabled: false }
     ];
 

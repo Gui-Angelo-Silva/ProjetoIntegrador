@@ -1,16 +1,16 @@
-﻿using SGED.DTO.Entities;
+﻿using SGED.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 
 namespace SGED.Repositories.Interfaces;
 public interface ITipoDocumentoEtapaRepository
 {
-    Task<IEnumerable<TipoDocumentoEtapa>> GetAll();
-    Task<TipoDocumentoEtapa> GetById(int id);
-    Task<TipoDocumentoEtapa> Create(TipoDocumentoEtapa TipoDocumentoEtapa);
-    Task<TipoDocumentoEtapa> Update(TipoDocumentoEtapa TipoDocumentoEtapa);
-    Task<TipoDocumentoEtapa> Delete(int id);
+    Task<IEnumerable<TipoDocumentoEtapaModel>> GetAll();
+    Task<TipoDocumentoEtapaModel> GetById(int id);
+    Task<TipoDocumentoEtapaModel> Create(TipoDocumentoEtapaModel TipoDocumentoEtapa);
+    Task<TipoDocumentoEtapaModel> Update(TipoDocumentoEtapaModel TipoDocumentoEtapa);
+    Task<TipoDocumentoEtapaModel> Delete(int id);
 
-    Task<IEnumerable<TipoDocumentoEtapa>> GetTypeDocumentStagesRelatedToStage(int IdEtapa);
-    Task<IEnumerable<TipoDocumento>> GetTypeDocumentsRelatedToStage(int IdEtapa);
-    Task<IEnumerable<TipoDocumento>> GetTypeDocumentsNoRelatedToStage(int IdEtapa);
+    Task<IEnumerable<TipoDocumentoEtapaModel>> GetTypeDocumentStagesRelatedToStage(int IdEtapa);
+    Task<IEnumerable<TipoDocumentoModel>> GetTypeDocumentsRelatedToStage(int IdEtapa);
+    Task<IEnumerable<TipoDocumentoModel>> GetTypeDocumentsNoRelatedToStage(int IdEtapa);
 }

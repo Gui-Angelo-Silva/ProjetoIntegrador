@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SGED.Context;
 using SGED.Objects.Interfaces.Pessoa;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Services.Interfaces;
 using SGED.Objects.Utilities;
 using SGED.Services.Entities;
@@ -42,6 +42,37 @@ namespace SGED.Controllers
             {
                 _response.SetError();
                 _response.Message = "Não foi possível adquirir a lista do(s) Fiscal(s)!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpGet("Search/{search}", Name = "SearchFiscal")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult<IEnumerable<FiscalDTO>>> SearchSupervisor(string search)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    _response.SetNotFound();
+                    _response.Message = "Informe o nome do Fiscal para pesquisa!";
+                    _response.Data = Enumerable.Empty<FiscalDTO>();
+                    return NotFound(_response);
+                }
+
+                var fiscalsDTO = await _fiscalService.Search(search);
+                _response.SetSuccess();
+                _response.Message = fiscalsDTO.Any() ?
+                    "Lista dos Fiscais obtida com sucesso." :
+                    "Nenhum Fiscal encontrado.";
+                _response.Data = fiscalsDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista dos Fiscais!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }

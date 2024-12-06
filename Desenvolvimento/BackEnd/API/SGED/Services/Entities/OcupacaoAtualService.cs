@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
@@ -31,14 +31,14 @@ public class OcupacaoAtualService : IOcupacaoAtualService
 
     public async Task Create(OcupacaoAtualDTO ocupacaoatualDTO)
 	{
-		var ocupacaoatual = _mapper.Map<OcupacaoAtual>(ocupacaoatualDTO);
+		var ocupacaoatual = _mapper.Map<OcupacaoAtualModel>(ocupacaoatualDTO);
 		await _ocupacaoatualRepository.Create(ocupacaoatual);
 		ocupacaoatualDTO.Id = ocupacaoatual.Id;
 	}
 
 	public async Task Update(OcupacaoAtualDTO ocupacaoatualDTO)
 	{
-		var ocupacaoatual = _mapper.Map<OcupacaoAtual>(ocupacaoatualDTO);
+		var ocupacaoatual = _mapper.Map<OcupacaoAtualModel>(ocupacaoatualDTO);
 		await _ocupacaoatualRepository.Update(ocupacaoatual);
 	}
 

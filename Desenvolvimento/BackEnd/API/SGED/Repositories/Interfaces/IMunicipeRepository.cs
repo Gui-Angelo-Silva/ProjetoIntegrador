@@ -3,9 +3,9 @@
 namespace SGED.Repositories.Interfaces;
 public interface IMunicipeRepository
 {
-    Task<IEnumerable<Municipe>> GetAll();
-    Task<Municipe> GetById(int id);
-    Task<Municipe> Create(Municipe municipe);
-    Task<Municipe> Update(Municipe municipe);
-    Task<Municipe> Delete(int id);
+    Task<IEnumerable<MunicipeModel>> GetAll();
+    Task<MunicipeModel> GetById(int id);
+    Task<MunicipeModel> Create(MunicipeModel municipe);
+    Task<MunicipeModel> Update(MunicipeModel municipe);
+    Task<MunicipeModel> Delete(int id);
 }

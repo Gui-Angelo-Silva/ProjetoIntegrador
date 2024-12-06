@@ -2,14 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Authorization;
-using SGED.Objects.DTO.Entities;
-using SGED.Objects.DTO.Searchs;
+using SGED.Objects.DTOs.Searchs;
 using SGED.Objects.Utilities;
 using Google.Protobuf;
 using SGED.Services.Entities;
 using SGED.Services.Server.Attributes;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using SGED.Objects.DTOs.Entities;
 
 namespace SGED.Controllers
 {

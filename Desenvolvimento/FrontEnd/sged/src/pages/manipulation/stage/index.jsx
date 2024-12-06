@@ -25,12 +25,12 @@ import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
 import StageClass from "../../../object/class/stage";
-import SelectModule from '../../../object/modules/select';
+import SelectModule from '../../../object/modules/selectOld';
 
 export default function Stage() {
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Etapa', link: '', isEnabled: false }
     ];
 

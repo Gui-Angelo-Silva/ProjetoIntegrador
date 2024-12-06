@@ -117,8 +117,8 @@ namespace SGED.Controllers
 
                 dynamic dados = new ExpandoObject();
                 dados.quantidade = lista.Count;
-                dados.quatidadePaginas = (int)Math.Ceiling((double)lista.Count() / filters.QuantidadeElementos);
-                dados.paginaAtual = filters.Pagina < dados.quatidadePaginas ? filters.Pagina : dados.quatidadePaginas;
+                dados.quantidadePaginas = (int)Math.Ceiling((double)lista.Count() / filters.QuantidadeElementos);
+                dados.paginaAtual = filters.Pagina < dados.quantidadePaginas ? filters.Pagina : dados.quantidadePaginas;
 
                 // Índice inicial baseado na página atual
                 int startIndex = (dados.paginaAtual - 1) * filters.QuantidadeElementos;

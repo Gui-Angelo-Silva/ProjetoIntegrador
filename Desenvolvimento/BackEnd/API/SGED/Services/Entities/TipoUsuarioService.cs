@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Entities;
 using SGED.Repositories.Interfaces;
@@ -32,14 +32,14 @@ public class TipoUsuarioService : ITipoUsuarioService
 
 	public async Task Create(TipoUsuarioDTO tipoUsuarioDTO)
 	{
-        var tipoUsuario = _mapper.Map<TipoUsuario>(tipoUsuarioDTO);
+        var tipoUsuario = _mapper.Map<TipoUsuarioModel>(tipoUsuarioDTO);
         await _tipoUsuarioRepository.Create(tipoUsuario);
         tipoUsuarioDTO.Id = tipoUsuario.Id;
     }
 
 	public async Task Update(TipoUsuarioDTO tipousuarioDTO)
 	{
-		var tipoUsuario = _mapper.Map<TipoUsuario>(tipousuarioDTO);
+		var tipoUsuario = _mapper.Map<TipoUsuarioModel>(tipousuarioDTO);
 		await _tipoUsuarioRepository.Update(tipoUsuario);
 	}
 

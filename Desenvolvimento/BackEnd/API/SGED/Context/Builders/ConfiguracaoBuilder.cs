@@ -8,23 +8,23 @@ namespace SGED.Context.Builders
 	{
 		public static void Build(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<Configuracao>().Property(c => c.Id);
-			modelBuilder.Entity<Configuracao>().Property(c => c.Descricao);
-			modelBuilder.Entity<Configuracao>().Property(c => c.Valor);
-			modelBuilder.Entity<Configuracao>()
+			modelBuilder.Entity<ConfiguracaoModel>().Property(c => c.Id);
+			modelBuilder.Entity<ConfiguracaoModel>().Property(c => c.Descricao);
+			modelBuilder.Entity<ConfiguracaoModel>().Property(c => c.Valor);
+			modelBuilder.Entity<ConfiguracaoModel>()
 				.Property(c => c.TipoConfiguracao)
 				.HasConversion(
 					v => v.ToString(),
 					v => (TipoConfiguracao)Enum.Parse(typeof(TipoConfiguracao), v));
 
             // Declaração: Defini o ID como Chave Primária
-            modelBuilder.Entity<Configuracao>().HasKey(c => c.Id);
+            modelBuilder.Entity<ConfiguracaoModel>().HasKey(c => c.Id);
 
 
 			// Inserções
-            modelBuilder.Entity<Configuracao>().HasData(
-				new Configuracao { Id = 1, Descricao = "Ativar alerta de dados obtidos.", Valor = true, TipoConfiguracao = TipoConfiguracao.Notificacao },
-				new Configuracao { Id = 2, Descricao = "Mensagem de tarefas pendentes.", Valor = true, TipoConfiguracao = TipoConfiguracao.Notificacao }	
+            modelBuilder.Entity<ConfiguracaoModel>().HasData(
+				new ConfiguracaoModel { Id = 1, Descricao = "Ativar alerta de dados obtidos.", Valor = true, TipoConfiguracao = TipoConfiguracao.Notificacao },
+				new ConfiguracaoModel { Id = 2, Descricao = "Mensagem de tarefas pendentes.", Valor = true, TipoConfiguracao = TipoConfiguracao.Notificacao }	
 			);
 		}
 	}

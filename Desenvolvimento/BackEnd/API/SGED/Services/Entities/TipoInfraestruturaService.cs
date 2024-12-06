@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
@@ -31,14 +31,14 @@ public class TipoInfraestruturaService : ITipoInfraestruturaService
 
     public async Task Create(TipoInfraestruturaDTO tipoinfraestruturaDTO)
 	{
-		var tipoinfraestrutura = _mapper.Map<TipoInfraestrutura>(tipoinfraestruturaDTO);
+		var tipoinfraestrutura = _mapper.Map<TipoInfraestruturaModel>(tipoinfraestruturaDTO);
 		await _tipoinfraestruturaRepository.Create(tipoinfraestrutura);
 		tipoinfraestruturaDTO.Id = tipoinfraestrutura.Id;
 	}
 
 	public async Task Update(TipoInfraestruturaDTO tipoinfraestruturaDTO)
 	{
-		var tipoinfraestrutura = _mapper.Map<TipoInfraestrutura>(tipoinfraestruturaDTO);
+		var tipoinfraestrutura = _mapper.Map<TipoInfraestruturaModel>(tipoinfraestruturaDTO);
 		await _tipoinfraestruturaRepository.Update(tipoinfraestrutura);
 	}
 

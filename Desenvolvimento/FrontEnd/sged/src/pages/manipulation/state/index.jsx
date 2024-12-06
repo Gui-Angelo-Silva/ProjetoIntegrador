@@ -30,7 +30,7 @@ import FormField from "../../../components/FormField/FormField";
 export default function State() {
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Estado', link: '', isEnabled: false }
     ];
 

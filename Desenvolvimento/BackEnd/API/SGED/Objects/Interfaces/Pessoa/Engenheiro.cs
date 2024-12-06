@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace SGED.DTO.Entities
+namespace SGED.DTOs.Entities
 {
     public interface IEngenheiro
     {

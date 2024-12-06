@@ -3,9 +3,9 @@
 namespace SGED.Repositories.Interfaces;
 public interface ITipoInfraestruturaRepository
 {
-    Task<IEnumerable<TipoInfraestrutura>> GetAll();
-    Task<TipoInfraestrutura> GetById(int id);
-    Task<TipoInfraestrutura> Create(TipoInfraestrutura tipoinfraestrutura);
-    Task<TipoInfraestrutura> Update(TipoInfraestrutura tipoinfraestrutura);
-    Task<TipoInfraestrutura> Delete(int id);
+    Task<IEnumerable<TipoInfraestruturaModel>> GetAll();
+    Task<TipoInfraestruturaModel> GetById(int id);
+    Task<TipoInfraestruturaModel> Create(TipoInfraestruturaModel tipoinfraestrutura);
+    Task<TipoInfraestruturaModel> Update(TipoInfraestruturaModel tipoinfraestrutura);
+    Task<TipoInfraestruturaModel> Delete(int id);
 }

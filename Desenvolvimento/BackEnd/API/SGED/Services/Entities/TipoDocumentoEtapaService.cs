@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
@@ -31,14 +31,14 @@ public class TipoDocumentoEtapaService : ITipoDocumentoEtapaService
 
     public async Task Create(TipoDocumentoEtapaDTO tipoDocumentoEtapaDTO)
     {
-        var tipoDocumentoEtapa = _mapper.Map<TipoDocumentoEtapa>(tipoDocumentoEtapaDTO);
+        var tipoDocumentoEtapa = _mapper.Map<TipoDocumentoEtapaModel>(tipoDocumentoEtapaDTO);
         await _tipoDocumentoEtapaRepository.Create(tipoDocumentoEtapa);
         tipoDocumentoEtapaDTO.Id = tipoDocumentoEtapa.Id;
     }
 
     public async Task Update(TipoDocumentoEtapaDTO tipoDocumentoEtapaDTO)
     {
-        var tipoDocumentoEtapa = _mapper.Map<TipoDocumentoEtapa>(tipoDocumentoEtapaDTO);
+        var tipoDocumentoEtapa = _mapper.Map<TipoDocumentoEtapaModel>(tipoDocumentoEtapaDTO);
         await _tipoDocumentoEtapaRepository.Update(tipoDocumentoEtapa);
     }
 

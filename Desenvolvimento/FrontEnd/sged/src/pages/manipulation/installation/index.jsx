@@ -31,7 +31,7 @@ import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 export default function Installation() {
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Instalação', link: '', isEnabled: false }
     ];
 

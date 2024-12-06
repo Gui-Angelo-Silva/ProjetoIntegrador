@@ -43,7 +43,7 @@ export default function Citizen() {
     const [inOperation, setInOperation] = useState(false);
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Munícipe', link: '', isEnabled: false }
     ];
 

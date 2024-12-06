@@ -4,12 +4,12 @@ namespace SGED.Repositories.Interfaces
 {
     public interface ILogradouroRepository
 	{
-		Task<IEnumerable<Logradouro>> GetAll();
-        Task<IEnumerable<Logradouro>> GetByNeighbourhood(int idBairro);
-        Task<Logradouro> GetById(int id);
-        Task<Logradouro> GetByCEP(string cep);
-        Task<Logradouro> Create(Logradouro logradouro);
-		Task<Logradouro> Update(Logradouro logradouro);
-		Task<Logradouro> Delete(int id);
-	}
+		Task<IEnumerable<LogradouroModel>> GetAll();
+        Task<IEnumerable<LogradouroModel>> GetByNeighbourhood(int idBairro);
+        Task<LogradouroModel> GetById(int id);
+		Task<LogradouroModel> GetByCEP(string cep);
+		Task<LogradouroModel> Create(LogradouroModel logradouro);
+		Task<LogradouroModel> Update(LogradouroModel logradouro);
+		Task<LogradouroModel> Delete(int id);
+    }
 }

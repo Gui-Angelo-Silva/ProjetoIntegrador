@@ -14,19 +14,19 @@ namespace SGED.Repositories.Entities
 			_dbContext = dbContext;
 		}
 
-		public async Task<IEnumerable<Configuracao>> GetAll()
+		public async Task<IEnumerable<ConfiguracaoModel>> GetAll()
 		{
-			return await _dbContext.Set<Configuracao>().ToListAsync();
+			return await _dbContext.Set<ConfiguracaoModel>().ToListAsync();
 		}
 
-		public async Task<Configuracao> GetById(int id)
+		public async Task<ConfiguracaoModel> GetById(int id)
 		{
 			return await _dbContext.Configuracao.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 		}
 
-		public async Task<Configuracao> Activate(int id)
+		public async Task<ConfiguracaoModel> Activate(int id)
 		{
-			var config = await _dbContext.Set<Configuracao>().FindAsync(id);
+			var config = await _dbContext.Set<ConfiguracaoModel>().FindAsync(id);
             if (config != null)
             {
 				config.Valor = true;
@@ -35,9 +35,9 @@ namespace SGED.Repositories.Entities
 			return config;
 		}
 
-		public async Task<Configuracao> Disable(int id)
+		public async Task<ConfiguracaoModel> Disable(int id)
 		{
-			var config = await _dbContext.Set<Configuracao>().FindAsync(id);
+			var config = await _dbContext.Set<ConfiguracaoModel>().FindAsync(id);
 			if (config != null)
 			{
 				config.Valor = false;

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using SGED.Objects.Models.Entities;
 using SGED.Objects.Utilities;
 using SGED.Services.Server.Attributes;
 using System;
@@ -61,6 +62,18 @@ namespace SGED.Services.Server.Middleware
                 Data = new { error = errorMessage }
             };
             _response.SetForbidden();
+
+            // Captura a auditoria do contexto após a chamada ao próximo middleware
+            if (context.Items.TryGetValue("Auditoria", out var capturedAuditoria))
+            {
+                if (capturedAuditoria is AuditoriaModel auditoria)
+                {
+                    auditoria.StatusRequisicao = _response.Status.ToString();
+                    auditoria.DescricaoAuditoria = _response.Message;
+
+                    context.Items["Auditoria"] = auditoria;
+                }
+            }
 
             context.Response.StatusCode = StatusCodes.Status403Forbidden;
             context.Response.ContentType = "application/json";

@@ -3,9 +3,9 @@
 namespace SGED.Repositories.Interfaces;
 public interface IInstalacaoRepository
 {
-    Task<IEnumerable<Instalacao>> GetAll();
-    Task<Instalacao> GetById(int id);
-    Task<Instalacao> Create(Instalacao instalacao);
-    Task<Instalacao> Update(Instalacao instalacao);
-    Task<Instalacao> Delete(int id);
+    Task<IEnumerable<InstalacaoModel>> GetAll();
+    Task<InstalacaoModel> GetById(int id);
+    Task<InstalacaoModel> Create(InstalacaoModel instalacao);
+    Task<InstalacaoModel> Update(InstalacaoModel instalacao);
+    Task<InstalacaoModel> Delete(int id);
 }

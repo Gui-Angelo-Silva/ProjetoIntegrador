@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
@@ -31,14 +31,14 @@ public class UsoService : IUsoService
 
     public async Task Create(UsoDTO usoDTO)
 	{
-		var uso = _mapper.Map<Uso>(usoDTO);
+		var uso = _mapper.Map<UsoModel>(usoDTO);
 		await _usoRepository.Create(uso);
 		usoDTO.Id = uso.Id;
 	}
 
 	public async Task Update(UsoDTO usoDTO)
 	{
-		var uso = _mapper.Map<Uso>(usoDTO);
+		var uso = _mapper.Map<UsoModel>(usoDTO);
 		await _usoRepository.Update(uso);
 	}
 

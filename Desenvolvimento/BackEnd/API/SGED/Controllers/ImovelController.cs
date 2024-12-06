@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Authorization;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Utilities;
 using SGED.Services.Server.Attributes;
+using SGED.Services.Entities;
 
 namespace SGED.Controllers
 {
@@ -45,6 +46,37 @@ namespace SGED.Controllers
             {
                 _response.SetError();
                 _response.Message = "Não foi possível adquirir a lista do(s) Imóvel(is)!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpGet("Search/{search}", Name = "SearchImovel")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult<IEnumerable<ImovelDTO>>> SearchRealstate(string search)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    _response.SetNotFound();
+                    _response.Message = "Informe a inscrição cadastral do Imóvel para pesquisa!";
+                    _response.Data = Enumerable.Empty<ImovelDTO>();
+                    return NotFound(_response);
+                }
+
+                var imovelsDTO = await _imovelService.Search(search);
+                _response.SetSuccess();
+                _response.Message = imovelsDTO.Any() ?
+                    "Lista dos Imóveis obtida com sucesso." :
+                    "Nenhum Imóvel encontrado.";
+                _response.Data = imovelsDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista dos Imóveis!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }

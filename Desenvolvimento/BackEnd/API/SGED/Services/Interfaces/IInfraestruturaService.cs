@@ -1,4 +1,4 @@
-﻿using SGED.Objects.DTO.Entities;
+﻿using SGED.Objects.DTOs.Entities;
 
 namespace SGED.Services.Interfaces
 {

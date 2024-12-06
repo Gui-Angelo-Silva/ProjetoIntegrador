@@ -28,7 +28,7 @@ import SelectModule from "../../../object/modules/select";
 export default function PublicPlace() {
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Logradouro', link: '', isEnabled: false }
     ];
 

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
@@ -37,14 +37,14 @@ public class CidadeService : ICidadeService
 
     public async Task Create(CidadeDTO cidadeDTO)
     {
-        var cidade = _mapper.Map<Cidade>(cidadeDTO);
+        var cidade = _mapper.Map<CidadeModel>(cidadeDTO);
         await _cidadeRepository.Create(cidade);
         cidadeDTO.Id = cidade.Id;
     }
 
     public async Task Update(CidadeDTO cidadeDTO)
     {
-        var cidade = _mapper.Map<Cidade>(cidadeDTO);
+        var cidade = _mapper.Map<CidadeModel>(cidadeDTO);
         await _cidadeRepository.Update(cidade);
     }
 

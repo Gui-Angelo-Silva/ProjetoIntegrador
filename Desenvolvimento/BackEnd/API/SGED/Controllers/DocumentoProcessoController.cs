@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Authorization;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Utilities;
 using System.Xml.Linq;
 using SGED.Services.Server.Attributes;
+using System.Dynamic;
+using SGED.Services.Entities;
 
 namespace SGED.Controllers
 {
@@ -14,14 +16,21 @@ namespace SGED.Controllers
     public class DocumentoProcessoController : Controller
     {
         private readonly IProcessoService _processoService;
+        private readonly ITipoDocumentoService _tipoDocumentoService;
+        private readonly ITipoDocumentoEtapaService _tipoDocumentoEtapaService;
         private readonly IDocumentoProcessoService _documentoProcessoService;
+
+        private readonly ISessaoService _sessaoService;
         private readonly Response _response;
 
-        public DocumentoProcessoController(IProcessoService processoService, IDocumentoProcessoService documentoProcessoService)
+        public DocumentoProcessoController(IProcessoService processoService, ITipoDocumentoService tipoDocumentoService, ITipoDocumentoEtapaService tipoDocumentoEtapaService, IDocumentoProcessoService documentoProcessoService, ISessaoService sessaoService)
         {
             _processoService = processoService;
+            _tipoDocumentoService = tipoDocumentoService;
+            _tipoDocumentoEtapaService = tipoDocumentoEtapaService;
             _documentoProcessoService = documentoProcessoService;
 
+            _sessaoService = sessaoService;
             _response = new Response();
         }
 
@@ -50,9 +59,34 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpGet("GetByProcess/{id:int}", Name = "GetByProcess")]
+        [HttpGet("GetByStatus/{status:int}")]
         [AccessPermission("A", "B", "C")]
-        public async Task<ActionResult<DocumentoProcessoDTO>> GetByProcess(Guid idProcesso)
+        public async Task<ActionResult<IEnumerable<DocumentoProcessoDTO>>> GetByStatus(int status)
+        {
+            try
+            {
+                var documentoProcessosDTO = await _documentoProcessoService.GetByStatus(status);
+
+                _response.SetSuccess();
+                _response.Message = documentoProcessosDTO.Any() ?
+                    "Lista do(s) Documento(s) obtida com sucesso." :
+                    "Nenhum Documento encontrado.";
+                _response.Data = documentoProcessosDTO;
+
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível adquirir a lista do(s) Documento(s)!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpGet("GetByProcess/{idProcesso:Guid}", Name = "GetByProcess")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult<IEnumerable<DocumentoProcessoDTO>>> GetByProcess(Guid idProcesso)
         {
             try
             {
@@ -75,7 +109,7 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpGet("{id:int}", Name = "GetProcessDocument")]
+        [HttpGet("{id:Guid}", Name = "GetProcessDocument")]
         [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<DocumentoProcessoDTO>> GetById(Guid id)
         {
@@ -90,9 +124,19 @@ namespace SGED.Controllers
                     return NotFound(_response);
                 };
 
+                dynamic documentoProcesso = new ExpandoObject();
+                if (documentoProcessoDTO != null)
+                {
+                    documentoProcesso = GenerateDocumentProcess(documentoProcessoDTO);
+
+                    var tipoDocumentoEtapa = await _tipoDocumentoEtapaService.GetById(documentoProcessoDTO.IdTipoDocumentoEtapa);
+                    var tipoDocumento = await _tipoDocumentoService.GetById(tipoDocumentoEtapa.IdTipoDocumento);
+                    documentoProcesso.tipoDocumento = GenerateTypeDocument(tipoDocumento);
+                }
+
                 _response.SetSuccess();
-                _response.Message = "Documento de Processo " + documentoProcessoDTO.IdentificacaoDocumento + " obtido com sucesso.";
-                _response.Data = documentoProcessoDTO;
+                _response.Message = "Documento de Processo " + documentoProcesso.identificacaoDocumento + " obtido com sucesso.";
+                _response.Data = documentoProcesso;
                 return Ok(_response);
             }
             catch (Exception ex)
@@ -169,8 +213,8 @@ namespace SGED.Controllers
                 if (existingDocumentoProcessoDTO is null)
                 {
                     _response.SetNotFound();
-                    _response.Message = "A DocumentoProcesso informada não existe!";
-                    _response.Data = new { errorId = "A DocumentoProcesso informada não existe!" };
+                    _response.Message = "O Documento Processo informado não existe!";
+                    _response.Data = new { errorId = "O Documento Processo informado não existe!" };
                     return NotFound(_response);
                 }
 
@@ -191,6 +235,8 @@ namespace SGED.Controllers
                     return BadRequest(_response);
                 }
 
+                documentoProcessoDTO.MarkAsAttached();
+
                 await _documentoProcessoService.Update(documentoProcessoDTO);
 
                 _response.SetSuccess();
@@ -207,7 +253,178 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpPut("PutOnPending/{id:Guid}")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult> PutOnPending(Guid id)
+        {
+            try
+            {
+                var documentoProcessoDTO = await _documentoProcessoService.GetById(id);
+                if (documentoProcessoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "O Documento Processo informado não existe!";
+                    _response.Data = new { errorId = "O Documento Processo informado não existe!" };
+                    return NotFound(_response);
+                }
+
+                // Pega o token do cabeçalho Authorization
+                var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                var sessao = await _sessaoService.GetByToken(token);
+
+                documentoProcessoDTO.PutOnPending();
+                documentoProcessoDTO.IdResponsavel = sessao.IdUsuario;
+                await _documentoProcessoService.Update(documentoProcessoDTO);
+
+                _response.SetSuccess();
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " colocado em pendente.";
+                _response.Data = documentoProcessoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível atualizar o status do Documento Processo!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpPut("MarkAsAttached/{id:Guid}")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult> MarkAsAttached(Guid id)
+        {
+            try
+            {
+                var documentoProcessoDTO = await _documentoProcessoService.GetById(id);
+                if (documentoProcessoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "O Documento Processo informado não existe!";
+                    _response.Data = new { errorId = "O Documento Processo informado não existe!" };
+                    return NotFound(_response);
+                }
+
+                documentoProcessoDTO.MarkAsAttached();
+                await _documentoProcessoService.Update(documentoProcessoDTO);
+
+                _response.SetSuccess();
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " marcado como anexado.";
+                _response.Data = documentoProcessoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível atualizar o status do Documento Processo!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpPut("SendForAnalysis/{id:Guid}")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult> SendForAnalysis(Guid id)
+        {
+            try
+            {
+                var documentoProcessoDTO = await _documentoProcessoService.GetById(id);
+                if (documentoProcessoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "O Documento Processo informado não existe!";
+                    _response.Data = new { errorId = "O Documento Processo informado não existe!" };
+                    return NotFound(_response);
+                }
+
+                documentoProcessoDTO.SendForAnalysis();
+                await _documentoProcessoService.Update(documentoProcessoDTO);
+
+                _response.SetSuccess();
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " enviado para análise.";
+                _response.Data = documentoProcessoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível atualizar o status do Documento Processo!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpPut("Approve/{id:Guid}")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult> Approve(Guid id)
+        {
+            try
+            {
+                var documentoProcessoDTO = await _documentoProcessoService.GetById(id);
+                if (documentoProcessoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "O Documento Processo informado não existe!";
+                    _response.Data = new { errorId = "O Documento Processo informado não existe!" };
+                    return NotFound(_response);
+                }
+
+                // Pega o token do cabeçalho Authorization
+                var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                var sessao = await _sessaoService.GetByToken(token);
+
+                documentoProcessoDTO.Approve();
+                documentoProcessoDTO.IdAprovador = sessao.IdUsuario;
+                documentoProcessoDTO.DataAprovacao = DateTime.Now.ToString("dd/MM/yyyy");
+                await _documentoProcessoService.Update(documentoProcessoDTO);
+
+                _response.SetSuccess();
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " aprovado.";
+                _response.Data = documentoProcessoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível atualizar o status do Documento Processo!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpPut("Disapprove/{id:Guid}")]
+        [AccessPermission("A", "B", "C")]
+        public async Task<ActionResult> Disapprove(Guid id)
+        {
+            try
+            {
+                var documentoProcessoDTO = await _documentoProcessoService.GetById(id);
+                if (documentoProcessoDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "O Documento Processo informado não existe!";
+                    _response.Data = new { errorId = "O Documento Processo informado não existe!" };
+                    return NotFound(_response);
+                }
+
+                documentoProcessoDTO.Disapprove();
+                await _documentoProcessoService.Update(documentoProcessoDTO);
+
+                _response.SetSuccess();
+                _response.Message = "DocumentoProcesso " + documentoProcessoDTO.IdentificacaoDocumento + " desaprovado.";
+                _response.Data = documentoProcessoDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível atualizar o status do Documento Processo!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpDelete("{id:Guid}")]
         [AccessPermission("A", "B", "C")]
         public async Task<ActionResult<DocumentoProcessoDTO>> Delete(Guid id)
         {
@@ -242,6 +459,51 @@ namespace SGED.Controllers
         {
             var documentoProcessosDTO = await _documentoProcessoService.GetByProcess(documentoProcessoDTO.IdProcesso);
             return documentoProcessosDTO.FirstOrDefault(c => c.Id != documentoProcessoDTO.Id && Operator.CompareString(c.IdentificacaoDocumento, documentoProcessoDTO.IdentificacaoDocumento)) is not null;
+        }
+
+        private static dynamic GenerateTypeDocument(TipoDocumentoDTO tipoDocumento)
+        {
+            dynamic data = new ExpandoObject();
+            data.id = tipoDocumento.Id;
+            data.nomeTipoDocumento = tipoDocumento.NomeTipoDocumento;
+            data.descricaoTipoDocumento = tipoDocumento.DescricaoTipoDocumento;
+            data.status = tipoDocumento.Status;
+
+            return data;
+        }
+
+        private static dynamic GenerateDocumentProcess(DocumentoProcessoDTO documentoProcesso)
+        {
+            dynamic data = new ExpandoObject();
+            data.id = documentoProcesso.Id;
+            data.identificacaoDocumento = documentoProcesso.IdentificacaoDocumento;
+            data.descricaoDocumento = documentoProcesso.DescricaoDocumento;
+            data.observacaoDocumento = documentoProcesso.ObservacaoDocumento;
+            data.dataExpedicao = documentoProcesso.DataExpedicao;
+            data.dataAprovacao = documentoProcesso.DataAprovacao;
+            data.status = documentoProcesso.Status;
+
+            if (documentoProcesso.Arquivo != null)
+            {
+                data.arquivo = new
+                {
+                    hash = documentoProcesso.Arquivo.Hash,
+                    bytes = documentoProcesso.Arquivo.Bytes,
+                    fileName = documentoProcesso.Arquivo.FileName,
+                    mimeType = documentoProcesso.Arquivo.MimeType
+                };
+            }
+            else
+            {
+                data.arquivo = null;
+            }
+
+            data.idProcesso = documentoProcesso.IdProcesso;
+            data.idTipoDocumentoEtapa = documentoProcesso.IdTipoDocumentoEtapa;
+            data.idResponsavel = documentoProcesso.IdResponsavel;
+            data.idAprovador = documentoProcesso.IdAprovador;
+
+            return data;
         }
     }
 }

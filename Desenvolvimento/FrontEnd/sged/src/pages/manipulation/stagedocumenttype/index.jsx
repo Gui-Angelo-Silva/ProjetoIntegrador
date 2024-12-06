@@ -15,7 +15,7 @@ import Tooltip from "../../../components/Tooltip/Tooltip";
 export default function StageDocumentType() {
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Documentos das Etapas', link: '', isEnabled: false }
     ];
 

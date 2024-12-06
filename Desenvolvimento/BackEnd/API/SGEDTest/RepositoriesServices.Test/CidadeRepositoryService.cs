@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Moq;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Entities;
@@ -25,7 +25,7 @@ namespace SGEDTest.RepositoriesServices.Test
 		[Test]
 		public async Task Obter_TodasCidadesMapeadas()
 		{
-			var cidade = new List<Cidade> { new Cidade { Id = 1, NomeCidade = "Jales", IdEstado = 1 } };
+			var cidade = new List<CidadeModel> { new CidadeModel { Id = 1, NomeCidade = "Jales", IdEstado = 1 } };
 			var cidadeDTO = new List<CidadeDTO> { new CidadeDTO { Id = 1, NomeCidade = "Jales", IdEstado = 1 } };
 			_cidadeRepositoryMock.Setup(repo => repo.GetAll()).ReturnsAsync(cidade);
 			_mapperMock.Setup(m => m.Map<IEnumerable<CidadeDTO>>(cidade)).Returns(cidadeDTO);
@@ -38,7 +38,7 @@ namespace SGEDTest.RepositoriesServices.Test
 		[Test]
 		public async Task Obter_CidadesMapeadasPorId()
 		{
-			var cidade = new Cidade { Id = 1, NomeCidade = "Jales", IdEstado = 1 };
+			var cidade = new CidadeModel { Id = 1, NomeCidade = "Jales", IdEstado = 1 };
 			var cidadeDTO =  new CidadeDTO { Id = 1, NomeCidade = "Jales", IdEstado = 1 };
 			_cidadeRepositoryMock.Setup(repo => repo.GetById(1)).ReturnsAsync(cidade);
 			_mapperMock.Setup(m => m.Map<CidadeDTO>(cidade)).Returns(cidadeDTO);
@@ -52,26 +52,26 @@ namespace SGEDTest.RepositoriesServices.Test
 		public async Task Cadastro_ChamadaDeCidadeMapeada()
 		{
 			var cidadeDTO = new CidadeDTO { NomeCidade = "Jales", IdEstado = 1 };
-			var cidade = new Cidade { NomeCidade = "Jales", IdEstado = 1 };
-			_mapperMock.Setup(c => c.Map<Cidade>(cidadeDTO)).Returns(cidade);
+			var cidade = new CidadeModel { NomeCidade = "Jales", IdEstado = 1 };
+			_mapperMock.Setup(c => c.Map<CidadeModel>(cidadeDTO)).Returns(cidade);
 
 			await _cidadeService.Create(cidadeDTO);
 
 			_cidadeRepositoryMock.Verify(repo => repo.Create(cidade), Times.Once);
-			_mapperMock.Verify(c => c.Map<Cidade>(cidadeDTO), Times.Once);
+			_mapperMock.Verify(c => c.Map<CidadeModel>(cidadeDTO), Times.Once);
 		}
 
 		[Test]
 		public async Task Atualiza_ChamadaDeCidadeMapeada()
 		{
 			var cidadeDTO = new CidadeDTO { NomeCidade = "Jales", IdEstado = 1 };
-			var cidade = new Cidade { NomeCidade = "Jales", IdEstado = 1 };
-			_mapperMock.Setup(c => c.Map<Cidade>(cidadeDTO)).Returns(cidade);
+			var cidade = new CidadeModel { NomeCidade = "Jales", IdEstado = 1 };
+			_mapperMock.Setup(c => c.Map<CidadeModel>(cidadeDTO)).Returns(cidade);
 
 			await _cidadeService.Update(cidadeDTO);
 
 			_cidadeRepositoryMock.Verify(repo => repo.Update(cidade), Times.Once);
-			_mapperMock.Verify(c => c.Map<Cidade>(cidadeDTO), Times.Once);
+			_mapperMock.Verify(c => c.Map<CidadeModel>(cidadeDTO), Times.Once);
 		}
 
 		[Test]

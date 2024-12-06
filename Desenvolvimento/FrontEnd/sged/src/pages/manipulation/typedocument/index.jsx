@@ -25,7 +25,7 @@ import TypeDocumentClass from "../../../object/class/typedocument";
 export default function TypeDocument() {
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Tipo de Documento', link: '', isEnabled: false }
     ];
 

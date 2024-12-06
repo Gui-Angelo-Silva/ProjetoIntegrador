@@ -27,7 +27,7 @@ import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 export default function Engineer() {
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Engenheiro', link: '', isEnabled: false }
     ];
 

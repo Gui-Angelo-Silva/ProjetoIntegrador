@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
@@ -31,14 +31,14 @@ public class InstalacaoService : IInstalacaoService
 
     public async Task Create(InstalacaoDTO instalacaoDTO)
 	{
-		var instalacao = _mapper.Map<Instalacao>(instalacaoDTO);
+		var instalacao = _mapper.Map<InstalacaoModel>(instalacaoDTO);
 		await _instalacaoRepository.Create(instalacao);
 		instalacaoDTO.Id = instalacao.Id;
 	}
 
 	public async Task Update(InstalacaoDTO instalacaoDTO)
 	{
-		var instalacao = _mapper.Map<Instalacao>(instalacaoDTO);
+		var instalacao = _mapper.Map<InstalacaoModel>(instalacaoDTO);
 		await _instalacaoRepository.Update(instalacao);
 	}
 

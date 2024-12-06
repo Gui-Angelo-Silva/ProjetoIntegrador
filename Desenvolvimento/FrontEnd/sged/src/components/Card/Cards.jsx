@@ -25,47 +25,47 @@ import { useServer } from "../../routes/serverRoute";
 
 function Cards() {
 
-    const { addSegment, inDevelopment } = useServer();
+    const server = useServer();
 
     const dataCategory = {
         "Endereço e Imóvel": [
             {
-                onClick: () => addSegment("estado"),
+                onClick: () => server.currentRoute().addSegment("estado").dispatch(),
                 image: ImgEstado,
                 tooltip: "Abrir a Página de Controle de Estado",
                 title: "Estado",
                 module: "Endereço e Imóvel"
             },
             {
-                onClick: () => addSegment("cidade"),
+                onClick: () => server.currentRoute().addSegment("cidade").dispatch(),
                 image: ImgCidade,
                 tooltip: "Abrir a Página de Controle de Cidade",
                 title: "Cidade",
                 module: "Endereço e Imóvel"
             },
             {
-                onClick: () => addSegment("bairro"),
+                onClick: () => server.currentRoute().addSegment("bairro").dispatch(),
                 image: ImgBairro,
                 tooltip: "Abrir a Página de Controle de Bairro",
                 title: "Bairro",
                 module: "Endereço e Imóvel"
             },
             {
-                onClick: () => addSegment("tipo-logradouro"),
+                onClick: () => server.currentRoute().addSegment("tipo-logradouro").dispatch(),
                 image: ImgTipoLogradouro,
                 tooltip: "Abrir a Página de Controle de Tipo Logradouro",
                 title: "Tipo Logradouro",
                 module: "Endereço e Imóvel"
             },
             {
-                onClick: () => addSegment("logradouro"),
+                onClick: () => server.currentRoute().addSegment("logradouro").dispatch(),
                 image: ImgLogradouro,
                 tooltip: "Abrir a Página de Controle de Logradouro",
                 title: "Logradouro",
                 module: "Endereço e Imóvel"
             },
             {
-                onClick: () => addSegment("imovel"),
+                onClick: () => server.currentRoute().addSegment("imovel").dispatch(),
                 image: ImgImovel,
                 tooltip: "Abrir a Página de Controle de Imóvel",
                 title: "Imóvel",
@@ -75,42 +75,42 @@ function Cards() {
 
         "Dados Adicionais": [
             {
-                onClick: () => addSegment("tipo-infraestrutura"),
+                onClick: () => server.currentRoute().addSegment("tipo-infraestrutura").dispatch(),
                 image: ImgTipoInfraestrutura,
                 tooltip: "Abrir a Página de Controle de Tipo Infraestrutura",
                 title: "Tipo Infraest.",
                 module: "Dados Adicionais"
             },
             {
-                onClick: () => addSegment("infraestrutura"),
+                onClick: () => server.currentRoute().addSegment("infraestrutura").dispatch(),
                 image: ImgInfraestrutura,
                 tooltip: "Abrir a Página de Controle de Infraestrutura",
                 title: "Infraestrutura",
                 module: "Dados Adicionais"
             },
             {
-                onClick: () => addSegment("uso"),
+                onClick: () => server.currentRoute().addSegment("uso").dispatch(),
                 image: ImgUso,
                 tooltip: "Abrir a Página de Controle de Uso",
                 title: "Uso",
                 module: "Dados Adicionais"
             },
             {
-                onClick: () => addSegment("ocupacao-atual"),
+                onClick: () => server.currentRoute().addSegment("ocupacao-atual").dispatch(),
                 image: ImgOcupacaoAtual,
                 tooltip: "Abrir a Página de Controle de Ocupação Atual",
                 title: "Ocupação Atual",
                 module: "Dados Adicionais"
             },
             {
-                onClick: () => addSegment("topografia"),
+                onClick: () => server.currentRoute().addSegment("topografia").dispatch(),
                 image: ImgTopografia,
                 tooltip: "Abrir a Página de Controle de Topografia",
                 title: "Topografia",
                 module: "Dados Adicionais"
             },
             {
-                onClick: () => addSegment("instalacao"),
+                onClick: () => server.currentRoute().addSegment("instalacao").dispatch(),
                 image: ImgInstalacao,
                 tooltip: "Abrir a Página de Controle de Instalação",
                 title: "Instalação",
@@ -120,42 +120,42 @@ function Cards() {
 
         "Usuários e Pessoas": [
             {
-                onClick: () => addSegment("tipo-usuario"),
+                onClick: () => server.currentRoute().addSegment("tipo-usuario").dispatch(),
                 image: ImgTipoUsuario,
                 tooltip: "Abrir a Página de Controle de Tipo Usuário",
                 title: "Tipo Usuário",
                 module: "Usuários e Pessoas"
             },
             {
-                onClick: () => addSegment("usuario"),
+                onClick: () => server.currentRoute().addSegment("usuario").dispatch(),
                 image: ImgUsuario,
                 tooltip: "Abrir a Página de Controle de Usuário",
                 title: "Usuário",
                 module: "Usuários e Pessoas"
             },
             {
-                onClick: () => addSegment("municipe"),
+                onClick: () => server.currentRoute().addSegment("municipe").dispatch(),
                 image: ImgMunicipe,
                 tooltip: "Abrir a Página de Controle de Munícipe",
                 title: "Munícipe",
                 module: "Usuários e Pessoas"
             },
             {
-                onClick: () => addSegment("engenheiro"),
+                onClick: () => server.currentRoute().addSegment("engenheiro").dispatch(),
                 image: ImgEngenheiro,
                 tooltip: "Abrir a Página de Controle de Engenheiro",
                 title: "Engenheiro",
                 module: "Usuários e Pessoas"
             },
             {
-                onClick: () => addSegment("fiscal"),
+                onClick: () => server.currentRoute().addSegment("fiscal").dispatch(),
                 image: ImgFiscal,
                 tooltip: "Abrir a Página de Controle de Fiscal",
                 title: "Fiscal",
                 module: "Usuários e Pessoas"
             },
             {
-                onClick: () => inDevelopment("Controle de Auditoria"),
+                onClick: () => server.inDevelopment("Controle de Auditoria"),
                 image: ImgAuditoria,
                 tooltip: "Abrir a Página de Controle de Auditoria",
                 title: "Auditoria",
@@ -165,35 +165,35 @@ function Cards() {
         
         "Configuração de Processo": [
             {
-                onClick: () => addSegment("tipo-processo"),
+                onClick: () => server.currentRoute().addSegment("tipo-processo").dispatch(),
                 image: ImgTipoProcesso,
                 tooltip: "Abrir a Página de Controle de Tipo Processo",
                 title: "Tipo Processo",
                 module: "Configuração de Processo"
             },
             {
-                onClick: () => addSegment("etapa"),
+                onClick: () => server.currentRoute().addSegment("etapa").dispatch(),
                 image: ImgEtapa,
                 tooltip: "Abrir a Página de Controle de Etapa",
                 title: "Etapa",
                 module: "Configuração de Processo"
             },
             {
-                onClick: () => addSegment("tipo-documento"),
+                onClick: () => server.currentRoute().addSegment("tipo-documento").dispatch(),
                 image: ImgTipoDocumento,
                 tooltip: "Abrir a Página de Controle de Tipo Documento",
                 title: "Tipo Documento",
                 module: "Configuração de Processo"
             },
             {
-                onClick: () => addSegment("etapa-tipo-documento"),
+                onClick: () => server.currentRoute().addSegment("etapa-tipo-documento").dispatch(),
                 image: ImgTipoDocumentoEtapa,
                 tooltip: "Abrir a Página de Controle de Tipo Documento Etapa",
                 title: "Tipo Doc. Etapa",
                 module: "Configuração de Processo"
             }
             // {
-            //     onClick: () => inDevelopment("Controle de Documento Processo"),
+            //     onClick: () => server.inDevelopment("Controle de Documento Processo"),
             //     image: ImgDocumentoProcesso,
             //     tooltip: "Abrir a Página de Controle de Documento Processo",
             //     title: "Doc. Processo",

@@ -5,6 +5,7 @@ import Breadcrumb from "../../../components/Title/Breadcrumb";
 
 import FilterModule from './components/filter/search';
 import OrderModule from './components/filter/order';
+import ListModule from './components/filter/list';
 
 import * as functions from './functions/functions';
 
@@ -64,6 +65,8 @@ export default function Process() {
             const response = await functions.FilterProcess(filters, page, elementsPage);
             setData(response);
 
+            console.log(response);
+
             if (response.quantidadePages > 0 && page === 0) setPage(1);
             else setPage(response.paginaAtual);
         };
@@ -74,11 +77,26 @@ export default function Process() {
         <>
             <Breadcrumb pages={pages} />
 
-            <FilterModule filters={filters} setFilters={setFilters} setRequest={setRequest} />
-            <OrderModule filters={filters} setFilters={setFilters} page={page} setPage={setPage} elementsPage={elementsPage} setElementsPage={setElementsPage} pages={data?.quantidadePaginas || 0} />
+            {/* Espaço entre os componentes */}
+            <div className="my-4">
+                <FilterModule filters={filters} setFilters={setFilters} setRequest={setRequest} />
+            </div>
 
-            {/*<ListProcess list={data.processos} />*/}
-            <p>{data?.quantidade || 0} processos encontrados</p>
+            <div className="my-4">
+                <OrderModule
+                    filters={filters}
+                    setFilters={setFilters}
+                    page={page}
+                    setPage={setPage}
+                    elementsPage={elementsPage}
+                    setElementsPage={setElementsPage}
+                    pages={data?.quantidadePaginas || 0}
+                />
+            </div>
+
+            <div className="my-4">
+                <ListModule list={data?.processos || {}} />
+            </div>
         </>
     );
 

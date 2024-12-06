@@ -67,25 +67,41 @@ const OrderModule = ({ filters, setFilters, page, setPage, elementsPage, setElem
       {/* Botões de Paginação e Campo de Página */}
       <Box display="flex" alignItems="center" marginTop={2} gap={2}>
         <Box display="flex" gap={1}>
-          {Array.from({ length: pages || 1 }, (_, index) => (
+          {pages > 0 ? (
+            Array.from({ length: pages }, (_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => handlePageClick(index + 1)}
+                style={{
+                  padding: "6px 12px",
+                  margin: "0 4px",
+                  border: "1px solid",
+                  borderColor: index + 1 === page ? "green" : "#ccc",
+                  backgroundColor: index + 1 === page ? "green" : "transparent",
+                  color: index + 1 === page ? "white" : "black",
+                  cursor: "pointer",
+                  borderRadius: "4px",
+                }}
+              >
+                {index + 1}
+              </button>
+            ))
+          ) : (
             <button
-              key={index + 1}
-              onClick={() => handlePageClick(index + 1)}
               style={{
                 padding: "6px 12px",
                 margin: "0 4px",
-                border: "1px solid",
-                borderColor: index + 1 === page ? "green" : "#ccc",
-                backgroundColor: pages === 0 ? "#E0E0E0" : index + 1 === page ? "green" : "transparent",
-                color: pages === 0 ? "#a9a9a9" : index + 1 === page ? "white" : "black",
-                cursor: pages === 0 ? "not-allowed" : "pointer",
+                border: "1px solid #ccc",
+                backgroundColor: "#E0E0E0",
+                color: "#a9a9a9",
+                cursor: "not-allowed",
                 borderRadius: "4px",
               }}
-              disabled={pages === 0}
+              disabled
             >
-              {pages === 0 ? 0 : index + 1}
+              0
             </button>
-          ))}
+          )}
         </Box>
         <TextField
           variant="outlined"

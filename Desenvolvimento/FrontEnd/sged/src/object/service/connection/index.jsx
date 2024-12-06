@@ -188,7 +188,7 @@ export default class ConnectionService {
             this.response.data
             : [];
     }
-    
+
     getObject() {
         return this.response.data && !Array.isArray(this.response.data) && typeof this.response.data === 'object' ?
             this.response.data

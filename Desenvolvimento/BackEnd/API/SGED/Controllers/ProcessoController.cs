@@ -83,9 +83,9 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpGet("Filter")]
+        [HttpPost("Filter")]
         [AccessPermission("A", "B", "C")]
-        public async Task<ActionResult<IEnumerable<dynamic>>> Filter([FromQuery] ProcessoFilter filters)
+        public async Task<ActionResult<IEnumerable<dynamic>>> Filter(ProcessoFilter filters)
         {
             try
             {
@@ -104,7 +104,8 @@ namespace SGED.Controllers
                 await foreach (var processo in ApplyOrder(processos, filters))
                 {
                     processosList.Add(processo);
-                } processos = processosList;
+                }
+                processos = processosList;
 
                 // Monta a lista final com os dados processados
                 var lista = new List<dynamic>();
@@ -813,11 +814,15 @@ namespace SGED.Controllers
         // Método genérico para aplicar os filtros
         private async IAsyncEnumerable<ProcessoDTO> ApplyFilters(IEnumerable<ProcessoDTO> processos, ProcessoFilter filters)
         {
-            if (!processos.Any() || filters == null) { foreach (var processo in processos) { yield return processo; } }
+            if (!processos.Any() || filters == null) { foreach (var processo in processos) { yield return processo; } yield break; }
 
             // Filtra por ID do processo
-            if (processos.Any() && filters.Id != Guid.Empty)
-                processos = processos.Where(p => p.Id == filters.Id);
+            if (processos.Any() && !string.IsNullOrWhiteSpace(filters.Id))
+            {
+                processos = processos.Where(p =>
+                    p.Id != Guid.Empty &&
+                    p.Id.ToString().Contains(filters.Id, StringComparison.OrdinalIgnoreCase));
+            }
 
             // Filtra por identificação do processo
             if (processos.Any() && !string.IsNullOrWhiteSpace(filters.IdentificacaoProcesso))
@@ -838,10 +843,10 @@ namespace SGED.Controllers
                     p.SituacaoProcesso.Contains(filters.SituacaoProcesso, StringComparison.OrdinalIgnoreCase));
 
             // Filtra por intervalo de DataInicio
-            if (processos.Any() && filters.DataInicio != null && filters.DataInicio.Length == 2)
+            if (processos.Any() && (!string.IsNullOrWhiteSpace(filters.DataInicio1) || !string.IsNullOrWhiteSpace(filters.DataInicio2)))
             {
-                var startDate = ParseDateBR(filters.DataInicio[0]);
-                var endDate = ParseDateBR(filters.DataInicio[1]);
+                var startDate = ParseDateBR(filters.DataInicio1);
+                var endDate = ParseDateBR(filters.DataInicio2);
 
                 if (startDate.HasValue)
                     processos = processos.Where(p =>
@@ -855,10 +860,10 @@ namespace SGED.Controllers
             }
 
             // Filtra por intervalo de DataFinalizacao
-            if (processos.Any() && filters.DataFinalizacao != null && filters.DataFinalizacao.Length == 2)
+            if (processos.Any() && (!string.IsNullOrWhiteSpace(filters.DataFinalizacao1) || !string.IsNullOrWhiteSpace(filters.DataFinalizacao2)))
             {
-                var startDate = ParseDateBR(filters.DataFinalizacao[0]);
-                var endDate = ParseDateBR(filters.DataFinalizacao[1]);
+                var startDate = ParseDateBR(filters.DataFinalizacao1);
+                var endDate = ParseDateBR(filters.DataFinalizacao2);
 
                 if (startDate.HasValue)
                     processos = processos.Where(p =>
@@ -872,10 +877,10 @@ namespace SGED.Controllers
             }
 
             // Filtra por intervalo de DataAprovacao
-            if (processos.Any() && filters.DataAprovacao != null && filters.DataAprovacao.Length == 2)
+            if (processos.Any() && (!string.IsNullOrWhiteSpace(filters.DataAprovacao1) || !string.IsNullOrWhiteSpace(filters.DataAprovacao2)))
             {
-                var startDate = ParseDateBR(filters.DataAprovacao[0]);
-                var endDate = ParseDateBR(filters.DataAprovacao[1]);
+                var startDate = ParseDateBR(filters.DataAprovacao1);
+                var endDate = ParseDateBR(filters.DataAprovacao2);
 
                 if (startDate.HasValue)
                     processos = processos.Where(p =>
@@ -1004,14 +1009,14 @@ namespace SGED.Controllers
 
         private async IAsyncEnumerable<ProcessoDTO> ApplyOrder(IEnumerable<ProcessoDTO> processos, ProcessoFilter filters)
         {
-            if (!processos.Any() || filters == null) { foreach (var processo in processos) { yield return processo; } }
+            if (!processos.Any() || filters == null) { foreach (var processo in processos) { yield return processo; } yield break; }
 
-            if (filters.OrdenarIdentificacaoProcesso != 0)
+            if (filters.OrdenarIdentificacaoProcesso != 0) // aqui ele diz que o filters pode ser null
                 processos = filters.OrdenarIdentificacaoProcesso == 1
                     ? processos.OrderBy(p => p.IdentificacaoProcesso)
                     : processos.OrderByDescending(p => p.IdentificacaoProcesso);
 
-            else if (filters.OrdenarDescricaoProcesso != 0)
+            else if (filters.OrdenarDescricaoProcesso != 0) // aqui ele não diz isso, porque?
                 processos = filters.OrdenarDescricaoProcesso == 1
                     ? processos.OrderBy(p => p.DescricaoProcesso)
                     : processos.OrderByDescending(p => p.DescricaoProcesso);

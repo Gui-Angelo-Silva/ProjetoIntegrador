@@ -128,9 +128,55 @@ export function convertProcess(processo) {
     };
 }
 
+// Função para traduzir e processar o documento
+export function formateInFilters(data) {
+    return {
+        "id": data.id || "",
+
+        "identificacaoProcesso": data.identificacaoProcesso || "",
+        "descricaoProcesso": data.descricaoProcesso || "",
+        "situacaoProcesso": data.situacaoProcesso || "",
+        "dataInicio1": data.dataInicio1 || "",
+        "dataInicio2": data.dataInicio2 || "",
+        "dataFinalizacao1": data.dataFinalizacao1 || "",
+        "dataFinalizacao2": data.dataFinalizacao2 || "",
+        "dataAprovacao1": data.dataAprovacao1 || "",
+        "dataAprovacao2": data.dataAprovacao2 || "",
+        "status": data.status || -1,
+
+        "inscricaoCadastral": data.inscricaoCadastral || "",
+        "nomeTipoProcesso": data.nomeTipoProcesso || "",
+        "nomeEngenheiro": data.nomeEngenheiro || "",
+        "nomeFiscal": data.nomeFiscal || "",
+        "nomeResponsavel": data.nomeResponsavel || "",
+        "nomeAprovador": data.nomeAprovador || "",
+
+        "ordenarIdentificacaoProcesso": data.ordenarIdentificacaoProcesso || 0,
+        "ordenarDescricaoProcesso": data.ordenarDescricaoProcesso || 0,
+        "ordenarSituacaoProcesso": data.ordenarSituacaoProcesso || 0,
+        "ordenarDataInicio": data.ordenarDataInicio || 0,
+        "ordenarDataFinalizacao": data.ordenarDataFinalizacao || 0,
+        "ordenarDataAprovacao": data.ordenarDataAprovacao || 0,
+        "ordenarStatus": data.ordenarStatus || 0,
+        "ordenarInscricaoCadastral": data.ordenarInscricaoCadastral || 0,
+        "ordenarNomeTipoProcesso": data.ordenarNomeTipoProcesso || 0,
+        "ordenarNomeEngenheiro": data.ordenarNomeEngenheiro || 0,
+        "ordenarNomeFiscal": data.ordenarNomeFiscal || 0,
+        "ordenarNomeResponsavel": data.ordenarNomeResponsavel || 0,
+        "ordenarNomeAprovador": data.ordenarNomeAprovador || 0,
+    };
+}
+
 export const GetProcessListByStatus = async (status) => {
     await connection.endpoint("Processo").action("GetByStatus").data(status).get();
     return connection.getList();
+};
+
+export const FilterProcess = async (data) => {
+    const params = formateInFilters(data);
+
+    await connection.endpoint("Processo").action("Filter").post(params);
+    return connection.getObject();
 };
 
 export const GetProcess = async (id) => {

@@ -23,7 +23,7 @@ import ConnectionService from "../../../object/service/connection";
 import ListModule from "../../../object/modules/list";
 import PublicPlaceClass from "../../../object/class/publicplace";
 import ControlModule from '../../../object/modules/control';
-import SelectModule from "../../../object/modules/select";
+import SelectModule from "../../../object/modules/selectOld";
 
 export default function PublicPlace() {
 

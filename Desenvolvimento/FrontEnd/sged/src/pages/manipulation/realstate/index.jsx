@@ -23,7 +23,7 @@ import ConnectionService from "../../../object/service/connection";
 import ListModule from "../../../object/modules/list";
 import RealStateClass from "../../../object/class/realstate";
 import ControlModule from "../../../object/modules/control";
-import SelectModule from "../../../object/modules/select";
+import SelectModule from "../../../object/modules/selectOld";
 
 export default function RealState() {
 

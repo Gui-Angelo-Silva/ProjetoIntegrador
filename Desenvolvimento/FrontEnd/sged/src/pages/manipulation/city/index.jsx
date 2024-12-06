@@ -11,7 +11,7 @@ import ButtonModal from "../../../components/Modal/ButtonModal";
 import ButtonTable from "../../../components/Table/ButtonTable";
 import CustomTable from "../../../components/Table/Table";
 import RegistrationButton from "../../../components/Button/RegistrationButton";
-import SearchBar from "../../../components/Search/SearchBar";
+import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 import PopUpManager from "../../../components/PopUpManager";
 import PopUp from "../../../components/PopUp";
 
@@ -258,12 +258,14 @@ export default function City() {
             </div>}
             <>
                 <Breadcrumb pages={pages} />
-                <div className="flex items-center">
-                    <SearchBar handleSearch={handleSearch} handleSearchBy={handleSearchBy} />
-                    <div className="flex items-center">
-                        <RegistrationButton action={() => openCloseModalInsert(true)} />
-                    </div>
-                </div>
+                <MultiSearchBar
+                    maxSearchBars={2}
+                    searchOptions={[
+                        { label: 'Nome', value: 'nomeCidade' },
+                    ]}
+                    setSearchDictionary={list.setSearchDictionary}
+                    button={<RegistrationButton action={() => openCloseModalInsert(true)} />}
+                />
 
                 <CustomTable
                     totalColumns={3}

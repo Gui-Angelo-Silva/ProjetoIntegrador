@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SGED.Services.Interfaces;
 using SGED.Services.Server.Attributes;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Server;
 using SGED.Objects.Utilities;
 using SGED.Services.Entities;
@@ -144,9 +144,9 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpGet("{id:int}/GetSession")]
+        [HttpGet("{id:Guid}/GetSession")]
         [AccessPermission("A", "B", "C")]
-        public async Task<ActionResult<SessaoDTO>> GetSession(int id)
+        public async Task<ActionResult<SessaoDTO>> GetSession(Guid id)
         {
             try
             {
@@ -212,40 +212,56 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpPost("Autentication")]
+        [HttpPost("Authentication")]
         [Anonymous]
-        public async Task<ActionResult> CreateSession([FromBody] LoginDTO loginDTO)
+        public async Task<ActionResult> CreateSession([FromBody] Login login)
         {
-            if (loginDTO is null)
+            if (login is null)
             {
                 _response.SetNotFound();
                 _response.Message = "Dado(s) inválido(s)!";
-                _response.Data = loginDTO;
+                _response.Data = new { errorLogin = "Dado(s) inválido(s)!" };
+                return BadRequest(_response);
+            }
+
+            // Captura os IPs da requisição
+            string ipv4 = HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString() ?? string.Empty;
+            string ipv6 = HttpContext.Connection.RemoteIpAddress?.MapToIPv6().ToString() ?? string.Empty;
+
+            // Verifica se ambos IPv4 e IPv6 foram identificados
+            if (string.IsNullOrEmpty(ipv4) || string.IsNullOrEmpty(ipv6))
+            {
+                _response.SetNotFound();
+                _response.Message = "IPv4 ou IPv6 não identificados!";
+                _response.Data = new { errorLogin = "Erro na identificação dos endereços IP." };
                 return BadRequest(_response);
             }
 
             try
             {
-                var usuarioDTO = await _usuarioService.Login(loginDTO);
+                var usuarioDTO = await _usuarioService.Login(login);
                 if (usuarioDTO is not null)
                 {
                     var tipoUsuarioDTO = await _tipoUsuarioService.GetById(usuarioDTO.IdTipoUsuario);
                     var ultimaSessao = await _sessaoService.GetLastSession(usuarioDTO.Id);
+
                     SessaoDTO sessaoDTO = new()
                     {
                         IdUsuario = usuarioDTO.Id,
                         DataHoraInicio = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"),
                         StatusSessao = true,
-
+                        IPv4 = ipv4,
+                        IPv6 = ipv6,
                         EmailPessoa = usuarioDTO.EmailPessoa,
                         NivelAcesso = tipoUsuarioDTO.NivelAcesso
-                    }; sessaoDTO.GenerateToken();
+                    };
+                    sessaoDTO.GenerateToken();
 
                     await _sessaoService.Create(sessaoDTO);
 
                     _response.SetSuccess();
                     _response.Message = "Sessão aberta com sucesso!";
-                    _response.Data = sessaoDTO.TokenSessao;
+                    _response.Data = new { tokenSessao = sessaoDTO.TokenSessao, nivelAcesso = tipoUsuarioDTO.NivelAcesso };
                     return Ok(_response);
                 }
 
@@ -376,9 +392,9 @@ namespace SGED.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:Guid}")]
         [AccessPermission("A", "B", "C")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {

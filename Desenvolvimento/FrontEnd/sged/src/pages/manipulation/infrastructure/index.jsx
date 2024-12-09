@@ -24,14 +24,14 @@ import ListModule from '../../../object/modules/list';
 import InfrastructureClass from '../../../object/class/infrastructure';
 import ActionManager from '../../../object/modules/action';
 import CompareModule from '../../../object/modules/compare';
-import SelectModule from '../../../object/modules/select';
+import SelectModule from '../../../object/modules/selectOld';
 import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 import Breadcrumb from "../../../components/Title/Breadcrumb";
 
 export default function Infrastructure() {
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Infraestrutura', link: '', isEnabled: false }
     ];
 

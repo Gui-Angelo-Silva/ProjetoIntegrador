@@ -5,7 +5,7 @@ function ListModule() {
     const [listToRender, setListToRender] = useState([]);
     const [searchDictionary, setSearchDictionary] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
+    const itemsPerPage = 14;
 
     const handleSearch = (searchTerm) => {
         setSearchDictionary({ ...searchDictionary, searchTerm });

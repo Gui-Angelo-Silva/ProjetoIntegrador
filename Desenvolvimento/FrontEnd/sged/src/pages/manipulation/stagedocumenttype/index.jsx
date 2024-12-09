@@ -7,7 +7,7 @@ import { useMontage } from "../../../object/modules/montage";
 import ConnectionService from "../../../object/service/connection";
 import ListModule from "../../../object/modules/list";
 import TypeDocumentStageClass from "../../../object/class/typedocumentstage";
-import SelectModule from '../../../object/modules/select';
+import SelectModule from '../../../object/modules/selectOld';
 import Breadcrumb from "../../../components/Title/Breadcrumb";
 import Table from "../../../components/Table/Table";
 import Tooltip from "../../../components/Tooltip/Tooltip";
@@ -15,7 +15,7 @@ import Tooltip from "../../../components/Tooltip/Tooltip";
 export default function StageDocumentType() {
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Documentos das Etapas', link: '', isEnabled: false }
     ];
 

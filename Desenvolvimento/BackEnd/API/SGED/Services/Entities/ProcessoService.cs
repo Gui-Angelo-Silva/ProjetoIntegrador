@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
@@ -23,6 +23,18 @@ public class ProcessoService : IProcessoService
         return _mapper.Map<IEnumerable<ProcessoDTO>>(processos);
     }
 
+    public async Task<IEnumerable<ProcessoDTO>> GetAllForFilter()
+    {
+        var processos = await _processoRepository.GetAllForFilter();
+        return _mapper.Map<IEnumerable<ProcessoDTO>>(processos);
+    }
+
+    public async Task<IEnumerable<ProcessoDTO>> GetByStatus(int status)
+    {
+        var processos = await _processoRepository.GetByStatus(status);
+        return _mapper.Map<IEnumerable<ProcessoDTO>>(processos);
+    }
+
     public async Task<ProcessoDTO> GetById(Guid id)
     {
         var processo = await _processoRepository.GetById(id);
@@ -31,14 +43,14 @@ public class ProcessoService : IProcessoService
 
     public async Task Create(ProcessoDTO processoDTO)
     {
-        var processo = _mapper.Map<Processo>(processoDTO);
+        var processo = _mapper.Map<ProcessoModel>(processoDTO);
         await _processoRepository.Create(processo);
         processoDTO.Id = processo.Id;
     }
 
     public async Task Update(ProcessoDTO processoDTO)
     {
-        var processo = _mapper.Map<Processo>(processoDTO);
+        var processo = _mapper.Map<ProcessoModel>(processoDTO);
         await _processoRepository.Update(processo);
     }
 

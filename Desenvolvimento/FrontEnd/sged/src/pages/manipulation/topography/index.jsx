@@ -29,7 +29,7 @@ import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 export default function Topography() {
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Topografia', link: '', isEnabled: false }
     ];
 

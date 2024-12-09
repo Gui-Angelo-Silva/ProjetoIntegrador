@@ -14,6 +14,6 @@ namespace SGED.Objects.Models.Entities
         [Column("ufestado")]
         public string Descricao { get; set; }
 
-        public ICollection<Imovel>? Imoveis { get; set; }
+        public ICollection<ImovelModel>? Imoveis { get; set; }
     }
 }

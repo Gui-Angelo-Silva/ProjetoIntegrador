@@ -18,31 +18,31 @@ namespace SGED.Repositories.Entities
             _remove = new RemoveContext(dbContext);
         }
 
-		public async Task<IEnumerable<Etapa>> GetAll()
+		public async Task<IEnumerable<EtapaModel>> GetAll()
 		{
 			return await _dbContext.Etapa.AsNoTracking().ToListAsync();
 		}
 
-		public async Task<Etapa> GetById(int id)
+		public async Task<EtapaModel> GetById(int id)
 		{
 			return await _dbContext.Etapa.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
 		}
 
-		public async Task<Etapa> Create(Etapa etapa)
+		public async Task<EtapaModel> Create(EtapaModel etapa)
 		{
 			_dbContext.Add(etapa);
 			await _dbContext.SaveChangesAsync();
 			return etapa;
 		}
 
-		public async Task<Etapa> Update(Etapa etapa)
+		public async Task<EtapaModel> Update(EtapaModel etapa)
 		{
 			_dbContext.Entry(etapa).State = EntityState.Modified; 
 			await _dbContext.SaveChangesAsync();
 			return etapa;
 		}
 
-		public async Task<Etapa> Delete(int id)
+		public async Task<EtapaModel> Delete(int id)
 		{
 			var etapa = await GetById(id);
 			_dbContext.Etapa.Remove(etapa);
@@ -51,7 +51,7 @@ namespace SGED.Repositories.Entities
 		}
 
 
-		public async Task<IEnumerable<Etapa>> GetStagesRelatedToTypeProcess(int idTipoProcesso)
+		public async Task<IEnumerable<EtapaModel>> GetStagesRelatedToTypeProcess(int idTipoProcesso)
 		{
 			return await _dbContext.Etapa.Where(e => e.IdTipoProcesso == idTipoProcesso).AsNoTracking().ToListAsync();
 		}

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Entities;
 using SGED.Repositories.Interfaces;
@@ -24,11 +24,11 @@ namespace SGED.Services.Entities
 			return _mapper.Map<IEnumerable<ImovelDTO>>(imovel);	
 		}
 
-		public async Task<ImovelDTO> GetById(int id)
-		{
-			var imovel = await _imovelRepository.GetById(id);
-			return _mapper.Map<ImovelDTO>(imovel);
-		}
+        public async Task<IEnumerable<ImovelDTO>> Search(string search)
+        {
+            var imoveis = await _imovelRepository.Search(search);
+            return _mapper.Map<IEnumerable<ImovelDTO>>(imoveis);
+        }
 
         public async Task<ImovelDTO> GetByProperty(string propertyName, string data)
         {
@@ -36,16 +36,22 @@ namespace SGED.Services.Entities
             return _mapper.Map<ImovelDTO>(imovel);
         }
 
+        public async Task<ImovelDTO> GetById(int id)
+		{
+			var imovel = await _imovelRepository.GetById(id);
+			return _mapper.Map<ImovelDTO>(imovel);
+		}
+
         public async Task Create(ImovelDTO imovelDTO)
 		{
-			var imovel = _mapper.Map<Imovel>(imovelDTO);
+			var imovel = _mapper.Map<ImovelModel>(imovelDTO);
 			await _imovelRepository.Create(imovel);
 			imovelDTO.Id = imovel.Id;
 		}
 
 		public async Task Update(ImovelDTO imovelDTO)
 		{
-			var imovel = _mapper.Map<Imovel>(imovelDTO);
+			var imovel = _mapper.Map<ImovelModel>(imovelDTO);
 			await _imovelRepository.Update(imovel);
 		}
 

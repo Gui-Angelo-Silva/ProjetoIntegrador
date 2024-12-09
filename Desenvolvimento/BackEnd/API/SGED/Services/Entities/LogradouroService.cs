@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
-using SGED.Objects.DTO.Searchs;
+using SGED.Objects.DTOs.Searchs;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
@@ -52,14 +52,14 @@ namespace SGED.Services.Entities
 
         public async Task Create(LogradouroDTO logradouroDTO)
 		{
-			var logradouro = _mapper.Map<Logradouro>(logradouroDTO);
+			var logradouro = _mapper.Map<LogradouroModel>(logradouroDTO);
 			await _logradouroRepository.Create(logradouro);
 			logradouroDTO.Id = logradouro.Id;
 		}
 
 		public async Task Update(LogradouroDTO logradouroDTO)
 		{
-			var logradouro = _mapper.Map<Logradouro>(logradouroDTO);
+			var logradouro = _mapper.Map<LogradouroModel>(logradouroDTO);
 			await _logradouroRepository.Update(logradouro);
 		}
 

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SGED.Context;
 using SGED.Objects.Models.Entities;
+using SGED.Objects.Utilities;
 using SGED.Repositories.Interfaces;
 
 namespace SGED.Repositories.Entities
@@ -15,17 +16,31 @@ namespace SGED.Repositories.Entities
 			_dbContext = dbContext;
 		}
 
-		public async Task<IEnumerable<Imovel>> GetAll()
+		public async Task<IEnumerable<ImovelModel>> GetAll()
 		{
 			return await _dbContext.Imovel.AsNoTracking().ToListAsync();
 		}
 
-        public async Task<Imovel> GetById(int id)
-		{
-			return await _dbContext.Imovel.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
-		}
+        public async Task<IEnumerable<ImovelModel>> Search(string search)
+        {
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                return new List<ImovelModel>();
+            }
 
-        public async Task<Imovel> GetByProperty(string propertyName, string data)
+            // Carregar todos os imoveis do banco de dados
+            var imoveis = await _dbContext.Imovel.AsNoTracking().ToListAsync();
+
+            // Normaliza e converte o termo de pesquisa para lowercase, removendo acentuação
+            string normalizedSearch = Operator.RemoveAccents(search.ToLower());
+
+            // Filtrar os imovels no lado do cliente
+            return imoveis.Where(i => i.InscricaoCadastral != null &&
+                Operator.RemoveAccents(i.InscricaoCadastral.ToLower()).Contains(normalizedSearch))
+                .ToList();
+        }
+
+        public async Task<ImovelModel> GetByProperty(string propertyName, string data)
         {
             // Use reflexão para acessar a propriedade dinamicamente
             var imovels = await _dbContext.Imovel.AsNoTracking().ToListAsync();
@@ -45,21 +60,26 @@ namespace SGED.Repositories.Entities
             return imovel;
         }
 
-        public async Task<Imovel> Create(Imovel imovel)
+        public async Task<ImovelModel> GetById(int id)
+		{
+			return await _dbContext.Imovel.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
+		}
+
+        public async Task<ImovelModel> Create(ImovelModel imovel)
 		{
 			_dbContext.Imovel.Add(imovel);
 			await _dbContext.SaveChangesAsync();
 			return imovel;
 		}
 
-		public async Task<Imovel> Update(Imovel imovel)
+		public async Task<ImovelModel> Update(ImovelModel imovel)
 		{
 			_dbContext.Entry(imovel).State = EntityState.Modified;
 			await _dbContext.SaveChangesAsync();
 			return imovel;
 		}
 
-		public async Task<Imovel> Delete(int id)
+		public async Task<ImovelModel> Delete(int id)
 		{
 			var imovel = await GetById(id);
 			_dbContext.Imovel.Remove(imovel);

@@ -1,15 +1,15 @@
-﻿using SGED.DTO.Entities;
-using SGED.Objects.Models.Entities;
+﻿using SGED.Objects.Models.Entities;
 
 namespace SGED.Repositories.Interfaces;
 public interface IDocumentoProcessoRepository
 {
-    Task<IEnumerable<DocumentoProcesso>> GetAll();
-    Task<IEnumerable<DocumentoProcesso>> GetByProcess(Guid idProcesso);
-    Task<DocumentoProcesso> GetById(Guid id);
-    Task<DocumentoProcesso> Create(DocumentoProcesso DocumentoProcesso);
-    Task<DocumentoProcesso> Update(DocumentoProcesso DocumentoProcesso);
-    Task<DocumentoProcesso> Delete(Guid id);
+    Task<IEnumerable<DocumentoProcessoModel>> GetAll();
+    Task<IEnumerable<DocumentoProcessoModel>> GetByStatus(int status);
+    Task<IEnumerable<DocumentoProcessoModel>> GetByProcess(Guid idProcesso);
+    Task<DocumentoProcessoModel> GetById(Guid id);
+    Task<DocumentoProcessoModel> Create(DocumentoProcessoModel DocumentoProcesso);
+    Task<DocumentoProcessoModel> Update(DocumentoProcessoModel DocumentoProcesso);
+    Task<DocumentoProcessoModel> Delete(Guid id);
 
-    Task<IEnumerable<DocumentoProcesso>> GetDocumentProcessRelatedToTypeDocument(int IdTipoDocumento);
+    Task<IEnumerable<DocumentoProcessoModel>> GetDocumentProcessRelatedToTypeDocument(int IdTipoDocumento);
 }

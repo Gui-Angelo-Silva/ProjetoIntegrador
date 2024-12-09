@@ -6,10 +6,11 @@ namespace SGED.Repositories.Interfaces
 {
     public interface ITipoProcessoRepository
 	{
-		Task<IEnumerable<TipoProcesso>> GetAll();
-		Task<TipoProcesso> GetById(int id);
-		Task<TipoProcesso> Create(TipoProcesso TipoProcesso);
-		Task<TipoProcesso> Update(TipoProcesso tipoProcesso);
-		Task<TipoProcesso> Remove(int id);
+		Task<IEnumerable<TipoProcessoModel>> GetAll();
+        Task<IEnumerable<TipoProcessoModel>> Search(string search);
+        Task<TipoProcessoModel> GetById(int id);
+		Task<TipoProcessoModel> Create(TipoProcessoModel TipoProcesso);
+		Task<TipoProcessoModel> Update(TipoProcessoModel tipoProcesso);
+		Task<TipoProcessoModel> Remove(int id);
 	}
 }

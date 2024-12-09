@@ -1,5 +1,5 @@
-﻿using SGED.Objects.DTO.Entities;
-using SGED.Objects.DTO.Searchs;
+using SGED.Objects.DTOs.Searchs;
+﻿using SGED.Objects.DTOs.Entities;
 
 namespace SGED.Services.Interfaces
 {

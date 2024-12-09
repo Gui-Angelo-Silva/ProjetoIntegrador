@@ -1,13 +1,10 @@
-import NavBar from "../../../components/NavBar";
-import SideBar from "../../../components/SideBar";
-
 import Button from '@mui/material/Button';
 //import { FaAngleRight, FaTableCellsLarge, FaFile } from "react-icons/fa6";
 
 import { useMontage } from '../../../object/modules/montage';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useServer } from "../../../routes/serverRoute";
-import SessionService from '../../../object/service/session';
+import CookieModule from "../../../object/modules/cookie";
 
 export default function NotPermission() {
 
@@ -18,12 +15,25 @@ export default function NotPermission() {
   }, [componentMounted]);
 
   const server = useServer();
-  const session = SessionService();
+  const cookie = CookieModule();
+  
+  const [data, setData] = useState("");
 
   const redirect = () => {
-    sessionStorage.removeItem("page: not permission");
-    server.clearSegment(session.getUser() ? "principal" : "login");
+    if (cookie.getCookie("acessLevel")) {
+      server.typeRoute().addSegment("principal").dispatch();
+    } else {
+      server.clearUrl("login").dispatch();
+    }
   }
+
+  useEffect(() => {
+    if (!data) setData(sessionStorage.getItem("page: access denied"));
+  }, [data]);
+
+  useEffect(() => {
+    if (data) sessionStorage.removeItem("page: access denied");
+  }, [sessionStorage.getItem("page: access denied")]);
 
   return (
     <>
@@ -31,12 +41,12 @@ export default function NotPermission() {
         <br />
         <h3 className="text-3xl font-semibold text-gray-600">Acesso Negado</h3>
         <p className="pl-4" style={{ marginTop: '40px', textAlign: 'center' }}>
-          {session.getUser() ?
-            <>Sua conta não tem privilégios para acessar a página <span style={{ color: 'blue', fontWeight: 'bold' }}>{sessionStorage.getItem("page: not permission")}</span>.</> :
-            <>Não é possível acessar a rota <span style={{ color: 'red', fontWeight: 'bold' }}>{sessionStorage.getItem("page: not permission")}</span> sem estar autenticado.</>
+          {cookie.getCookie("acessLevel") ?
+            <>Sua conta não tem privilégios para acessar a página <span style={{ color: 'red', fontWeight: 'bold' }}>{data}</span>.</> :
+            <>Não é possível acessar a rota <span style={{ color: 'red', fontWeight: 'bold' }}>{data}</span> sem estar autenticado.</>
           }
           <br />
-          Clique no botão abaixo para retornar para a página {session.getUser() ? "principal" : "de autenticação"}.
+          Clique no botão abaixo para retornar para a página {cookie.getCookie("acessLevel") ? "principal" : "de autenticação"}.
         </p>
         <Button
           type="submit"
@@ -49,7 +59,7 @@ export default function NotPermission() {
           }}
           onClick={() => redirect()}
         >
-          {session.getUser() ? "Página Principal" : "Login"}
+          {cookie.getCookie("acessLevel") ? "Página Principal" : "Login"}
         </Button>
       </div>
     </>

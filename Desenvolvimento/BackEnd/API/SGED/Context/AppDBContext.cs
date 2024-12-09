@@ -7,58 +7,66 @@ public class AppDBContext : DbContext
 {
 	public AppDBContext(DbContextOptions<AppDBContext> options) : base(options) { }
 
-	// Mapeamento Relacional dos Objetos no Bando de Dados
+    // Mapeamento Relacional dos Objetos no Bando de Dados
 
-	public DbSet<Configuracao> Configuracao { get; set; }
+    // Conjunto: Configuração
+    public DbSet<ConfiguracaoModel> Configuracao { get; set; }
 
-	// Conjunto: Pessoa
-	public DbSet<Municipe> Municipe { get; set; }
-	public DbSet<Engenheiro> Engenheiro { get; set; }
-	public DbSet<Fiscal> Fiscal { get; set; }
-	public DbSet<TipoUsuario> TipoUsuario { get; set; }
-	public DbSet<Usuario> Usuario { get; set; }
-	public DbSet<Sessao> Sessao { get; set; }
+    // Conjunto: Servidor
+    public DbSet<SessaoModel> Sessao { get; set; }
+    public DbSet<AuditoriaModel> Auditoria { get; set; }
 
-	// Conjunto: Imóvel
-	public DbSet<Estado> Estado { get; set; }
-	public DbSet<Cidade> Cidade { get; set; }
-	public DbSet<Bairro> Bairro { get; set; }
-	public DbSet<TipoLogradouro> TipoLogradouro { get; set; }
-	public DbSet<Logradouro> Logradouro { get; set; }
-	public DbSet<Topografia> Topografia { get; set; }
-	public DbSet<Uso> Uso { get; set; }
-	public DbSet<OcupacaoAtual> OcupacaoAtual { get; set; }
-	public DbSet<TipoInfraestrutura> TipoInfraestrutura { get; set; }
-	public DbSet<Infraestrutura> Infraestrutura { get; set; }
-	public DbSet<Instalacao> Instalacao { get; set; }
-	public DbSet<Imovel> Imovel { get; set; }
-	public DbSet<CondicaoSolo> CondicaoSolo { get; set; }
+    // Conjunto: Pessoa
+    public DbSet<MunicipeModel> Municipe { get; set; }
+	public DbSet<EngenheiroModel> Engenheiro { get; set; }
+	public DbSet<FiscalModel> Fiscal { get; set; }
+	public DbSet<TipoUsuarioModel> TipoUsuario { get; set; }
+	public DbSet<UsuarioModel> Usuario { get; set; }
 
-	// Conjunto: Processo
-	public DbSet<TipoProcesso> TipoProcesso { get; set; }
-	public DbSet<Etapa> Etapa { get; set; }
-	public DbSet<TipoDocumento> TipoDocumento { get; set; }
-	public DbSet<TipoDocumentoEtapa> TipoDocumentoEtapa { get; set; }
-	public DbSet<Processo> Processo { get; set; }
-	public DbSet<DocumentoProcesso> DocumentoProcesso { get; set; }
+    // Conjunto: Imóvel
+    public DbSet<EstadoModel> Estado { get; set; }
+	public DbSet<CidadeModel> Cidade { get; set; }
+	public DbSet<BairroModel> Bairro { get; set; }
+	public DbSet<TipoLogradouroModel> TipoLogradouro { get; set; }
+	public DbSet<LogradouroModel> Logradouro { get; set; }
+	public DbSet<TopografiaModel> Topografia { get; set; }
+	public DbSet<UsoModel> Uso { get; set; }
+	public DbSet<OcupacaoAtualModel> OcupacaoAtual { get; set; }
+	public DbSet<TipoInfraestruturaModel> TipoInfraestrutura { get; set; }
+	public DbSet<InfraestruturaModel> Infraestrutura { get; set; }
+	public DbSet<InstalacaoModel> Instalacao { get; set; }
+	public DbSet<ImovelModel> Imovel { get; set; }
+    public DbSet<CondicaoSolo> CondicaoSolo { get; set; }
+
+    // Conjunto: Processo
+    public DbSet<TipoProcessoModel> TipoProcesso { get; set; }
+	public DbSet<EtapaModel> Etapa { get; set; }
+	public DbSet<TipoDocumentoModel> TipoDocumento { get; set; }
+	public DbSet<TipoDocumentoEtapaModel> TipoDocumentoEtapa { get; set; }
+	public DbSet<ProcessoModel> Processo { get; set; }
+	public DbSet<DocumentoProcessoModel> DocumentoProcesso { get; set; }
 
 	// Fluent API
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		base.OnModelCreating(modelBuilder);
 
+		// Builders: Conjunto Configuração
 		ConfiguracaoBuilder.Build(modelBuilder);
 
-		// Builders: Conjunto Pessoa
-		MunicipeBuilder.Build(modelBuilder);
+        // Builders: Conjunto Servidor
+        SessaoBuilder.Build(modelBuilder);
+        AuditoriaBuilder.Build(modelBuilder);
+
+        // Builders: Conjunto Pessoa
+        MunicipeBuilder.Build(modelBuilder);
 		EngenheiroBuilder.Build(modelBuilder);
 		FiscalBuilder.Build(modelBuilder);
 		TipoUsuarioBuilder.Build(modelBuilder);
 		UsuarioBuilder.Build(modelBuilder);
-		SessaoBuilder.Build(modelBuilder);
 
-		// Builders: Conjunto Imóvel
-		EstadoBuilder.Build(modelBuilder);
+        // Builders: Conjunto Imóvel
+        EstadoBuilder.Build(modelBuilder);
 		CidadeBuilder.Build(modelBuilder);
 		BairroBuilder.Build(modelBuilder);
 		TipoLogradouroBuilder.Build(modelBuilder);

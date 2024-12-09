@@ -25,13 +25,13 @@ import ListModule from '../../../object/modules/list';
 import InstallationClass from '../../../object/class/installation';
 import ActionManager from '../../../object/modules/action';
 import CompareModule from '../../../object/modules/compare';
-import SelectModule from '../../../object/modules/select';
+import SelectModule from '../../../object/modules/selectOld';
 import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function Installation() {
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Instalação', link: '', isEnabled: false }
     ];
 

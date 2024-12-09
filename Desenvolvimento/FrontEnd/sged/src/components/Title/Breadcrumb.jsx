@@ -3,7 +3,7 @@ import LinkTitle from './LinkTitle';
 
 const Breadcrumb = ({ pages }) => {
     return (
-        <div className="flex flex-row items-center">
+        <div className="flex items-center p-2 rounded-lg shadow-sm mb-3">
             {pages.map((page, index) => (
                 <div key={index} className="flex flex-row items-center">
                     <LinkTitle

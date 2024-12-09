@@ -14,31 +14,31 @@ namespace SGED.Repositories.Entities
 			_dbcontext = dbcontext;
         }
 
-		public async Task<IEnumerable<TipoDocumento>> GetAll()
+		public async Task<IEnumerable<TipoDocumentoModel>> GetAll()
 		{
 			return await _dbcontext.TipoDocumento.AsNoTracking().ToListAsync();
 		}
 
-		public async Task<TipoDocumento> GetById(int id)
+		public async Task<TipoDocumentoModel> GetById(int id)
 		{
 			return await _dbcontext.TipoDocumento.AsNoTracking().FirstOrDefaultAsync(td => td.Id == id);
 		}
 
-		public async Task<TipoDocumento> Create(TipoDocumento TipoDocumento)
+		public async Task<TipoDocumentoModel> Create(TipoDocumentoModel TipoDocumento)
 		{
 			_dbcontext.TipoDocumento.Add(TipoDocumento);
 			await _dbcontext.SaveChangesAsync();
 			return TipoDocumento;
 		}
 
-		public async Task<TipoDocumento> Update(TipoDocumento TipoDocumento)
+		public async Task<TipoDocumentoModel> Update(TipoDocumentoModel TipoDocumento)
 		{
 			_dbcontext.Entry(TipoDocumento).State = EntityState.Modified;
 			await _dbcontext.SaveChangesAsync();
 			return TipoDocumento;
 		}
 
-		public async Task<TipoDocumento> Delete(int id)
+		public async Task<TipoDocumentoModel> Delete(int id)
 		{
 			var TipoDocumento = await GetById(id);
 			_dbcontext.TipoDocumento.Remove(TipoDocumento);

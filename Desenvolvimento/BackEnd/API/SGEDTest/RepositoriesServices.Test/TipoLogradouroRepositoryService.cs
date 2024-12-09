@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Moq;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Entities;
@@ -25,7 +25,7 @@ namespace SGEDTest.RepositoriesServices.Test
 		[Test]
 		public async Task ObterTodosTiposLogradourosMapeados()
 		{
-			var tipoLogradouro = new List<TipoLogradouro> { new TipoLogradouro { Id = 1, CodigoInformativo = "A", Descricao = "Área" } };
+			var tipoLogradouro = new List<TipoLogradouroModel> { new TipoLogradouroModel { Id = 1, CodigoInformativo = "A", Descricao = "Área" } };
 			var tipoLogradouroDTO = new List<TipoLogradouroDTO> { new TipoLogradouroDTO { Id = 1, CodigoInformativo = "A", Descricao = "Área" } };
 			_tipoLogradouroRepositoryMock.Setup(repo => repo.GetAll()).ReturnsAsync(tipoLogradouro);
 			_mapperMock.Setup(m => m.Map<IEnumerable<TipoLogradouroDTO>>(tipoLogradouro)).Returns(tipoLogradouroDTO);
@@ -38,7 +38,7 @@ namespace SGEDTest.RepositoriesServices.Test
 		[Test]
 		public async Task Obter_TipoLogradouroMapeadoPorId()
 		{
-			var tipoLogradouro = new TipoLogradouro { Id = 1, CodigoInformativo = "A", Descricao = "Área" };
+			var tipoLogradouro = new TipoLogradouroModel { Id = 1, CodigoInformativo = "A", Descricao = "Área" };
 			var tipoLogradouroDTO = new TipoLogradouroDTO { Id = 1, CodigoInformativo = "A", Descricao = "Área" };
 			_tipoLogradouroRepositoryMock.Setup(repo => repo.GetById(1)).ReturnsAsync(tipoLogradouro);
 			_mapperMock.Setup(m => m.Map<TipoLogradouroDTO>(tipoLogradouro)).Returns(tipoLogradouroDTO);
@@ -51,27 +51,27 @@ namespace SGEDTest.RepositoriesServices.Test
 		[Test]
 		public async Task Cadastro_ChamadaDeTipoLogradouroMapeado()
 		{
-			var tipoLogradouro = new TipoLogradouro { Id = 1, CodigoInformativo = "A", Descricao = "Área" };
+			var tipoLogradouro = new TipoLogradouroModel { Id = 1, CodigoInformativo = "A", Descricao = "Área" };
 			var tipoLogradouroDTO = new TipoLogradouroDTO { Id = 1, CodigoInformativo = "A", Descricao = "Área" };
-			_mapperMock.Setup(tp => tp.Map<TipoLogradouro>(tipoLogradouroDTO)).Returns(tipoLogradouro);
+			_mapperMock.Setup(tp => tp.Map<TipoLogradouroModel>(tipoLogradouroDTO)).Returns(tipoLogradouro);
 
 			await _tipoLogradouroService.Create(tipoLogradouroDTO);
 
 			_tipoLogradouroRepositoryMock.Verify(repo => repo.Create(tipoLogradouro), Times.Once);
-			_mapperMock.Verify(tp => tp.Map<TipoLogradouro>(tipoLogradouroDTO), Times.Once);
+			_mapperMock.Verify(tp => tp.Map<TipoLogradouroModel>(tipoLogradouroDTO), Times.Once);
 		}
 
 		[Test]
 		public async Task Atualiza_ChamadaDeTipoLogradouroMapeado()
 		{
-			var tipoLogradouro = new TipoLogradouro { Id = 1, CodigoInformativo = "A", Descricao = "Área" };
+			var tipoLogradouro = new TipoLogradouroModel { Id = 1, CodigoInformativo = "A", Descricao = "Área" };
 			var tipoLogradouroDTO = new TipoLogradouroDTO { Id = 1, CodigoInformativo = "A", Descricao = "Área" };
-			_mapperMock.Setup(tp => tp.Map<TipoLogradouro>(tipoLogradouroDTO)).Returns(tipoLogradouro);	
+			_mapperMock.Setup(tp => tp.Map<TipoLogradouroModel>(tipoLogradouroDTO)).Returns(tipoLogradouro);	
 
 			await _tipoLogradouroService.Update(tipoLogradouroDTO);
 
 			_tipoLogradouroRepositoryMock.Verify(repo => repo.Update(tipoLogradouro), Times.Once);
-			_mapperMock.Verify(tp => tp.Map<TipoLogradouro>(tipoLogradouroDTO), Times.Once);
+			_mapperMock.Verify(tp => tp.Map<TipoLogradouroModel>(tipoLogradouroDTO), Times.Once);
 		}
 
 		[Test]

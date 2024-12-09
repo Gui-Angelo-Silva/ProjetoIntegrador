@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
@@ -37,14 +37,14 @@ public class BairroService : IBairroService
 
     public async Task Create(BairroDTO bairroDTO)
     {
-        var bairro = _mapper.Map<Bairro>(bairroDTO);
+        var bairro = _mapper.Map<BairroModel>(bairroDTO);
         await _bairroRepository.Create(bairro);
         bairroDTO.Id = bairro.Id;
     }
 
     public async Task Update(BairroDTO bairroDTO)
     {
-        var bairro = _mapper.Map<Bairro>(bairroDTO);
+        var bairro = _mapper.Map<BairroModel>(bairroDTO);
         await _bairroRepository.Update(bairro);
     }
 

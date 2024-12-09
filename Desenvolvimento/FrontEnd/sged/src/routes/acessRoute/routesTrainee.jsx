@@ -1,12 +1,13 @@
-import { Routes, Route } from 'react-router-dom';
-import Home from '../../pages/routeA/dashboard/home';
-import Profile from '../../pages/allRoutes/account/profile';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Home from '../../pages/dashboard/home';
 
 export default function RouteC() {
     return (
         <Routes>
-            <Route path="/principal" element={<Home />}></Route>
-            <Route path="/perfil" element={<Profile />} />
+            <Route path="principal" element={<Home />}></Route>
+
+            {/* Rota catch-all para páginas inexistentes */}
+            <Route path="*" element={<Navigate to="/pagina-inexistente" replace />} />
         </Routes>
     );
 }

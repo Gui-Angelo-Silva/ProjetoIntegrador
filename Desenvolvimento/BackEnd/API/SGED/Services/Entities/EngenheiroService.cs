@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTO.Entities;
+using SGED.Objects.DTOs.Entities;
 using SGED.Objects.Models.Entities;
+using SGED.Repositories.Entities;
 using SGED.Repositories.Interfaces;
 using SGED.Services.Interfaces;
 
@@ -23,6 +24,12 @@ public class EngenheiroService : IEngenheiroService
         return _mapper.Map<IEnumerable<EngenheiroDTO>>(engenheiros);
     }
 
+    public async Task<IEnumerable<EngenheiroDTO>> Search(string search)
+    {
+        var engenheiros = await _engenheiroRepository.Search(search);
+        return _mapper.Map<IEnumerable<EngenheiroDTO>>(engenheiros);
+    }
+
     public async Task<EngenheiroDTO> GetById(int id)
     {
         var engenheiro = await _engenheiroRepository.GetById(id);
@@ -31,14 +38,14 @@ public class EngenheiroService : IEngenheiroService
 
     public async Task Create(EngenheiroDTO engenheiroDTO)
     {
-        var engenheiro = _mapper.Map<Engenheiro>(engenheiroDTO);
+        var engenheiro = _mapper.Map<EngenheiroModel>(engenheiroDTO);
         await _engenheiroRepository.Create(engenheiro);
         engenheiroDTO.Id = engenheiro.Id;
     }
 
     public async Task Update(EngenheiroDTO engenheiroDTO)
     {
-        var engenheiro = _mapper.Map<Engenheiro>(engenheiroDTO);
+        var engenheiro = _mapper.Map<EngenheiroModel>(engenheiroDTO);
         await _engenheiroRepository.Update(engenheiro);
     }
 

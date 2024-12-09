@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
+import { User } from "@phosphor-icons/react";
 
 // Component imports
 import Breadcrumb from "../../../components/Title/Breadcrumb";
@@ -19,7 +20,7 @@ import { useMontage } from '../../../object/modules/montage';
 import ConnectionService from '../../../object/service/connection';
 import ListModule from '../../../object/modules/list';
 import CitizenClass from '../../../object/class/citizen';
-import SelectModule from '../../../object/modules/select';
+import SelectModule from '../../../object/modules/selectOld';
 import MultiSearchBar from "../../../components/Search/MultiSearchBar";
 
 export default function Citizen() {
@@ -43,7 +44,7 @@ export default function Citizen() {
     const [inOperation, setInOperation] = useState(false);
 
     const pages = [
-        { name: 'Cadastros', link: '/cadastros', isEnabled: true },
+        { name: 'Cadastros', link: '/administrador/cadastros', isEnabled: true },
         { name: 'Munícipe', link: '', isEnabled: false }
     ];
 
@@ -147,11 +148,17 @@ export default function Citizen() {
 
     const dataForTable = list.currentList.map((municipe) => {
         return {
-            imagemPessoa: (
+            imagemPessoa: (municipe.imagemPessoa ?
                 <img
                     src={municipe.imagemPessoa}
                     alt={`Imagem de ${municipe.nomePessoa}`}
-                    className="w-[40px] h-[40px]"
+                    className="w-[40px] h-[40px] rounded-full"
+                /> :
+                <User
+                    size={32}
+                    weight="duotone"
+                    alt={`Imagem de ${municipe.nomePessoa}`}
+                    className="w-[40px] h-[40px] rounded-full"
                 />
             ),
             nomePessoa: municipe.nomePessoa,

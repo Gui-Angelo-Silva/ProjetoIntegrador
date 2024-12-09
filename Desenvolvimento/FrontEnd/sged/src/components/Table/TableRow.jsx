@@ -9,12 +9,13 @@ const TableRow = ({ item }) => {
 
   return (
     <li
-      className="grid w-full"
+      className="grid w-full hover:bg-gray-100"
       style={{ gridTemplateColumns: `repeat(${filteredItem.length}, 1fr)` }}
       key={item.id}
     >
       {filteredItem.map(([key, value], index) => {
-        const displayValue = value.length > maxLength ? `${value.substring(0, maxLength)}...` : value;
+        // Garantir que value seja uma string
+        const displayValue = typeof value === 'string' ? value.length > maxLength ? `${value.substring(0, maxLength)}...` : value : value;
 
         return (
           <div
